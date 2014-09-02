@@ -1,9 +1,11 @@
-package flooz.android.com.flooz;
+package flooz.android.com.flooz.UI.Activity;
 
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import flooz.android.com.flooz.R;
 
 
 public class HomeActivity extends Activity {
@@ -28,9 +30,7 @@ public class HomeActivity extends Activity {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
+
         return super.onOptionsItemSelected(item);
     }
 }

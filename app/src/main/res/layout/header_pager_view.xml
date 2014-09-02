@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/header_pager_view_height">
+
+    <View android:id="@+id/left_view"
+        android:layout_width="1dp" android:layout_height="match_parent"/>
+
+    <TextView android:id="@+id/profile"
+        android:layout_width="1dp" android:layout_height="match_parent"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/header_pager_view_fontsize"
+        android:text="@string/header_profile"/>
+
+    <TextView android:id="@+id/flooz"
+        android:layout_width="1dp" android:layout_height="match_parent"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/header_pager_view_fontsize"
+        android:text="@string/header_flooz"/>
+
+    <TextView android:id="@+id/friends"
+        android:layout_width="1dp" android:layout_height="match_parent"
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:textSize="@dimen/header_pager_view_fontsize"
+        android:text="@string/header_friends"/>
+
+    <View android:id="@+id/right_view"
+        android:layout_width="1dp" android:layout_height="match_parent"/>
+
+
+</LinearLayout>

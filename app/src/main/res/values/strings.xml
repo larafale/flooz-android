@@ -2,7 +2,8 @@
 <resources>
 
     <string name="app_name">Flooz</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
+    <string name="header_flooz">Flooz</string>
+    <string name="header_profile">Mon profil</string>
+    <string name="header_friends">Mes amis</string>
 
 </resources>
