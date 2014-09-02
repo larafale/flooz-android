@@ -1,7 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <flooz.android.com.flooz.UI.View.FloozFilterTabItem android:id="@+id/public_tab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            custom:tab_type="tab_public"/>
+
+        <flooz.android.com.flooz.UI.View.FloozFilterTabItem android:id="@+id/friends_tab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            custom:tab_type="tab_friends"/>
+
+        <flooz.android.com.flooz.UI.View.FloozFilterTabItem android:id="@+id/private_tab"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            custom:tab_type="tab_private"/>
+
+    </LinearLayout>
+
+    <ListView android:id="@+id/table"
+        android:layout_width="match_parent" android:layout_height="0dp"
+        android:layout_weight="1"/>
+
 
 </LinearLayout>

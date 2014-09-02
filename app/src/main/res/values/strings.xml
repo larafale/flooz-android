@@ -5,5 +5,8 @@
     <string name="header_flooz">Flooz</string>
     <string name="header_profile">Mon profil</string>
     <string name="header_friends">Mes amis</string>
+    <string name="scope_public_title">PUBLIC</string>
+    <string name="scope_friends_title">AMIS</string>
+    <string name="scope_private_title">MOI</string>
 
 </resources>

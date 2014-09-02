@@ -2,35 +2,74 @@ package flooz.android.com.flooz.UI.Activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import flooz.android.com.flooz.R;
+import flooz.android.com.flooz.UI.View.HeaderPagerView;
+import flooz.android.com.flooz.Adapter.HeaderPagerAdapter;
 
-
-public class HomeActivity extends Activity {
+public class HomeActivity extends Activity implements HeaderPagerView.Delegate
+{
+    private HeaderPagerView headerPagerView;
+    private ViewPager viewPager;
+    private HeaderPagerAdapter pagerAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-    }
 
+        this.headerPagerView = (HeaderPagerView) findViewById(R.id.header);
+        this.viewPager = (ViewPager) findViewById(R.id.pager);
+
+        this.pagerAdapter = new HeaderPagerAdapter(getFragmentManager());
+        this.viewPager.setAdapter(this.pagerAdapter);
+        this.headerPagerView.setDelegate(this);
+
+        this.viewPager.setCurrentItem(1);
+        this.viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
+        {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels)
+            {
+                int width = positionOffsetPixels + viewPager.getWidth() * position;
+                headerPagerView.setScrollX(width / 2);
+            }
+
+            @Override
+            public void onPageSelected(int position)
+            {
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state)
+            {
+
+            }
+        });
+    }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.home, menu);
-        return true;
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+
+        this.headerPagerView.post(new Runnable() {
+            @Override
+            public void run() {
+                headerPagerView.setInitialScroll();
+                headerPagerView.animate().alpha(1).setDuration(500).withLayer();
+            }
+        });
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        return super.onOptionsItemSelected(item);
+    public void onHeaderButtonClick(int buttonId)
+    {
+        this.viewPager.setCurrentItem(buttonId, true);
     }
+
 }

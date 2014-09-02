@@ -11,21 +11,21 @@
     <TextView android:id="@+id/profile"
         android:layout_width="1dp" android:layout_height="match_parent"
         android:gravity="center"
-        android:textColor="@android:color/white"
+        android:textColor="@color/blue"
         android:textSize="@dimen/header_pager_view_fontsize"
         android:text="@string/header_profile"/>
 
     <TextView android:id="@+id/flooz"
         android:layout_width="1dp" android:layout_height="match_parent"
         android:gravity="center"
-        android:textColor="@android:color/white"
+        android:textColor="@color/blue"
         android:textSize="@dimen/header_pager_view_fontsize"
         android:text="@string/header_flooz"/>
 
     <TextView android:id="@+id/friends"
         android:layout_width="1dp" android:layout_height="match_parent"
         android:gravity="center"
-        android:textColor="@android:color/white"
+        android:textColor="@color/blue"
         android:textSize="@dimen/header_pager_view_fontsize"
         android:text="@string/header_friends"/>
 
