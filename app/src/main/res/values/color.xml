@@ -3,6 +3,7 @@
     <color name="background">#242F3A</color>
     <color name="background_status">#2D3A46</color>
     <color name="background_header">#18212B</color>
+    <color name="background_account_user_view">#1E2934</color>
     <color name="green">#7AC283</color>
     <color name="red">#E17272</color>
     <color name="yellow">#D5D17A</color>

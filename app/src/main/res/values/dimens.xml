@@ -4,5 +4,5 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="tab_separator_height">15dp</dimen>
     <dimen name="header_pager_view_height">40dp</dimen>
-    <dimen name="header_pager_view_fontsize">20sp</dimen>
+    <dimen name="header_pager_view_fontsize">25dp</dimen>
 </resources>

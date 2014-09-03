@@ -3,7 +3,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/header_pager_view_height">
+    android:layout_height="@dimen/header_pager_view_height"
+    android:background="@color/background_header">
 
     <View android:id="@+id/left_view"
         android:layout_width="1dp" android:layout_height="match_parent"/>

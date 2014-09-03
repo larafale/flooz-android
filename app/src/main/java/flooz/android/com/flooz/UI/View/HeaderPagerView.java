@@ -9,10 +9,11 @@ import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.HorizontalScrollView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.graphics.Typeface;
 
 import flooz.android.com.flooz.R;
+import flooz.android.com.flooz.Utils.CustomFonts;
 
 public class HeaderPagerView extends HorizontalScrollView
 {
@@ -51,6 +52,10 @@ public class HeaderPagerView extends HorizontalScrollView
         this.friendsTextView = (TextView) view.findViewById(R.id.friends);
         this.leftView = view.findViewById(R.id.left_view);
         this.rightView = view.findViewById(R.id.right_view);
+
+        this.floozTextView.setTypeface(CustomFonts.customTitleExtraLight(context));
+        this.friendsTextView.setTypeface(CustomFonts.customTitleExtraLight(context));
+        this.profileTextView.setTypeface(CustomFonts.customTitleExtraLight(context));
 
         this.setHorizontalScrollBarEnabled(false);
 

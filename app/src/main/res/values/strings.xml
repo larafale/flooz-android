@@ -8,5 +8,10 @@
     <string name="scope_public_title">PUBLIC</string>
     <string name="scope_friends_title">AMIS</string>
     <string name="scope_private_title">MOI</string>
+    <string name="wallet">Porte-monnaie</string>
+    <string name="account_share">PARTAGER</string>
+    <string name="account_settings">PARAMETRES</string>
+    <string name="account_informations">INFORMATIONS</string>
+    <string name="account_bank">VIRER A MA BANQUE</string>
 
 </resources>

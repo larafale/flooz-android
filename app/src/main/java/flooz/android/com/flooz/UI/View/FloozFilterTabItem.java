@@ -81,15 +81,15 @@ public class FloozFilterTabItem extends LinearLayout
         switch (this.tabType)
         {
             case PUBLIC:
-                iconId = R.drawable.scope_public;
+                iconId = R.drawable.public_filter_scope;
                 titleId = R.string.scope_public_title;
                 break;
             case PRIVATE:
-                iconId = R.drawable.scope_private;
+                iconId = R.drawable.private_filter_scope;
                 titleId = R.string.scope_private_title;
                 break;
             case FRIENDS:
-                iconId = R.drawable.scope_friend;
+                iconId = R.drawable.friend_filter_scope;
                 titleId = R.string.scope_friends_title;
                 break;
         }
@@ -131,13 +131,15 @@ public class FloozFilterTabItem extends LinearLayout
 
     public void select()
     {
-        textView.setTextColor(Color.WHITE);
-        selectedBarView.setVisibility(View.VISIBLE);
+        this.iconImageView.setSelected(true);
+        this.textView.setTextColor(getResources().getColor(R.color.blue));
+        this.selectedBarView.setVisibility(View.VISIBLE);
     }
 
     public void unselect()
     {
-        textView.setTextColor(getResources().getColor(R.color.blue_light));
+        this.iconImageView.setSelected(false);
+        this.textView.setTextColor(Color.WHITE);
         this.selectedBarView.setVisibility(View.INVISIBLE);
     }
 

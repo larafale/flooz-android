@@ -17,14 +17,14 @@
 
         <ImageView android:id="@+id/tab_icon"
             android:layout_width="wrap_content"
-            android:layout_height="15dp"
+            android:layout_height="25dp"
             android:layout_marginRight="2dp"/>
 
         <TextView android:id="@+id/tab_text"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="fill_parent"
             android:textSize="10dp"
-            android:textColor="@color/blue_light"/>
+            android:gravity="center_vertical"/>
 
     </LinearLayout>
 
@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_gravity="bottom"
-        android:background="@color/blue_light"
+        android:background="@color/blue"
         android:visibility="invisible"/>
 
 </LinearLayout>
