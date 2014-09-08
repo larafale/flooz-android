@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import flooz.android.com.flooz.R;
 import flooz.android.com.flooz.UI.View.HeaderPagerView;
 import flooz.android.com.flooz.Adapter.HeaderPagerAdapter;
+import flooz.android.com.flooz.Network.FloozRestClient;
 
 public class HomeActivity extends Activity implements HeaderPagerView.Delegate
 {
@@ -21,6 +22,9 @@ public class HomeActivity extends Activity implements HeaderPagerView.Delegate
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
+        FloozRestClient client = FloozRestClient.getInstance();
+        client.loginQuick();
 
         this.headerPagerView = (HeaderPagerView) findViewById(R.id.header);
         this.viewPager = (ViewPager) findViewById(R.id.pager);
