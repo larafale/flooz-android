@@ -1,5 +1,6 @@
 package flooz.android.com.flooz.Network;
 
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import org.apache.http.entity.StringEntity;
@@ -11,7 +12,9 @@ import com.loopj.android.http.*;
 
 import java.io.UnsupportedEncodingException;
 
+import flooz.android.com.flooz.App.FloozApplication;
 import flooz.android.com.flooz.Model.FLUser;
+import flooz.android.com.flooz.Utils.CustomNotificationIntents;
 
 /**
  * Created by Flooz on 9/1/14.
@@ -92,6 +95,7 @@ public class FloozRestClient
                     }
                 }
                 Log.d("FloozAPI", "User : " + currentUser.username);
+                FloozApplication.performLocalNotification(CustomNotificationIntents.ReloadCurrentUser());
             }
 
             @Override
