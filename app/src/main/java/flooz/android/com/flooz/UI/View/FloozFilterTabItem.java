@@ -82,15 +82,15 @@ public class FloozFilterTabItem extends LinearLayout
         {
             case PUBLIC:
                 iconId = R.drawable.public_filter_scope;
-                titleId = R.string.scope_public_title;
+                titleId = R.string.FILTER_SCOPE_PUBLIC;
                 break;
             case PRIVATE:
                 iconId = R.drawable.private_filter_scope;
-                titleId = R.string.scope_private_title;
+                titleId = R.string.FILTER_SCOPE_PRIVATE;
                 break;
             case FRIENDS:
                 iconId = R.drawable.friend_filter_scope;
-                titleId = R.string.scope_friends_title;
+                titleId = R.string.FILTER_SCOPE_FRIEND;
                 break;
         }
 

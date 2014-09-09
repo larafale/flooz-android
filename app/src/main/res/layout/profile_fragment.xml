@@ -25,7 +25,6 @@
             <com.makeramen.RoundedImageView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/userView"
-                android:src="@drawable/tmp"
                 android:scaleType="centerCrop"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
@@ -38,7 +37,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="OLIVIER MOUREN"
                 android:textSize="20sp"
                 android:layout_marginBottom="5dp"
                 android:layout_marginTop="10dp"
@@ -48,7 +46,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/blue"
-                android:text="\@lolinpiko"
                 android:textSize="15sp"
                 android:id="@+id/username" />
 
@@ -93,7 +90,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0.5"
                 android:gravity="bottom|left"
-                android:text="@string/wallet"
+                android:text="@string/ACCOUNT_BALANCE"
                 android:textSize="10sp"
                 android:textColor="@color/blue_light"
                 android:id="@+id/accountWalletLabel"/>
@@ -104,7 +101,6 @@
                 android:layout_weight="0.5"
                 android:gravity="top|left"
                 android:paddingTop="1dp"
-                android:text="+ 8.50 €"
                 android:textSize="24sp"
                 android:textColor="@color/blue"
                 android:id="@+id/balanceValue" />
@@ -146,7 +142,7 @@
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/account_share"
+                    android:text="@string/ACCOUNT_BUTTON_SHARE"
                     android:gravity="center"
                     android:textSize="14sp"
                     android:layout_marginTop="3dp"
@@ -173,7 +169,7 @@
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/account_settings"
+                    android:text="@string/ACCOUNT_BUTTON_SETTINGS"
                     android:textSize="14sp"
                     android:gravity="center"
                     android:layout_marginTop="3dp"
@@ -208,7 +204,7 @@
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/account_bank"
+                    android:text="@string/ACCOUNT_BUTTON_CASH_OUT"
                     android:gravity="center"
                     android:textSize="14sp"
                     android:layout_marginTop="3dp"
@@ -234,7 +230,7 @@
                 <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/account_informations"
+                    android:text="@string/ACCOUNT_BUTTON_IDEAS"
                     android:gravity="center"
                     android:textSize="14sp"
                     android:layout_marginTop="3dp"

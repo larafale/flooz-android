@@ -23,9 +23,6 @@ public class HomeActivity extends Activity implements HeaderPagerView.Delegate
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        FloozRestClient client = FloozRestClient.getInstance();
-        client.loginQuick();
-
         this.headerPagerView = (HeaderPagerView) findViewById(R.id.header);
         this.viewPager = (ViewPager) findViewById(R.id.pager);
 

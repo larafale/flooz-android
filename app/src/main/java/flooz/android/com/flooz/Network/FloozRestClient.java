@@ -11,6 +11,8 @@ import org.apache.http.*;
 import com.loopj.android.http.*;
 
 import java.io.UnsupportedEncodingException;
+import java.util.Formatter;
+import java.util.Locale;
 
 import flooz.android.com.flooz.App.FloozApplication;
 import flooz.android.com.flooz.Model.FLUser;
@@ -26,7 +28,7 @@ public class FloozRestClient
     private AsyncHttpClient client = new AsyncHttpClient();
     private static FloozRestClient instance = new FloozRestClient();
 
-    private FLUser currentUser = null;
+    public FLUser currentUser = null;
 
     public FloozRestClient()
     {
@@ -60,7 +62,7 @@ public class FloozRestClient
 
         try {
             jsonParams.put("login", "+33607751208");
-            jsonParams.put("password", "0414");
+            jsonParams.put("password", "0415");
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -75,32 +77,14 @@ public class FloozRestClient
 
         String url = this.getAbsoluteUrl("/login/basic");
 
-        Log.d("FloozRestClient", "Quick Login at : " + url);
-
         client.post(null, url, entity, "application/json",new JsonHttpResponseHandler() {
-
             @Override
             public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
-                if (currentUser == null) {
-                    try {
-                        currentUser = new FLUser(response.getJSONArray("items").getJSONObject(1));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    try {
-                        currentUser.setJson(response.getJSONArray("items").getJSONObject(1));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-                Log.d("FloozAPI", "User : " + currentUser.username);
-                FloozApplication.performLocalNotification(CustomNotificationIntents.ReloadCurrentUser());
-            }
-
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray timeline) {
-                Log.d("FloozRestClient", "Array Response");
+                if (currentUser == null)
+                    currentUser = new FLUser(response.optJSONArray("items").optJSONObject(1));
+                else
+                    currentUser.setJson(response.optJSONArray("items").optJSONObject(1));
+                FloozApplication.performLocalNotification(CustomNotificationIntents.reloadCurrentUser());
             }
 
             @Override
@@ -108,5 +92,9 @@ public class FloozRestClient
                 Log.d("FloozRestClient", "Object Failure");
             }
         });
+    }
+
+    public void loadTimeline(String scope, String state, FloozHttpResponseHandler responseHandler) {
+
     }
 }

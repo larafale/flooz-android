@@ -5,6 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
+import flooz.android.com.flooz.Network.FloozRestClient;
+
 /**
  * Created by Flooz on 9/8/14.
  */
@@ -15,6 +17,9 @@ public class FloozApplication extends Application
     public void onCreate(){
         super.onCreate();
         FloozApplication.context = getApplicationContext();
+
+        FloozRestClient client = FloozRestClient.getInstance();
+        client.loginQuick();
     }
 
     public static Context getAppContext() {

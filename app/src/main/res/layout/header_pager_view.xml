@@ -14,21 +14,21 @@
         android:gravity="center"
         android:textColor="@color/blue"
         android:textSize="@dimen/header_pager_view_fontsize"
-        android:text="@string/header_profile"/>
+        android:text="@string/NAV_ACCOUNT"/>
 
     <TextView android:id="@+id/flooz"
         android:layout_width="1dp" android:layout_height="match_parent"
         android:gravity="center"
         android:textColor="@color/blue"
         android:textSize="@dimen/header_pager_view_fontsize"
-        android:text="@string/header_flooz"/>
+        android:text="@string/NAV_TIMELINE"/>
 
     <TextView android:id="@+id/friends"
         android:layout_width="1dp" android:layout_height="match_parent"
         android:gravity="center"
         android:textColor="@color/blue"
         android:textSize="@dimen/header_pager_view_fontsize"
-        android:text="@string/header_friends"/>
+        android:text="@string/NAV_FRIENDS"/>
 
     <View android:id="@+id/right_view"
         android:layout_width="1dp" android:layout_height="match_parent"/>

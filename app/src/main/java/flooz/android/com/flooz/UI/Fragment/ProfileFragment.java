@@ -5,7 +5,12 @@ package flooz.android.com.flooz.UI.Fragment;
  */
 
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +18,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.makeramen.RoundedImageView;
+import com.squareup.picasso.Picasso;
 
+import flooz.android.com.flooz.App.FloozApplication;
+import flooz.android.com.flooz.Model.FLUser;
+import flooz.android.com.flooz.Network.FloozRestClient;
 import flooz.android.com.flooz.R;
 import flooz.android.com.flooz.Utils.CustomFonts;
+import flooz.android.com.flooz.Utils.CustomNotificationIntents;
 
 public class ProfileFragment extends Fragment
 {
@@ -34,6 +44,16 @@ public class ProfileFragment extends Fragment
     private TextView accountBankLabel;
     private TextView accountIdeasLabel;
 
+
+    private BroadcastReceiver reloadCurrentUserDataReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            Log.d(this.getClass().getSimpleName() ,"Receive Reload User Data Notification");
+            reloadUserData();
+        }
+    };
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,6 +63,9 @@ public class ProfileFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.profile_fragment, null);
+
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadCurrentUserDataReceiver,
+                CustomNotificationIntents.filterReloadCurrentUser());
 
         this.accountUserView = (LinearLayout) view.findViewById(R.id.accountUserView);
         this.userView = (RoundedImageView) view.findViewById(R.id.userView);
@@ -108,8 +131,21 @@ public class ProfileFragment extends Fragment
             }
         });
 
-
         return view;
+    }
+
+    private void reloadUserData()
+    {
+        FLUser user = FloozRestClient.getInstance().currentUser;
+
+        this.fullname.setText(user.fullname);
+        this.balanceValue.setText("+ " + user.amount + " €");
+        this.username.setText("@" + user.username);
+
+        if (user.avatarURL != null)
+            Picasso.with(getActivity()).load(user.avatarURL).into(this.userView);
+        else
+            this.userView.setImageDrawable(getResources().getDrawable(R.drawable.avatar_default));
     }
 
     @Override
@@ -117,5 +153,12 @@ public class ProfileFragment extends Fragment
         super.onActivityCreated(savedInstanceState);
 
 
+    }
+
+    @Override
+    public void onDestroy()
+    {
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadCurrentUserDataReceiver);
+        super.onDestroy();
     }
 }

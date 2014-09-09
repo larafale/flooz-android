@@ -41,7 +41,7 @@ public class FLUser
     public Map<String, Object> notifications;
     public Map<String, Object> notificationsText;
     public Map<String, Object> checkDocuments;
-//    @property (strong, nonatomic) FLCreditCard *creditCard;
+    public FLCreditCard creditCard;
 
     public List friends;
     public List friendsRecent;
