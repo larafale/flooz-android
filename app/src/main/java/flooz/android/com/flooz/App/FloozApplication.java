@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+
 import flooz.android.com.flooz.Network.FloozRestClient;
 
 /**
@@ -17,6 +20,10 @@ public class FloozApplication extends Application
     public void onCreate(){
         super.onCreate();
         FloozApplication.context = getApplicationContext();
+
+
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context).build();
+        ImageLoader.getInstance().init(config);
 
         FloozRestClient client = FloozRestClient.getInstance();
         client.loginQuick();

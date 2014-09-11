@@ -43,7 +43,8 @@ public class FLSocial {
             this.isLiked = false;
 
             for (int i = 0; i < comments.length(); i++) {
-                if (comments.getJSONObject(i).getString("userId").equals(FloozRestClient.getInstance().currentUser.userId)) {
+                String userId = FloozRestClient.getInstance().currentUser.userId;
+                if (comments.getJSONObject(i).getString("userId").equals(userId)) {
                     this.isCommented = true;
                     break;
                 }

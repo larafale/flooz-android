@@ -2,7 +2,6 @@ package flooz.android.com.flooz.Model;
 
 import android.graphics.drawable.Drawable;
 
-import org.joda.time.Period;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -90,6 +89,9 @@ public class FLTransaction {
 
     public FLTransaction(JSONObject json) {
         super();
+
+        this.status = TransactionStatus.TransactionStatusNone;
+
         this.setJson(json);
     }
 
@@ -98,12 +100,17 @@ public class FLTransaction {
         try {
             this.transactionId = json.getString("_id");
 
-            this.type = transactionsTypeParamToEnum(json.getString("method"));
-            this.status = transactionStatusParamToEnum(json.getString("state"));
+            if (json.has("method"))
+                this.type = transactionsTypeParamToEnum(json.getString("method"));
 
-            this.amount = json.getDouble("amount");
-            if (!this.amount.equals(0) && json.getInt("payer") == 1)
-                this.amount = this.amount.floatValue() * -1.0;
+            if (json.has("state"))
+                this.status = transactionStatusParamToEnum(json.getString("state"));
+
+            if (json.has("amount")) {
+                this.amount = json.getDouble("amount");
+                if (!this.amount.equals(0) && json.getInt("payer") == 1)
+                    this.amount = this.amount.floatValue() * -1.0;
+            }
 
             this.amountText = json.optString("amountText");
 
@@ -112,10 +119,10 @@ public class FLTransaction {
             this.title = json.getString("text");
             this.content = json.getString("why");
 
-            this.attachmentURL = json.getString("pic");
-            this.attachmentThumbURL = json.getString("picMini");
+            this.attachmentURL = json.optString("pic");
+            this.attachmentThumbURL = json.optString("picMini");
 
-//    _social = [[FLSocial alloc] initWithJSON:json];
+            this.social = new FLSocial(json);
 
             this.isPrivate = false;
             if (json.getString("currentScope").equals("private"))
@@ -313,11 +320,11 @@ public class FLTransaction {
     {
         switch (scope) {
             case TransactionScopePublic:
-                return "0";
+                return "public";
             case TransactionScopeFriend:
-                return "1";
+                return "friend";
             case TransactionScopePrivate:
-                return "2";
+                return "private";
             default:
                 break;
         }

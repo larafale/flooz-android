@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.makeramen.RoundedImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/userTimelinePic"
+        android:scaleType="centerCrop"
+        android:layout_width="@dimen/timeline_cell_img"
+        android:layout_height="@dimen/timeline_cell_img"
+        android:layout_marginLeft="@dimen/timeline_cell_global_margin"
+        android:layout_marginRight="@dimen/timeline_cell_global_margin"
+        android:layout_marginTop="@dimen/timeline_cell_block_margin"
+        android:layout_gravity="center_horizontal|top"
+        android:src="@drawable/avatar_default"
+        app:corner_radius="30dip"
+        app:mutate_background="true"
+        app:oval="true"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="@dimen/timeline_cell_global_margin">
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/timeline_cell_inline_margin">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="koop"
+                android:textStyle="bold"
+                android:textSize="@dimen/timeline_cell_title"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="a floozé"
+                android:layout_marginLeft="@dimen/timeline_cell_inline_margin"
+                android:layout_marginRight="@dimen/timeline_cell_inline_margin"
+                android:textColor="@color/blue"
+                android:textStyle="bold"
+                android:textSize="@dimen/timeline_cell_title"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="zen"
+                android:textStyle="bold"
+                android:textSize="@dimen/timeline_cell_title"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/timeline_cell_block_margin"
+            android:textSize="@dimen/timeline_cell_title"
+            android:text="Test de super commentaire"/>
+
+        <com.makeramen.RoundedImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/timelinePic"
+            android:scaleType="centerInside"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/timeline_cell_block_margin"
+            android:src="@drawable/avatar_default"
+            app:corner_radius="10dp"
+            app:oval="false"/>
+
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/timeline_cell_block_margin">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/timeline_cell_social_label"
+                android:src="@drawable/social_like"
+                android:layout_marginRight="@dimen/timeline_cell_inline_margin"/>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:textSize="@dimen/timeline_cell_social_label"
+                android:text="larafale, bobby, kopp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/timeline_cell_block_margin">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="J'aime"
+                android:layout_marginRight="@dimen/timeline_cell_global_margin"
+                android:textSize="@dimen/timeline_cell_social_label"
+                android:textColor="@color/white"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Commenter"
+                android:layout_marginRight="@dimen/timeline_cell_global_margin"
+                android:textSize="@dimen/timeline_cell_social_label"
+                android:textColor="@color/white"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/timeline_cell_social_picto"
+                    android:src="@drawable/social_comment"
+                    android:layout_marginRight="@dimen/timeline_cell_inline_margin"/>
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/timeline_cell_social_label"
+                    android:text="2"/>
+
+            </LinearLayout>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="right"
+                android:textSize="@dimen/timeline_cell_social_label"
+                android:text="-7.50$"/>
+
+        </LinearLayout>
+
+
+    </LinearLayout>
+
+</LinearLayout>

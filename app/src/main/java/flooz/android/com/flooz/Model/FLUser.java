@@ -4,13 +4,10 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import flooz.android.com.flooz.Utils.JSONHelper;
 
@@ -188,5 +185,13 @@ public class FLUser
 //        _creditCard = [[FLCreditCard alloc] initWithJSON:[[json objectForKey:@"cards"] objectAtIndex:0]];
 //    }
 //
+    }
+
+    public void updateStatsPending(JSONObject jsonObject){
+        if (jsonObject.has("stats") && jsonObject.optJSONObject("stats").optJSONObject("flooz").has("pending")) {
+            Number statsPending = jsonObject.optJSONObject("stats").optJSONObject("flooz").optInt("pending");
+            if (statsPending.intValue() > 0)
+                this.haveStatsPending = true;
+        }
     }
 }

@@ -18,7 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.makeramen.RoundedImageView;
-import com.squareup.picasso.Picasso;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import flooz.android.com.flooz.App.FloozApplication;
 import flooz.android.com.flooz.Model.FLUser;
@@ -143,7 +143,7 @@ public class ProfileFragment extends Fragment
         this.username.setText("@" + user.username);
 
         if (user.avatarURL != null)
-            Picasso.with(getActivity()).load(user.avatarURL).into(this.userView);
+            ImageLoader.getInstance().displayImage(user.avatarURL, this.userView);
         else
             this.userView.setImageDrawable(getResources().getDrawable(R.drawable.avatar_default));
     }

@@ -36,30 +36,32 @@ public class FloozFilterTabItem extends LinearLayout
         super(context, attrs);
 
         TypedArray a = context.getTheme().obtainStyledAttributes(attrs, R.styleable.FloozFilterTabItem, 0, 0);
-        int tabType;
+        int tabType = -1;
 
-        try
-        {
-            tabType = a.getInteger(R.styleable.FloozFilterTabItem_tab_type, 0);
+        if (this.isInEditMode()) {
+            this.tabType = TabType.PUBLIC;
         }
-        finally
-        {
-            a.recycle();
-        }
+        else {
+            try {
+                tabType = a.getInteger(R.styleable.FloozFilterTabItem_tab_type, 0);
+            } finally {
+                a.recycle();
+            }
 
-        switch (tabType)
-        {
-            case 0:
-                this.tabType = TabType.PUBLIC;
-                break;
-            case 1:
-                this.tabType = TabType.PRIVATE;
-                break;
-            case 2:
-                this.tabType = TabType.FRIENDS;
-                break;
+            if (tabType != -1) {
+                switch (tabType) {
+                    case 0:
+                        this.tabType = TabType.PUBLIC;
+                        break;
+                    case 1:
+                        this.tabType = TabType.PRIVATE;
+                        break;
+                    case 2:
+                        this.tabType = TabType.FRIENDS;
+                        break;
+                }
+            }
         }
-
         init(context);
     }
 

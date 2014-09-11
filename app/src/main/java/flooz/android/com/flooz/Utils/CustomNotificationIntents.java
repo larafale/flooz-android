@@ -11,4 +11,8 @@ public class CustomNotificationIntents
     public static Intent reloadCurrentUser() {return new Intent("NotificationReloadCurrentUser");}
 
     public static IntentFilter filterReloadCurrentUser() {return new IntentFilter("NotificationReloadCurrentUser");}
+
+    public static Intent reloadTimeline() {return new Intent("NotificationReloadTimeline");}
+
+    public static IntentFilter filterReloadTimeline() {return new IntentFilter("NotificationReloadTimeline");}
 }
