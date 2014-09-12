@@ -32,7 +32,7 @@ public class FloozRestClient
     public String PREFS_NAME = "FloozPrefs";
 
     private String accessToken = null;
-    private String BASE_URL = "http://dev.flooz.me";
+    private String BASE_URL = "https://api.flooz.me";
 
     private RequestQueue requestQueue = Volley.newRequestQueue(FloozApplication.getAppContext());
     private static FloozRestClient instance = new FloozRestClient();
@@ -67,7 +67,7 @@ public class FloozRestClient
     {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("login", "+33607751208");
-        params.put("password", "0414");
+        params.put("password", "1234");
 
         this.request("/login/basic", Request.Method.POST, params, new FloozHttpResponseHandler() {
             @Override

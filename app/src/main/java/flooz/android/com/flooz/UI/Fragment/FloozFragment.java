@@ -22,6 +22,7 @@ import com.handmark.pulltorefresh.library.PullToRefreshListView;
 import java.util.List;
 import java.util.Map;
 
+import flooz.android.com.flooz.Adapter.TimelineListAdapter;
 import flooz.android.com.flooz.App.FloozApplication;
 import flooz.android.com.flooz.Model.FLError;
 import flooz.android.com.flooz.Model.FLTransaction;
@@ -36,6 +37,8 @@ public class FloozFragment extends Fragment implements FloozFilterTabItem.Delega
     private FloozFilterTabItem publicTabElementView;
     private FloozFilterTabItem privateTabElementView;
     private FloozFilterTabItem friendsTabElementView;
+
+    private PullToRefreshListView timelineListView;
 
     private List<FLTransaction> transactions;
     private Map<FLTransaction.TransactionScope, List<FLTransaction>> transactionsCache;
@@ -72,16 +75,16 @@ public class FloozFragment extends Fragment implements FloozFilterTabItem.Delega
         this.privateTabElementView.setDelegate(this);
         this.friendsTabElementView.setDelegate(this);
 
-        final PullToRefreshListView pullToRefreshView = (PullToRefreshListView) view.findViewById(R.id.timeline_list);
-        pullToRefreshView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>() {
+        this.timelineListView = (PullToRefreshListView) view.findViewById(R.id.timeline_list);
+        this.timelineListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>() {
             @Override
             public void onRefresh(PullToRefreshBase<ListView> refreshView) {
                 new Handler().postAtTime(new Runnable() {
                     @Override
                     public void run() {
-                        pullToRefreshView.onRefreshComplete();
+                        timelineListView.onRefreshComplete();
                     }
-                }, 5000);
+                }, 10000);
             }
         });
 
@@ -99,6 +102,8 @@ public class FloozFragment extends Fragment implements FloozFilterTabItem.Delega
 
                 transactions = (List)responseMap.get("transactions");
                 nextPageUrl = (String)responseMap.get("nextUrl");
+
+                timelineListView.setAdapter(new TimelineListAdapter(FloozApplication.getAppContext(), transactions));
             }
 
             @Override

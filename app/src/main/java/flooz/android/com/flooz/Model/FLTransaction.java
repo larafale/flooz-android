@@ -108,7 +108,7 @@ public class FLTransaction {
 
             if (json.has("amount")) {
                 this.amount = json.getDouble("amount");
-                if (!this.amount.equals(0) && json.getInt("payer") == 1)
+                if (!this.amount.equals(0) && json.getBoolean("payer") == true)
                     this.amount = this.amount.floatValue() * -1.0;
             }
 
