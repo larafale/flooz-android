@@ -5,8 +5,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.v4.content.LocalBroadcastManager;
 
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
 import flooz.android.com.flooz.Network.FloozRestClient;
 
@@ -21,12 +25,23 @@ public class FloozApplication extends Application
         super.onCreate();
         FloozApplication.context = getApplicationContext();
 
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .considerExifParams(true)
+                .build();
 
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context).build();
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
+                .denyCacheImageMultipleSizesInMemory()
+                .diskCacheFileNameGenerator(new Md5FileNameGenerator())
+                .diskCacheSize(150 * 1024 * 1024)
+                .defaultDisplayImageOptions(options)
+                .build();
+
         ImageLoader.getInstance().init(config);
 
         FloozRestClient client = FloozRestClient.getInstance();
-        client.loginQuick();
+        //client.loginQuick();
     }
 
     public static Context getAppContext() {

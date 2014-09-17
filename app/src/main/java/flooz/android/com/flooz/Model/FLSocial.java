@@ -42,20 +42,23 @@ public class FLSocial {
             this.isCommented = false;
             this.isLiked = false;
 
-            for (int i = 0; i < comments.length(); i++) {
-                String userId = FloozRestClient.getInstance().currentUser.userId;
-                if (comments.getJSONObject(i).getString("userId").equals(userId)) {
-                    this.isCommented = true;
-                    break;
+            if (FloozRestClient.getInstance().currentUser != null) {
+                for (int i = 0; i < comments.length(); i++) {
+                    String userId = FloozRestClient.getInstance().currentUser.userId;
+                    if (comments.getJSONObject(i).getString("userId").equals(userId)) {
+                        this.isCommented = true;
+                        break;
+                    }
+                }
+
+                for (int i = 0; i < likes.length(); i++) {
+                    if (likes.getJSONObject(i).getString("userId").equals(FloozRestClient.getInstance().currentUser.userId)) {
+                        this.isLiked = true;
+                        break;
+                    }
                 }
             }
 
-            for (int i = 0; i < likes.length(); i++) {
-                if (likes.getJSONObject(i).getString("userId").equals(FloozRestClient.getInstance().currentUser.userId)) {
-                    this.isLiked = true;
-                    break;
-                }
-            }
 
             this.scope = socialScopeParamToEnum(json.getString("scope"));
 

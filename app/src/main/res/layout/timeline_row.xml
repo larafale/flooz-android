@@ -160,9 +160,4 @@
 
     </LinearLayout>
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/timeline_cell_separator"
-        android:background="@color/placeholder"></View>
-
 </LinearLayout>

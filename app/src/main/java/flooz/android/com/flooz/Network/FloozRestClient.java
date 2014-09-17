@@ -44,6 +44,8 @@ public class FloozRestClient
 
         SharedPreferences settings = FloozApplication.getAppContext().getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE);
         this.accessToken = settings.getString("access_token", "");
+
+        this.accessToken = "";
     }
 
     public static FloozRestClient getInstance()
@@ -67,7 +69,7 @@ public class FloozRestClient
     {
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("login", "+33607751208");
-        params.put("password", "1234");
+        params.put("password", "0414");
 
         this.request("/login/basic", Request.Method.POST, params, new FloozHttpResponseHandler() {
             @Override
@@ -104,7 +106,8 @@ public class FloozRestClient
 
                 List<FLTransaction> transactions = createTransactionArrayFromResult(jsonResponse);
 
-                currentUser.updateStatsPending(jsonResponse);
+                if (currentUser != null)
+                    currentUser.updateStatsPending(jsonResponse);
 
                 if (responseHandler != null) {
                     Map<String, Object> ret = new HashMap<String, Object>();
@@ -120,7 +123,31 @@ public class FloozRestClient
                     responseHandler.failure(statusCode, error);
             }
         });
+    }
 
+    public void timelineNextPage(String nextPageUrl, final FloozHttpResponseHandler responseHandler) {
+
+        this.request(nextPageUrl, Request.Method.GET, null, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                JSONObject jsonResponse = (JSONObject)response;
+
+                List<FLTransaction> transactions = createTransactionArrayFromResult(jsonResponse);
+
+                if (responseHandler != null) {
+                    Map<String, Object> ret = new HashMap<String, Object>();
+                    ret.put("transactions", transactions);
+                    ret.put("nextUrl", jsonResponse.optString("next"));
+                    responseHandler.success(ret);
+                }
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+                if (responseHandler != null)
+                    responseHandler.failure(statusCode, error);
+            }
+        });
     }
 
     private List<FLTransaction> createTransactionArrayFromResult(JSONObject jsonObject) {
@@ -158,7 +185,6 @@ public class FloozRestClient
 
             @Override
             public void onResponse(Object response) {
-
                 if (responseHandler != null)
                     responseHandler.success(response);
             }
@@ -179,13 +205,13 @@ public class FloozRestClient
             }
         };
 
-        if (method == Request.Method.GET && !params.isEmpty()) {
+        if (method == Request.Method.GET && params != null && !params.isEmpty()) {
             for (Map.Entry<String, Object> entry : params.entrySet()) {
                 path += "&" + entry.getKey() + "=" + entry.getValue().toString();
             }
         }
 
-        JsonObjectRequest requestJson = new JsonObjectRequest(method, getAbsoluteUrl(path), params.isEmpty() ? null : new JSONObject(params), respondListener, responseErrorListener);
+        JsonObjectRequest requestJson = new JsonObjectRequest(method, getAbsoluteUrl(path), (params == null || params.isEmpty()) ? null : new JSONObject(params), respondListener, responseErrorListener);
 
         this.requestQueue.add(requestJson);
     }

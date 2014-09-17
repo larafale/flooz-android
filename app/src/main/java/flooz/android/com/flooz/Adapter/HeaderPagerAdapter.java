@@ -6,19 +6,17 @@ package flooz.android.com.flooz.Adapter;
 
 import android.app.Fragment;
 import android.app.FragmentManager;
-import android.support.v13.app.FragmentStatePagerAdapter;
 
 import flooz.android.com.flooz.UI.Fragment.FloozFragment;
 import flooz.android.com.flooz.UI.Fragment.FriendsFragment;
 import flooz.android.com.flooz.UI.Fragment.ProfileFragment;
 
-public class HeaderPagerAdapter extends FragmentStatePagerAdapter
+public class HeaderPagerAdapter
 {
     public HeaderPagerAdapter(FragmentManager fm) {
-        super(fm);
+
     }
 
-    @Override
     public Fragment getItem(int position)
     {
         Fragment ret = null;
@@ -38,7 +36,6 @@ public class HeaderPagerAdapter extends FragmentStatePagerAdapter
         return ret;
     }
 
-    @Override
     public int getCount() {
         return 3;
     }

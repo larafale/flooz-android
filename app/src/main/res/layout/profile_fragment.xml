@@ -3,41 +3,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="1"
-    android:background="@color/separator">
+    android:background="@color/background_header">
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_weight="0.25"
-        android:background="@color/background_account_user_view">
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="40dp">
+
+        <com.makeramen.RoundedImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/userView"
+            android:scaleType="centerCrop"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            app:corner_radius="30dip"
+            app:mutate_background="true"
+            android:src="@drawable/avatar_default"
+            app:oval="true"/>
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:gravity="center"
+            android:gravity="left|center_vertical"
+            android:layout_marginLeft="10dp"
             android:id="@+id/accountUserView">
-
-            <com.makeramen.RoundedImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:id="@+id/userView"
-                android:scaleType="centerCrop"
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                app:corner_radius="30dip"
-                app:mutate_background="true"
-                app:oval="true"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginBottom="3dp"
+                android:textColor="@android:color/white"
                 android:id="@+id/fullname" />
 
             <TextView
@@ -45,62 +45,15 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/blue"
                 android:textSize="15sp"
+                android:layout_marginBottom="3dp"
                 android:id="@+id/username" />
 
-        </LinearLayout>
-
-        <ImageView
-            android:layout_width="4dp"
-            android:layout_height="match_parent"
-            android:layout_marginRight="2dp"
-            android:src="@drawable/account_right_arrow"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="0.10"
-        android:background="@color/background"
-        android:gravity="center_vertical"
-        android:layout_marginBottom="1dp">
-
-        <ImageView
-            android:layout_width="30dp"
-            android:layout_height="match_parent"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:maxWidth="10dp"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/account_balance"/>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:background="@color/background"
-            android:layout_gravity=""
-            android:layout_margin="1dp">
-
             <TextView
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:gravity="bottom|left"
-                android:text="@string/ACCOUNT_BALANCE"
-                android:textSize="10sp"
-                android:textColor="@color/blue_light"
-                android:id="@+id/accountWalletLabel"/>
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:gravity="top|left"
-                android:paddingTop="1dp"
-                android:textSize="24sp"
-                android:textColor="@color/blue"
+                android:gravity="left"
+                android:textSize="20sp"
+                android:textColor="@android:color/white"
                 android:id="@+id/balanceValue" />
 
         </LinearLayout>
@@ -108,136 +61,140 @@
     </LinearLayout>
 
     <LinearLayout
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="0.65"
-        android:baselineAligned="false">
+        android:layout_marginTop="70dp"
+        android:layout_marginLeft="25dp">
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="0.5"
-            android:layout_marginRight="1dp">
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:id="@+id/accountShareButton">
 
-            <LinearLayout
-                android:orientation="vertical"
+            <com.makeramen.RoundedImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:scaleType="center"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/account_share_button"
+                app:corner_radius="30dip"
+                app:mutate_background="true"
+                app:border_color="@android:color/white"
+                app:border_width="1dp"
+                app:oval="true"/>
+
+            <TextView
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:background="@color/background"
-                android:gravity="center"
-                android:layout_marginBottom="1dp"
-                android:id="@+id/accountShareButton">
+                android:layout_height="match_parent"
+                android:text="@string/ACCOUNT_BUTTON_SHARE"
+                android:gravity="left|center_vertical"
+                android:textSize="15sp"
+                android:textColor="@android:color/white"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/accountShareLabel"/>
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/account_share_button"
-                    android:layout_marginBottom="3dp"/>
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/ACCOUNT_BUTTON_SHARE"
-                    android:gravity="center"
-                    android:textSize="14sp"
-                    android:layout_marginTop="3dp"
-                    android:id="@+id/accountShareLabel"/>
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:gravity="center"
-                android:background="@color/background"
-                android:id="@+id/accountSettingsButton">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/account_settings_button"
-                    android:layout_marginBottom="3dp"/>
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/ACCOUNT_BUTTON_SETTINGS"
-                    android:textSize="14sp"
-                    android:gravity="center"
-                    android:layout_marginTop="3dp"
-                    android:id="@+id/accountSettingsLabel"/>
-
-
-            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="wrap_content"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
             android:layout_height="match_parent"
-            android:layout_weight="0.5">
+            android:gravity="center"
+            android:layout_marginTop="15dp"
+            android:id="@+id/accountBankButton">
 
-            <LinearLayout
-                android:orientation="vertical"
+            <com.makeramen.RoundedImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:scaleType="center"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/account_bank_button"
+                app:corner_radius="30dip"
+                app:mutate_background="true"
+                app:border_color="@android:color/white"
+                app:border_width="1dp"
+                app:oval="true"/>
+
+            <TextView
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:background="@color/background"
-                android:gravity="center"
-                android:layout_marginBottom="1dp"
-                android:id="@+id/accountBankButton">
+                android:layout_height="match_parent"
+                android:text="@string/ACCOUNT_BUTTON_CASH_OUT"
+                android:gravity="left|center_vertical"
+                android:textSize="15sp"
+                android:textColor="@android:color/white"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/accountBankLabel"/>
 
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/account_bank_button"
-                    android:layout_marginBottom="3dp"/>
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/ACCOUNT_BUTTON_CASH_OUT"
-                    android:gravity="center"
-                    android:textSize="14sp"
-                    android:layout_marginTop="3dp"
-                    android:id="@+id/accountBankLabel"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.5"
-                android:gravity="center"
-                android:background="@color/background"
-                android:id="@+id/accountIdeasButton">
-
-                <ImageView
-                    android:layout_width="20dp"
-                    android:layout_height="20dp"
-                    android:src="@drawable/account_informations"
-                    android:layout_marginBottom="3dp"/>
-
-                <TextView
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/ACCOUNT_BUTTON_IDEAS"
-                    android:gravity="center"
-                    android:textSize="14sp"
-                    android:layout_marginTop="3dp"
-                    android:id="@+id/accountIdeasLabel"/>
-
-            </LinearLayout>
         </LinearLayout>
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="15dp"
+            android:id="@+id/accountSettingsButton">
+
+            <com.makeramen.RoundedImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:scaleType="center"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/account_settings_button"
+                app:corner_radius="30dip"
+                app:mutate_background="true"
+                app:border_color="@android:color/white"
+                app:border_width="1dp"
+                app:oval="true"/>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:text="@string/ACCOUNT_BUTTON_SETTINGS"
+                android:gravity="left|center_vertical"
+                android:textSize="15sp"
+                android:textColor="@android:color/white"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/accountSettingsLabel"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="15dp"
+            android:id="@+id/accountIdeasButton">
+
+            <com.makeramen.RoundedImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:scaleType="center"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:src="@drawable/account_informations"
+                app:corner_radius="30dip"
+                app:mutate_background="true"
+                app:border_color="@android:color/white"
+                app:border_width="1dp"
+                app:oval="true"/>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:text="@string/ACCOUNT_BUTTON_IDEAS"
+                android:gravity="left|center_vertical"
+                android:textSize="15sp"
+                android:textColor="@android:color/white"
+                android:layout_marginLeft="10dp"
+                android:id="@+id/accountIdeasLabel"/>
+
+        </LinearLayout>
 
     </LinearLayout>
+
 
 </LinearLayout>

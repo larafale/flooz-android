@@ -116,6 +116,9 @@ public class FLTransaction {
 
             this.avatarURL = json.optString("avatar");
 
+            if (this.avatarURL.equals("/img/nopic.png"))
+                this.avatarURL = null;
+
             this.title = json.getString("text");
             this.content = json.getString("why");
 

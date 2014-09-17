@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:custom="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_header">
+
+    <ImageView android:id="@+id/start_flooz_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="@dimen/header_logo_margin"
+        android:layout_marginBottom="@dimen/header_logo_margin"
+        android:gravity="center"
+        android:src="@drawable/flooz_full"/>
+
+    <ListView
+        android:id="@+id/start_timeline_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:divider="@drawable/timeline_dividers"
+        android:layout_weight="0.3"
+        android:dividerHeight="1px"
+        android:listSelector="@android:color/transparent"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_weight="0.0001"
+        android:background="@color/blue"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/start_login_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4"
+            android:text="Se connecter"
+            android:textColor="@android:color/white"
+            android:gravity="center"/>
+
+        <View
+            android:layout_width="1dp"
+            android:layout_height="30dp"
+            android:background="@android:color/white"></View>
+
+        <TextView
+            android:id="@+id/start_signup_button"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_weight="0.4"
+            android:text="S'inscrire"
+            android:textColor="@android:color/white"
+            android:gravity="center"/>
+
+    </LinearLayout>
+
+</LinearLayout>

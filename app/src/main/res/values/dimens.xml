@@ -4,6 +4,7 @@
     <dimen name="tab_separator_height">15dp</dimen>
     <dimen name="header_pager_view_height">40dp</dimen>
     <dimen name="header_pager_view_fontsize">25dp</dimen>
+    <dimen name="header_logo_margin">5dp</dimen>
 
     <dimen name="timeline_cell_img">42dp</dimen>
     <dimen name="timeline_cell_global_margin">10dp</dimen>
@@ -14,5 +15,7 @@
     <dimen name="timeline_cell_social_picto">11dp</dimen>
     <dimen name="timeline_cell_separator">0.3dp</dimen>
 
+    <dimen name="slidingmenu_offset">60dp</dimen>
+    <dimen name="slidingmenu_shadow_width">10dp</dimen>
 
 </resources>

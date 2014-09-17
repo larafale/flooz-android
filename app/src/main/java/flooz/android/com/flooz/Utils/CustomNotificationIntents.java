@@ -9,10 +9,20 @@ import android.content.IntentFilter;
 public class CustomNotificationIntents
 {
     public static Intent reloadCurrentUser() {return new Intent("NotificationReloadCurrentUser");}
-
     public static IntentFilter filterReloadCurrentUser() {return new IntentFilter("NotificationReloadCurrentUser");}
 
     public static Intent reloadTimeline() {return new Intent("NotificationReloadTimeline");}
-
     public static IntentFilter filterReloadTimeline() {return new IntentFilter("NotificationReloadTimeline");}
+
+    public static Intent showSlidingLeftMenu() {return new Intent("NotificationShowLeftMenu");}
+    public static IntentFilter filterShowSlidingLeftMenu() {return new IntentFilter("NotificationShowLeftMenu");}
+
+    public static Intent showSlidingRightMenu() {return new Intent("NotificationShowRightMenu");}
+    public static IntentFilter filterShowSlidingRightMenu() {return new IntentFilter("NotificationShowRightMenu");}
+
+    public static Intent disableSlidingMenu() {return new Intent("NotificationDisableMenu");}
+    public static IntentFilter filterDisableSlidingMenu() {return new IntentFilter("NotificationDisableMenu");}
+
+    public static Intent enableSlidingMenu() {return new Intent("NotificationEnableMenu");}
+    public static IntentFilter filterEnableSlidingMenu() {return new IntentFilter("NotificationEnableMenu");}
 }

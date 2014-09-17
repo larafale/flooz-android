@@ -34,7 +34,6 @@ public class ProfileFragment extends Fragment
     private TextView fullname;
     private TextView username;
     private TextView balanceValue;
-    private TextView accountWalletLabel;
     private LinearLayout accountShareButton;
     private LinearLayout accountSettingsButton;
     private LinearLayout accountBankButton;
@@ -48,7 +47,6 @@ public class ProfileFragment extends Fragment
     private BroadcastReceiver reloadCurrentUserDataReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Log.d(this.getClass().getSimpleName() ,"Receive Reload User Data Notification");
             reloadUserData();
         }
     };
@@ -72,7 +70,6 @@ public class ProfileFragment extends Fragment
         this.fullname = (TextView) view.findViewById(R.id.fullname);
         this.username = (TextView) view.findViewById(R.id.username);
         this.balanceValue = (TextView) view.findViewById(R.id.balanceValue);
-        this.accountWalletLabel = (TextView) view.findViewById(R.id.accountWalletLabel);
         this.accountShareButton = (LinearLayout) view.findViewById(R.id.accountShareButton);
         this.accountSettingsButton = (LinearLayout) view.findViewById(R.id.accountSettingsButton);
         this.accountBankButton = (LinearLayout) view.findViewById(R.id.accountBankButton);
@@ -85,7 +82,6 @@ public class ProfileFragment extends Fragment
         this.fullname.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
         this.username.setTypeface(CustomFonts.customContentBold(inflater.getContext()));
         this.balanceValue.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
-        this.accountWalletLabel.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
         this.accountShareLabel.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
         this.accountSettingsLabel.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
         this.accountBankLabel.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
@@ -134,18 +130,27 @@ public class ProfileFragment extends Fragment
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (FloozRestClient.getInstance() != null)
+            this.reloadUserData();
+    }
+
     private void reloadUserData()
     {
         FLUser user = FloozRestClient.getInstance().currentUser;
 
-        this.fullname.setText(user.fullname);
-        this.balanceValue.setText("+ " + user.amount + " €");
-        this.username.setText("@" + user.username);
+        if (user != null) {
+            this.fullname.setText(user.fullname);
+            this.balanceValue.setText("+ " + user.amount + " €");
+            this.username.setText("@" + user.username);
 
-        if (user.avatarURL != null)
-            ImageLoader.getInstance().displayImage(user.avatarURL, this.userView);
-        else
-            this.userView.setImageDrawable(getResources().getDrawable(R.drawable.avatar_default));
+            if (user.avatarURL != null)
+                ImageLoader.getInstance().displayImage(user.avatarURL, this.userView);
+            else
+                this.userView.setImageDrawable(getResources().getDrawable(R.drawable.avatar_default));
+        }
     }
 
     @Override
