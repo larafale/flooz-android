@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_header"
+    android:gravity="center_horizontal">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.1"
+        android:gravity="center_vertical"
+        android:layout_marginTop="@dimen/header_footer_top_bottom_padding">
+
+        <TextView
+            android:id="@+id/signIn_phone_header_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/NumMobile"
+            android:textColor="@color/blue"
+            android:textSize="20sp"/>
+
+        <ImageView
+            android:padding="5dp"
+            android:id="@+id/signIn_phone_header_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/nav_back"
+            android:layout_alignLeft="@+id/signIn_phone_header_title"/>
+
+    </RelativeLayout>
+
+    <EditText
+        android:paddingTop="50dp"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.01"
+        android:gravity="bottom"
+        android:text="+33"
+        android:editable="false"
+        android:maxLines="1"/>
+
+    <Button
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.001"
+        android:text="Suivant"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:text="un code sera\nenvoyé par SMS"
+        android:gravity="center"
+        android:textSize="15dp"/>
+
+    <flooz.android.com.flooz.UI.View.NumericKeyboard
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.5"
+        android:gravity="bottom"/>
+
+
+</LinearLayout>
