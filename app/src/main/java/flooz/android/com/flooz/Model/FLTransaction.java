@@ -60,6 +60,7 @@ public class FLTransaction {
 
     public String avatarURL;
 
+    public TransactionScope scope;
     public String title;
     public String content;
     public String attachmentURL;
@@ -68,8 +69,8 @@ public class FLTransaction {
     public List text3d;
 
     public Boolean isPrivate;
-    public Boolean isCancelable; // Si peut annuler la demande
-    public Boolean isAcceptable; // Si peut accepter ou refuser de payer
+    public Boolean isCancelable;
+    public Boolean isAcceptable;
 
     public Date date;
 
@@ -93,6 +94,12 @@ public class FLTransaction {
         this.status = TransactionStatus.TransactionStatusNone;
 
         this.setJson(json);
+    }
+
+    public FLTransaction() {
+        super();
+
+        this.status = TransactionStatus.TransactionStatusNone;
     }
 
     private void setJson(JSONObject json) {
@@ -131,15 +138,23 @@ public class FLTransaction {
             if (json.getString("currentScope").equals("private"))
                 this.isPrivate = true;
 
+            this.scope = this.transactionScopeParamToEnum(json.getString("currentScope"));
+
             this.isCancelable = false;
             this.isAcceptable = false;
 
+            this.haveAction = false;
+            if (this.isPrivate && this.status == TransactionStatus.TransactionStatusPending)
+                this.haveAction = true;
+
             if (this.status == TransactionStatus.TransactionStatusPending)
             {
-                if (json.getJSONArray("actions").length() == 1)
-                    this.isCancelable = true;
-                else if (json.getJSONArray("actions").length() == 2)
-                    this.isAcceptable = true;
+                if (json.has("actions")) {
+                    if (json.getJSONObject("actions").length() == 1)
+                        this.isCancelable = true;
+                    else if (json.getJSONObject("actions").length() == 2)
+                        this.isAcceptable = true;
+                }
             }
 
             this.from = new FLUser(json.getJSONObject("from"));
@@ -167,10 +182,6 @@ public class FLTransaction {
                 for (int i = 0; i < array.length(); i++)
                     this.text3d.add(array.get(i));
             }
-
-            this.haveAction = false;
-            if (this.isPrivate && this.status == TransactionStatus.TransactionStatusPending)
-                this.haveAction = true;
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -256,6 +267,17 @@ public class FLTransaction {
         return TransactionStatus.TransactionStatusNone;
     }
 
+    public static TransactionScope transactionScopeParamToEnum(String param)
+    {
+        if (param.equals("private"))
+            return TransactionScope.TransactionScopePrivate;
+        else if (param.equals("friend"))
+            return TransactionScope.TransactionScopeFriend;
+
+        return TransactionScope.TransactionScopePublic;
+    }
+
+
     public static String transactionScopeToText(TransactionScope scope)
     {
         int stringId = 0;
@@ -333,6 +355,23 @@ public class FLTransaction {
         }
 
         return "";
+    }
+
+
+    public static int transactionScopeToFloozParams(TransactionScope scope)
+    {
+        switch (scope) {
+            case TransactionScopePublic:
+                return 0;
+            case TransactionScopeFriend:
+                return 1;
+            case TransactionScopePrivate:
+                return 2;
+            default:
+                break;
+        }
+
+        return 0;
     }
 
     public static String transactionTypeToParams(TransactionType type)

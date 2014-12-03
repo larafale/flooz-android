@@ -1,4 +1,4 @@
-package com.mani.volleydemo.ssl;
+package flooz.android.com.flooz.Network;
 
 /*
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -38,8 +38,7 @@ import org.apache.http.conn.scheme.LayeredSocketFactory;
 import org.apache.http.params.HttpConnectionParams;
 import org.apache.http.params.HttpParams;
 
-import com.mani.volleydemo.R;
-import com.mani.volleydemo.app.VolleySampleApplication;
+import flooz.android.com.flooz.App.FloozApplication;
 
 /**
  *
@@ -54,12 +53,12 @@ public class EasySSLSocketFactory implements LayeredSocketFactory {
 
     private SSLContext sslcontext = null;
     private boolean isConnectingYourServer = true;
-    
+
     public EasySSLSocketFactory(boolean isConnectingToGoinoutServer) {
-    	this.isConnectingYourServer = isConnectingToGoinoutServer;
+        this.isConnectingYourServer = isConnectingToGoinoutServer;
     }
-    
-    
+
+
     /*
      * In case of self signed certificates on Server. Two things needs to be taken care
      *  1)Authenticate to the HTTPS server using a private key. 
@@ -68,46 +67,47 @@ public class EasySSLSocketFactory implements LayeredSocketFactory {
      * Ref - http://developer.android.com/reference/org/apache/http/conn/ssl/SSLSocketFactory.html
      */
     private static SSLContext createEasySSLContext() throws IOException {
-        try {
-        	
-            // Client should authenticate itself with the valid certificate to Server.
-        	InputStream clientStream = VolleySampleApplication.getContext().getResources().openRawResource(R.raw.production_test_client);
-        	char[] password = "XXXXXXXXXXXXX".toCharArray();
-	        
-	        KeyStore keyStore = KeyStore.getInstance("PKCS12");
-	        keyStore.load(clientStream, password);
-
-            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
-            keyManagerFactory.init(keyStore, password);
-            
-            
-	        // Client should also add the CA certificate obtained from server and create TrustManager from it for the client to validate the 
-            // identity of the server.
-	        KeyStore trustStore  = KeyStore.getInstance( "BKS");
-	        InputStream instream = null;
-	        instream = VolleySampleApplication.getContext().getResources().openRawResource(R.raw.production_test_ca);
-
-	        try {
-	            trustStore.load(instream, "XXXXXXXX".toCharArray());
-	        } catch (Exception e) {
-	            e.printStackTrace();
-	        } finally {
-	            try { instream.close(); } catch (Exception ignore) {}
-	        }            
-
-            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
-            tmf.init(trustStore);
-            
-            // Create an SSLContext that uses our TrustManager & Keystore
-            SSLContext context = SSLContext.getInstance("TLS");
-            context.init(keyManagerFactory.getKeyManagers(), tmf.getTrustManagers(), null);
-
-            return context;
-        } catch (Exception e) {
-        	e.printStackTrace();
-            throw new IOException(e.getMessage());
-        }
+//        try {
+//
+//            // Client should authenticate itself with the valid certificate to Server.
+//        	InputStream clientStream = FloozApplication.getAppContext().getResources().openRawResource(R.raw.production_test_client);
+//        	char[] password = "XXXXXXXXXXXXX".toCharArray();
+//
+//	        KeyStore keyStore = KeyStore.getInstance("PKCS12");
+//	        keyStore.load(clientStream, password);
+//
+//            KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());
+//            keyManagerFactory.init(keyStore, password);
+//
+//
+//	        // Client should also add the CA certificate obtained from server and create TrustManager from it for the client to validate the
+//            // identity of the server.
+//	        KeyStore trustStore  = KeyStore.getInstance( "BKS");
+//	        InputStream instream = null;
+//	        instream = FloozApplication.getAppContext().getResources().openRawResource(R.raw.production_test_ca);
+//
+//	        try {
+//	            trustStore.load(instream, "XXXXXXXX".toCharArray());
+//	        } catch (Exception e) {
+//	            e.printStackTrace();
+//	        } finally {
+//	            try { instream.close(); } catch (Exception ignore) {}
+//	        }
+//
+//            String tmfAlgorithm = TrustManagerFactory.getDefaultAlgorithm();
+//            TrustManagerFactory tmf = TrustManagerFactory.getInstance(tmfAlgorithm);
+//            tmf.init(trustStore);
+//
+//            // Create an SSLContext that uses our TrustManager & Keystore
+//            SSLContext context = SSLContext.getInstance("TLS");
+//            context.init(keyManagerFactory.getKeyManagers(), tmf.getTrustManagers(), null);
+//
+//            return context;
+//        } catch (Exception e) {
+//        	e.printStackTrace();
+//            throw new IOException(e.getMessage());
+//        }
+        return null;
     }
 
     /*
@@ -115,15 +115,15 @@ public class EasySSLSocketFactory implements LayeredSocketFactory {
      */
     private static SSLContext createIgnoreSSLContext() throws IOException {
         try {
-        	SSLContext context = SSLContext.getInstance("TLS");
-        	context.init(null, new TrustManager[]{new IgnoreCertTrustManager()}, null);
-        	return context;
+            SSLContext context = SSLContext.getInstance("TLS");
+            context.init(null, new TrustManager[]{new IgnoreCertTrustManager()}, null);
+            return context;
         } catch (Exception e) {
-        	e.printStackTrace();
-        	throw new IOException(e.getMessage());
+            e.printStackTrace();
+            throw new IOException(e.getMessage());
         }
     }
-    
+
     /**
      * If you want to add more trusted certificates ( if self signed) for different sites, you should use
      * EasyX509TrustManager and create a instance with corresponding KeyStore and then add to the SSLContext.
@@ -132,14 +132,14 @@ public class EasySSLSocketFactory implements LayeredSocketFactory {
      */
     private SSLContext getSSLContext() throws IOException {
         if (this.sslcontext == null) {
-        	if(isConnectingYourServer) {
-        		this.sslcontext = createEasySSLContext();
-        	} else {
-        		//Ignore the Certificate Authority check if not connecting to your server.
-        		this.sslcontext = createIgnoreSSLContext();
-        	}
+            if(isConnectingYourServer) {
+                this.sslcontext = createEasySSLContext();
+            } else {
+                //Ignore the Certificate Authority check if not connecting to your server.
+                this.sslcontext = createIgnoreSSLContext();
+            }
         }
-        
+
         return this.sslcontext;
     }
 

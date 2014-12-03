@@ -4,13 +4,18 @@
     <color name="background_status">#2D3A46</color>
     <color name="background_header">#18212B</color>
     <color name="background_account_user_view">#1E2934</color>
+    <color name="background_social_button">#2D3640</color>
     <color name="green">#7AC283</color>
     <color name="red">#E17272</color>
+    <color name="red_notifications">#D42E2E</color>
     <color name="yellow">#D5D17A</color>
     <color name="white">#54636D</color>
     <color name="separator">#333E4A</color>
     <color name="blue">#3AA9E3</color>
+    <color name="blue_fb">#3B579D</color>
     <color name="blue_light">#6092AC</color>
     <color name="blue_hover">#263B4B</color>
     <color name="placeholder">#87939D</color>
+    <color name="blue_social">#414F61</color>
+    <color name="pink_action">#EE234E</color>
 </resources>

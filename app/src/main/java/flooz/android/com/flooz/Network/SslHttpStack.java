@@ -15,8 +15,7 @@
  * limitations under the License.
  */
 
-
-package com.mani.volleydemo.ssl;
+package flooz.android.com.flooz.Network;
 
 import java.io.File;
 import java.io.IOException;
@@ -31,7 +30,6 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPatch;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
 import org.apache.http.client.methods.HttpUriRequest;
@@ -39,8 +37,10 @@ import org.apache.http.conn.scheme.PlainSocketFactory;
 import org.apache.http.conn.scheme.Scheme;
 import org.apache.http.conn.scheme.SchemeRegistry;
 import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -53,7 +53,6 @@ import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Request.Method;
 import com.android.volley.toolbox.HttpStack;
-import com.mani.volleydemo.toolbox.MultiPartRequest;
 
 /**
  * Custom implementation of com.android.volley.toolboox.HttpStack
@@ -142,23 +141,16 @@ public class SslHttpStack implements HttpStack {
             case Method.POST: {
                 HttpPost postRequest = new HttpPost(request.getUrl());
                 postRequest.addHeader(HEADER_CONTENT_TYPE, request.getBodyContentType());
-                setMultiPartBody(postRequest,request);
                 setEntityIfNonEmptyBody(postRequest, request);
+                setMultiPartBody(postRequest,request);
                 return postRequest;
             }
             case Method.PUT: {
                 HttpPut putRequest = new HttpPut(request.getUrl());
                 putRequest.addHeader(HEADER_CONTENT_TYPE, request.getBodyContentType());
-                setMultiPartBody(putRequest,request);
                 setEntityIfNonEmptyBody(putRequest, request);
+                setMultiPartBody(putRequest,request);
                 return putRequest;
-            }
-            // Added in source code of Volley libray.
-            case Method.PATCH: {
-            	HttpPatch patchRequest = new HttpPatch(request.getUrl());
-            	patchRequest.addHeader(HEADER_CONTENT_TYPE, request.getBodyContentType());
-                setEntityIfNonEmptyBody(patchRequest, request);
-                return patchRequest;
             }
             default:
                 throw new IllegalStateException("Unknown request method.");
@@ -182,33 +174,36 @@ public class SslHttpStack implements HttpStack {
      */
     private static void setMultiPartBody(HttpEntityEnclosingRequestBase httpRequest,
             Request<?> request) throws AuthFailureError {
-    	
+
     	// Return if Request is not MultiPartRequest
     	if(request instanceof MultiPartRequest == false) {
     		return;
     	}
-        
-    	MultipartEntity multipartEntity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);  
+
+        MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+
+        builder.setMode(HttpMultipartMode.BROWSER_COMPATIBLE);
+
         //Iterate the fileUploads
         Map<String,File> fileUpload = ((MultiPartRequest)request).getFileUploads();
         for (Map.Entry<String, File> entry : fileUpload.entrySet()) {
-        	System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
-        	multipartEntity.addPart(((String)entry.getKey()), new FileBody((File)entry.getValue()));
+            builder.addPart(((String)entry.getKey()), new FileBody((File)entry.getValue()));
         }
 
         //Iterate the stringUploads
         Map<String,String> stringUpload = ((MultiPartRequest)request).getStringUploads();
         for (Map.Entry<String, String> entry : stringUpload.entrySet()) {
-        	System.out.println("Key = " + entry.getKey() + ", Value = " + entry.getValue());
         	try {
-        	multipartEntity.addPart(((String)entry.getKey()), new StringBody((String)entry.getValue()));
+                builder.addPart(((String)entry.getKey()), new StringBody((String)entry.getValue(), ContentType.APPLICATION_JSON));
         	} catch (Exception e) {
         		e.printStackTrace();
         	}
         }
-        
-        httpRequest.setEntity(multipartEntity);
+
+        httpRequest.setEntity(builder.build());
     }
+
+
 
     /**
      * Called before the request is executed using the underlying HttpClient.

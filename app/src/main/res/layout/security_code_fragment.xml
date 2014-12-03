@@ -1,7 +1,329 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</LinearLayout>
+    <ImageView
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:src="@drawable/launch_background"
+        android:scaleType="centerCrop"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/header_pager_view_height"
+            android:layout_marginTop="@dimen/timeline_cell_large_margin"
+            android:layout_marginBottom="@dimen/timeline_cell_large_margin">
+
+            <ImageView
+                android:id="@+id/secure_code_header_back"
+                android:layout_width="@dimen/header_nav_back"
+                android:layout_height="@dimen/header_nav_back"
+                android:padding="@dimen/timeline_cell_large_margin"
+                android:src="@drawable/nav_back"
+                android:layout_centerVertical="true"/>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/flooz_full"
+                android:layout_centerVertical="true"
+                android:layout_centerHorizontal="true"/>
+
+        </RelativeLayout>
+
+        <TextView
+            android:id="@+id/secure_code_infos"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/SECORE_CODE_TEXT_CURRENT"
+            android:gravity="center"
+            android:textSize="20dp"
+            android:layout_marginTop="@dimen/timeline_cell_large_margin"/>
+
+        <LinearLayout
+            android:id="@+id/secure_code_container"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/timeline_cell_large_margin"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/secure_code_char_1"
+                android:layout_width="@dimen/secure_code_indicator"
+                android:layout_height="@dimen/secure_code_indicator"
+                android:background="@drawable/secure_code_indicator_background"
+                android:layout_margin="@dimen/timeline_cell_large_margin"
+                />
+
+            <ImageView
+                android:id="@+id/secure_code_char_2"
+                android:layout_width="@dimen/secure_code_indicator"
+                android:layout_height="@dimen/secure_code_indicator"
+                android:background="@drawable/secure_code_indicator_background"
+                android:layout_margin="@dimen/timeline_cell_large_margin"
+                />
+
+            <ImageView
+                android:id="@+id/secure_code_char_3"
+                android:layout_width="@dimen/secure_code_indicator"
+                android:layout_height="@dimen/secure_code_indicator"
+                android:background="@drawable/secure_code_indicator_background"
+                android:layout_margin="@dimen/timeline_cell_large_margin"
+                />
+
+            <ImageView
+                android:id="@+id/secure_code_char_4"
+                android:layout_width="@dimen/secure_code_indicator"
+                android:layout_height="@dimen/secure_code_indicator"
+                android:background="@drawable/secure_code_indicator_background"
+                android:layout_margin="@dimen/timeline_cell_large_margin"
+                />
+
+        </LinearLayout>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TableLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:showDividers="middle|beginning|end"
+                android:layout_centerInParent="true"
+                android:paddingLeft="@dimen/timeline_cell_xlarge_margin"
+                android:paddingRight="@dimen/timeline_cell_xlarge_margin"
+                android:paddingBottom="@dimen/timeline_cell_xlarge_margin">
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@android:color/darker_gray"
+                    android:gravity="center"
+                    android:showDividers="middle" >
+
+                    <RelativeLayout
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center">
+
+                        <Button
+                            android:layout_centerInParent="true"
+                            android:id="@+id/secure_code_keyboard_key_1"
+                            style="@style/secure_code_keyboard_key"
+                            android:text="1"
+                            android:textIsSelectable="false" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center">
+
+                        <Button
+                            android:layout_centerInParent="true"
+                            android:id="@+id/secure_code_keyboard_key_2"
+                            style="@style/secure_code_keyboard_key"
+                            android:text="2"
+                            android:textIsSelectable="false" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center">
+
+                        <Button
+                            android:layout_centerInParent="true"
+                            android:id="@+id/secure_code_keyboard_key_3"
+                            style="@style/secure_code_keyboard_key"
+                            android:text="3"
+                            android:textIsSelectable="false" />
+
+
+                    </RelativeLayout>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@android:color/darker_gray"
+                    android:gravity="center"
+                    android:showDividers="middle" >
+
+                    <RelativeLayout
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center">
+
+                        <Button
+                            android:layout_centerInParent="true"
+                            android:id="@+id/secure_code_keyboard_key_4"
+                            style="@style/secure_code_keyboard_key"
+                            android:text="4"
+                            android:textIsSelectable="false" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center">
+
+                        <Button
+                            android:layout_centerInParent="true"
+                            android:id="@+id/secure_code_keyboard_key_5"
+                            style="@style/secure_code_keyboard_key"
+                            android:text="5"
+                            android:textIsSelectable="false" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center">
+
+                        <Button
+                            android:layout_centerInParent="true"
+                            android:id="@+id/secure_code_keyboard_key_6"
+                            style="@style/secure_code_keyboard_key"
+                            android:text="6"
+                            android:textIsSelectable="false" />
+
+                    </RelativeLayout>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@android:color/darker_gray"
+                    android:gravity="center"
+                    android:showDividers="middle" >
+
+                    <RelativeLayout
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center">
+
+                        <Button
+                            android:layout_centerInParent="true"
+                            android:id="@+id/secure_code_keyboard_key_7"
+                            style="@style/secure_code_keyboard_key"
+                            android:text="7"
+                            android:textIsSelectable="false" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center">
+
+                        <Button
+                            android:layout_centerInParent="true"
+                            android:id="@+id/secure_code_keyboard_key_8"
+                            style="@style/secure_code_keyboard_key"
+                            android:text="8"
+                            android:textIsSelectable="false" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center">
+
+                        <Button
+                            android:layout_centerInParent="true"
+                            android:id="@+id/secure_code_keyboard_key_9"
+                            style="@style/secure_code_keyboard_key"
+                            android:text="9"
+                            android:textIsSelectable="false" />
+
+                    </RelativeLayout>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:divider="@android:color/darker_gray"
+                    android:gravity="center"
+                    android:showDividers="middle" >
+
+                    <RelativeLayout
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center">
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center">
+
+                    <Button
+                        android:id="@+id/secure_code_keyboard_key_0"
+                        style="@style/secure_code_keyboard_key"
+                        android:text="0"
+                        android:textIsSelectable="false" />
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center">
+
+                    </RelativeLayout>
+
+                </TableRow>
+
+            </TableLayout>
+
+            <TextView
+                android:id="@+id/secure_code_forget"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:text="@string/SECURE_CODE_FORGOT"
+                android:padding="@dimen/timeline_cell_xlarge_margin"/>
+
+            <TextView
+                android:id="@+id/secure_code_clear"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:text="@string/GLOBAL_CLEAR"
+                android:layout_alignParentRight="true"
+                android:visibility="gone"
+                android:padding="@dimen/timeline_cell_xlarge_margin"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

@@ -1,21 +1,109 @@
 <resources>
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
+
     <dimen name="tab_separator_height">15dp</dimen>
-    <dimen name="header_pager_view_height">40dp</dimen>
+
+    <dimen name="header_pager_view_height">50dp</dimen>
     <dimen name="header_pager_view_fontsize">25dp</dimen>
     <dimen name="header_logo_margin">5dp</dimen>
 
-    <dimen name="timeline_cell_img">42dp</dimen>
-    <dimen name="timeline_cell_global_margin">10dp</dimen>
-    <dimen name="timeline_cell_block_margin">5dp</dimen>
-    <dimen name="timeline_cell_inline_margin">1dp</dimen>
-    <dimen name="timeline_cell_title">13sp</dimen>
-    <dimen name="timeline_cell_social_label">11sp</dimen>
-    <dimen name="timeline_cell_social_picto">11dp</dimen>
+    <dimen name="alert_icon">40dp</dimen>
+    <dimen name="alert_title">17sp</dimen>
+    <dimen name="alert_content">15sp</dimen>
+
+    <dimen name="action_sheet_width">300dp</dimen>
+    <dimen name="action_sheet_item_size">17sp</dimen>
+
+    <dimen name="timeline_cell_img">45dp</dimen>
+    <dimen name="timeline_cell_xlarge_margin">20dp</dimen>
+    <dimen name="timeline_cell_xxlarge_margin">40dp</dimen>
+    <dimen name="timeline_cell_large_margin">10dp</dimen>
+    <dimen name="timeline_cell_medium_margin">5dp</dimen>
+    <dimen name="timeline_cell_small_margin">3dp</dimen>
+    <dimen name="timeline_cell_xsmall_margin">1dp</dimen>
+    <dimen name="timeline_cell_title">14sp</dimen>
+    <dimen name="timeline_cell_social_label">12sp</dimen>
+    <dimen name="timeline_cell_social_picto">15dp</dimen>
+    <dimen name="timeline_cell_action_social_label">13sp</dimen>
+    <dimen name="timeline_cell_action_social_picto">17dp</dimen>
     <dimen name="timeline_cell_separator">0.3dp</dimen>
+    <dimen name="timeline_cell_actionBar_leftPadding">63dp</dimen>
+    <dimen name="timeline_new_flooz_button">60dp</dimen>
+
+    <dimen name="profile_pic_large">75dp</dimen>
+    <dimen name="settings_arrow_size">30dp</dimen>
+    <dimen name="settings_list_item_size">20sp</dimen>
+
+    <dimen name="notification_date">12sp</dimen>
+    <dimen name="notification_content">15sp</dimen>
+
+    <dimen name="new_flooz_header_cross">65dp</dimen>
+    <dimen name="new_flooz_price_zone">120dp</dimen>
+    <dimen name="new_flooz_to_zone">220dp</dimen>
+    <dimen name="new_flooz_to_fullname">15sp</dimen>
+    <dimen name="new_flooz_to_username">13sp</dimen>
+    <dimen name="new_flooz_price">20sp</dimen>
+    <dimen name="new_flooz_to_img">40dp</dimen>
+    <dimen name="new_flooz_main_action_zone">50dp</dimen>
+    <dimen name="new_flooz_main_social_zone">25dp</dimen>
+    <dimen name="new_flooz_main_social_icn">22dp</dimen>
+    <dimen name="new_flooz_main_social_scope">13sp</dimen>
+    <dimen name="new_flooz_pic_width">100dp</dimen>
+    <dimen name="new_flooz_pic_height">70dp</dimen>
+
+    <dimen name="dialog_validate_flooz_width">250dp</dimen>
+    <dimen name="dialog_validate_flooz_pic_height">40dp</dimen>
+    <dimen name="dialog_validate_flooz_text_size">19sp</dimen>
+    <dimen name="dialog_validate_flooz_button_width">124dp</dimen>
+
+    <dimen name="photo_capture_container">225dp</dimen>
+    <dimen name="photo_capture_icons">45dp</dimen>
+    <dimen name="photo_capture_shoot">60dp</dimen>
+
+    <dimen name="secure_code_indicator">17dp</dimen>
+    <dimen name="secure_code_key_size">70dp</dimen>
+
+    <dimen name="header_nav_back">50dp</dimen>
+
+    <dimen name="photo_gallery_header_close">45dp</dimen>
+    <dimen name="photo_gallery_header_check">40dp</dimen>
+
+    <dimen name="user_list_header_height">25dp</dimen>
+    <dimen name="user_list_header_text">15sp</dimen>
+    <dimen name="user_list_row_pic">45dp</dimen>
+    <dimen name="user_list_row_fullname">15sp</dimen>
+    <dimen name="user_list_row_username">13sp</dimen>
+
+    <dimen name="card_link_arrow_width">50dp</dimen>
+    <dimen name="card_profile_infos_width">100dp</dimen>
+
+    <dimen name="card_header_close">50dp</dimen>
+    <dimen name="card_header_date">13sp</dimen>
+    <dimen name="card_user_fullname">13sp</dimen>
+    <dimen name="card_3d_text">13sp</dimen>
+    <dimen name="card_content">13sp</dimen>
+    <dimen name="card_user_username">11sp</dimen>
+    <dimen name="card_value">23sp</dimen>
+    <dimen name="card_action_height">70dp</dimen>
+    <dimen name="card_action_half_height">35dp</dimen>
+    <dimen name="card_action_button_width">120dp</dimen>
+    <dimen name="card_action_button_height">50dp</dimen>
+    <dimen name="card_comment_edit_height">100dp</dimen>
+    <dimen name="card_comment_edit_padding">50dp</dimen>
+    <dimen name="card_comment_infos">11sp</dimen>
+    <dimen name="card_comment_text">13sp</dimen>
+    <dimen name="card_comment_textfield">14sp</dimen>
+
+    <dimen name="signup_accueil_title_fontsize">19sp</dimen>
+    <dimen name="signup_accueil_content_fontsize">16sp</dimen>
+
+    <dimen name="signup_button_height">40dp</dimen>
+    <dimen name="signup_button_fontsize">20sp</dimen>
 
     <dimen name="slidingmenu_offset">60dp</dimen>
     <dimen name="slidingmenu_shadow_width">10dp</dimen>
 
+    <dimen name="numeric_keyboard_key_paddingTop">15dp</dimen>
+    <dimen name="numeric_keyboard_key_paddingBottom">15dp</dimen>
 </resources>

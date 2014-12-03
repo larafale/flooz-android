@@ -10,7 +10,6 @@ import android.view.ViewGroup;
 
 import flooz.android.com.flooz.R;
 import flooz.android.com.flooz.UI.Activity.HomeActivity;
-import flooz.android.com.flooz.UI.Fragment.ImageGalleryFragment;
 import flooz.android.com.flooz.Utils.CustomCameraHost;
 
 /**

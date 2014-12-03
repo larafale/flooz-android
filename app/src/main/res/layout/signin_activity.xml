@@ -27,6 +27,16 @@
             android:textSize="@dimen/header_pager_view_fontsize"
             android:textColor="@color/blue"/>
 
+        <ImageView
+            android:id="@+id/signin_header_title_img"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:padding="@dimen/timeline_cell_small_margin"
+            android:textSize="@dimen/header_pager_view_fontsize"
+            android:textColor="@color/blue"
+            android:src="@drawable/flooz_full"/>
+
     </RelativeLayout>
 
     <FrameLayout

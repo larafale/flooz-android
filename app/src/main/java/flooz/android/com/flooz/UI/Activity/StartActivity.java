@@ -8,12 +8,14 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import flooz.android.com.flooz.Adapter.TimelineListAdapter;
+import flooz.android.com.flooz.App.FloozApplication;
 import flooz.android.com.flooz.Model.FLError;
 import flooz.android.com.flooz.Model.FLTransaction;
 import flooz.android.com.flooz.Network.FloozHttpResponseHandler;
@@ -25,8 +27,13 @@ import flooz.android.com.flooz.R;
  */
 public class StartActivity extends Activity {
 
+    public FloozApplication floozApp;
+
     private ListView timelineListView;
     private TimelineListAdapter timelineAdapter;
+
+    private TextView signInButton;
+    private TextView signUpButton;
 
     private List<FLTransaction> transactions;
 
@@ -41,13 +48,32 @@ public class StartActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        floozApp = (FloozApplication)this.getApplicationContext();
+
         setContentView(R.layout.start_activity);
-
+        floozApp = (FloozApplication)this.getApplicationContext();
         this.transactions = new ArrayList<FLTransaction>(0);
-        this.timelineAdapter = new TimelineListAdapter(this, this.transactions);
 
+        this.timelineAdapter = new TimelineListAdapter(this, this.transactions);
         this.timelineListView = (ListView) this.findViewById(R.id.start_timeline_list);
         this.timelineListView.setAdapter(this.timelineAdapter);
+
+        this.signInButton = (TextView) this.findViewById(R.id.start_login_button);
+
+        this.signInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchSignIn();
+            }
+        });
+
+        this.signUpButton = (TextView) this.findViewById(R.id.start_signup_button);
+        this.signUpButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchSignUp();
+            }
+        });
 
         ImageView title = (ImageView) this.findViewById(R.id.start_flooz_title);
         title.setOnClickListener(new View.OnClickListener() {
@@ -66,10 +92,43 @@ public class StartActivity extends Activity {
 
     }
 
-    @Override
-    public void onResume() {
+    protected void onResume() {
         super.onResume();
         this.refreshTransactions();
+        floozApp.setCurrentActivity(this);
+    }
+
+    protected void onPause() {
+        clearReferences();
+        super.onPause();
+    }
+    protected void onDestroy() {
+        clearReferences();
+        super.onDestroy();
+    }
+
+    private void clearReferences(){
+        Activity currActivity = floozApp.getCurrentActivity();
+        if (currActivity != null && currActivity.equals(this))
+            floozApp.setCurrentActivity(null);
+    }
+
+    private void launchSignIn() {
+        Intent intent = new Intent(this, SignupActivity.class);
+
+        intent.putExtra("page", SignupActivity.SignupPageIdentifier.SignupPhone.ordinal());
+        intent.putExtra("signup", false);
+
+        startActivity(intent);
+    }
+
+    private void launchSignUp() {
+        Intent intent = new Intent(this, SignupActivity.class);
+
+        intent.putExtra("page", SignupActivity.SignupPageIdentifier.SignupAccueil1.ordinal());
+        intent.putExtra("signup", true);
+
+        startActivity(intent);
     }
 
     private void refreshTransactions() {
@@ -91,4 +150,8 @@ public class StartActivity extends Activity {
         });
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
 }

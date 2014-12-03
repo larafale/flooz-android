@@ -3,11 +3,15 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/timeline_cell_global_margin">
+    android:paddingTop="@dimen/timeline_cell_large_margin">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="horizontal" android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:id="@+id/timeline_row_content"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background"
+        android:paddingBottom="@dimen/timeline_cell_small_margin">
 
         <com.makeramen.RoundedImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -15,9 +19,9 @@
             android:scaleType="centerCrop"
             android:layout_width="@dimen/timeline_cell_img"
             android:layout_height="@dimen/timeline_cell_img"
-            android:layout_marginLeft="@dimen/timeline_cell_global_margin"
-            android:layout_marginRight="@dimen/timeline_cell_global_margin"
-            android:layout_marginTop="@dimen/timeline_cell_block_margin"
+            android:layout_marginLeft="@dimen/timeline_cell_large_margin"
+            android:layout_marginRight="@dimen/timeline_cell_large_margin"
+            android:layout_marginTop="@dimen/timeline_cell_xsmall_margin"
             android:layout_gravity="center_horizontal|top"
             app:corner_radius="30dip"
             app:mutate_background="true"
@@ -27,35 +31,37 @@
             android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/timeline_cell_global_margin">
+            android:layout_marginRight="@dimen/timeline_cell_large_margin"
+            android:paddingBottom="@dimen/timeline_cell_large_margin">
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/timeline_cell_inline_margin">
+                android:layout_marginTop="@dimen/timeline_cell_medium_margin">
 
                 <TextView
                     android:id="@+id/timelineTransactionText3D1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
+                    android:textColor="@android:color/white"
                     android:textSize="@dimen/timeline_cell_title"/>
 
                 <TextView
                     android:id="@+id/timelineTransactionText3D2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/timeline_cell_inline_margin"
-                    android:layout_marginRight="@dimen/timeline_cell_inline_margin"
-                    android:textColor="@color/blue"
-                    android:textStyle="bold"
+                    android:layout_marginLeft="@dimen/timeline_cell_xsmall_margin"
+                    android:layout_marginRight="@dimen/timeline_cell_xsmall_margin"
+                    android:textColor="@color/placeholder"
                     android:textSize="@dimen/timeline_cell_title"/>
 
                 <TextView
                     android:id="@+id/timelineTransactionText3D3"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
                     android:textStyle="bold"
                     android:textSize="@dimen/timeline_cell_title"/>
 
@@ -65,7 +71,8 @@
                 android:id="@+id/timelineTransactionText"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/timeline_cell_block_margin"
+                android:layout_marginTop="@dimen/timeline_cell_medium_margin"
+                android:textColor="@android:color/white"
                 android:textSize="@dimen/timeline_cell_title"/>
 
             <com.makeramen.RoundedImageView
@@ -74,89 +81,152 @@
                 android:scaleType="centerCrop"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/timeline_cell_block_margin"
+                android:adjustViewBounds="true"
+                android:layout_marginTop="@dimen/timeline_cell_large_margin"
                 app:corner_radius="5dp"
                 app:oval="false"/>
 
-
             <LinearLayout
-                android:id="@+id/timelineTransactionLikesLayout"
+                android:id="@+id/timelineTransactionSocialLayout"
                 android:orientation="horizontal"
-                android:layout_width="fill_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/timeline_cell_block_margin">
+                android:gravity="center_vertical"
+                android:paddingTop="@dimen/timeline_cell_large_margin">
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="@dimen/timeline_cell_social_label"
-                    android:src="@drawable/social_like"
-                    android:layout_marginRight="@dimen/timeline_cell_inline_margin"/>
-
-                <TextView
-                    android:id="@+id/timelineTransactionLikesText"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/placeholder"
-                    android:textSize="@dimen/timeline_cell_social_label"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="@dimen/timeline_cell_global_margin"
-                android:layout_marginTop="@dimen/timeline_cell_block_margin">
-
-                <TextView
-                    android:id="@+id/timelineTransactionLikeButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="J'aime"
-                    android:layout_marginRight="@dimen/timeline_cell_global_margin"
-                    android:textSize="@dimen/timeline_cell_social_label"
-                    android:textColor="@color/placeholder"/>
-
-                <TextView
-                    android:id="@+id/timelineTransactionCommentButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Commenter"
-                    android:layout_marginRight="@dimen/timeline_cell_global_margin"
-                    android:textSize="@dimen/timeline_cell_social_label"
-                    android:textColor="@color/placeholder"/>
 
                 <LinearLayout
                     android:id="@+id/timelineTransactionCommentsLayout"
                     android:orientation="horizontal"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_marginRight="@dimen/timeline_cell_large_margin">
 
                     <ImageView
-                        android:layout_width="wrap_content"
+                        android:layout_width="@dimen/timeline_cell_social_picto"
                         android:layout_height="@dimen/timeline_cell_social_picto"
                         android:src="@drawable/social_comment"
-                        android:layout_marginRight="@dimen/timeline_cell_inline_margin"/>
+                        android:layout_marginRight="@dimen/timeline_cell_medium_margin"/>
 
                     <TextView
                         android:id="@+id/timelineTransactionCommentsNumber"
-                        android:layout_width="fill_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/placeholder"
+                        android:textColor="@android:color/white"
                         android:textSize="@dimen/timeline_cell_social_label"/>
 
                 </LinearLayout>
 
-                <TextView
-                    android:id="@+id/timelineTransactionValue"
-                    android:layout_width="fill_parent"
+                <LinearLayout
+                    android:id="@+id/timelineTransactionLikesLayout"
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="right"
-                    android:textSize="@dimen/timeline_cell_title"/>
+                    android:gravity="center_vertical">
+
+                    <ImageView
+                        android:layout_width="@dimen/timeline_cell_social_picto"
+                        android:layout_height="@dimen/timeline_cell_social_picto"
+                        android:src="@drawable/social_like"
+                        android:layout_marginRight="@dimen/timeline_cell_medium_margin"/>
+
+                    <TextView
+                        android:id="@+id/timelineTransactionLikesText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/timeline_cell_social_label"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
         </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/timeline_row_actionBar"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/background"
+        android:paddingBottom="@dimen/timeline_cell_large_margin"
+        android:paddingTop="@dimen/timeline_cell_medium_margin"
+        android:paddingRight="@dimen/timeline_cell_large_margin"
+        android:paddingLeft="@dimen/timeline_cell_actionBar_leftPadding"
+        android:gravity="center_vertical">
+
+        <LinearLayout
+            android:id="@+id/timelineTransactionLikesButton"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/timeline_cell_small_margin"
+            android:paddingLeft="@dimen/timeline_cell_medium_margin"
+            android:paddingRight="@dimen/timeline_cell_medium_margin"
+            android:paddingBottom="@dimen/timeline_cell_small_margin"
+            android:gravity="center_vertical"
+            android:background="@drawable/timeline_row_action_button_background">
+
+            <ImageView
+                android:id="@+id/timelineTransactionLikesButtonPicto"
+                android:layout_width="@dimen/timeline_cell_action_social_picto"
+                android:layout_height="@dimen/timeline_cell_action_social_picto"
+                android:src="@drawable/social_like"/>
+
+            <TextView
+                android:id="@+id/timelineTransactionLikesButtonText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/timeline_cell_xsmall_margin"
+                android:layout_marginLeft="@dimen/timeline_cell_small_margin"
+                android:textColor="@color/placeholder"
+                android:textSize="@dimen/timeline_cell_action_social_label"
+                android:text="@string/CELL_SOCIAL_LIKE"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/timelineTransactionCommentsButton"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/timeline_cell_small_margin"
+            android:paddingLeft="@dimen/timeline_cell_medium_margin"
+            android:paddingRight="@dimen/timeline_cell_medium_margin"
+            android:paddingBottom="@dimen/timeline_cell_small_margin"
+            android:layout_marginLeft="@dimen/timeline_cell_large_margin"
+            android:gravity="center_vertical"
+            android:background="@drawable/timeline_row_action_button_background">
+
+            <ImageView
+                android:id="@+id/timelineTransactionCommentsButtonPicto"
+                android:layout_width="@dimen/timeline_cell_action_social_picto"
+                android:layout_height="@dimen/timeline_cell_action_social_picto"
+                android:src="@drawable/social_comment"/>
+
+            <TextView
+                android:id="@+id/timelineTransactionCommentsButtonText"
+                android:layout_marginLeft="@dimen/timeline_cell_small_margin"
+                android:layout_width="wrap_content"
+                android:paddingTop="@dimen/timeline_cell_xsmall_margin"
+                android:layout_height="wrap_content"
+                android:textColor="@color/placeholder"
+                android:text="@string/CELL_SOCIAL_COMMENT"
+                android:background="@drawable/timeline_row_action_button_background"
+                android:textSize="@dimen/timeline_cell_action_social_label"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/timelineTransactionValue"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/timeline_cell_title"/>
 
     </LinearLayout>
 

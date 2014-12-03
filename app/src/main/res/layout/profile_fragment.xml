@@ -1,200 +1,166 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<flooz.android.com.flooz.Utils.SwipeViewGroup xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_header">
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="40dp">
-
-        <com.makeramen.RoundedImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/userView"
-            android:scaleType="centerCrop"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            app:corner_radius="30dip"
-            app:mutate_background="true"
-            android:src="@drawable/avatar_default"
-            app:oval="true"/>
+        android:layout_height="wrap_content">
 
         <LinearLayout
+            android:id="@+id/accountUserView"
             android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="left|center_vertical"
-            android:layout_marginLeft="10dp"
-            android:id="@+id/accountUserView">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.05"
+            android:gravity="center_horizontal"
+            android:paddingTop="@dimen/timeline_cell_xlarge_margin"
+            android:background="@drawable/account_user_background">
+
+            <com.makeramen.RoundedImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/userView"
+                android:scaleType="centerCrop"
+                android:layout_width="@dimen/profile_pic_large"
+                android:layout_height="@dimen/profile_pic_large"
+                android:layout_marginBottom="@dimen/timeline_cell_small_margin"
+                app:corner_radius="30dip"
+                app:mutate_background="true"
+                android:src="@drawable/avatar_default"
+                app:oval="true"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
-                android:layout_marginBottom="3dp"
+                android:layout_marginBottom="@dimen/timeline_cell_xsmall_margin"
                 android:textColor="@android:color/white"
-                android:id="@+id/fullname" />
+                android:textAllCaps="true"
+                android:id="@+id/fullname"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/blue"
                 android:textSize="15sp"
-                android:layout_marginBottom="3dp"
-                android:id="@+id/username" />
+                android:layout_marginBottom="@dimen/timeline_cell_small_margin"
+                android:id="@+id/username"
+                android:textColor="@android:color/white"/>
+
+            <TableLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:visibility="gone">
+
+                <TableRow android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <TextView android:id="@+id/account_nb_flooz"
+                        android:text="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:gravity="center"
+                        android:scaleType="centerInside"
+                        android:textColor="@android:color/white"
+                        android:textIsSelectable="false"/>
+
+                    <TextView android:id="@+id/account_nb_friends"
+                        android:text="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:gravity="center"
+                        android:scaleType="centerInside"
+                        android:textColor="@android:color/white"
+                        android:textIsSelectable="false"/>
+
+                    <TextView android:id="@+id/account_nb_complete"
+                        android:text="1"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:gravity="center"
+                        android:scaleType="centerInside"
+                        android:textColor="@android:color/white"
+                        android:textIsSelectable="false"/>
+
+                </TableRow>
+
+                <TableRow android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center">
+
+                    <TextView android:id="@+id/account_flooz_label"
+                        android:text="Flooz"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:gravity="center"
+                        android:scaleType="centerInside"
+                        android:textColor="@android:color/white"
+                        android:textIsSelectable="false"/>
+
+                    <TextView android:id="@+id/account_friends_label"
+                        android:text="Amis"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:gravity="center"
+                        android:scaleType="centerInside"
+                        android:textColor="@android:color/white"
+                        android:textIsSelectable="false"/>
+
+                    <TextView android:id="@+id/account_complete_label"
+                        android:text="Complet"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:clickable="true"
+                        android:gravity="center"
+                        android:scaleType="centerInside"
+                        android:textColor="@android:color/white"
+                        android:textIsSelectable="false"/>
+
+                </TableRow>
+
+            </TableLayout>
 
             <TextView
-                android:layout_width="fill_parent"
+                android:layout_width="110dp"
                 android:layout_height="wrap_content"
-                android:gravity="left"
+                android:gravity="center"
                 android:textSize="20sp"
                 android:textColor="@android:color/white"
-                android:id="@+id/balanceValue" />
+                android:id="@+id/balanceValue"
+                android:text="105.50€"
+                android:paddingTop="5dp"
+                android:paddingBottom="5dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/white_corner_border"/>
 
         </LinearLayout>
+    </RelativeLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:orientation="vertical"
+    <ListView
+        android:id="@+id/account_menu_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="70dp"
-        android:layout_marginLeft="25dp">
+        android:layout_weight="1"
+        android:layout_marginTop="10dp"
+        android:divider="@android:color/transparent">
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:id="@+id/accountShareButton">
+    </ListView>
 
-            <com.makeramen.RoundedImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:scaleType="center"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/account_share_button"
-                app:corner_radius="30dip"
-                app:mutate_background="true"
-                app:border_color="@android:color/white"
-                app:border_width="1dp"
-                app:oval="true"/>
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="match_parent"
-                android:text="@string/ACCOUNT_BUTTON_SHARE"
-                android:gravity="left|center_vertical"
-                android:textSize="15sp"
-                android:textColor="@android:color/white"
-                android:layout_marginLeft="10dp"
-                android:id="@+id/accountShareLabel"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:layout_marginTop="15dp"
-            android:id="@+id/accountBankButton">
-
-            <com.makeramen.RoundedImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:scaleType="center"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/account_bank_button"
-                app:corner_radius="30dip"
-                app:mutate_background="true"
-                app:border_color="@android:color/white"
-                app:border_width="1dp"
-                app:oval="true"/>
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="match_parent"
-                android:text="@string/ACCOUNT_BUTTON_CASH_OUT"
-                android:gravity="left|center_vertical"
-                android:textSize="15sp"
-                android:textColor="@android:color/white"
-                android:layout_marginLeft="10dp"
-                android:id="@+id/accountBankLabel"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginTop="15dp"
-            android:id="@+id/accountSettingsButton">
-
-            <com.makeramen.RoundedImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:scaleType="center"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/account_settings_button"
-                app:corner_radius="30dip"
-                app:mutate_background="true"
-                app:border_color="@android:color/white"
-                app:border_width="1dp"
-                app:oval="true"/>
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="match_parent"
-                android:text="@string/ACCOUNT_BUTTON_SETTINGS"
-                android:gravity="left|center_vertical"
-                android:textSize="15sp"
-                android:textColor="@android:color/white"
-                android:layout_marginLeft="10dp"
-                android:id="@+id/accountSettingsLabel"/>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginTop="15dp"
-            android:id="@+id/accountIdeasButton">
-
-            <com.makeramen.RoundedImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-                android:scaleType="center"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/account_informations"
-                app:corner_radius="30dip"
-                app:mutate_background="true"
-                app:border_color="@android:color/white"
-                app:border_width="1dp"
-                app:oval="true"/>
-
-            <TextView
-                android:layout_width="fill_parent"
-                android:layout_height="match_parent"
-                android:text="@string/ACCOUNT_BUTTON_IDEAS"
-                android:gravity="left|center_vertical"
-                android:textSize="15sp"
-                android:textColor="@android:color/white"
-                android:layout_marginLeft="10dp"
-                android:id="@+id/accountIdeasLabel"/>
-
-        </LinearLayout>
-
-    </LinearLayout>
-
-
-</LinearLayout>
+</flooz.android.com.flooz.Utils.SwipeViewGroup>

@@ -18,7 +18,7 @@
             android:layout_weight="1">
 
             <TextView
-                android:id="@+id/signup_pass_hint"
+                android:id="@+id/signin_pass_hint"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/SECORE_CODE_CHOOSE"
@@ -26,7 +26,7 @@
                 android:textSize="18sp"/>
 
             <LinearLayout
-                android:id="@+id/signup_pass_container"
+                android:id="@+id/signin_pass_container"
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
@@ -34,7 +34,7 @@
                 android:gravity="center">
 
                 <ImageView
-                    android:id="@+id/signup_pass_char_1"
+                    android:id="@+id/signin_pass_char_1"
                     android:layout_width="@dimen/secure_code_indicator"
                     android:layout_height="@dimen/secure_code_indicator"
                     android:background="@drawable/secure_code_indicator_background"
@@ -42,7 +42,7 @@
                     />
 
                 <ImageView
-                    android:id="@+id/signup_pass_char_2"
+                    android:id="@+id/signin_pass_char_2"
                     android:layout_width="@dimen/secure_code_indicator"
                     android:layout_height="@dimen/secure_code_indicator"
                     android:background="@drawable/secure_code_indicator_background"
@@ -50,7 +50,7 @@
                     />
 
                 <ImageView
-                    android:id="@+id/signup_pass_char_3"
+                    android:id="@+id/signin_pass_char_3"
                     android:layout_width="@dimen/secure_code_indicator"
                     android:layout_height="@dimen/secure_code_indicator"
                     android:background="@drawable/secure_code_indicator_background"
@@ -58,7 +58,7 @@
                     />
 
                 <ImageView
-                    android:id="@+id/signup_pass_char_4"
+                    android:id="@+id/signin_pass_char_4"
                     android:layout_width="@dimen/secure_code_indicator"
                     android:layout_height="@dimen/secure_code_indicator"
                     android:background="@drawable/secure_code_indicator_background"
@@ -69,7 +69,7 @@
         </LinearLayout>
 
         <flooz.android.com.flooz.UI.View.NumericKeyboard
-            android:id="@+id/signup_pass_keypad"
+            android:id="@+id/signin_pass_keypad"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"

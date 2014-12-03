@@ -1,4 +1,4 @@
-package com.mani.volleydemo.ssl;
+package flooz.android.com.flooz.Network;
 
 import javax.net.ssl.X509TrustManager;
 import java.security.cert.CertificateException;

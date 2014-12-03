@@ -137,6 +137,7 @@ public class ProfileFragment extends Fragment
                         case 3:
                             break;
                         case 4:
+                            FloozRestClient.getInstance().logout();
                             break;
                         default:
                             break;

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:custom="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -12,82 +11,91 @@
         android:background="@color/background_header"
         android:gravity="center_vertical">
 
-        <com.makeramen.RoundedImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/profile_header_button"
-            android:scaleType="centerInside"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_gravity="center"
-            android:layout_weight="0.1"
-            android:src="@drawable/avatar_default"
-            app:corner_radius="30dip"
-            app:mutate_background="true"
-            app:oval="true"/>
-
-        <ImageView android:id="@+id/flooz_title"
+        <RelativeLayout
+            android:id="@+id/menu_row_img_container"
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.1">
+
+            <ImageView android:id="@+id/profile_header_button"
+                android:scaleType="centerInside"
+                android:layout_width="40dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:padding="5dp"
+                android:src="@drawable/nav_account_button"/>
+
+            <TextView
+                android:id="@+id/profile_header_button_notif"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:text="2"
+                android:gravity="center"
+                android:textAlignment="gravity"
+                android:padding="2dp"
+                android:layout_marginTop="@dimen/timeline_cell_medium_margin"
+                android:textSize="12dp"
+                android:background="@drawable/notification_alert_background"
+                android:layout_alignRight="@id/profile_header_button"/>
+
+        </RelativeLayout>
+
+        <LinearLayout android:layout_width="80dp"
+            android:id="@+id/timeline_header"
             android:layout_height="match_parent"
             android:layout_weight="0.8"
+            android:orientation="vertical"
             android:layout_gravity="center"
-            android:layout_marginTop="@dimen/header_logo_margin"
-            android:layout_marginBottom="@dimen/header_logo_margin"
-            android:gravity="center"
-            android:background="@color/background_header"
-            android:src="@drawable/flooz_full"/>
+            android:gravity="center">
+
+            <flooz.android.com.flooz.UI.View.HeaderPagerView
+                android:id="@+id/timeline_scroll_header"
+                android:layout_width="fill_parent"
+                android:layout_height="30dp"/>
+
+            <com.viewpagerindicator.CirclePageIndicator
+                android:id="@+id/pagerindicator"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="@dimen/timeline_cell_small_margin"/>
+
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/friends_header_button"
             android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:layout_marginRight="10dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.1"
+            android:padding="5dp"
             android:scaleType="centerInside"
             android:layout_gravity="center"
-            android:src="@drawable/scope_friend_blue"/>
+            android:src="@drawable/nav_friends_button"/>
 
     </LinearLayout>
 
-    <LinearLayout android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@color/background_header">
+    <RelativeLayout
+        android:id="@+id/timeline_container"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent">
 
-        <flooz.android.com.flooz.UI.View.FloozFilterTabItem android:id="@+id/public_tab"
+        <android.support.v4.view.ViewPager
+            android:id="@+id/timeline_pager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            custom:tab_type="tab_public"/>
+            android:layout_height="fill_parent"/>
 
-        <flooz.android.com.flooz.UI.View.FloozFilterTabItem android:id="@+id/friends_tab"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            custom:tab_type="tab_friends"/>
+        <com.makeramen.RoundedImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/new_transac_button"
+            android:scaleType="centerCrop"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_width="@dimen/timeline_new_flooz_button"
+            android:layout_height="@dimen/timeline_new_flooz_button"
+            android:layout_marginBottom="@dimen/timeline_cell_xlarge_margin"
+            android:src="@drawable/new_flooz"
+            app:corner_radius="30dip"
+            app:oval="true"/>
 
-        <flooz.android.com.flooz.UI.View.FloozFilterTabItem android:id="@+id/private_tab"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            custom:tab_type="tab_private"/>
-
-    </LinearLayout>
-
-
-    <LinearLayout android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical"
-        android:background="@color/background">
-
-        <com.handmark.pulltorefresh.library.PullToRefreshListView
-            xmlns:ptr="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/timeline_list"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@drawable/timeline_dividers"
-            android:dividerHeight="1px"
-            android:listSelector="@android:color/transparent"
-            ptr:ptrAnimationStyle="flip"/>
-
-    </LinearLayout>
+    </RelativeLayout>
 
 </LinearLayout>

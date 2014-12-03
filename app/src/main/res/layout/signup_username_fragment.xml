@@ -1,6 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/background_header"
+    android:gravity="center_horizontal">
+
+    <EditText
+        android:id="@+id/signup_username_textfield"
+        android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:hint="ex: batman"
+        android:focusable="true"
+        android:editable="true"
+        android:singleLine="true"/>
+
+    <Button
+        android:id="@+id/signup_username_next"
+        android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
+        android:layout_width="300dp"
+        android:layout_height="@dimen/signup_button_height"
+        android:gravity="center"
+        android:background="@drawable/background_action_button"
+        android:enabled="false"
+        android:text="@string/Send_Button_Mobile"
+        android:layout_marginBottom="@dimen/timeline_cell_xlarge_margin"
+        android:textSize="20sp"
+        android:textColor="@drawable/text_color_action_button"/>
+
+    <TextView
+        android:id="@+id/signup_username_info_label"
+        android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/SIGNUP_PSEUDO_EXPLICATION"
+        android:paddingLeft="@dimen/timeline_cell_xlarge_margin"
+        android:paddingRight="@dimen/timeline_cell_xlarge_margin"
+        android:gravity="center"
+        android:lineSpacingExtra="@dimen/timeline_cell_small_margin"
+        android:textColor="@color/placeholder"
+        android:textSize="15dp"/>
 
 </LinearLayout>

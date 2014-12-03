@@ -10,6 +10,12 @@ public class FLCreditCard {
     public String cardId;
     public String owner;
     public String number;
+    public String expires;
+    public String cvv;
+
+    public FLCreditCard() {
+        super();
+    }
 
     public FLCreditCard(JSONObject json) {
         super();

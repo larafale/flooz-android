@@ -1,8 +1,10 @@
 package flooz.android.com.flooz.UI.Fragment.Signup;
 
 import android.app.FragmentTransaction;
+import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,7 +16,7 @@ import flooz.android.com.flooz.Utils.CustomCameraHost;
 /**
  * Created by Flooz on 11/17/14.
  */
-public class SignupImageCaptureFragment extends SignupBaseFragment implements CameraOverlayFragment.CameraOverlayFragmentCallbacks {
+public class SignupImageCaptureFragment extends SignupBaseFragment implements CameraOverlayFragment.CameraOverlayFragmentCallbacks, CustomCameraHost.CustomCameraHostDelegate {
 
     public Boolean currentCameraIsFront = false;
     private CameraOverlayFragment camFragmentBack;
@@ -33,13 +35,13 @@ public class SignupImageCaptureFragment extends SignupBaseFragment implements Ca
         View view = inflater.inflate(R.layout.camera_fullscreen_fragment, null);
 
         this.camFragmentBack = new CameraOverlayFragment();
-        this.camFragmentBack.delegate = this.cameraHostDelegate;
+        this.camFragmentBack.delegate = this;
         this.camFragmentBack.callbacks = this;
         this.camFragmentBack.isClosable = true;
         this.camFragmentBack.canAccessAlbum = false;
 
         this.camFragmentFront = new CameraOverlayFragment();
-        this.camFragmentFront.delegate = this.cameraHostDelegate;
+        this.camFragmentFront.delegate = this;
         this.camFragmentFront.callbacks = this;
         this.camFragmentFront.showFront = true;
         this.camFragmentFront.isClosable = true;
@@ -98,10 +100,26 @@ public class SignupImageCaptureFragment extends SignupBaseFragment implements Ca
     @Override
     public void closeCamera() {
         parentActivity.backToPreviousPage();
+        parentActivity.showHeader();
     }
 
     @Override
     public void showGallery() {
 
+    }
+
+    @Override
+    public void photoTaken(final Bitmap photo) {
+        Handler mainHandler = new Handler(parentActivity.floozApp.getMainLooper());
+
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                cameraHostDelegate.photoTaken(photo);
+                parentActivity.backToPreviousPage();
+                parentActivity.showHeader();
+            }
+        };
+        mainHandler.post(myRunnable);
     }
 }

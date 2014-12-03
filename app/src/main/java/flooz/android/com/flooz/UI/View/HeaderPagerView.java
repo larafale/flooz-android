@@ -19,11 +19,10 @@ public class HeaderPagerView extends HorizontalScrollView
 {
     private Delegate delegate;
 
-    private View leftView;
     private View rightView;
-    private TextView floozTextView;
-    private TextView profileTextView;
-    private TextView friendsTextView;
+    private TextView homeTextView;
+    private TextView publicTextView;
+    private TextView privateTextView;
 
     public HeaderPagerView(Context context)
     {
@@ -43,47 +42,19 @@ public class HeaderPagerView extends HorizontalScrollView
         init(context);
     }
 
-    private void init(Context context)
-    {
+    private void init(Context context) {
         View view = View.inflate(context, R.layout.header_pager_view, this);
 
-        this.profileTextView = (TextView) view.findViewById(R.id.profile);
-        this.floozTextView = (TextView) view.findViewById(R.id.flooz);
-        this.friendsTextView = (TextView) view.findViewById(R.id.friends);
-        this.leftView = view.findViewById(R.id.left_view);
+        this.homeTextView = (TextView) view.findViewById(R.id.header_home);
+        this.publicTextView = (TextView) view.findViewById(R.id.header_public);
+        this.privateTextView = (TextView) view.findViewById(R.id.header_private);
         this.rightView = view.findViewById(R.id.right_view);
 
-        this.floozTextView.setTypeface(CustomFonts.customTitleExtraLight(context));
-        this.friendsTextView.setTypeface(CustomFonts.customTitleExtraLight(context));
-        this.profileTextView.setTypeface(CustomFonts.customTitleExtraLight(context));
+        this.homeTextView.setTypeface(CustomFonts.customTitleExtraLight(context));
+        this.publicTextView.setTypeface(CustomFonts.customTitleExtraLight(context));
+        this.privateTextView.setTypeface(CustomFonts.customTitleExtraLight(context));
 
         this.setHorizontalScrollBarEnabled(false);
-
-        this.floozTextView.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                delegate.onHeaderButtonClick(1);
-            }
-        });
-
-        OnClickListener profileClickListener = new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                delegate.onHeaderButtonClick(0);
-            }
-        };
-
-        this.leftView.setOnClickListener(profileClickListener);
-        this.profileTextView.setOnClickListener(profileClickListener);
-
-        OnClickListener friendsClickListener = new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                delegate.onHeaderButtonClick(2);
-            }
-        };
-        this.rightView.setOnClickListener(friendsClickListener);
-        this.friendsTextView.setOnClickListener(friendsClickListener);
     }
 
     @Override
@@ -102,29 +73,16 @@ public class HeaderPagerView extends HorizontalScrollView
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         int width = MeasureSpec.getSize(widthMeasureSpec);
-        int part = width / 3;
 
-        this.leftView.getLayoutParams().width = part;
-        this.profileTextView.getLayoutParams().width = part;
-        this.floozTextView.getLayoutParams().width = part * 2;
-        this.friendsTextView.getLayoutParams().width = part;
-        this.rightView.getLayoutParams().width = part;
-    }
+        final float scale = getContext().getResources().getDisplayMetrics().density;
+        int pixels = (int) (width * scale);
 
-    private void scrollToPage(int page, boolean animated)
-    {
-        int x = (this.leftView.getLayoutParams().width * 2) * page;
-        if (page > 0)
-            x -= this.leftView.getLayoutParams().width / (3 - page);
+        int offset = (int)(12 * scale);
 
-        if (animated)
-            this.smoothScrollTo(x, 0);
-        else
-            this.setScrollX(x);
-    }
-
-    public void setInitialScroll() {
-        this.scrollToPage(1, false);
+        this.homeTextView.getLayoutParams().width = pixels + offset;
+        this.publicTextView.getLayoutParams().width = pixels / 2 - offset;
+        this.privateTextView.getLayoutParams().width = pixels + offset;
+        this.rightView.getLayoutParams().width = pixels;
     }
 
     public void setDelegate(Delegate _delegate) {

@@ -1,76 +1,117 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal"
-    android:layout_width="wrap_content"
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/numeric_keyboard_grid"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:columnCount="3"
-    android:layout_gravity="center">
+    android:background="@color/background_header"
+    android:divider="@android:color/darker_gray"
+    android:orientation="vertical"
+    android:showDividers="middle|beginning|end" >
 
-    <TextView android:layout_width="wrap_content"
+    <TableRow
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="1"
-        android:textSize="30sp"
-        android:gravity="center"/>
+        android:divider="@android:color/darker_gray"
+        android:gravity="center"
+        android:showDividers="middle" >
 
-    <TextView android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/numeric_keyboard_key_1"
+            style="@style/numeric_keyboard_key"
+            android:text="1"
+            android:textIsSelectable="false" />
+
+        <Button
+            android:id="@+id/numeric_keyboard_key_2"
+            style="@style/numeric_keyboard_key"
+            android:text="2"
+            android:textIsSelectable="false" />
+
+        <Button
+            android:id="@+id/numeric_keyboard_key_3"
+            style="@style/numeric_keyboard_key"
+            android:text="3"
+            android:textIsSelectable="false" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="2"
-        android:textSize="30sp"
-        android:gravity="center"/>
+        android:divider="@android:color/darker_gray"
+        android:gravity="center"
+        android:showDividers="middle" >
 
-    <TextView android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/numeric_keyboard_key_4"
+            style="@style/numeric_keyboard_key"
+            android:text="4"
+            android:textIsSelectable="false" />
+
+        <Button
+            android:id="@+id/numeric_keyboard_key_5"
+            style="@style/numeric_keyboard_key"
+            android:text="5"
+            android:textIsSelectable="false" />
+
+        <Button
+            android:id="@+id/numeric_keyboard_key_6"
+            style="@style/numeric_keyboard_key"
+            android:text="6"
+            android:textIsSelectable="false" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="3"
-        android:textSize="30sp"
-        android:gravity="center"/>
+        android:divider="@android:color/darker_gray"
+        android:gravity="center"
+        android:showDividers="middle" >
 
-    <TextView android:layout_width="wrap_content"
+        <Button
+            android:id="@+id/numeric_keyboard_key_7"
+            style="@style/numeric_keyboard_key"
+            android:text="7"
+            android:textIsSelectable="false" />
+
+        <Button
+            android:id="@+id/numeric_keyboard_key_8"
+            style="@style/numeric_keyboard_key"
+            android:text="8"
+            android:textIsSelectable="false" />
+
+        <Button
+            android:id="@+id/numeric_keyboard_key_9"
+            style="@style/numeric_keyboard_key"
+            android:text="9"
+            android:textIsSelectable="false" />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="4"
-        android:textSize="30sp"
-        android:gravity="center"/>
+        android:divider="@android:color/darker_gray"
+        android:gravity="center"
+        android:showDividers="middle" >
 
-    <TextView android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="5"
-        android:textSize="30sp"
-        android:gravity="center"/>
+        <Button
+            android:id="@+id/numeric_keyboard_key_clear"
+            style="@style/numeric_keyboard_key"
+            android:text=""
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textIsSelectable="false" />
 
-    <TextView android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="6"
-        android:textSize="30sp"
-        android:gravity="center"/>
+        <Button
+            android:id="@+id/numeric_keyboard_key_0"
+            style="@style/numeric_keyboard_key"
+            android:text="0"
+            android:textIsSelectable="false" />
 
-    <TextView android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="7"
-        android:textSize="30sp"
-        android:gravity="center"/>
+        <ImageButton
+            android:id="@+id/numeric_keyboard_key_backspace"
+            style="@style/numeric_keyboard_key"
+            android:src="@drawable/keyboard_backward"
+            android:textIsSelectable="false" />
+    </TableRow>
 
-    <TextView android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="8"
-        android:textSize="30sp"
-        android:gravity="center"/>
-
-    <TextView android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="9"
-        android:textSize="30sp"
-        android:gravity="center"/>
-
-    <TextView android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_column="1"
-        android:text="0"
-        android:textSize="30sp"
-        android:gravity="center"/>
-
-    <ImageView android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/keyboard_backward"
-        android:gravity="center"/>
-
-</GridLayout>
+</TableLayout>

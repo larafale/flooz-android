@@ -1,5 +1,7 @@
 package flooz.android.com.flooz.Model;
 
+import android.graphics.Bitmap;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -22,14 +24,16 @@ public class FLUser
     public String lastname;
     public String fullname;
     public String username;
+    public String password;
+    public String birthdate;
     public String email;
     public String phone;
     public String avatarURL;
+    public Bitmap avatarData = null;
     public String profileCompletion;
     public Number friendsCount;
-    public Number eventsCount;
-    public Number transactionsCount;
     public Boolean haveStatsPending;
+    public String passCode;
 
     public String deviceToken;
 
@@ -40,9 +44,9 @@ public class FLUser
     public Map<String, Object> checkDocuments;
     public FLCreditCard creditCard;
 
-    public List friends;
-    public List friendsRecent;
-    public List friendsRequest;
+    public List<FLUser> friends = new ArrayList<FLUser>(0);
+    public List<FLUser> friendsRecent = new ArrayList<FLUser>(0);
+    public List<FLUser> friendsRequest = new ArrayList<FLUser>(0);
 
     public Boolean needDocuments;
 
@@ -55,10 +59,24 @@ public class FLUser
     public String hasSecureCode;
     public JSONObject json;
 
+    public UserKind userKind;
+
+    public enum UserKind {
+        FloozUser,
+        PhoneUser
+    }
+
     public FLUser(JSONObject data)
     {
         super();
+        this.userKind = UserKind.FloozUser;
         this.setJson(data);
+    }
+
+    public FLUser()
+    {
+        super();
+        this.userKind = UserKind.PhoneUser;
     }
 
     public void setJson(JSONObject data)
@@ -95,18 +113,7 @@ public class FLUser
             if (this.json.has("friends"))
                 this.friendsCount = this.json.getJSONArray("friends").length();
 
-            if (this.json.has("stats")) {
-                this.eventsCount = this.json.getJSONObject("stats").getJSONObject("event").getInt("created");
-                this.transactionsCount = this.json.getJSONObject("stats").getJSONObject("flooz").getInt("total");
-            }
-
             this.haveStatsPending = false;
-
-            if (this.json.has("stats") && this.json.getJSONObject("stats").getJSONObject("flooz").has("pending")) {
-                Number statsPending = this.json.getJSONObject("stats").getJSONObject("flooz").getInt("pending");
-                if (statsPending.intValue() > 0)
-                    this.haveStatsPending = true;
-            }
 
             if (this.json.has("settings")) {
                 this.settings = JSONHelper.toMap(this.json.getJSONObject("settings"));
@@ -131,7 +138,7 @@ public class FLUser
                 this.notificationsText = JSONHelper.toMap(this.json.getJSONObject("notificationsText"));
 
             if (this.json.has("friends")) {
-                this.friends = new ArrayList();
+                this.friends = new ArrayList<FLUser>(0);
                 JSONArray arrayFriends = this.json.getJSONArray("friends");
 
                 for (int i = 0; i < arrayFriends.length(); i++) {
@@ -140,7 +147,7 @@ public class FLUser
             }
 
             if (this.json.has("recentFriends")) {
-                this.friendsRecent = new ArrayList();
+                this.friendsRecent = new ArrayList<FLUser>(0);
                 JSONArray arrayFriendsRecent = this.json.getJSONArray("recentFriends");
 
                 for (int i = 0; i < arrayFriendsRecent.length(); i++) {
@@ -149,7 +156,7 @@ public class FLUser
             }
 
             if (this.json.has("friendsRequest")) {
-                this.friendsRequest = new ArrayList();
+                this.friendsRequest = new ArrayList<FLUser>(0);
                 JSONArray arrayFriendsRequest = this.json.getJSONArray("friendsRequest");
 
                 for (int i = 0; i < arrayFriendsRequest.length(); i++) {
@@ -177,21 +184,91 @@ public class FLUser
             if (this.json.has("invitation") && this.json.getJSONObject("invitation").has("code"))
                 this.inviteCode = this.json.getJSONObject("invitation").getString("code");
 
+            if (this.json.has("cards") && this.json.getJSONArray("cards").length() > 0)
+                this.creditCard = new FLCreditCard(this.json.getJSONArray("cards").getJSONObject(0));
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-//        if([json objectForKey:@"cards"] && [[json objectForKey:@"cards"] count] > 0){
-//        _creditCard = [[FLCreditCard alloc] initWithJSON:[[json objectForKey:@"cards"] objectAtIndex:0]];
-//    }
-//
     }
 
-    public void updateStatsPending(JSONObject jsonObject){
-        if (jsonObject.has("stats") && jsonObject.optJSONObject("stats").optJSONObject("flooz").has("pending")) {
-            Number statsPending = jsonObject.optJSONObject("stats").optJSONObject("flooz").optInt("pending");
-            if (statsPending.intValue() > 0)
-                this.haveStatsPending = true;
+    public void setCreditCard(FLCreditCard card) {
+        this.creditCard = card;
+    }
+
+    public Boolean userIsAFriend(FLUser user) {
+        for (int i = 0; i < this.friends.size(); i++) {
+            if (user.userId.equals(this.friends.get(i).userId))
+                return true;
         }
+        return false;
+    }
+
+    public static String formattedBirthdate(String birthdate) {
+        String[] tmp = birthdate.split("/");
+
+        return tmp[2] + "-" + tmp[1] + "-" + tmp[0];
+    }
+
+    public Map<String, Object> getParamsForSignupCheck() {
+        Map<String, Object> res = new HashMap<String, Object>();
+
+        res.put("firstName", this.firstname);
+        res.put("lastName", this.lastname);
+        res.put("nick", this.username);
+        res.put("email", this.email);
+        res.put("birthdate", formattedBirthdate(this.birthdate));
+        res.put("phone", this.phone);
+        res.put("password", this.password);
+        res.put("validate", true);
+
+        if (this.fullname != null)
+            res.put("fullName", this.fullname);
+
+        if (this.avatarURL != null || this.avatarData != null)
+            res.put("hasImage", true);
+        else
+            res.put("hasImage", false);
+
+        if (this.avatarURL != null)
+            res.put("avatarURL", this.avatarURL);
+
+        if (this.json != null && this.json.has("fb")) {
+            res.put("fb", this.json.optJSONObject("fb"));
+            res.put("idFacebook", this.json.optJSONObject("fb").optString("id"));
+        }
+
+        return res;
+    }
+
+    public Map<String, Object> getParamsForSignup() {
+        Map<String, Object> res = new HashMap<String, Object>();
+
+        res.put("firstName", this.firstname);
+        res.put("lastName", this.lastname);
+        res.put("nick", this.username);
+        res.put("email", this.email);
+        res.put("birthdate", formattedBirthdate(this.birthdate));
+        res.put("phone", this.phone);
+        res.put("password", this.password);
+        res.put("secureCode", this.passCode);
+
+        if (this.fullname != null)
+            res.put("fullName", this.fullname);
+
+        if (this.avatarURL != null || this.avatarData != null)
+            res.put("hasImage", true);
+        else
+            res.put("hasImage", false);
+
+        if (this.avatarURL != null)
+            res.put("avatarURL", this.avatarURL);
+
+        if (this.json != null && this.json.has("fb")) {
+            res.put("fb", this.json.optJSONObject("fb"));
+            res.put("idFacebook", this.json.optJSONObject("fb").optString("id"));
+        }
+
+        return res;
     }
 }

@@ -1,6 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
 
-</LinearLayout>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_vertical"
+    android:paddingLeft="@dimen/timeline_cell_xxlarge_margin"
+    android:paddingRight="@dimen/timeline_cell_xlarge_margin"
+    android:paddingTop="@dimen/timeline_cell_large_margin"
+    android:paddingBottom="@dimen/timeline_cell_large_margin">
+
+    <TextView
+        android:id="@+id/settings_row_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/SETTINGS_CARD"
+        android:textSize="@dimen/settings_list_item_size"
+        android:textColor="@android:color/white"
+        android:singleLine="true"/>
+
+    <ImageView
+        android:layout_width="@dimen/settings_arrow_size"
+        android:layout_height="@dimen/settings_arrow_size"
+        android:src="@drawable/nav_next"
+        android:layout_alignParentRight="true"/>
+
+</RelativeLayout>

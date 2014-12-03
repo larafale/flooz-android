@@ -2,7 +2,41 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Holo.NoActionBar">
-        <!-- Customize your theme here. -->
+
+    </style>
+
+    <style name="numeric_keyboard_key">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">1</item>
+        <item name="android:paddingTop">@dimen/numeric_keyboard_key_paddingTop</item>
+        <item name="android:paddingBottom">@dimen/numeric_keyboard_key_paddingBottom</item>
+        <item name="android:clickable">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:background">@color/background_header</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+    </style>
+
+    <style name="secure_code_keyboard_key">
+        <item name="android:layout_width">@dimen/secure_code_key_size</item>
+        <item name="android:layout_height">@dimen/secure_code_key_size</item>
+        <item name="android:layout_margin">@dimen/timeline_cell_large_margin</item>
+        <item name="android:clickable">true</item>
+        <item name="android:gravity">center</item>
+        <item name="android:scaleType">centerInside</item>
+        <item name="android:background">@drawable/secure_code_keyboard_key_background</item>
+        <item name="android:textAppearance">?android:attr/textAppearanceLarge</item>
+        <item name="android:textColor">@color/blue</item>
+    </style>
+
+    <style name="action_sheet_style">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">true</item>
     </style>
 
 </resources>

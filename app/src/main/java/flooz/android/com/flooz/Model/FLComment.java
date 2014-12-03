@@ -34,7 +34,6 @@ public class FLComment {
 
             this.date = dateFormatter.parse(json.getString("cAt"));
 
-
         } catch (JSONException e) {
             e.printStackTrace();
         } catch (ParseException e) {

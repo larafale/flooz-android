@@ -1,6 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_header">
 
-</LinearLayout>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"
+        android:layout_marginTop="@dimen/timeline_cell_large_margin">
+
+        <com.makeramen.RoundedImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/signup_image_image"
+            android:scaleType="centerCrop"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginBottom="@dimen/timeline_cell_small_margin"
+            app:corner_radius="30dip"
+            app:mutate_background="true"
+            android:src="@drawable/avatar_default"
+            app:oval="true"/>
+
+        <TextView
+            android:id="@+id/signup_image_info_label"
+            android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/SIGNUP_IMAGE_EXPLICATION"
+            android:paddingLeft="@dimen/timeline_cell_xxlarge_margin"
+            android:paddingRight="@dimen/timeline_cell_xxlarge_margin"
+            android:gravity="center"
+            android:lineSpacingExtra="@dimen/timeline_cell_small_margin"
+            android:textColor="@color/placeholder"
+            android:textSize="15dp"
+            android:layout_marginBottom="@dimen/timeline_cell_xlarge_margin"/>
+
+        <RelativeLayout
+            android:id="@+id/signup_image_fbButton"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/signup_button_height"
+            android:background="@color/blue_fb"
+            android:layout_marginRight="@dimen/timeline_cell_xlarge_margin"
+            android:layout_marginLeft="@dimen/timeline_cell_xlarge_margin"
+            android:layout_marginTop="@dimen/timeline_cell_large_margin"
+            android:layout_marginBottom="@dimen/timeline_cell_large_margin">
+
+            <TextView
+                android:id="@+id/signup_image_fbButton_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/SIGNUP_IMAGE_BUTTON_FB"
+                android:textColor="@android:color/white"
+                android:padding="@dimen/timeline_cell_large_margin"
+                />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/timeline_cell_large_margin"
+                android:src="@drawable/fb_grey"/>
+            
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/signup_image_takeButton"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/signup_button_height"
+            android:background="@color/background"
+            android:layout_marginRight="@dimen/timeline_cell_xlarge_margin"
+            android:layout_marginLeft="@dimen/timeline_cell_xlarge_margin"
+            android:layout_marginTop="@dimen/timeline_cell_large_margin"
+            android:layout_marginBottom="@dimen/timeline_cell_large_margin">
+
+            <TextView
+                android:id="@+id/signup_image_takeButton_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textColor="@android:color/white"
+                android:text="@string/SIGNUP_IMAGE_BUTTON_TAKE"
+                android:padding="@dimen/timeline_cell_large_margin"
+                />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/timeline_cell_large_margin"
+                android:src="@drawable/camera_grey"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/signup_image_chooseButton"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/signup_button_height"
+            android:background="@color/background"
+            android:layout_marginRight="@dimen/timeline_cell_xlarge_margin"
+            android:layout_marginLeft="@dimen/timeline_cell_xlarge_margin"
+            android:layout_marginTop="@dimen/timeline_cell_large_margin"
+            android:layout_marginBottom="@dimen/timeline_cell_large_margin">
+
+            <TextView
+                android:id="@+id/signup_image_chooseButton_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:textColor="@android:color/white"
+                android:text="@string/SIGNUP_IMAGE_BUTTON_CHOOSE"
+                android:padding="@dimen/timeline_cell_large_margin"
+                />
+
+            <ImageView
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/timeline_cell_large_margin"
+                android:src="@drawable/photo_album"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/signup_image_next"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/signup_button_height"
+        android:layout_alignParentBottom="true"
+        android:background="@color/background"
+        android:layout_marginRight="@dimen/timeline_cell_xlarge_margin"
+        android:layout_marginLeft="@dimen/timeline_cell_xlarge_margin"
+        android:layout_marginTop="@dimen/timeline_cell_large_margin"
+        android:layout_marginBottom="@dimen/timeline_cell_large_margin"
+        android:text="@string/GLOBAL_NEXT"/>
+
+</RelativeLayout>
