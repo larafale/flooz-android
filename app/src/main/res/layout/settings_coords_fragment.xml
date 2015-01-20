@@ -1,6 +1,165 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_header"
+    android:gravity="center_horizontal">
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/header_pager_view_height"
+        android:background="@color/background_header"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/settings_coord_header_title"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:textSize="@dimen/header_pager_view_fontsize"
+            android:textColor="@color/blue"
+            android:layout_height="wrap_content"
+            android:text="@string/SETTINGS_COORD"/>
+
+        <ImageView
+            android:id="@+id/settings_coord_header_back"
+            android:layout_centerVertical="true"
+            android:layout_width="@dimen/new_flooz_header_cross"
+            android:padding="@dimen/timeline_cell_large_margin"
+            android:layout_height="fill_parent"
+            android:src="@drawable/nav_back"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:paddingLeft="@dimen/timeline_cell_xlarge_margin"
+        android:paddingRight="@dimen/timeline_cell_xlarge_margin"
+        android:layout_marginTop="@dimen/timeline_cell_large_margin">
+
+        <FrameLayout
+            android:layout_marginTop="@dimen/timeline_cell_small_margin"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/settings_coord_phone"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:singleLine="true"
+                android:textColorHint="@color/placeholder"
+                android:inputType="phone"
+                android:textColor="@android:color/white"
+                android:nextFocusForward="@+id/signup_infos_password"
+                android:hint="@string/FIELD_PHONE"/>
+
+            <TextView
+                android:id="@+id/settings_coord_verify_phone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:layout_margin="8dp"
+                android:textColor="@color/blue_light"
+                android:text="@string/EDIT_ACCOUNT_SEND_SMS"
+                android:textSize="13sp"/>
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_marginTop="@dimen/timeline_cell_small_margin"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/settings_coord_email"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:singleLine="true"
+                android:textColorHint="@color/placeholder"
+                android:inputType="textEmailAddress"
+                android:textColor="@android:color/white"
+                android:nextFocusForward="@+id/signup_infos_password"
+                android:hint="@string/FIELD_EMAIL"/>
+
+            <TextView
+                android:id="@+id/settings_coord_verify_email"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right|center_vertical"
+                android:layout_margin="8dp"
+                android:textColor="@color/blue_light"
+                android:text="@string/EDIT_ACCOUNT_SEND_MAIL"
+                android:textSize="13sp"/>
+
+        </FrameLayout>
+
+        <EditText
+            android:id="@+id/settings_coord_address"
+            android:layout_width="fill_parent"
+            android:inputType="textPostalAddress"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:hint="@string/FIELD_ADDRESS"/>
+
+        <EditText
+            android:id="@+id/settings_coord_zip"
+            android:layout_width="fill_parent"
+            android:inputType="number"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:hint="@string/FIELD_ZIP_CODE"/>
+
+        <EditText
+            android:id="@+id/settings_coord_city"
+            android:layout_width="fill_parent"
+            android:inputType="textNoSuggestions"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:hint="@string/FIELD_CITY"/>
+
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/settings_coord_justificatory"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:singleLine="true"
+                android:textColorHint="@color/placeholder"
+                android:inputType="none"
+                android:textColor="@android:color/white"
+                android:nextFocusForward="@+id/signup_infos_password"
+                android:clickable="false"
+                android:cursorVisible="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:text="@string/DOCUMENTS_HOME"/>
+
+            <ImageView
+                android:id="@+id/settings_coord_justificatory_button"
+                android:layout_width="35dp"
+                android:layout_height="35dp"
+                android:layout_gravity="right"
+                android:padding="@dimen/timeline_cell_small_margin"
+                android:src="@drawable/friends_accepted"/>
+
+        </FrameLayout>
+
+        <Button
+            android:id="@+id/settings_coord_save"
+            android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/signup_button_height"
+            android:gravity="center"
+            android:background="@drawable/background_action_button"
+            android:text="@string/GLOBAL_SAVE"
+            android:layout_marginBottom="@dimen/timeline_cell_xlarge_margin"
+            android:textSize="20sp"
+            android:textAllCaps="false"
+            android:textColor="@drawable/text_color_action_button"/>
+    </LinearLayout>
 </LinearLayout>

@@ -18,6 +18,7 @@ import flooz.android.com.flooz.Network.FloozRestClient;
 import flooz.android.com.flooz.R;
 import flooz.android.com.flooz.UI.View.NumericKeyboard;
 import flooz.android.com.flooz.Utils.CustomFonts;
+import flooz.android.com.flooz.Utils.ImageHelper;
 
 /**
  * Created by Flooz on 11/19/14.
@@ -96,11 +97,30 @@ public class SignupPassFragment extends SignupBaseFragment implements NumericKey
                 this.parentActivity.gotToNextPage();
             }
             else if (this.currentCode.equals(this.parentActivity.userData.passCode)) {
-                FloozRestClient.getInstance().signup(this.parentActivity.userData.getParamsForSignup(), this.parentActivity.userData.avatarData, new FloozHttpResponseHandler() {
+                FloozRestClient.getInstance().signup(this.parentActivity.userData.getParamsForStep(true), new FloozHttpResponseHandler() {
                     @Override
                     public void success(Object response) {
-                        parentActivity.gotToNextPage();
-                        FloozRestClient.getInstance().setSecureCode(currentCode);
+                        if (parentActivity.userData.avatarData != null) {
+                            FloozRestClient.getInstance().showLoadView();
+                            FloozRestClient.getInstance().uploadDocument("picId", ImageHelper.convertBitmapInFile(parentActivity.userData.avatarData), new FloozHttpResponseHandler() {
+                                @Override
+                                public void success(Object response) {
+                                    FloozRestClient.getInstance().setSecureCode(currentCode);
+                                    parentActivity.floozApp.displayMainView();
+                                }
+
+                                @Override
+                                public void failure(int statusCode, FLError error) {
+
+                                }
+                            });
+                        }
+                        else {
+                            FloozRestClient.getInstance().sendUserContacts();
+                            FloozRestClient.getInstance().setSecureCode(currentCode);
+                            parentActivity.floozApp.displayMainView();
+                        }
+
                     }
 
                     @Override

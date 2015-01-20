@@ -6,27 +6,35 @@
     android:layout_height="match_parent"
     android:background="@color/background_header">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="@dimen/header_pager_view_height"
-        android:gravity="center_vertical"
-        android:background="@color/background_header">
+        android:background="@color/background_header"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/transaction_select_receiver_header_text"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:textSize="@dimen/header_pager_view_fontsize"
+            android:textColor="@color/blue"
+            android:layout_height="wrap_content"
+            android:text="@string/NAV_FRIEND_PICKER"/>
 
         <ImageView
-            android:id="@+id/transaction_select_receiver_back"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/user_list_header_height"
-            android:src="@drawable/nav_back"
-            android:paddingLeft="@dimen/timeline_cell_medium_margin"
-            android:paddingRight="@dimen/timeline_cell_large_margin"/>
+            android:id="@+id/transaction_select_receiver_header_back"
+            android:layout_centerVertical="true"
+            android:layout_width="@dimen/new_flooz_header_cross"
+            android:padding="@dimen/timeline_cell_large_margin"
+            android:layout_height="@dimen/new_flooz_header_cross"
+            android:src="@drawable/nav_back"/>
+
+    </RelativeLayout>
 
         <FrameLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:paddingTop="@dimen/timeline_cell_large_margin"
-            android:paddingBottom="@dimen/timeline_cell_large_margin"
-            android:paddingRight="@dimen/timeline_cell_large_margin">
+            android:layout_height="55dp"
+            android:padding="@dimen/timeline_cell_large_margin">
 
             <EditText
                 android:id="@+id/transaction_select_receiver_search_textfield"
@@ -62,12 +70,11 @@
 
         </FrameLayout>
 
-    </LinearLayout>
-
     <se.emilsjolander.stickylistheaders.StickyListHeadersListView
         android:id="@+id/transaction_select_receiver_result_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:overScrollMode="never"
         android:dividerHeight="0dp"/>
 
 </LinearLayout>

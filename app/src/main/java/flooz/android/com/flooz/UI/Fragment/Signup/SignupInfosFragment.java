@@ -72,15 +72,6 @@ public class SignupInfosFragment extends SignupBaseFragment {
         filterArray[0] = new InputFilter.LengthFilter(10);
         this.birthdateTextfield.setFilters(filterArray);
 
-        this.firtnameTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
-                if (i == EditorInfo.IME_ACTION_NEXT)
-                    lastnameTextfield.requestFocus();
-                return false;
-            }
-        });
-
         this.firtnameTextfield.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {}
@@ -193,10 +184,20 @@ public class SignupInfosFragment extends SignupBaseFragment {
             }
         });
 
+        this.passwordTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    nextButton.performClick();
+                }
+                return false;
+            }
+        });
+
         this.nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FloozRestClient.getInstance().verifySignup(parentActivity.userData.getParamsForSignupCheck(), new FloozHttpResponseHandler() {
+                FloozRestClient.getInstance().showLoadView();
+                FloozRestClient.getInstance().signupPassStep("infos", parentActivity.userData.getParamsForStep(false), new FloozHttpResponseHandler() {
                     @Override
                     public void success(Object response) {
                         parentActivity.gotToNextPage();
@@ -250,25 +251,6 @@ public class SignupInfosFragment extends SignupBaseFragment {
     }
 
     private boolean validateForm() {
-        boolean res = true;
-
-        if (this.firtnameTextfield.getText().length() == 0)
-            res = false;
-        if (this.lastnameTextfield.getText().length() == 0)
-            res = false;
-        if (this.emailTextfield.getText().length() == 0)
-            res = false;
-        if (this.birthdateTextfield.getText().length() < 8)
-            res = false;
-        if (this.birthdateTextfield.getText().length() >= 8 && this.birthdateTextfield.getText().length() < 10 && this.birthdateTextfield.getText().charAt(6) < '2' && this.birthdateTextfield.getText().charAt(6) >= '0')
-            res = false;
-
-        if (this.passwordTextfield.getText().length() < 6)
-            res = false;
-
-        if ((res && !this.nextButton.isEnabled()) || (!res && this.nextButton.isEnabled()))
-            this.nextButton.setEnabled(res);
-
         if (this.allInstanciated) {
             FLUser user = parentActivity.userData;
 
@@ -279,6 +261,6 @@ public class SignupInfosFragment extends SignupBaseFragment {
             user.password = this.passwordTextfield.getText().toString();
         }
 
-        return res;
+        return true;
     }
 }

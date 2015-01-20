@@ -22,6 +22,7 @@ import flooz.android.com.flooz.Model.FLTransaction;
 import flooz.android.com.flooz.Network.FloozHttpResponseHandler;
 import flooz.android.com.flooz.Network.FloozRestClient;
 import flooz.android.com.flooz.R;
+import flooz.android.com.flooz.UI.View.LoadingImageView;
 import flooz.android.com.flooz.Utils.CustomFonts;
 
 /**
@@ -60,7 +61,7 @@ public class TimelineListAdapter extends ArrayAdapter<FLTransaction> {
         public ImageView transactionCommentsButtonPicto;
 
         public RoundedImageView userPic;
-        public RoundedImageView transactionPic;
+        public LoadingImageView transactionPic;
 
         public LinearLayout transactionRowContent;
         public LinearLayout transactionRowActionBar;
@@ -101,7 +102,7 @@ public class TimelineListAdapter extends ArrayAdapter<FLTransaction> {
             holder.transactionLikesButtonPicto = (ImageView) rowView.findViewById(R.id.timelineTransactionLikesButtonPicto);
 
             holder.userPic = (RoundedImageView) rowView.findViewById(R.id.userTimelineTransactionPic);
-            holder.transactionPic = (RoundedImageView) rowView.findViewById(R.id.timelineTransactionPic);
+            holder.transactionPic = (LoadingImageView) rowView.findViewById(R.id.timelineTransactionPic);
 
             holder.transactionCommentsContainer = (LinearLayout) rowView.findViewById(R.id.timelineTransactionCommentsLayout);
             holder.transactionSocialContainer = (LinearLayout) rowView.findViewById(R.id.timelineTransactionSocialLayout);
@@ -164,8 +165,7 @@ public class TimelineListAdapter extends ArrayAdapter<FLTransaction> {
         }
 
         if (!currentTransaction.attachmentURL.isEmpty()) {
-            holder.transactionPic.setImageDrawable(null);
-            ImageLoader.getInstance().displayImage(currentTransaction.attachmentThumbURL, holder.transactionPic);
+            holder.transactionPic.setImageFromUrl(currentTransaction.attachmentThumbURL);
             holder.transactionPic.setVisibility(View.VISIBLE);
 
             holder.transactionPic.setOnClickListener(new View.OnClickListener() {

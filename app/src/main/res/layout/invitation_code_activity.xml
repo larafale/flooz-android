@@ -1,6 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="match_parent"
+    android:layout_width="match_parent">
 
-</LinearLayout>
+    <LinearLayout
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/background_header"
+        android:gravity="center_horizontal">
+
+        <RelativeLayout
+            android:id="@+id/invitation_code_header"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/header_pager_view_height"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/invitation_code_header_back"
+                android:layout_width="@dimen/header_nav_back"
+                android:layout_height="@dimen/header_nav_back"
+                android:src="@drawable/nav_back"
+                android:padding="@dimen/timeline_cell_large_margin"/>
+
+            <TextView
+                android:id="@+id/invitation_code_header_title"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:textSize="@dimen/header_pager_view_fontsize"
+                android:textColor="@color/blue"
+                android:layout_height="wrap_content"
+                android:text="@string/CODE_INVITATION_TITLE"/>
+
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_marginTop="@dimen/timeline_cell_medium_margin"
+            android:id="@+id/invitation_code_img"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/flooz"/>
+
+        <TextView
+            android:id="@+id/invitation_code_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/timeline_cell_medium_margin"
+            android:textAlignment="gravity"
+            android:gravity="center"
+            android:textSize="18sp"
+            android:textColor="@android:color/white"
+            android:paddingLeft="@dimen/timeline_cell_xlarge_margin"
+            android:paddingRight="@dimen/timeline_cell_xlarge_margin"
+            android:text="@string/INVITATION_CODE_EXPLICATION"
+            />
+
+        <TextView
+            android:id="@+id/invitation_code_learn"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="@string/LEARN_MORE"
+            android:textColor="@color/blue"
+            android:textSize="17sp"/>
+
+        <EditText
+            android:id="@+id/invitation_code_textfield"
+            android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:gravity="bottom|center_horizontal"
+            android:hint="@string/INVITATION_CODE_PLACEHOLDER"
+            android:singleLine="true"/>
+
+        <Button
+            android:id="@+id/invitation_code_join"
+            android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
+            android:layout_width="300dp"
+            android:layout_height="@dimen/signup_button_height"
+            android:gravity="center"
+            android:background="@drawable/background_action_button"
+            android:enabled="false"
+            android:text="@string/GLOBAL_JOIN"
+            android:layout_marginBottom="@dimen/timeline_cell_xlarge_margin"
+            android:textSize="20sp"
+            android:textColor="@drawable/text_color_action_button"
+            android:textAllCaps="false"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

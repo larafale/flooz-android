@@ -42,9 +42,10 @@ public class SignupCGUFragment extends SignupBaseFragment {
                 progressBar.setVisibility(View.GONE);
             }
         };
+
         webView.setWebViewClient(client);
         webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl("https://www.flooz.me/n/cgu");
+        webView.loadUrl("https://www.flooz.me/cgu?layout=webview");
 
         return view;
     }

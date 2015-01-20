@@ -17,17 +17,18 @@ public class FLError {
     public String text;
     public String title;
     public Number code;
-    public Boolean isVisible;
+    public Boolean isVisible = true;
     public ErrorType type;
 
     public FLError(JSONObject json) {
         super();
-        this.setJson(json);
+        if (json != null)
+            this.setJson(json);
     }
 
     private void setJson(JSONObject json) {
         this.time = json.optInt("time");
-        this.text = json.optString("text");
+        this.text = json.optString("message");
         this.title = json.optString("title");
         this.code = json.optInt("code");
         this.isVisible = json.optBoolean("visible");
@@ -39,7 +40,7 @@ public class FLError {
             return ErrorType.ErrorTypeError;
         else if (param.equals("blue"))
             return ErrorType.ErrorTypeWarning;
-        else if (param.equals(ErrorType.ErrorTypeSuccess))
+        else if (param.equals("green"))
             return ErrorType.ErrorTypeSuccess;
 
         return null;

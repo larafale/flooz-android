@@ -1,47 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_header">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/header_pager_view_height"
-        android:background="@color/background_header"
-        android:gravity="center_vertical">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
 
-        <TextView
-            android:id="@+id/profile_settings_header_title"
-            android:layout_centerInParent="true"
-            android:layout_width="wrap_content"
-            android:textSize="@dimen/header_pager_view_fontsize"
-            android:textColor="@color/blue"
-            android:layout_height="wrap_content"
-            android:text="@string/NAV_ACCOUNT"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/header_pager_view_height"
+            android:background="@color/background_header"
+            android:gravity="center_vertical">
 
-        <ImageView
-            android:id="@+id/profile_settings_header_back"
-            android:layout_centerVertical="true"
-            android:layout_width="@dimen/new_flooz_header_cross"
-            android:padding="@dimen/timeline_cell_large_margin"
+            <TextView
+                android:id="@+id/profile_settings_header_title"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:textSize="@dimen/header_pager_view_fontsize"
+                android:textColor="@color/blue"
+                android:layout_height="wrap_content"
+                android:text="@string/NAV_ACCOUNT"/>
+
+            <ImageView
+                android:id="@+id/profile_settings_header_back"
+                android:layout_centerVertical="true"
+                android:layout_width="@dimen/new_flooz_header_cross"
+                android:padding="@dimen/timeline_cell_large_margin"
+                android:layout_height="fill_parent"
+                android:src="@drawable/nav_account_button"/>
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:src="@drawable/nav_account_button"/>
+            android:gravity="center">
 
-    </RelativeLayout>
+            <ListView
+                android:id="@+id/profile_settings_list"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="0dp"/>
+
+        </LinearLayout>
+    </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:gravity="center">
+        android:id="@+id/profile_settings_infos"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true"
+        android:paddingRight="@dimen/timeline_cell_large_margin"
+        android:paddingLeft="@dimen/timeline_cell_large_margin"
+        android:gravity="center"
+        android:layout_marginBottom="@dimen/timeline_cell_large_margin">
 
-        <ListView
-            android:id="@+id/profile_settings_list"
-            android:layout_width="fill_parent"
+        <LinearLayout
+            android:id="@+id/profile_settings_infos_notifs_container"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="0dp"/>
+            android:layout_marginRight="@dimen/timeline_cell_large_margin"
+            android:background="@drawable/settings_row_notifs"
+            android:paddingTop="@dimen/timeline_cell_small_margin"
+            android:paddingRight="@dimen/timeline_cell_large_margin"
+            android:paddingLeft="@dimen/timeline_cell_large_margin"
+            android:paddingBottom="@dimen/timeline_cell_small_margin"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/profile_settings_infos_notifs_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:textColor="@color/blue"
+                android:text="@string/GLOBAL_INTERO"
+                android:singleLine="true"/>
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/profile_settings_infos_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/MISSING_FIELDS"
+            android:textSize="12sp"
+            android:gravity="left"/>
 
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>

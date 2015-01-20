@@ -12,33 +12,26 @@
         android:gravity="center_horizontal"
         android:layout_alignParentTop="true">
 
-        <LinearLayout
-            android:orientation="horizontal"
+        <EditText
+            android:id="@+id/signup_infos_lastname"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:nextFocusForward="@+id/signup_infos_email"
+            android:singleLine="true"
+            android:hint="@string/FIELD_LASTNAME"
+            android:textColorHint="@color/placeholder"/>
 
-            <EditText
-                android:id="@+id/signup_infos_firstname"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:singleLine="true"
-                android:layout_marginRight="@dimen/timeline_cell_small_margin"
-                android:nextFocusForward="@+id/signup_infos_lastname"
-                android:hint="@string/FIELD_FIRSTNAME"
-                android:textColorHint="@color/placeholder"/>
-
-            <EditText
-                android:id="@id/signup_infos_lastname"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:nextFocusForward="@+id/signup_infos_email"
-                android:singleLine="true"
-                android:hint="@string/FIELD_LASTNAME"
-                android:textColorHint="@color/placeholder"/>
-
-        </LinearLayout>
+        <EditText
+            android:id="@+id/signup_infos_firstname"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:singleLine="true"
+            android:layout_marginRight="@dimen/timeline_cell_small_margin"
+            android:nextFocusForward="@+id/signup_infos_lastname"
+            android:hint="@string/FIELD_FIRSTNAME"
+            android:textColorHint="@color/placeholder"/>
 
         <EditText
             android:id="@id/signup_infos_email"
@@ -113,13 +106,13 @@
             android:layout_height="@dimen/signup_button_height"
             android:gravity="center"
             android:background="@drawable/background_action_button"
-            android:enabled="false"
             android:text="@string/Send_Button_Mobile"
             android:layout_marginBottom="@dimen/timeline_cell_xlarge_margin"
             android:textSize="20sp"
+            android:textAllCaps="false"
             android:textColor="@drawable/text_color_action_button"/>
     </LinearLayout>
-    
+
     <TextView
         android:id="@+id/signup_infos_cgu"
         android:padding="@dimen/timeline_cell_medium_margin"
@@ -130,5 +123,5 @@
         android:textColor="@color/placeholder"
         android:gravity="center"
         android:textAlignment="gravity"/>
-    
+
 </RelativeLayout>

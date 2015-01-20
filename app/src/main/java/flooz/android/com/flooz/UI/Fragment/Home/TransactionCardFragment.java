@@ -6,11 +6,14 @@ import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.format.DateFormat;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -20,22 +23,25 @@ import android.widget.TextView;
 import com.makeramen.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.json.JSONObject;
+
+import flooz.android.com.flooz.App.FloozApplication;
 import flooz.android.com.flooz.Model.FLComment;
 import flooz.android.com.flooz.Model.FLError;
 import flooz.android.com.flooz.Model.FLTransaction;
 import flooz.android.com.flooz.Network.FloozHttpResponseHandler;
 import flooz.android.com.flooz.Network.FloozRestClient;
 import flooz.android.com.flooz.R;
-import flooz.android.com.flooz.UI.Activity.HomeActivity;
-import flooz.android.com.flooz.UI.Fragment.Camera.ImageViewerFragment;
+import flooz.android.com.flooz.UI.Fragment.Home.Authentication.AuthenticationFragment;
+import flooz.android.com.flooz.UI.View.LoadingImageView;
 import flooz.android.com.flooz.Utils.CustomFonts;
 
 /**
  * Created by Flooz on 9/25/14.
  */
-public class TransactionCardFragment extends DialogFragment {
+public class TransactionCardFragment extends HomeBaseFragment implements AuthenticationFragment.AuthenticationDelegate {
 
-    public HomeActivity parentActivity;
+    private TransactionCardFragment instance;
     private Boolean viewCreated = false;
 
     public Boolean insertComment = false;
@@ -46,6 +52,7 @@ public class TransactionCardFragment extends DialogFragment {
     private ImageView cardHeaderScope;
     private TextView cardHeaderDate;
     private ImageView cardHeaderCloseButton;
+    private ImageView cardHeaderReportButton;
     private RoundedImageView cardFromPic;
     private RoundedImageView cardToPic;
     private TextView cardFromUsername;
@@ -60,7 +67,7 @@ public class TransactionCardFragment extends DialogFragment {
     private TextView card3dText2;
     private TextView card3dText3;
     private TextView cardDesc;
-    private RoundedImageView cardPic;
+    private LoadingImageView cardPic;
     private LinearLayout cardLikesContainer;
     private TextView cardLikesText;
     private LinearLayout cardLikesButton;
@@ -82,6 +89,7 @@ public class TransactionCardFragment extends DialogFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.instance = this;
     }
 
     @Override
@@ -95,6 +103,7 @@ public class TransactionCardFragment extends DialogFragment {
         this.cardHeaderScope = (ImageView) view.findViewById(R.id.transac_card_header_scope);
         this.cardHeaderDate = (TextView) view.findViewById(R.id.transac_card_header_date);
         this.cardHeaderCloseButton = (ImageView) view.findViewById(R.id.transac_card_header_close);
+        this.cardHeaderReportButton = (ImageView) view.findViewById(R.id.transac_card_header_report);
         this.cardFromPic = (RoundedImageView) view.findViewById(R.id.transac_card_from_pic);
         this.cardToPic = (RoundedImageView) view.findViewById(R.id.transac_card_to_pic);
         this.cardFromUsername = (TextView) view.findViewById(R.id.transac_card_from_username);
@@ -109,7 +118,7 @@ public class TransactionCardFragment extends DialogFragment {
         this.card3dText2 = (TextView) view.findViewById(R.id.transac_card_3dText_2);
         this.card3dText3 = (TextView) view.findViewById(R.id.transac_card_3dText_3);
         this.cardDesc = (TextView) view.findViewById(R.id.transac_card_desc);
-        this.cardPic = (RoundedImageView) view.findViewById(R.id.transac_card_pic);
+        this.cardPic = (LoadingImageView) view.findViewById(R.id.transac_card_pic);
         this.cardLikesContainer = (LinearLayout) view.findViewById(R.id.transac_card_likes_container);
         this.cardCommentsButton = (LinearLayout) view.findViewById(R.id.transac_card_comments_button);
         this.cardCommentsButtonText = (TextView) view.findViewById(R.id.transac_card_comments_button_text);
@@ -156,31 +165,65 @@ public class TransactionCardFragment extends DialogFragment {
                     imm.hideSoftInputFromWindow(parentActivity.getWindow().getDecorView().getRootView().getWindowToken(), 0);
                 }
 
-//                if (parentActivity != null)
-//                    parentActivity.popMainFragment(R.animator.slide_down, android.R.animator.fade_in);
-                dismiss();
+                parentActivity.hideTransactionCard();
+            }
+        });
+
+        this.cardHeaderReportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FloozApplication.getInstance().showReportActionMenu(transaction.transactionId);
             }
         });
 
         this.cardActionBarDecline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FloozRestClient.getInstance().updateTransaction(transaction, FLTransaction.TransactionStatus.TransactionStatusRefused, new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        setTransaction(new FLTransaction(((JSONObject)response).optJSONObject("item")));
+                    }
 
+                    @Override
+                    public void failure(int statusCode, FLError error) { }
+                });
             }
         });
 
         this.cardActionBarAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                FloozRestClient.getInstance().updateTransactionValidate(transaction, FLTransaction.TransactionStatus.TransactionStatusAccepted, new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        showValidationDialog(((JSONObject) response).optString("confirmationText"));
+                    }
 
+                    @Override
+                    public void failure(int statusCode, FLError error) { }
+                });
+            }
+        });
+
+        this.cardFromPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FloozApplication.getInstance().showUserActionMenu(transaction.from);
+            }
+        });
+
+        this.cardToPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FloozApplication.getInstance().showUserActionMenu(transaction.to);
             }
         });
 
         this.cardPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((ImageViewerFragment)parentActivity.contentFragments.get("img")).setImage(transaction.attachmentURL);
-                parentActivity.pushMainFragment("img", R.animator.slide_up, android.R.animator.fade_out);
+                parentActivity.showImageViewer(transaction.attachmentURL);
             }
         });
 
@@ -260,18 +303,11 @@ public class TransactionCardFragment extends DialogFragment {
         }
     }
 
-    @Override
-    public Dialog onCreateDialog(Bundle savedInstanceState) {
-        Dialog tmp = super.onCreateDialog(savedInstanceState);
-        tmp.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        return tmp;
-    }
-
     private void reloadView() {
 
         this.cardHeaderScope.setImageDrawable(FLTransaction.transactionScopeToImage(this.transaction.scope));
 
-        this.cardHeaderDate.setText(DateFormat.format("dd MMM à hh:mm", this.transaction.date));
+        this.cardHeaderDate.setText(DateFormat.format("dd MMM à hh:mm", this.transaction.date.getDate()));
 
         if (this.transaction.from.avatarURL != null && !this.transaction.from.avatarURL.isEmpty())
             ImageLoader.getInstance().displayImage(this.transaction.from.avatarURL, this.cardFromPic);
@@ -298,6 +334,8 @@ public class TransactionCardFragment extends DialogFragment {
         }
         if (this.transaction.isAcceptable || this.transaction.isCancelable) {
             this.cardActionBar.setVisibility(View.VISIBLE);
+            this.cardActionBarAccept.setText(this.context.getResources().getString(R.string.GLOBAL_PAY) + " " + Math.abs(this.transaction.amount.floatValue()) + this.context.getResources().getString(R.string.GLOBAL_EURO))
+            ;
         }
         else {
             this.cardActionBar.setVisibility(View.GONE);
@@ -310,7 +348,7 @@ public class TransactionCardFragment extends DialogFragment {
         this.cardDesc.setText(this.transaction.content);
 
         if (this.transaction.attachmentThumbURL != null && !this.transaction.attachmentThumbURL.isEmpty()) {
-            ImageLoader.getInstance().displayImage(this.transaction.attachmentThumbURL, this.cardPic);
+            this.cardPic.setImageFromUrl(this.transaction.attachmentThumbURL);
             this.cardPic.setVisibility(View.VISIBLE);
         }
         else
@@ -360,6 +398,15 @@ public class TransactionCardFragment extends DialogFragment {
         }
 
         this.cardCommentsTextfield.setText("");
+
+        this.cardCommentsTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    cardCommentsSendButton.performClick();
+                }
+                return false;
+            }
+        });
 
         this.cardCommentsSendButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -423,5 +470,57 @@ public class TransactionCardFragment extends DialogFragment {
         this.transaction = transac;
         if (this.viewCreated)
             this.reloadView();
+    }
+
+    private void showValidationDialog(String content) {
+        final Dialog dialog = new Dialog(this.context);
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.custom_dialog_validate_transaction);
+
+        TextView text = (TextView) dialog.findViewById(R.id.dialog_validate_flooz_text);
+        text.setText(content);
+        text.setTypeface(CustomFonts.customContentRegular(this.context));
+
+        Button decline = (Button) dialog.findViewById(R.id.dialog_validate_flooz_decline);
+        Button accept = (Button) dialog.findViewById(R.id.dialog_validate_flooz_accept);
+
+        decline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+                parentActivity.hideTransactionCard();
+                ((AuthenticationFragment)parentActivity.contentFragments.get("authentication")).delegate = instance;
+                parentActivity.pushMainFragment("authentication", R.animator.slide_up, android.R.animator.fade_out);
+            }
+        });
+
+        dialog.show();
+    }
+
+    @Override
+    public void authenticationValidated() {
+        FloozRestClient.getInstance().updateTransaction(transaction, FLTransaction.TransactionStatus.TransactionStatusAccepted, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                setTransaction(new FLTransaction(((JSONObject)response).optJSONObject("item")));
+                parentActivity.showTransactionCard(transaction);
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) { }
+        });
+    }
+
+    @Override
+    public void authenticationFailed() {
+        parentActivity.showTransactionCard(transaction);
     }
 }

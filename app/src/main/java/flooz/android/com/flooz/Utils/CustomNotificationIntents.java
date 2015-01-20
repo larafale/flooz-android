@@ -25,4 +25,7 @@ public class CustomNotificationIntents
 
     public static Intent enableSlidingMenu() {return new Intent("NotificationEnableMenu");}
     public static IntentFilter filterEnableSlidingMenu() {return new IntentFilter("NotificationEnableMenu");}
+
+    public static Intent reloadNotifications() {return new Intent("NotificationReloadNotifications");}
+    public static IntentFilter filterReloadNotifications() {return new IntentFilter("NotificationReloadNotifications");}
 }

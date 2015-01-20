@@ -5,15 +5,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.ListView;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-import com.handmark.pulltorefresh.library.PullToRefreshBase;
-import com.handmark.pulltorefresh.library.PullToRefreshListView;
+import com.baoyz.widget.PullRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +26,8 @@ import flooz.android.com.flooz.Model.FLTransaction;
 import flooz.android.com.flooz.Network.FloozHttpResponseHandler;
 import flooz.android.com.flooz.Network.FloozRestClient;
 import flooz.android.com.flooz.R;
+import flooz.android.com.flooz.UI.View.TimelineListView;
+import flooz.android.com.flooz.Utils.CustomFonts;
 import flooz.android.com.flooz.Utils.CustomNotificationIntents;
 
 /**
@@ -39,9 +41,11 @@ public class TimelineFragment extends Fragment implements TimelineListAdapter.Ti
         public void onItemImageSelected(String imgUrl);
     }
 
+    public PullRefreshLayout refreshContainer;
     public TimelineFragmentDelegate delegate;
-    public PullToRefreshListView timelineListView;
+    public TimelineListView timelineListView;
     private TimelineListAdapter timelineAdapter;
+    private ImageView backgroundImage;
 
     public List<FLTransaction> transactions = null;
     public FLTransaction.TransactionScope currentScope;
@@ -69,16 +73,27 @@ public class TimelineFragment extends Fragment implements TimelineListAdapter.Ti
     {
         View view = inflater.inflate(R.layout.timeline_fragment, null);
 
-        this.timelineListView = (PullToRefreshListView) view.findViewById(R.id.timeline_list);
-        this.timelineListView.setOnRefreshListener(new PullToRefreshBase.OnRefreshListener<ListView>() {
+        this.refreshContainer = (PullRefreshLayout) view.findViewById(R.id.timeline_refresh_container);
+        this.timelineListView = (TimelineListView) view.findViewById(R.id.timeline_list);
+        ((TextView)this.timelineListView.getScrollBarPanel().findViewById(R.id.timeline_scrollbar_panel_when)).setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+        this.backgroundImage  = (ImageView) view.findViewById(R.id.timeline_background);
+
+        this.refreshContainer.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
-            public void onRefresh(PullToRefreshBase<ListView> refreshView) {
+            public void onRefresh() {
                 refreshTransactions();
             }
         });
-        this.timelineListView.setOnLastItemVisibleListener(new PullToRefreshBase.OnLastItemVisibleListener() {
+
+        this.timelineListView.setOnTimelineListViewListener(new TimelineListView.OnTimelineListViewListener() {
             @Override
-            public void onLastItemVisible() {
+            public void onPositionChanged(TimelineListView listView, int position, View scrollBarPanel) {
+                ((ImageView)scrollBarPanel.findViewById(R.id.timeline_scrollbar_panel_scope)).setImageDrawable(FLTransaction.transactionScopeToImage(transactions.get(position).scope));
+                ((TextView)scrollBarPanel.findViewById(R.id.timeline_scrollbar_panel_when)).setText(transactions.get(position).when);
+            }
+
+            @Override
+            public void onShowLastItem() {
                 loadNextPage();
             }
         });
@@ -159,7 +174,29 @@ public class TimelineFragment extends Fragment implements TimelineListAdapter.Ti
                 nextPageUrl = (String) responseMap.get("nextUrl");
 
                 timelineAdapter.notifyDataSetChanged();
-                timelineListView.onRefreshComplete();
+                refreshContainer.setRefreshing(false);
+
+                if (transactions.size() == 0) {
+                    Handler _timer = new Handler();
+                    _timer.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (transactions.size() == 0) {
+                                if (currentScope == FLTransaction.TransactionScope.TransactionScopeFriend) {
+                                    backgroundImage.setImageResource(R.drawable.empty_tl_friend);
+                                    backgroundImage.setVisibility(View.VISIBLE);
+                                } else if (currentScope == FLTransaction.TransactionScope.TransactionScopePrivate) {
+                                    backgroundImage.setImageResource(R.drawable.empty_tl_private);
+                                    backgroundImage.setVisibility(View.VISIBLE);
+                                }
+                            } else {
+                                backgroundImage.setVisibility(View.GONE);
+                            }
+                        }
+                    }, 500);
+                } else {
+                    backgroundImage.setVisibility(View.GONE);
+                }
             }
 
             @Override
@@ -167,11 +204,5 @@ public class TimelineFragment extends Fragment implements TimelineListAdapter.Ti
 
             }
         });
-    }
-
-    private void didFilterChange() {
-        this.timelineAdapter.notifyDataSetChanged();
-        this.timelineListView.getRefreshableView().smoothScrollToPosition(0);
-        this.timelineListView.onRefreshComplete();
     }
 }

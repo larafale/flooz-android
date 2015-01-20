@@ -7,21 +7,47 @@
     android:paddingLeft="@dimen/timeline_cell_xxlarge_margin"
     android:paddingRight="@dimen/timeline_cell_xlarge_margin"
     android:paddingTop="@dimen/timeline_cell_large_margin"
-    android:paddingBottom="@dimen/timeline_cell_large_margin">
+    android:paddingBottom="@dimen/timeline_cell_large_margin"
+    android:background="@color/background_header">
 
     <TextView
         android:id="@+id/settings_row_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/SETTINGS_CARD"
         android:textSize="@dimen/settings_list_item_size"
         android:textColor="@android:color/white"
-        android:singleLine="true"/>
+        android:singleLine="true"
+        android:layout_centerVertical="true"/>
+
+    <LinearLayout
+        android:id="@+id/settings_row_notifs_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/timeline_cell_xxlarge_margin"
+        android:background="@drawable/settings_row_notifs"
+        android:paddingTop="@dimen/timeline_cell_small_margin"
+        android:paddingRight="@dimen/timeline_cell_large_margin"
+        android:paddingLeft="@dimen/timeline_cell_large_margin"
+        android:paddingBottom="@dimen/timeline_cell_small_margin"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/settings_row_notifs_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="@color/blue"
+            android:singleLine="true"/>
+
+    </LinearLayout>
 
     <ImageView
         android:layout_width="@dimen/settings_arrow_size"
         android:layout_height="@dimen/settings_arrow_size"
         android:src="@drawable/nav_next"
-        android:layout_alignParentRight="true"/>
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"/>
 
 </RelativeLayout>

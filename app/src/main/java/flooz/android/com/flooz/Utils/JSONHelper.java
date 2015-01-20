@@ -48,6 +48,16 @@ public class JSONHelper
         return map;
     }
 
+    public static Map<String, String> toMapOfString(JSONObject object) throws JSONException {
+        Map<String, String> map = new HashMap();
+        Iterator keys = object.keys();
+        while (keys.hasNext()) {
+            String key = (String) keys.next();
+            map.put(key, object.getString(key));
+        }
+        return map;
+    }
+
     public static List toList(JSONArray array) throws JSONException {
         List list = new ArrayList();
         for (int i = 0; i < array.length(); i++) {

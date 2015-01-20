@@ -38,6 +38,7 @@
         android:enabled="false"
         android:text="@string/Send_Button_Mobile"
         android:layout_marginBottom="@dimen/timeline_cell_xlarge_margin"
+        android:textAllCaps="false"
         android:textSize="20sp"/>
 
 </LinearLayout>

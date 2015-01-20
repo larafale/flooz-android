@@ -27,9 +27,6 @@ import flooz.android.com.flooz.Utils.CustomFonts;
 import flooz.android.com.flooz.Utils.CustomNotificationIntents;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
-/**
- * Created by Flooz on 10/13/14.
- */
 public class FriendsListAdapter extends BaseAdapter implements StickyListHeadersAdapter {
 
     private Boolean isSearchActive = false;
@@ -37,11 +34,13 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
     private Context context;
     private LayoutInflater inflater;
 
-    private List<FLUser> suggestionList = new ArrayList<FLUser>(0);
-    private List<FLUser> friendList = new ArrayList<FLUser>(0);
-    private List<FLUser> pendingList = new ArrayList<FLUser>(0);
+    public FriendsListAdapterDelegate delegate;
 
-    private List<FLUser> searchFloozUsers = new ArrayList<FLUser>(0);
+    public List<FLUser> suggestionList = new ArrayList<>(0);
+    public List<FLUser> friendList = new ArrayList<>(0);
+    public List<FLUser> pendingList = new ArrayList<>(0);
+
+    public List<FLUser> searchFloozUsers = new ArrayList<>(0);
 
     private BroadcastReceiver reloadFriendsReceiver = new BroadcastReceiver() {
         @Override
@@ -53,10 +52,10 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
             friendList = currentUser.friends;
 
             if (pendingList == null)
-                pendingList = new ArrayList<FLUser>(0);
+                pendingList = new ArrayList<>(0);
 
             if (friendList == null)
-                friendList = new ArrayList<FLUser>(0);
+                friendList = new ArrayList<>(0);
 
             notifyDataSetChanged();
         }
@@ -97,6 +96,35 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
 
             }
         });
+    }
+
+    public void reloadFriends() {
+        FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+        pendingList = currentUser.friendsRequest;
+        friendList = currentUser.friends;
+
+        if (pendingList == null)
+            pendingList = new ArrayList<FLUser>(0);
+
+        if (friendList == null)
+            friendList = new ArrayList<FLUser>(0);
+
+        notifyDataSetChanged();
+    }
+
+    public void reloadSuggestions(List<FLUser> friends) {
+        suggestionList.clear();
+        suggestionList.addAll(friends);
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+
+        if (this.delegate != null)
+            this.delegate.dataReloaded();
     }
 
     @Override
@@ -299,7 +327,7 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
     }
 
     public void stopSearch() {
-        this.reloadSuggestions();
+//        this.reloadSuggestions();
         this.isSearchActive = false;
         this.notifyDataSetChanged();
     }

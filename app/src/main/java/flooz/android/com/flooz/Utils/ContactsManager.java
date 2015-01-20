@@ -21,7 +21,7 @@ public class ContactsManager {
 
     public static List<FLUser> searchContacts(String searchString) {
 
-        List<FLUser> resultList = new ArrayList<FLUser>(0);
+        List<FLUser> resultList = new ArrayList<>(0);
 
         ContentResolver contentResolver = FloozApplication.getAppContext().getContentResolver();
         Cursor contactCursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, ContactsContract.Contacts.DISPLAY_NAME + " ASC");
@@ -40,14 +40,16 @@ public class ContactsManager {
                         String phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
                         user.username = ContactsManager.validatePhoneNumber(phoneNumber);
+                        user.phone = user.username;
 
-                        if (user.username != null && !user.username.isEmpty())
+                        if (user.username != null && !user.username.isEmpty() && user.fullname.toLowerCase().contains(searchString.toLowerCase()))
                             resultList.add(user);
                     }
-
+                    phoneCursor.close();
                 }
             }
         }
+        contactCursor.close();
         return resultList;
     }
 

@@ -1,6 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="horizontal" android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingLeft="@dimen/timeline_cell_large_margin"
+    android:paddingRight="@dimen/timeline_cell_large_margin"
+    android:paddingTop="@dimen/timeline_cell_medium_margin"
+    android:paddingBottom="@dimen/timeline_cell_medium_margin"
+    android:background="@drawable/timeline_scrollbar_panel_background"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/timeline_scrollbar_panel_scope"
+        android:layout_width="20dp"
+        android:layout_height="20dp"/>
+
+    <TextView
+        android:id="@+id/timeline_scrollbar_panel_when"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/timeline_cell_medium_margin"
+        android:textColor="@android:color/white"
+        android:textSize="14sp"/>
 
 </LinearLayout>

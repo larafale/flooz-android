@@ -18,17 +18,15 @@
             android:layout_width="40dp"
             android:layout_height="40dp"
             android:padding="5dp"
-            android:scaleType="centerInside"
-            android:src="@drawable/account_notification_button"/>
+            android:scaleType="centerInside"/>
 
         <TextView
             android:id="@+id/menu_row_notification"
             android:layout_width="20dp"
             android:layout_height="20dp"
-            android:text="2"
             android:gravity="center"
             android:padding="2dp"
-            android:textSize="12dp"
+            android:textSize="12sp"
             android:background="@drawable/notification_alert_background"
             android:layout_alignRight="@id/menu_row_img"/>
 
@@ -39,9 +37,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
-        android:text="Notifications"
-        android:textSize="15dp"
-        android:textAllCaps="true"
+        android:textSize="17sp"
         android:textColor="@android:color/white"/>
 
 </LinearLayout>

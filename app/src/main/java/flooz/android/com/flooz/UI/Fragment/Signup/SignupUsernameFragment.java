@@ -4,9 +4,11 @@ import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -52,13 +54,22 @@ public class SignupUsernameFragment extends SignupBaseFragment {
             usernameTextfield.setSelection(parentActivity.userData.username.length());
         }
 
+        this.usernameTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    nextButton.performClick();
+                }
+                return false;
+            }
+        });
+
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FloozRestClient.getInstance().verifyPseudo(usernameTextfield.getText().toString(), new FloozHttpResponseHandler() {
+                parentActivity.userData.username = usernameTextfield.getText().toString();
+                FloozRestClient.getInstance().signupPassStep("nick", parentActivity.userData.getParamsForStep(false), new FloozHttpResponseHandler() {
                     @Override
                     public void success(Object response) {
-                        parentActivity.userData.username = usernameTextfield.getText().toString();
                         parentActivity.gotToNextPage();
                     }
 

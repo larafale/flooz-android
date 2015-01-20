@@ -1,2 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources></resources>
+<resources>
+    <!--<style name="AppTheme" parent="android:Theme.Material.NoActionBar">-->
+    <!--<item name="android:navigationBarColor">@color/background_header</item>-->
+    <!--<item name="android:colorPrimaryDark">@color/background_header</item>-->
+    <!--<item name="android:colorAccent">@color/blue</item>-->
+    <!--<item name="android:alertDialogTheme">@style/BaseDialogTheme</item>-->
+    <!--<item name="android:dialogTheme">@style/BaseDialogTheme</item>-->
+    <!--</style>-->
+
+    <!--<style name="BaseDialogTheme" parent="android:Theme.Material.Dialog.Alert">-->
+    <!--<item name="android:colorAccent">@color/blue</item>-->
+    <!--<item name="android:colorPrimary">@color/blue</item>-->
+    <!--</style>-->
+
+</resources>

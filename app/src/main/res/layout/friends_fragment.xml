@@ -1,7 +1,111 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_header">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/header_pager_view_height"
+        android:gravity="center_vertical"
+        android:background="@color/background_header">
+
+        <FrameLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:padding="@dimen/timeline_cell_large_margin">
+
+            <EditText
+                android:id="@+id/friends_search_textfield"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@drawable/search_bar"
+                android:drawablePadding="8dp"
+                android:paddingLeft="40dp"
+                android:paddingRight="10dp"
+                android:singleLine="true"
+                android:textColorHint="@color/placeholder"
+                android:textColor="@android:color/white"
+                android:hint="@string/SEARCH_FRIENDS">
+
+            </EditText>
+
+            <ImageView
+                android:id="@+id/friends_search_button"
+                android:layout_width="@dimen/timeline_cell_xlarge_margin"
+                android:layout_height="@dimen/timeline_cell_xlarge_margin"
+                android:layout_gravity="left|center_vertical"
+                android:layout_margin="10dp"
+                android:src="@drawable/search_button" />
+
+            <ImageView
+                android:id="@+id/friends_search_clear"
+                android:layout_width="@dimen/timeline_cell_xlarge_margin"
+                android:layout_height="@dimen/timeline_cell_xlarge_margin"
+                android:layout_gravity="right|center_vertical"
+                android:layout_margin="8dp"
+                android:src="@drawable/nav_close"
+                android:visibility="gone"/>
+
+        </FrameLayout>
+
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <com.baoyz.widget.PullRefreshLayout
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/friends_refresh_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:colors="@array/refresh_scheme_color"
+            app:type="material">
+
+            <se.emilsjolander.stickylistheaders.StickyListHeadersListView
+                android:id="@+id/friends_result_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"
+                android:dividerHeight="0dp"/>
+
+        </com.baoyz.widget.PullRefreshLayout>
+
+        <LinearLayout
+            android:id="@+id/friends_empty_background"
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:visibility="visible"
+            android:gravity="center_horizontal">
+
+            <ImageView
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/empty_friends"/>
+
+            <Button
+                android:id="@+id/friends_invite_button"
+                android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
+                android:layout_marginLeft="@dimen/timeline_cell_xxlarge_margin"
+                android:layout_marginRight="@dimen/timeline_cell_xxlarge_margin"
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/signup_button_height"
+                android:gravity="center"
+                android:background="@drawable/background_action_button"
+                android:enabled="true"
+                android:text="@string/FRIEND_INVITE"
+                android:layout_marginBottom="@dimen/timeline_cell_xlarge_margin"
+                android:textSize="20sp"
+                android:textAllCaps="false"
+                android:textColor="@drawable/text_color_action_button"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>

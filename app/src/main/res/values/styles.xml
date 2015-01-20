@@ -2,7 +2,6 @@
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="android:Theme.Holo.NoActionBar">
-
     </style>
 
     <style name="numeric_keyboard_key">
@@ -37,6 +36,14 @@
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">true</item>
+    </style>
+
+    <style name="ToolTipLayoutDefaultStyle">
+        <item name="ttlm_padding">25dip</item>
+        <item name="ttlm_strokeColor">@color/blue</item>
+        <item name="ttlm_backgroundColor">#FFFFFF</item>
+        <item name="ttlm_strokeWeight">0dip</item>
+        <item name="ttlm_cornerRadius">8dip</item>
     </style>
 
 </resources>

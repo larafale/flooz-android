@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import flooz.android.com.flooz.Network.FloozRestClient;
 import flooz.android.com.flooz.Utils.JSONHelper;
 
 /**
@@ -20,6 +21,7 @@ public class FLUser
 {
     public String userId;
     public Number amount;
+    public String coupon;
     public String firstname;
     public String lastname;
     public String fullname;
@@ -34,21 +36,19 @@ public class FLUser
     public Number friendsCount;
     public Boolean haveStatsPending;
     public String passCode;
+    public String smsCode;
+    public String distinctId;
 
-    public String deviceToken;
-
-    public Map<String, Object> address;
+    public Map<String, String> address;
     public Map<String, Object> sepa;
     public Map<String, Object> notifications;
     public Map<String, Object> notificationsText;
     public Map<String, Object> checkDocuments;
     public FLCreditCard creditCard;
 
-    public List<FLUser> friends = new ArrayList<FLUser>(0);
-    public List<FLUser> friendsRecent = new ArrayList<FLUser>(0);
-    public List<FLUser> friendsRequest = new ArrayList<FLUser>(0);
-
-    public Boolean needDocuments;
+    public List<FLUser> friends = new ArrayList<>(0);
+    public List<FLUser> friendsRecent = new ArrayList<>(0);
+    public List<FLUser> friendsRequest = new ArrayList<>(0);
 
     public Boolean isFriendWaiting;
 
@@ -104,6 +104,11 @@ public class FLUser
             this.profileCompletion = this.json.optString("profileCompletion");
             this.hasSecureCode = this.json.optString("secureCode");
 
+            if (this.json.has("birthdate")) {
+                String array[]  = this.json.optString("birthdate").split("-");
+                this.birthdate = String.format("%s/%s/%s", array[2].substring(0, 2), array[1], array[0]);
+            }
+
             if (this.avatarURL.equals("/img/nopic.png"))
                 this.avatarURL = null;
 
@@ -119,7 +124,7 @@ public class FLUser
                 this.settings = JSONHelper.toMap(this.json.getJSONObject("settings"));
 
                 if (this.json.has("settings") && this.json.getJSONObject("settings").has("address")) {
-                    this.address = JSONHelper.toMap(this.json.getJSONObject("settings").getJSONObject("address"));
+                    this.address = JSONHelper.toMapOfString(this.json.getJSONObject("settings").getJSONObject("address"));
                 }
 
                 if (this.json.has("settings") && this.json.getJSONObject("settings").has("sepa")) {
@@ -127,18 +132,18 @@ public class FLUser
                 }
             }
 
-            this.notifications = new HashMap<String, Object>();
+            this.notifications = new HashMap<>();
 
             if (this.json.has("notifications"))
                 this.notifications = JSONHelper.toMap(this.json.getJSONObject("notifications"));
 
-            this.notificationsText = new HashMap<String, Object>();
+            this.notificationsText = new HashMap<>();
 
             if (this.json.has("notificationsText"))
                 this.notificationsText = JSONHelper.toMap(this.json.getJSONObject("notificationsText"));
 
             if (this.json.has("friends")) {
-                this.friends = new ArrayList<FLUser>(0);
+                this.friends = new ArrayList<>(0);
                 JSONArray arrayFriends = this.json.getJSONArray("friends");
 
                 for (int i = 0; i < arrayFriends.length(); i++) {
@@ -147,7 +152,7 @@ public class FLUser
             }
 
             if (this.json.has("recentFriends")) {
-                this.friendsRecent = new ArrayList<FLUser>(0);
+                this.friendsRecent = new ArrayList<>(0);
                 JSONArray arrayFriendsRecent = this.json.getJSONArray("recentFriends");
 
                 for (int i = 0; i < arrayFriendsRecent.length(); i++) {
@@ -164,7 +169,7 @@ public class FLUser
                 }
             }
 
-            this.checkDocuments = new HashMap<String, Object>();
+            this.checkDocuments = new HashMap<>();
 
             if (this.json.has("check"))
                 this.checkDocuments = JSONHelper.toMap(this.json.getJSONObject("check"));
@@ -210,20 +215,45 @@ public class FLUser
         return tmp[2] + "-" + tmp[1] + "-" + tmp[0];
     }
 
-    public Map<String, Object> getParamsForSignupCheck() {
+    public static String formattedBirthdateFromFacebook(String birthdate) {
+        String[] tmp = birthdate.split("/");
+
+        return tmp[1] + "/" + tmp[0] + "/" + tmp[2];
+
+    }
+
+    public Map<String, Object> getParamsForStep(Boolean last) {
         Map<String, Object> res = new HashMap<String, Object>();
 
-        res.put("firstName", this.firstname);
-        res.put("lastName", this.lastname);
-        res.put("nick", this.username);
-        res.put("email", this.email);
-        res.put("birthdate", formattedBirthdate(this.birthdate));
-        res.put("phone", this.phone);
-        res.put("password", this.password);
-        res.put("validate", true);
+        if (this.firstname != null)
+            res.put("firstName", this.firstname);
+
+        if (this.lastname != null)
+            res.put("lastName", this.lastname);
+
+        if (this.username != null)
+            res.put("nick", this.username);
+
+        if (this.email != null)
+            res.put("email", this.email);
+
+        if (this.birthdate != null)
+            res.put("birthdate", formattedBirthdate(this.birthdate));
+
+        if (this.phone != null)
+            res.put("phone", this.phone);
+
+        if (this.password != null)
+            res.put("password", this.password);
 
         if (this.fullname != null)
             res.put("fullName", this.fullname);
+
+        if (this.smsCode != null)
+            res.put("smscode", this.smsCode);
+
+        if (this.distinctId != null)
+            res.put("distinctId", this.distinctId);
 
         if (this.avatarURL != null || this.avatarData != null)
             res.put("hasImage", true);
@@ -234,9 +264,19 @@ public class FLUser
             res.put("avatarURL", this.avatarURL);
 
         if (this.json != null && this.json.has("fb")) {
-            res.put("fb", this.json.optJSONObject("fb"));
+            Map<String, Object> fbData = new HashMap<String, Object>();
+
+            fbData.put("email", this.json.optJSONObject("fb").optString("email"));
+            fbData.put("id", this.json.optJSONObject("fb").optString("id"));
+            fbData.put("name", this.json.optJSONObject("fb").optString("name"));
+            fbData.put("token", this.json.optJSONObject("fb").optString("token"));
+
+            res.put("fb", fbData);
             res.put("idFacebook", this.json.optJSONObject("fb").optString("id"));
         }
+
+        if (!last)
+            res.put("validate", true);
 
         return res;
     }
@@ -253,6 +293,9 @@ public class FLUser
         res.put("password", this.password);
         res.put("secureCode", this.passCode);
 
+        if (this.coupon != null)
+            res.put("coupon", this.coupon);
+
         if (this.fullname != null)
             res.put("fullName", this.fullname);
 
@@ -265,10 +308,52 @@ public class FLUser
             res.put("avatarURL", this.avatarURL);
 
         if (this.json != null && this.json.has("fb")) {
-            res.put("fb", this.json.optJSONObject("fb"));
+            Map<String, Object> fbData = new HashMap<String, Object>();
+
+            fbData.put("email", this.json.optJSONObject("fb").optString("email"));
+            fbData.put("id", this.json.optJSONObject("fb").optString("id"));
+            fbData.put("name", this.json.optJSONObject("fb").optString("name"));
+            fbData.put("token", this.json.optJSONObject("fb").optString("token"));
+
+            res.put("fb", fbData);
             res.put("idFacebook", this.json.optJSONObject("fb").optString("id"));
         }
 
         return res;
     }
+
+    public Boolean isFriend() {
+        Boolean res = false;
+
+        if (FloozRestClient.getInstance().currentUser.userId.contentEquals(this.userId)) {
+            res = true;
+        }
+        else {
+            for (int i = 0; i < FloozRestClient.getInstance().currentUser.friends.size(); i++) {
+                if (this.userId.contentEquals(FloozRestClient.getInstance().currentUser.friends.get(i).userId)) {
+                    res = true;
+                    break;
+                }
+            }
+        }
+        return res;
+    }
+
+    public Boolean isFriendRequest() {
+        Boolean res = false;
+
+        if (FloozRestClient.getInstance().currentUser.userId.contentEquals(this.userId)) {
+            res = false;
+        }
+        else {
+            for (int i = 0; i < FloozRestClient.getInstance().currentUser.friendsRequest.size(); i++) {
+                if (this.userId.contentEquals(FloozRestClient.getInstance().currentUser.friendsRequest.get(i).userId)) {
+                    res = true;
+                    break;
+                }
+            }
+        }
+        return res;
+    }
+
 }

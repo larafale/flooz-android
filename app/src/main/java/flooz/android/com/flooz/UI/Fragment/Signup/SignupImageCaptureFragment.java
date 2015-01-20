@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import flooz.android.com.flooz.R;
-import flooz.android.com.flooz.UI.Fragment.Camera.CameraOverlayFragment;
+import flooz.android.com.flooz.UI.Fragment.Home.Camera.CameraOverlayFragment;
 import flooz.android.com.flooz.Utils.CustomCameraHost;
 
 /**

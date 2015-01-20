@@ -1,5 +1,6 @@
 package flooz.android.com.flooz.UI.Fragment.Signup;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -21,7 +22,6 @@ import flooz.android.com.flooz.Utils.CustomFonts;
  */
 public class SignupPhoneFragment extends SignupBaseFragment implements NumericKeyboard.NumericKeyboardDelegate {
 
-    private TextView infoLabel;
     private Button nextButton;
     private EditText phoneTextfield;
     private NumericKeyboard keyboard;
@@ -39,36 +39,35 @@ public class SignupPhoneFragment extends SignupBaseFragment implements NumericKe
 
         phoneTextfield = (EditText) view.findViewById(R.id.signup_phone_textfield);
         nextButton = (Button) view.findViewById(R.id.signup_phone_next);
-        infoLabel = (TextView) view.findViewById(R.id.signup_phone_info_label);
         keyboard = (NumericKeyboard) view.findViewById(R.id.signup_phone_keypad);
-
-        if (!parentActivity.startSignup)
-            infoLabel.setVisibility(View.GONE);
-
-        infoLabel.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
 
         keyboard.delegate = this;
 
-        phoneTextfield.requestFocus();
+        phoneTextfield.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
+
         phoneTextfield.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
+            public boolean onTouch(View v, MotionEvent event) {
+                v.onTouchEvent(event);
+                InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                if (imm != null) {
+                    imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                }
                 return true;
             }
         });
-        phoneTextfield.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
 
         if (parentActivity.userData.phone != null) {
-            phoneTextfield.setText(parentActivity.userData.phone);
-            if (phoneTextfield.getText().toString().startsWith("+"))
-                keyboard.maxLenght = 13;
-            else
-                keyboard.maxLenght = 10;
+            if (parentActivity.userData.phone.startsWith("+33"))
+                parentActivity.userData.phone = parentActivity.userData.phone.replace("+33", "0");
+
+            keyboard.maxLenght = 10;
 
             if (phoneTextfield.getText().length() >= 10)
                 nextButton.setEnabled(true);
 
             keyboard.value = parentActivity.userData.phone;
+            phoneTextfield.setText(parentActivity.userData.phone);
             phoneTextfield.setSelection(keyboard.value.length());
         }
 

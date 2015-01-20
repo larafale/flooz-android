@@ -13,16 +13,31 @@ public class SettingsListItem {
     private int _nbNotifs;
     private AdapterView.OnItemClickListener _clickListener;
 
-    public SettingsListItem(Context context, String title, AdapterView.OnItemClickListener clickListener) {
+    public SettingsListItem(String title, AdapterView.OnItemClickListener clickListener) {
         this._title = title;
         this._nbNotifs = 0;
         this._clickListener = clickListener;
     }
 
-    public SettingsListItem(Context context, String title, int nbNotifs, AdapterView.OnItemClickListener clickListener) {
+    public SettingsListItem(String title, int nbNotifs, AdapterView.OnItemClickListener clickListener) {
         this._title = title;
         this._nbNotifs = nbNotifs;
         this._clickListener = clickListener;
     }
 
+    public String getTitle() {
+        return this._title;
+    }
+
+    public int getNbNotifs() {
+        return this._nbNotifs;
+    }
+
+    public boolean hasNotifs() {
+        return this._nbNotifs > 0;
+    }
+
+    public AdapterView.OnItemClickListener getItemClickListener() {
+        return this._clickListener;
+    }
 }

@@ -16,6 +16,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.Arrays;
 
+import flooz.android.com.flooz.Model.FLError;
+import flooz.android.com.flooz.Network.FloozHttpResponseHandler;
 import flooz.android.com.flooz.Network.FloozRestClient;
 import flooz.android.com.flooz.R;
 import flooz.android.com.flooz.UI.Activity.SignupActivity;
@@ -88,7 +90,15 @@ public class SignupImageFragment extends SignupBaseFragment {
         this.nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                parentActivity.gotToNextPage();
+                FloozRestClient.getInstance().signupPassStep("image", parentActivity.userData.getParamsForStep(false), new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        parentActivity.gotToNextPage();
+                    }
+
+                    @Override
+                    public void failure(int statusCode, FLError error) {}
+                });
             }
         });
 

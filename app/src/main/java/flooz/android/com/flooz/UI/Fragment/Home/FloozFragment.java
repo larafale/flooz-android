@@ -4,11 +4,11 @@ package flooz.android.com.flooz.UI.Fragment.Home;
  * Created by Flooz on 9/2/14.
  */
 
-import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -19,23 +19,18 @@ import android.widget.TextView;
 
 import com.viewpagerindicator.CirclePageIndicator;
 
+import flooz.android.com.flooz.R;
+import flooz.android.com.flooz.Adapter.HeaderPagerAdapter;
 import flooz.android.com.flooz.Adapter.TimelinePagerAdapter;
 import flooz.android.com.flooz.App.FloozApplication;
 import flooz.android.com.flooz.Model.FLTransaction;
 import flooz.android.com.flooz.Network.FloozRestClient;
-import flooz.android.com.flooz.R;
-import flooz.android.com.flooz.UI.Activity.HomeActivity;
-import flooz.android.com.flooz.UI.Fragment.Camera.ImageViewerFragment;
-import flooz.android.com.flooz.UI.Fragment.Home.TimelineFragment;
-import flooz.android.com.flooz.UI.Fragment.Home.TransactionCardFragment;
-import flooz.android.com.flooz.UI.View.HeaderPagerView;
 import flooz.android.com.flooz.Utils.CustomFonts;
 import flooz.android.com.flooz.Utils.CustomNotificationIntents;
 
-public class FloozFragment extends Fragment implements TimelineFragment.TimelineFragmentDelegate
+public class FloozFragment extends HomeBaseFragment implements TimelineFragment.TimelineFragmentDelegate
 {
-    public HomeActivity parentActivity;
-    private HeaderPagerView headerPagerView;
+    private ViewPager headerPagerView;
     private CirclePageIndicator pageIndicator;
 
     private ImageView headerProfileButton;
@@ -72,7 +67,10 @@ public class FloozFragment extends Fragment implements TimelineFragment.Timeline
     {
         View view = inflater.inflate(R.layout.flooz_fragment, null);
 
-        this.headerPagerView = (HeaderPagerView) view.findViewById(R.id.timeline_scroll_header);
+        this.headerPagerView = (ViewPager) view.findViewById(R.id.timeline_header_pager);
+        this.headerPagerView.setAdapter(new HeaderPagerAdapter(getChildFragmentManager()));
+        this.headerPagerView.setCurrentItem(0);
+        this.headerPagerView.setOffscreenPageLimit(2);
 
         this.pageIndicator = (CirclePageIndicator) view.findViewById(R.id.pagerindicator);
 
@@ -80,9 +78,11 @@ public class FloozFragment extends Fragment implements TimelineFragment.Timeline
             @Override
             public void onClick(View v) {
                 if (timelineViewPager.getCurrentItem() == 0)
-                    timelineViewPagerAdapter.homeTimeline.timelineListView.getRefreshableView().smoothScrollToPosition(0);
+                    timelineViewPagerAdapter.homeTimeline.timelineListView.smoothScrollToPosition(0);
+                else if (timelineViewPager.getCurrentItem() == 1)
+                    timelineViewPagerAdapter.publicTimeline.timelineListView.smoothScrollToPosition(0);
                 else
-                    timelineViewPagerAdapter.publicTimeline.timelineListView.getRefreshableView().smoothScrollToPosition(0);
+                    timelineViewPagerAdapter.privateTimeline.timelineListView.smoothScrollToPosition(0);
             }
         });
 
@@ -94,20 +94,24 @@ public class FloozFragment extends Fragment implements TimelineFragment.Timeline
         this.timelineViewPager = (ViewPager) view.findViewById(R.id.timeline_pager);
         this.timelineViewPager.setAdapter(this.timelineViewPagerAdapter);
         this.timelineViewPager.setCurrentItem(0);
+        this.timelineViewPager.setOffscreenPageLimit(2);
 
         this.pageIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                int width = positionOffsetPixels + timelineViewPager.getWidth() * position;
-                headerPagerView.setScrollX(width / 2);
+
             }
 
             @Override
             public void onPageSelected(int position) {
+                headerPagerView.setCurrentItem(position, true);
+
                 if (position == 0)
                     timelineViewPagerAdapter.homeTimeline.refreshTransactions();
-                else
+                else if (position == 1)
                     timelineViewPagerAdapter.publicTimeline.refreshTransactions();
+                else
+                    timelineViewPagerAdapter.privateTimeline.refreshTransactions();
             }
 
             @Override
@@ -122,10 +126,31 @@ public class FloozFragment extends Fragment implements TimelineFragment.Timeline
 
         this.headerProfileButton = (ImageView)view.findViewById(R.id.profile_header_button);
 
+        final int[] doubleClickChecker = {0};
         this.headerProfileButton.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                FloozApplication.performLocalNotification(CustomNotificationIntents.showSlidingLeftMenu());
+                doubleClickChecker[0]++;
+                Handler handler = new Handler();
+                Runnable r = new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (doubleClickChecker[0] == 1) {
+                            FloozApplication.performLocalNotification(CustomNotificationIntents.showSlidingLeftMenu());
+                        }
+                        doubleClickChecker[0] = 0;
+                    }
+                };
+
+                if (doubleClickChecker[0] == 1) {
+                    handler.postDelayed(r, 250);
+                } else if (doubleClickChecker[0] == 2) {
+                    ((NotificationFragment)parentActivity.contentFragments.get("notifications")).showCross = true;
+                    parentActivity.pushMainFragment("notifications", R.animator.slide_up, android.R.animator.fade_out);
+                    doubleClickChecker[0] = 0;
+                }
             }
         });
 
@@ -152,8 +177,9 @@ public class FloozFragment extends Fragment implements TimelineFragment.Timeline
         this.newTransactionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (parentActivity != null)
-                    parentActivity.pushMainFragment("create", R.animator.slide_up, android.R.animator.fade_out);
+                ((TransactionSelectReceiverFragment)parentActivity.contentFragments.get("select_user")).firstNewFlooz = true;
+                ((TransactionSelectReceiverFragment)parentActivity.contentFragments.get("select_user")).showCross = true;
+                parentActivity.pushMainFragment("select_user", R.animator.slide_up, android.R.animator.fade_out);
             }
         });
 
@@ -174,21 +200,21 @@ public class FloozFragment extends Fragment implements TimelineFragment.Timeline
 
     @Override
     public void onItemSelected(FLTransaction transac) {
-        ((TransactionCardFragment)this.parentActivity.contentFragments.get("card")).setTransaction(transac);
-        ((TransactionCardFragment)this.parentActivity.contentFragments.get("card")).show(getChildFragmentManager(), "");
-
+        this.parentActivity.showTransactionCard(transac);
     }
 
     @Override
     public void onItemCommentSelected(FLTransaction transac) {
-        ((TransactionCardFragment)this.parentActivity.contentFragments.get("card")).setTransaction(transac);
-        ((TransactionCardFragment)this.parentActivity.contentFragments.get("card")).insertComment = true;
-        ((TransactionCardFragment)this.parentActivity.contentFragments.get("card")).show(getChildFragmentManager(), "");
+        this.parentActivity.showTransactionCard(transac, true);
     }
 
     @Override
     public void onItemImageSelected(String imgUrl) {
-        ((ImageViewerFragment)this.parentActivity.contentFragments.get("img")).setImage(imgUrl);
-        this.parentActivity.pushMainFragment("img", R.animator.slide_up, android.R.animator.fade_out);
+        this.parentActivity.showImageViewer(imgUrl);
+    }
+
+    @Override
+    public void onBackPressed() {
+        this.parentActivity.finish();
     }
 }

@@ -159,6 +159,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:layout_marginTop="10dp"
+        android:overScrollMode="never"
         android:divider="@android:color/transparent">
 
     </ListView>

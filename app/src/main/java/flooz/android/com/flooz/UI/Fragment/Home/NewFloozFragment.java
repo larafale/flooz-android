@@ -1,8 +1,8 @@
 package flooz.android.com.flooz.UI.Fragment.Home;
 
 import android.app.Dialog;
-import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.app.Service;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
@@ -28,46 +28,48 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONObject;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
+import flooz.android.com.flooz.App.FloozApplication;
 import flooz.android.com.flooz.Model.FLError;
+import flooz.android.com.flooz.Model.FLPreset;
 import flooz.android.com.flooz.Model.FLTransaction;
 import flooz.android.com.flooz.Model.FLUser;
 import flooz.android.com.flooz.Network.FloozHttpResponseHandler;
 import flooz.android.com.flooz.Network.FloozRestClient;
 import flooz.android.com.flooz.R;
-import flooz.android.com.flooz.UI.Activity.HomeActivity;
-import flooz.android.com.flooz.UI.Fragment.Camera.CameraFullscreenFragment;
-import flooz.android.com.flooz.UI.Fragment.Camera.CameraOverlayFragment;
-import flooz.android.com.flooz.UI.Fragment.Camera.ImageGalleryFragment;
+import flooz.android.com.flooz.UI.Fragment.Home.Authentication.AuthenticationFragment;
+import flooz.android.com.flooz.UI.Fragment.Home.Camera.CameraFullscreenFragment;
+import flooz.android.com.flooz.UI.Fragment.Home.Camera.CameraOverlayFragment;
+import flooz.android.com.flooz.UI.Fragment.Home.Camera.ImageGalleryFragment;
 import flooz.android.com.flooz.Utils.CustomCameraHost;
 import flooz.android.com.flooz.Utils.CustomFonts;
+import flooz.android.com.flooz.Utils.CustomNotificationIntents;
+import flooz.android.com.flooz.Utils.FLHelper;
+import flooz.android.com.flooz.Utils.ImageHelper;
 
 /**
  * Created by Flooz on 10/1/14.
  */
-public class NewFloozFragment extends Fragment implements TransactionSelectReceiverFragment.TransactionSelectReceiverDelegate,
-        CustomCameraHost.CustomCameraHostDelegate, CameraOverlayFragment.CameraOverlayFragmentCallbacks, SecureCodeFragment.SecureCodeDelegate {
+public class NewFloozFragment extends HomeBaseFragment implements TransactionSelectReceiverFragment.TransactionSelectReceiverDelegate,
+        CustomCameraHost.CustomCameraHostDelegate, AuthenticationFragment.AuthenticationDelegate {
 
     private NewFloozFragment instance;
     private Context context;
 
-    public HomeActivity parentActivity;
-
     private FLUser currentReceiver = null;
+    private FLPreset preset = null;
 
-    private CameraOverlayFragment camFragmentBack;
-    private CameraOverlayFragment camFragmentFront;
-
-    private Boolean cameraVisible = false;
-    private Boolean currentCameraIsFront = false;
+    private String random;
+    private String savedAmount;
+    private String savedWhy;
 
     private Boolean havePicture = false;
     private Bitmap currentPicture;
+
+    private Boolean clearFocus;
 
     FLTransaction.TransactionType currentType;
     private FLTransaction.TransactionScope currentScope = FLTransaction.TransactionScope.TransactionScopePublic;
@@ -80,10 +82,12 @@ public class NewFloozFragment extends Fragment implements TransactionSelectRecei
     private TextView toWho;
     private LinearLayout toContainer;
     private EditText amountTextfield;
+    private LinearLayout amountContainer;
     private TextView currencySymbol;
     private EditText contentTextfield;
     private RelativeLayout picContainer;
     private ImageView pic;
+    private ImageView captureAlbumButton;
     private ImageView picDeleteButton;
     private LinearLayout scopeContainer;
     private ImageView scopePic;
@@ -92,19 +96,56 @@ public class NewFloozFragment extends Fragment implements TransactionSelectRecei
     private CheckBox fbCheckbox;
     private TextView chargeButton;
     private TextView payButton;
-    private FrameLayout cameraFragmentContainer;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        this.instance = this;
+    }
+
+    public void initWithUser(FLUser user) {
+        this.random = FLHelper.generateRandomString();
+        this.currentReceiver = user;
+        this.preset = null;
+        this.currentPicture = null;
+        this.havePicture = false;
+
+        this.savedAmount = "";
+        this.savedWhy = "";
+        this.clearFocus = false;
+        this.currentScope = FLTransaction.transactionScopeParamToEnum((String) ((Map) FloozRestClient.getInstance().currentUser.settings.get("def")).get("scope"));
+    }
+
+    public void initWithPreset(FLPreset data) {
+        this.random = FLHelper.generateRandomString();
+        this.currentReceiver = null;
+        this.preset = data;
+        this.currentPicture = null;
+        this.havePicture = false;
+        this.clearFocus = false;
+
+        if (this.preset.to != null)
+            this.currentReceiver = this.preset.to;
+
+        if (this.preset.amount != null)
+            this.savedAmount = this.preset.amount.toString();
+        else
+            this.savedAmount = "";
+
+        if (this.preset.why != null)
+            this.savedWhy = this.preset.why;
+        else
+            this.savedWhy = "";
+
+        this.currentScope = FLTransaction.transactionScopeParamToEnum((String)((Map)FloozRestClient.getInstance().currentUser.settings.get("def")).get("scope"));
     }
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.transaction_fragment, null);
+
+        this.instance = this;
 
         this.context = inflater.getContext();
         this.headerTitle = (TextView) view.findViewById(R.id.new_transac_header_text);
@@ -115,6 +156,7 @@ public class NewFloozFragment extends Fragment implements TransactionSelectRecei
         this.toWho = (TextView) view.findViewById(R.id.new_transac_to_who);
         this.toContainer = (LinearLayout) view.findViewById(R.id.new_transac_to_container);
         this.amountTextfield = (EditText) view.findViewById(R.id.new_transac_amount_textfield);
+        this.amountContainer = (LinearLayout) view.findViewById(R.id.new_transac_amount_container);
         this.currencySymbol = (TextView) view.findViewById(R.id.new_transac_currency_symbol);
         this.contentTextfield = (EditText) view.findViewById(R.id.new_transac_content_textfield);
         this.picContainer = (RelativeLayout) view.findViewById(R.id.new_transac_pic_container);
@@ -124,19 +166,23 @@ public class NewFloozFragment extends Fragment implements TransactionSelectRecei
         this.scopePic = (ImageView) view.findViewById(R.id.new_transac_scope_pic);
         this.scopeText = (TextView) view.findViewById(R.id.new_transac_scope_text);
         this.capturePicButton = (ImageView) view.findViewById(R.id.new_transac_pic_button);
+        this.captureAlbumButton = (ImageView) view.findViewById(R.id.new_transac_album_button);
         this.fbCheckbox = (CheckBox) view.findViewById(R.id.new_transac_fb_checkbox);
         this.chargeButton = (TextView) view.findViewById(R.id.new_transac_collect);
         this.payButton = (TextView) view.findViewById(R.id.new_transac_paid);
-        this.cameraFragmentContainer = (FrameLayout) view.findViewById(R.id.new_transac_camera_fragment_container);
 
-        this.closeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (parentActivity != null)
+        if (this.preset == null || !this.preset.blockBack) {
+            this.closeButton.setVisibility(View.VISIBLE);
+            this.closeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
                     parentActivity.popMainFragment(R.animator.slide_down, android.R.animator.fade_in);
-                currentReceiver = null;
-            }
-        });
+                    currentReceiver = null;
+                }
+            });
+        } else {
+            this.closeButton.setVisibility(View.GONE);
+        }
 
         this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
         this.toUsername.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
@@ -149,28 +195,41 @@ public class NewFloozFragment extends Fragment implements TransactionSelectRecei
         this.chargeButton.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
         this.payButton.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
 
-        this.toContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (parentActivity != null) {
+        if (this.preset == null || !this.preset.blockTo) {
+            this.toContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    saveData();
                     ((TransactionSelectReceiverFragment) parentActivity.contentFragments.get("select_user")).delegate = instance;
+                    ((TransactionSelectReceiverFragment) parentActivity.contentFragments.get("select_user")).showCross = false;
                     parentActivity.pushMainFragment("select_user", R.animator.slide_up, android.R.animator.fade_out);
                 }
-            }
-        });
+            });
+        }
 
-        this.capturePicButton.setOnClickListener(toogleCamera);
+        if (this.preset == null || !this.preset.blockAmount) {
+            this.amountTextfield.setFocusable(true);
+            this.amountTextfield.setFocusableInTouchMode(true);
+            this.amountContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    amountTextfield.requestFocus();
+                    InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Service.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(amountTextfield, 0);
+                }
+            });
+        } else if (preset != null) {
+            this.amountTextfield.setFocusable(false);
+            this.amountTextfield.setFocusableInTouchMode(false);
+        }
 
-        this.camFragmentBack = new CameraOverlayFragment();
-        this.camFragmentBack.delegate = this;
-        this.camFragmentBack.callbacks = this;
-        this.camFragmentBack.isExpandable = true;
+        if (Camera.getNumberOfCameras() == 0)
+            this.capturePicButton.setVisibility(View.GONE);
+        else
+            this.capturePicButton.setVisibility(View.VISIBLE);
 
-        this.camFragmentFront = new CameraOverlayFragment();
-        this.camFragmentFront.delegate = this;
-        this.camFragmentFront.callbacks = this;
-        this.camFragmentFront.showFront = true;
-        this.camFragmentFront.isExpandable = true;
+        this.capturePicButton.setOnClickListener(showCamera);
+        this.captureAlbumButton.setOnClickListener(showAlbum);
 
         this.updateScopeField();
 
@@ -223,11 +282,94 @@ public class NewFloozFragment extends Fragment implements TransactionSelectRecei
                 currentPicture = null;
             }
         });
+        this.payButton.setVisibility(View.VISIBLE);
+        this.chargeButton.setVisibility(View.VISIBLE);
 
         this.chargeButton.setOnClickListener(chargeTransaction);
         this.payButton.setOnClickListener(payTransaction);
 
+        this.contentTextfield.setFocusable(true);
+        this.contentTextfield.setFocusableInTouchMode(true);
+
+        if (this.preset != null) {
+            if (this.preset.title != null)
+                this.headerTitle.setText(this.preset.title);
+
+            if (this.preset.blockWhy) {
+                this.contentTextfield.setFocusable(false);
+                this.contentTextfield.setFocusableInTouchMode(false);
+            }
+
+            if (this.preset.focusAmount) {
+                this.amountTextfield.requestFocus();
+                InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Service.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(this.amountTextfield, 0);
+            } else if (this.preset.focusWhy) {
+                this.contentTextfield.requestFocus();
+                InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Service.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(this.contentTextfield, 0);
+            }
+
+            if (this.preset.type == FLTransaction.TransactionType.TransactionTypeCharge) {
+                this.payButton.setVisibility(View.GONE);
+            }
+            else if (this.preset.type == FLTransaction.TransactionType.TransactionTypePayment) {
+                this.chargeButton.setVisibility(View.GONE);
+            }
+
+        } else {
+            this.amountTextfield.requestFocus();
+            InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Service.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(this.amountTextfield, 0);
+        }
+
         return view;
+    }
+
+    public void onDestroyView() {
+        super.onDestroyView();
+    }
+
+    public void onStart() {
+        super.onStart();
+        Handler handler = new Handler(this.context.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (clearFocus == false) {
+                    if (preset != null) {
+                        if (preset.focusWhy) {
+                            contentTextfield.setSelection(contentTextfield.getText().length());
+                            contentTextfield.requestFocus();
+                            InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Service.INPUT_METHOD_SERVICE);
+                            imm.showSoftInput(contentTextfield, 0);
+                        } else if (preset.focusAmount) {
+                            amountTextfield.setSelection(amountTextfield.getText().length());
+                            amountTextfield.requestFocus();
+                            InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Service.INPUT_METHOD_SERVICE);
+                            imm.showSoftInput(amountTextfield, 0);
+                        }
+                    } else {
+                        amountTextfield.setSelection(amountTextfield.getText().length());
+                        amountTextfield.requestFocus();
+                        InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Service.INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(amountTextfield, 0);
+                    }
+                } else {
+                    contentTextfield.clearFocus();
+                    amountTextfield.clearFocus();
+                }
+                clearFocus = true;
+            }
+        }, 500);
+
+        this.amountTextfield.setText(this.savedAmount);
+        this.contentTextfield.setText(this.savedWhy);
+    }
+
+    private void saveData() {
+        this.savedAmount = this.amountTextfield.getText().toString();
+        this.savedWhy = this.contentTextfield.getText().toString();
     }
 
     private void updateScopeField() {
@@ -238,12 +380,7 @@ public class NewFloozFragment extends Fragment implements TransactionSelectRecei
     private void performTransaction(FLTransaction.TransactionType type) {
         this.currentType = type;
 
-        String amount = this.amountTextfield.getText().toString();
-        if (amount.isEmpty())
-            amount = "0";
-
-        FloozRestClient.getInstance().performTransaction(Float.parseFloat(amount),
-                this.currentReceiver, this.currentType, this.currentScope, this.contentTextfield.getText().toString(), new FloozHttpResponseHandler() {
+        FloozRestClient.getInstance().performTransaction(this.generateRequestParams(true), new FloozHttpResponseHandler() {
                     @Override
                     public void success(Object response) {
                         JSONObject jsonObject = (JSONObject) response;
@@ -280,9 +417,10 @@ public class NewFloozFragment extends Fragment implements TransactionSelectRecei
         accept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                saveData();
                 dialog.dismiss();
-                ((SecureCodeFragment)parentActivity.contentFragments.get("secure_code")).delegate = instance;
-                parentActivity.pushMainFragment("secure_code", R.animator.slide_up, android.R.animator.fade_out);
+                ((AuthenticationFragment)parentActivity.contentFragments.get("authentication")).delegate = instance;
+                parentActivity.pushMainFragment("authentication", R.animator.slide_up, android.R.animator.fade_out);
             }
         });
 
@@ -303,58 +441,27 @@ public class NewFloozFragment extends Fragment implements TransactionSelectRecei
         }
     };
 
-    private View.OnClickListener toogleCamera = new View.OnClickListener() {
+    private View.OnClickListener showCamera = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
-            if (Camera.getNumberOfCameras() == 0) {
-                ((ImageGalleryFragment)parentActivity.contentFragments.get("photo_gallery")).cameraHostDelegate = instance;
-                parentActivity.pushMainFragment("photo_gallery", R.animator.slide_up, android.R.animator.fade_out);
-            }
-            else {
-                if (!cameraVisible) {
-                    InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(parentActivity.getWindow().getDecorView().getRootView().getWindowToken(), 0);
-
-                    cameraVisible = true;
-                    FragmentTransaction ft = instance.getChildFragmentManager().beginTransaction();
-
-                    if (Camera.getNumberOfCameras() < 2) {
-                        Camera.CameraInfo info = new Camera.CameraInfo();
-                        Camera.getCameraInfo(0, info);
-                        if (info.facing == Camera.CameraInfo.CAMERA_FACING_FRONT) {
-                            currentCameraIsFront = true;
-                            ft.replace(R.id.new_transac_camera_fragment_container, camFragmentFront);
-                        } else
-                            ft.replace(R.id.new_transac_camera_fragment_container, camFragmentBack);
-                    } else
-                        ft.replace(R.id.new_transac_camera_fragment_container, camFragmentBack);
-
-                    ft.addToBackStack(null).commit();
-
-                    cameraFragmentContainer.setVisibility(View.VISIBLE);
-                } else
-                    dismissCamera();
-            }
+            saveData();
+            ((CameraFullscreenFragment)parentActivity.contentFragments.get("camera_fullscreen")).cameraHostDelegate = instance;
+            ((CameraFullscreenFragment)parentActivity.contentFragments.get("camera_fullscreen")).canAccessAlbum = false;
+            parentActivity.pushMainFragment("camera_fullscreen", R.animator.slide_up, android.R.animator.fade_out);
         }
     };
 
-    private void dismissCamera() {
-        cameraFragmentContainer.setVisibility(View.GONE);
-        cameraVisible = false;
-    }
+    private View.OnClickListener showAlbum = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            saveData();
+            ((ImageGalleryFragment)parentActivity.contentFragments.get("photo_gallery")).cameraHostDelegate = instance;
+            parentActivity.pushMainFragment("photo_gallery", R.animator.slide_up, android.R.animator.fade_out);
+        }
+    };
 
     @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
-    }
-
-    @Override
-    public void UserSelected(FLUser user) {
+    public void changeUser(FLUser user) {
         this.currentReceiver = user;
     }
 
@@ -365,105 +472,80 @@ public class NewFloozFragment extends Fragment implements TransactionSelectRecei
             @Override
             public void run() {
                 havePicture = true;
-                picContainer.setVisibility(View.VISIBLE);
-                pic.setImageBitmap(photo);
                 currentPicture = photo;
 
-                if (cameraVisible)
-                    dismissCamera();
-                else
-                    parentActivity.popMainFragment(R.animator.slide_down, android.R.animator.fade_in);
+                parentActivity.popMainFragment(R.animator.slide_down, android.R.animator.fade_in);
             }
         };
         mainHandler.post(myRunnable);
     }
 
-    @Override
-    public void switchCamera(Boolean showFront) {
-        CameraOverlayFragment in;
-
-        if (showFront) {
-            this.currentCameraIsFront = true;
-            in = this.camFragmentFront;
-        }
-        else {
-            this.currentCameraIsFront = false;
-            in = this.camFragmentBack;
-        }
-
-        FragmentTransaction ft = this.getChildFragmentManager().beginTransaction();
-
-        ft.setCustomAnimations(
-                R.animator.card_flip_right_in, R.animator.card_flip_right_out,
-                R.animator.card_flip_left_in, R.animator.card_flip_left_out);
-
-        ft.replace(R.id.new_transac_camera_fragment_container, in);
-        ft.addToBackStack(null).commit();
-    }
 
     @Override
-    public void expandCamera() {
-        ((CameraFullscreenFragment)this.parentActivity.contentFragments.get("camera_fullscreen")).currentCameraIsFront = this.currentCameraIsFront;
-        ((CameraFullscreenFragment)this.parentActivity.contentFragments.get("camera_fullscreen")).cameraHostDelegate = this;
-        parentActivity.pushMainFragment("camera_fullscreen", R.animator.slide_up, android.R.animator.fade_out);
-        this.dismissCamera();
-    }
-
-    @Override
-    public void closeCamera() { }
-
-    @Override
-    public void showGallery() {
-        ((ImageGalleryFragment)this.parentActivity.contentFragments.get("photo_gallery")).cameraHostDelegate = this;
-        parentActivity.pushMainFragment("photo_gallery", R.animator.slide_up, android.R.animator.fade_out);
-        this.dismissCamera();
-    }
-
-    @Override
-    public void secureCodeValidated(Boolean success) {
-        if (success) {
-            File uploadImage = null;
-
-            if (this.havePicture) {
-                uploadImage = new File(this.context.getCacheDir(), "image.png");
-                try {
-                    uploadImage.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                Bitmap bitmap = this.currentPicture;
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.PNG, 0, bos);
-                byte[] bitmapdata = bos.toByteArray();
-
-                FileOutputStream fos = null;
-                try {
-                    fos = new FileOutputStream(uploadImage);
-                    fos.write(bitmapdata);
-                } catch (FileNotFoundException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-
-            FloozRestClient.getInstance().validateTransaction(Float.parseFloat(this.amountTextfield.getText().toString()),
-                    this.currentReceiver, this.currentType, this.currentScope, uploadImage, this.contentTextfield.getText().toString(), new FloozHttpResponseHandler() {
+    public void authenticationValidated() {
+        FloozRestClient.getInstance().performTransaction(this.generateRequestParams(false), new FloozHttpResponseHandler() {
+            @Override
+            public void success(final Object response) {
+                if (havePicture) {
+                    Handler handler = new Handler();
+                    handler.post(new Runnable() {
                         @Override
-                        public void success(Object response) {
-                            currentReceiver = null;
-                            currentScope = FLTransaction.TransactionScope.TransactionScopePublic;
-                            contentTextfield.setText("");
-                            amountTextfield.setText("");
-                            parentActivity.popMainFragment(R.animator.slide_down, android.R.animator.fade_in);
-                        }
+                        public void run() {
+                            JSONObject jsonObject = (JSONObject) response;
+                            String transacId = jsonObject.optJSONObject("item").optString("_id");
+                            FloozRestClient.getInstance().uploadTransactionPic(transacId, ImageHelper.convertBitmapInFile(currentPicture), new FloozHttpResponseHandler() {
+                                @Override
+                                public void success(Object response) {
+                                    FloozApplication.performLocalNotification(CustomNotificationIntents.reloadTimeline());
+                                }
 
-                        @Override
-                        public void failure(int statusCode, FLError error) {
+                                @Override
+                                public void failure(int statusCode, FLError error) {
 
+                                }
+                            });
                         }
                     });
-        }
+                }
+                FloozApplication.performLocalNotification(CustomNotificationIntents.reloadTimeline());
+                parentActivity.popMainFragment(R.animator.slide_down, android.R.animator.fade_in);
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+
+            }
+        });
+    }
+
+    @Override
+    public void authenticationFailed() {
+
+    }
+
+    private Map<String, Object> generateRequestParams(boolean validate) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("amount", this.amountTextfield.getText().toString());
+        if (currentReceiver != null)
+            params.put("to", currentReceiver.username);
+        else
+            params.put("to", "");
+
+        params.put("random", random);
+        params.put("method", FLTransaction.transactionTypeToParams(this.currentType));
+        params.put("scope", FLTransaction.transactionScopeToParams(this.currentScope));
+        params.put("why", this.contentTextfield.getText().toString());
+        params.put("validate", validate);
+
+        if (this.preset != null && this.preset.payload != null)
+            params.put("payload", this.preset.payload);
+
+        return params;
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (this.preset == null || !this.preset.blockBack)
+            this.closeButton.performClick();
     }
 }

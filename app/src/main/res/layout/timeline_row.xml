@@ -75,16 +75,10 @@
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/timeline_cell_title"/>
 
-            <com.makeramen.RoundedImageView
-                xmlns:app="http://schemas.android.com/apk/res-auto"
+            <flooz.android.com.flooz.UI.View.LoadingImageView
                 android:id="@+id/timelineTransactionPic"
-                android:scaleType="centerCrop"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:adjustViewBounds="true"
-                android:layout_marginTop="@dimen/timeline_cell_large_margin"
-                app:corner_radius="5dp"
-                app:oval="false"/>
+                android:layout_height="150dp"/>
 
             <LinearLayout
                 android:id="@+id/timelineTransactionSocialLayout"

@@ -1,18 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
     android:background="@color/background">
 
-    <com.handmark.pulltorefresh.library.PullToRefreshListView
-        xmlns:ptr="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/timeline_list"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@drawable/timeline_dividers"
-        android:dividerHeight="1px"
-        android:listSelector="@android:color/transparent"/>
+    <com.baoyz.widget.PullRefreshLayout
+        android:id="@+id/timeline_refresh_container"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        app:colors="@array/refresh_scheme_color"
+        app:type="material"
+        android:background="@android:color/transparent">
 
-</LinearLayout>
+        <flooz.android.com.flooz.UI.View.TimelineListView
+            android:id="@+id/timeline_list"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:divider="@drawable/timeline_dividers"
+            android:dividerHeight="1px"
+            android:overScrollMode="never"
+            android:listSelector="@android:color/transparent"/>
+
+    </com.baoyz.widget.PullRefreshLayout>
+
+    <ImageView
+        android:id="@+id/timeline_background"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:visibility="gone"/>
+
+</RelativeLayout>

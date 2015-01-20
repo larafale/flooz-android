@@ -12,6 +12,7 @@ import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
+import flooz.android.com.flooz.R;
 import flooz.android.com.flooz.UI.View.tooltip.TooltipManager;
 
 import static flooz.android.com.flooz.UI.View.tooltip.TooltipManager.DBG;

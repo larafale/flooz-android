@@ -30,7 +30,12 @@ public class FLTrigger {
         TriggerShow3DSecure,
         TriggerComplete3DSecure,
         TriggerResetPassword,
-        TriggerFail3DSecure
+        TriggerFail3DSecure,
+        TriggerSecureCodeClear,
+        TriggerSecureCodeCheck,
+        TriggerPresetLine,
+        TriggerFeedRead,
+        TriggerShowInvitation
     }
 
     public FLTriggerType type;
@@ -97,6 +102,16 @@ public class FLTrigger {
             return TriggerResetPassword;
         else if (param.equals("3dSecure:fail"))
             return TriggerFail3DSecure;
+        else if (param.equals("secureCode:clear"))
+            return TriggerSecureCodeClear;
+        else if (param.equals("secureCode:check"))
+            return TriggerSecureCodeCheck;
+        else if (param.equals("line:preset"))
+            return TriggerPresetLine;
+        else if (param.equals("feed:read"))
+            return TriggerFeedRead;
+        else if (param.equals("invitation:show"))
+            return TriggerShowInvitation;
         else
             return TriggerNone;
     }

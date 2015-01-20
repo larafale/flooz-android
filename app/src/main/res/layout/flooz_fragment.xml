@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout android:layout_width="match_parent"
+    <RelativeLayout android:layout_width="match_parent"
         android:layout_height="@dimen/header_pager_view_height"
         android:orientation="horizontal"
         android:background="@color/background_header"
@@ -15,7 +15,7 @@
             android:id="@+id/menu_row_img_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="0.1">
+            android:layout_alignParentLeft="true">
 
             <ImageView android:id="@+id/profile_header_button"
                 android:scaleType="centerInside"
@@ -34,44 +34,44 @@
                 android:textAlignment="gravity"
                 android:padding="2dp"
                 android:layout_marginTop="@dimen/timeline_cell_medium_margin"
-                android:textSize="12dp"
+                android:textSize="12sp"
                 android:background="@drawable/notification_alert_background"
                 android:layout_alignRight="@id/profile_header_button"/>
 
         </RelativeLayout>
 
-        <LinearLayout android:layout_width="80dp"
+        <LinearLayout android:layout_width="wrap_content"
             android:id="@+id/timeline_header"
             android:layout_height="match_parent"
-            android:layout_weight="0.8"
+            android:layout_centerHorizontal="true"
             android:orientation="vertical"
             android:layout_gravity="center"
             android:gravity="center">
 
-            <flooz.android.com.flooz.UI.View.HeaderPagerView
-                android:id="@+id/timeline_scroll_header"
-                android:layout_width="fill_parent"
+            <android.support.v4.view.ViewPager
+                android:id="@+id/timeline_header_pager"
+                android:layout_width="200dp"
                 android:layout_height="30dp"/>
 
             <com.viewpagerindicator.CirclePageIndicator
                 android:id="@+id/pagerindicator"
-                android:layout_width="match_parent"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/timeline_cell_small_margin"/>
 
         </LinearLayout>
 
         <ImageView
+            android:layout_alignParentRight="true"
             android:id="@+id/friends_header_button"
-            android:layout_width="20dp"
+            android:layout_width="40dp"
             android:layout_height="match_parent"
-            android:layout_weight="0.1"
             android:padding="5dp"
             android:scaleType="centerInside"
             android:layout_gravity="center"
-            android:src="@drawable/nav_friends_button"/>
+            android:src="@drawable/friends_list"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/timeline_container"

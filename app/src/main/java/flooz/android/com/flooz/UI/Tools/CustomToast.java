@@ -17,7 +17,7 @@ import flooz.android.com.flooz.R;
 public class CustomToast {
 
     public static void show(final Context ctx, final FLError content) {
-        if (content.isVisible && content.type != null) {
+        if (content.isVisible && content.type != null && FloozApplication.appInForeground) {
             Handler mainHandler = new Handler(ctx.getMainLooper());
             mainHandler.post(new Runnable() {
                 @Override

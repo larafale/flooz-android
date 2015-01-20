@@ -1,6 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_header"
+    android:gravity="center_horizontal">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/header_pager_view_height"
+        android:background="@color/background_header"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/settings_bank_header_title"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:textSize="@dimen/header_pager_view_fontsize"
+            android:textColor="@color/blue"
+            android:layout_height="wrap_content"
+            android:text="@string/SETTINGS_RIB"/>
+
+        <ImageView
+            android:id="@+id/settings_bank_header_back"
+            android:layout_centerVertical="true"
+            android:layout_width="@dimen/new_flooz_header_cross"
+            android:padding="@dimen/timeline_cell_large_margin"
+            android:layout_height="fill_parent"
+            android:src="@drawable/nav_back"/>
+
+    </RelativeLayout>
+
+    <EditText
+        android:id="@+id/settings_bank_iban"
+        android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
+        android:layout_width="fill_parent"
+        android:layout_marginRight="@dimen/timeline_cell_xlarge_margin"
+        android:layout_marginLeft="@dimen/timeline_cell_xlarge_margin"
+        android:layout_height="wrap_content"
+        android:gravity="bottom"
+        android:inputType="textNoSuggestions|textCapCharacters"
+        android:hint="@string/FIELD_IBAN_PLACEHOLDER"
+        android:singleLine="true"/>
+
+    <Button
+        android:id="@+id/settings_bank_save"
+        android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
+        android:layout_width="fill_parent"
+        android:layout_marginRight="@dimen/timeline_cell_xlarge_margin"
+        android:layout_marginLeft="@dimen/timeline_cell_xlarge_margin"
+        android:layout_height="@dimen/signup_button_height"
+        android:gravity="center"
+        android:background="@drawable/background_action_button"
+        android:enabled="false"
+        android:text="@string/GLOBAL_SAVE"
+        android:textSize="20sp"
+        android:textColor="@drawable/text_color_action_button"/>
 
 </LinearLayout>

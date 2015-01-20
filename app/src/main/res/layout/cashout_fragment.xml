@@ -1,6 +1,123 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_header">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/header_pager_view_height"
+        android:background="@color/background_header"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/cashout_header_title"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:textSize="@dimen/header_pager_view_fontsize"
+            android:textColor="@color/blue"
+            android:layout_height="wrap_content"
+            android:text="@string/NAV_CASHOUT"/>
+
+        <ImageView
+            android:id="@+id/cashout_header_back"
+            android:layout_centerVertical="true"
+            android:layout_width="@dimen/new_flooz_header_cross"
+            android:padding="@dimen/timeline_cell_large_margin"
+            android:layout_height="fill_parent"
+            android:src="@drawable/nav_account_button"/>
+
+    </RelativeLayout>
+
+
+        <LinearLayout
+            android:id="@+id/global_content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:orientation="vertical"
+            android:padding="@dimen/timeline_cell_xlarge_margin">
+
+            <TextView
+                android:id="@+id/cashout_balance_infos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:text="@string/CASHOUT_BALANCE"
+                android:layout_marginTop="@dimen/timeline_cell_large_margin"
+                android:textSize="19sp"/>
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/timeline_cell_large_margin"
+                android:gravity="center_horizontal">
+
+                <TextView
+                    android:id="@+id/cashout_balance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/blue"
+                    android:text="25"
+                    android:textSize="30sp"
+                    android:gravity="top"/>
+
+                <TextView
+                    android:id="@+id/cashout_balance_currency"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:textColor="@color/blue"
+                    android:text="@string/GLOBAL_EURO"
+                    android:textSize="20sp"
+                    android:layout_marginLeft="@dimen/timeline_cell_medium_margin"
+                    android:gravity="top"/>
+
+            </LinearLayout>
+
+
+            <EditText
+                android:id="@+id/cashout_amount_textfield"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal|numberSigned"
+                android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
+                android:textSize="19sp"
+                android:hint="@string/CASHOUT_PLACEHOLDER"/>
+
+            <TextView
+                android:id="@+id/cashout_button"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
+                android:text="@string/GLOBAL_CONFIRM"
+                android:background="@drawable/background_action_button"
+                android:enabled="false"
+                android:textColor="@drawable/text_color_action_button"
+                android:gravity="center"
+                android:padding="@dimen/timeline_cell_large_margin"
+                android:textSize="18sp"/>
+
+        </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:id="@+id/cashout_infos"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/timeline_cell_xxlarge_margin"
+            android:layout_alignParentBottom="true"
+            android:layout_marginBottom="@dimen/timeline_cell_xlarge_margin"
+            android:text="@string/CASHOUT_INFO"
+            android:paddingLeft="@dimen/timeline_cell_xlarge_margin"
+            android:paddingRight="@dimen/timeline_cell_xlarge_margin"
+            android:textColor="@color/placeholder"/>
+
+    </RelativeLayout>
 
 </LinearLayout>

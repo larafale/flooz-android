@@ -5,9 +5,11 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -71,7 +73,7 @@ public class SigninHomeFragment extends SigninBaseFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (passwordTextfield.getText().length() >= 6 && s.length() >= 8) {
+                if (passwordTextfield.getText().length() >= 6 && s.length() >= 10) {
                     nextButton.setEnabled(true);
                 }
                 else {
@@ -102,6 +104,15 @@ public class SigninHomeFragment extends SigninBaseFragment {
             }
         });
 
+        this.passwordTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    nextButton.performClick();
+                }
+                return false;
+            }
+        });
+
         this.nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -127,7 +138,7 @@ public class SigninHomeFragment extends SigninBaseFragment {
             @Override
             public void onClick(View v) {
                 String[] TO = {"support@flooz.me"};
-                Intent emailIntent = new Intent(Intent.ACTION_SEND);
+                Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
                 emailIntent.setData(Uri.parse("mailto:"));
                 emailIntent.setType("text/plain");
 

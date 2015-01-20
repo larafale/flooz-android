@@ -6,8 +6,8 @@
     android:layout_height="wrap_content"
     android:padding="@dimen/timeline_cell_large_margin"
     android:textAlignment="gravity"
+    android:textAllCaps="false"
     android:textSize="@dimen/action_sheet_item_size"
     android:textColor="@android:color/white"
     android:background="@android:color/transparent"
-    android:gravity="center"
-    android:text="@string/MENU_ADD_FRIENDS"/>
+    android:gravity="center"/>

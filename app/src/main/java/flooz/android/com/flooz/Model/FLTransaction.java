@@ -6,19 +6,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.DateFormat;
-import java.text.FieldPosition;
 import java.text.ParseException;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import flooz.android.com.flooz.App.FloozApplication;
-import flooz.android.com.flooz.Network.FloozRestClient;
 import flooz.android.com.flooz.R;
+import flooz.android.com.flooz.Utils.MomentDate;
 
 /**
  * Created by Flooz on 9/9/14.
@@ -28,7 +22,8 @@ public class FLTransaction {
     public enum TransactionType {
         TransactionTypePayment,
         TransactionTypeCharge,
-        TransactionTypeCollect
+        TransactionTypeCollect,
+        TransactionTypeNone
     }
 
     public enum TransactionStatus {
@@ -72,7 +67,7 @@ public class FLTransaction {
     public Boolean isCancelable;
     public Boolean isAcceptable;
 
-    public Date date;
+    public MomentDate date;
 
     public FLUser from;
     public FLUser to;
@@ -80,11 +75,6 @@ public class FLTransaction {
     public FLSocial social;
 
     public List comments;
-
-    public Boolean isCollect;
-    public Boolean collectCanParticipate;
-    public List collectUsers;
-    public String collectTitle;
 
     public Boolean haveAction;
 
@@ -160,21 +150,15 @@ public class FLTransaction {
             this.from = new FLUser(json.getJSONObject("from"));
             this.to = new FLUser(json.getJSONObject("to"));
 
-            SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'");
-            dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+            this.date = new MomentDate(FloozApplication.getAppContext(), json.getString("cAt"));
 
-            this.date = dateFormatter.parse(json.getString("cAt"));
-
-            this.when = "";
+            this.when = this.date.fromNow();
 
             this.comments = new ArrayList();
             for (int i = 0; i < json.getJSONArray("comments").length(); i++) {
                 FLComment comment = new FLComment(json.getJSONArray("comments").getJSONObject(i));
                 this.comments.add(comment);
             }
-//
-//    _when = [FLHelper formatedDateFromNow:_date];
-//
 
             if (json.has("text3d")) {
                 this.text3d = new ArrayList(3);

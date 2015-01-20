@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -21,6 +22,7 @@ import flooz.android.com.flooz.Model.FLTransaction;
 import flooz.android.com.flooz.Network.FloozHttpResponseHandler;
 import flooz.android.com.flooz.Network.FloozRestClient;
 import flooz.android.com.flooz.R;
+import flooz.android.com.flooz.Utils.CustomFonts;
 
 /**
  * Created by Flooz on 9/17/14.
@@ -32,8 +34,9 @@ public class StartActivity extends Activity {
     private ListView timelineListView;
     private TimelineListAdapter timelineAdapter;
 
-    private TextView signInButton;
-    private TextView signUpButton;
+    private LinearLayout loginButton;
+    private TextView loginText;
+    private ImageView loginImage;
 
     private List<FLTransaction> transactions;
 
@@ -48,38 +51,26 @@ public class StartActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        floozApp = (FloozApplication)this.getApplicationContext();
-
         setContentView(R.layout.start_activity);
         floozApp = (FloozApplication)this.getApplicationContext();
-        this.transactions = new ArrayList<FLTransaction>(0);
+        this.transactions = new ArrayList<>(0);
 
         this.timelineAdapter = new TimelineListAdapter(this, this.transactions);
         this.timelineListView = (ListView) this.findViewById(R.id.start_timeline_list);
         this.timelineListView.setAdapter(this.timelineAdapter);
 
-        this.signInButton = (TextView) this.findViewById(R.id.start_login_button);
+        this.loginButton = (LinearLayout) this.findViewById(R.id.start_login_button);
+        this.loginText = (TextView) this.findViewById(R.id.start_login_text);
+        this.loginImage = (ImageView) this.findViewById(R.id.start_login_image);
 
-        this.signInButton.setOnClickListener(new View.OnClickListener() {
+        this.loginText.setTypeface(CustomFonts.customTitleLight(this));
+
+        this.loginImage.setColorFilter(getResources().getColor(android.R.color.white));
+
+        this.loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                launchSignIn();
-            }
-        });
-
-        this.signUpButton = (TextView) this.findViewById(R.id.start_signup_button);
-        this.signUpButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launchSignUp();
-            }
-        });
-
-        ImageView title = (ImageView) this.findViewById(R.id.start_flooz_title);
-        title.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                timelineListView.smoothScrollToPosition(0);
+                launchLogin();
             }
         });
 
@@ -113,22 +104,13 @@ public class StartActivity extends Activity {
             floozApp.setCurrentActivity(null);
     }
 
-    private void launchSignIn() {
+    private void launchLogin() {
         Intent intent = new Intent(this, SignupActivity.class);
 
         intent.putExtra("page", SignupActivity.SignupPageIdentifier.SignupPhone.ordinal());
-        intent.putExtra("signup", false);
 
         startActivity(intent);
-    }
-
-    private void launchSignUp() {
-        Intent intent = new Intent(this, SignupActivity.class);
-
-        intent.putExtra("page", SignupActivity.SignupPageIdentifier.SignupAccueil1.ordinal());
-        intent.putExtra("signup", true);
-
-        startActivity(intent);
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
     }
 
     private void refreshTransactions() {
@@ -152,6 +134,6 @@ public class StartActivity extends Activity {
 
     @Override
     public void onBackPressed() {
-
+        this.finish();
     }
 }

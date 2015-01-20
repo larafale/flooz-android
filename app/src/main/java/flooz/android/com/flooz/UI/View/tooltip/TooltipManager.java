@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 
+import flooz.android.com.flooz.R;
 import flooz.android.com.flooz.UI.View.tooltip.TooltipView;
 
 public class TooltipManager {
@@ -240,7 +241,7 @@ public class TooltipManager {
 		onTooltipClosingCallback closeCallback;
 
 		Builder(final TooltipManager manager, int id) {
-			this.manager = new WeakReference<TooltipManager>(manager);
+			this.manager = new WeakReference<>(manager);
 			this.id = id;
 		}
 

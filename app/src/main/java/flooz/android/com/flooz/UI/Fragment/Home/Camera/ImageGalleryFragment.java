@@ -16,15 +16,14 @@ import java.io.IOException;
 import flooz.android.com.flooz.Adapter.ImageGalleryAdapter;
 import flooz.android.com.flooz.R;
 import flooz.android.com.flooz.UI.Activity.HomeActivity;
+import flooz.android.com.flooz.UI.Fragment.Home.HomeBaseFragment;
 import flooz.android.com.flooz.Utils.CustomCameraHost;
 import flooz.android.com.flooz.Utils.CustomFonts;
 
 /**
  * Created by Flooz on 10/7/14.
  */
-public class ImageGalleryFragment extends Fragment {
-
-    public HomeActivity parentActivity = null;
+public class ImageGalleryFragment extends HomeBaseFragment {
 
     private ImageView headerCloseButton;
     private TextView headerTitle;
@@ -72,8 +71,14 @@ public class ImageGalleryFragment extends Fragment {
                 parentActivity.popMainFragment(R.animator.slide_down, android.R.animator.fade_in);
             }
         });
-;
 
         return view;
     }
+
+
+    @Override
+    public void onBackPressed() {
+        this.headerCloseButton.performClick();
+    }
+
 }

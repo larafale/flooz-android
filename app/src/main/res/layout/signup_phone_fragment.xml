@@ -12,7 +12,8 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_weight="1"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+        android:paddingTop="@dimen/timeline_cell_xxlarge_margin">
 
     <EditText
         android:id="@+id/signup_phone_textfield"
@@ -20,9 +21,8 @@
         android:layout_width="300dp"
         android:layout_height="wrap_content"
         android:gravity="bottom"
-        android:phoneNumber="true"
+        android:clickable="false"
         android:hint="@string/SIGNUP_PHONE_PLACEHOLDER"
-        android:editable="false"
         android:singleLine="true"/>
 
     <Button
@@ -36,20 +36,8 @@
         android:text="@string/Send_Button_Mobile"
         android:layout_marginBottom="@dimen/timeline_cell_xlarge_margin"
         android:textSize="20sp"
+        android:textAllCaps="false"
         android:textColor="@drawable/text_color_action_button"/>
-
-    <TextView
-        android:id="@+id/signup_phone_info_label"
-        android:layout_marginTop="@dimen/timeline_cell_xxlarge_margin"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/SIGNUP_PHONE_HINT_SMS"
-        android:paddingLeft="@dimen/timeline_cell_xxlarge_margin"
-        android:paddingRight="@dimen/timeline_cell_xxlarge_margin"
-        android:gravity="center"
-        android:lineSpacingExtra="@dimen/timeline_cell_small_margin"
-        android:textColor="@color/placeholder"
-        android:textSize="15dp"/>
 
     </LinearLayout>
 

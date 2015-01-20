@@ -25,11 +25,10 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 /**
  * Created by Flooz on 10/2/14.
  */
-public class TransactionSelectReceiverFragment extends Fragment {
-
-    public HomeActivity parentActivity;
+public class TransactionSelectReceiverFragment extends HomeBaseFragment {
 
     private ImageView backButton;
+    private TextView headerTitle;
     private TextView searchTextfield;
     private ImageView clearSearchTextfieldButton;
 
@@ -39,8 +38,12 @@ public class TransactionSelectReceiverFragment extends Fragment {
 
     public TransactionSelectReceiverDelegate delegate;
 
+    public boolean showCross = false;
+
+    public boolean firstNewFlooz = false;
+
     public interface TransactionSelectReceiverDelegate {
-        public void UserSelected(FLUser user);
+        public void changeUser(FLUser user);
     }
 
     @Override
@@ -53,13 +56,18 @@ public class TransactionSelectReceiverFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.transaction_select_receiver, null);
 
-        this.backButton = (ImageView) view.findViewById(R.id.transaction_select_receiver_back);
+        this.backButton = (ImageView) view.findViewById(R.id.transaction_select_receiver_header_back);
+        this.headerTitle = (TextView) view.findViewById(R.id.transaction_select_receiver_header_text);
+
+        if (showCross)
+            this.backButton.setImageResource(R.drawable.nav_cross);
+        else
+            this.backButton.setImageResource(R.drawable.nav_back);
 
         this.backButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (parentActivity != null)
-                    parentActivity.popMainFragment(R.animator.slide_down, android.R.animator.fade_in);
+                parentActivity.popMainFragment(R.animator.slide_down, android.R.animator.fade_in);
                 InputMethodManager imm = (InputMethodManager) inflater.getContext().getSystemService(
                         Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(parentActivity.getWindow().getDecorView().getRootView().getWindowToken(), 0);
@@ -80,13 +88,20 @@ public class TransactionSelectReceiverFragment extends Fragment {
                         Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(parentActivity.getWindow().getDecorView().getRootView().getWindowToken(), 0);
 
-                if (delegate != null)
-                    delegate.UserSelected((FLUser)listAdapter.getItem(position));
-                if (parentActivity != null)
+                if (firstNewFlooz) {
+                    firstNewFlooz = false;
+                    ((NewFloozFragment) parentActivity.contentFragments.get("create")).initWithUser((FLUser)listAdapter.getItem(position));
+                    parentActivity.changeMainFragment("create", R.animator.slide_up, android.R.animator.fade_out);
+                }
+                else {
+                    if (delegate != null)
+                        delegate.changeUser((FLUser)listAdapter.getItem(position));
                     parentActivity.popMainFragment(R.animator.slide_down, android.R.animator.fade_in);
+                }
             }
         });
 
+        this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
         this.searchTextfield.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
 
         this.searchTextfield.addTextChangedListener(new TextWatcher() {
@@ -130,5 +145,11 @@ public class TransactionSelectReceiverFragment extends Fragment {
     public void onResume() {
         super.onResume();
 
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        this.backButton.performClick();
     }
 }

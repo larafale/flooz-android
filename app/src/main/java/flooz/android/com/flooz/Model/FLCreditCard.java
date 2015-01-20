@@ -23,7 +23,7 @@ public class FLCreditCard {
     }
 
     private void setJson(JSONObject json) {
-        this.cardId = json.optString("id");
+        this.cardId = json.optString("_id");
         this.owner = json.optString("holder");
         this.number = json.optString("number");
     }

@@ -50,6 +50,7 @@
                 android:text="@string/Send_Button_Mobile"
                 android:layout_marginBottom="@dimen/timeline_cell_xlarge_margin"
                 android:textSize="20sp"
+                android:textAllCaps="false"
                 android:textColor="@drawable/text_color_action_button"/>
 
         </LinearLayout>

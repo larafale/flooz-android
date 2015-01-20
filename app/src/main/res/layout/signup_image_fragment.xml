@@ -139,6 +139,7 @@
         android:layout_marginLeft="@dimen/timeline_cell_xlarge_margin"
         android:layout_marginTop="@dimen/timeline_cell_large_margin"
         android:layout_marginBottom="@dimen/timeline_cell_large_margin"
+        android:textAllCaps="false"
         android:text="@string/GLOBAL_NEXT"/>
 
 </RelativeLayout>

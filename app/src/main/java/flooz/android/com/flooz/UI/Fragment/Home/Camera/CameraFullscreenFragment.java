@@ -10,19 +10,20 @@ import android.view.ViewGroup;
 
 import flooz.android.com.flooz.R;
 import flooz.android.com.flooz.UI.Activity.HomeActivity;
+import flooz.android.com.flooz.UI.Fragment.Home.HomeBaseFragment;
 import flooz.android.com.flooz.Utils.CustomCameraHost;
 
 /**
  * Created by Flooz on 10/7/14.
  */
-public class CameraFullscreenFragment extends Fragment implements CameraOverlayFragment.CameraOverlayFragmentCallbacks {
+public class CameraFullscreenFragment extends HomeBaseFragment implements CameraOverlayFragment.CameraOverlayFragmentCallbacks {
 
     public Boolean currentCameraIsFront = false;
 
-    public HomeActivity parentActivity;
-
     private CameraOverlayFragment camFragmentBack;
     private CameraOverlayFragment camFragmentFront;
+
+    public Boolean canAccessAlbum = true;
 
     public CustomCameraHost.CustomCameraHostDelegate cameraHostDelegate;
 
@@ -40,12 +41,14 @@ public class CameraFullscreenFragment extends Fragment implements CameraOverlayF
         this.camFragmentBack.delegate = this.cameraHostDelegate;
         this.camFragmentBack.callbacks = this;
         this.camFragmentBack.isClosable = true;
+        this.camFragmentBack.canAccessAlbum = this.canAccessAlbum;
 
         this.camFragmentFront = new CameraOverlayFragment();
         this.camFragmentFront.delegate = this.cameraHostDelegate;
         this.camFragmentFront.callbacks = this;
         this.camFragmentFront.showFront = true;
         this.camFragmentFront.isClosable = true;
+        this.camFragmentFront.canAccessAlbum = this.canAccessAlbum;
 
         FragmentTransaction ft = this.getChildFragmentManager().beginTransaction();
 
@@ -104,5 +107,11 @@ public class CameraFullscreenFragment extends Fragment implements CameraOverlayF
         ((ImageGalleryFragment)this.parentActivity.contentFragments.get("photo_gallery")).cameraHostDelegate = this.cameraHostDelegate;
         parentActivity.popMainFragment();
         parentActivity.pushMainFragment("photo_gallery", R.animator.slide_up, android.R.animator.fade_out);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        this.closeCamera();
     }
 }

@@ -1,6 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/background_header">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/header_pager_view_height"
+        android:background="@color/background_header"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/settings_preferences_header_title"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:textSize="@dimen/header_pager_view_fontsize"
+            android:textColor="@color/blue"
+            android:layout_height="wrap_content"
+            android:text="@string/SETTINGS_PREFERENCES"/>
+
+        <ImageView
+            android:id="@+id/settings_preferences_header_back"
+            android:layout_centerVertical="true"
+            android:layout_width="@dimen/new_flooz_header_cross"
+            android:padding="@dimen/timeline_cell_large_margin"
+            android:layout_height="fill_parent"
+            android:src="@drawable/nav_back"/>
+
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/timeline_cell_xxlarge_margin"
+            android:paddingRight="@dimen/timeline_cell_xlarge_margin"
+            android:paddingTop="@dimen/timeline_cell_large_margin"
+            android:paddingBottom="@dimen/timeline_cell_large_margin">
+
+            <TextView
+                android:id="@+id/settings_preferences_fb_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/EDIT_ACCOUNT_FACEBOOK"
+                android:textSize="@dimen/settings_list_item_size"
+                android:textColor="@android:color/white"
+                android:singleLine="true"/>
+
+            <com.gc.materialdesign.views.Switch
+                android:id="@+id/settings_preferences_fb_toggle"
+                android:layout_width="70dp"
+                android:layout_height="25dp"
+                android:background="@color/blue"
+                android:layout_alignParentRight="true"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/settings_preferences_notif"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingLeft="@dimen/timeline_cell_xxlarge_margin"
+            android:paddingRight="@dimen/timeline_cell_xlarge_margin"
+            android:paddingTop="@dimen/timeline_cell_large_margin"
+            android:paddingBottom="@dimen/timeline_cell_large_margin">
+
+            <TextView
+                android:id="@+id/settings_preferences_notif_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/SETTINGS_NOTIFICATIONS"
+                android:textSize="@dimen/settings_list_item_size"
+                android:textColor="@android:color/white"
+                android:singleLine="true"/>
+
+            <ImageView
+                android:layout_width="@dimen/settings_arrow_size"
+                android:layout_height="@dimen/settings_arrow_size"
+                android:src="@drawable/nav_next"
+                android:layout_alignParentRight="true"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
 
 </LinearLayout>

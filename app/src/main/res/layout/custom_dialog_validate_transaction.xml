@@ -10,7 +10,7 @@
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="@dimen/dialog_validate_flooz_pic_height"
-        android:src="@drawable/account_informations"
+        android:src="@drawable/flooz_icon_white"
         android:layout_marginTop="@dimen/timeline_cell_large_margin"/>
 
     <TextView
@@ -26,13 +26,14 @@
     
     <LinearLayout
         android:orientation="horizontal"
-        android:layout_width="wrap_content"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
         <Button
             android:id="@+id/dialog_validate_flooz_decline"
-            android:layout_width="@dimen/dialog_validate_flooz_button_width"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@android:color/white"
             android:textColor="@color/blue"
             android:text="@string/GLOBAL_NO"
@@ -40,13 +41,13 @@
 
         <Button
             android:id="@+id/dialog_validate_flooz_accept"
-            android:layout_width="@dimen/dialog_validate_flooz_button_width"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:background="@android:color/white"
             android:textColor="@color/blue"
             android:text="@string/GLOBAL_YES"
-            android:textStyle="bold"
-            android:layout_marginLeft="@dimen/timeline_cell_xsmall_margin"/>
+            android:textStyle="bold"/>
 
     </LinearLayout>
 

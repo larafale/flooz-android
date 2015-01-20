@@ -4,7 +4,6 @@ package flooz.android.com.flooz.UI.Fragment.Home;
  * Created by Flooz on 9/2/14.
  */
 
-import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -22,23 +21,21 @@ import com.makeramen.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
-import java.util.Formatter;
 import java.util.List;
 
 import flooz.android.com.flooz.Adapter.MenuListAdapter;
 import flooz.android.com.flooz.App.FloozApplication;
+import flooz.android.com.flooz.Model.FLError;
 import flooz.android.com.flooz.Model.FLUser;
+import flooz.android.com.flooz.Network.FloozHttpResponseHandler;
 import flooz.android.com.flooz.Network.FloozRestClient;
 import flooz.android.com.flooz.R;
-import flooz.android.com.flooz.UI.Activity.HomeActivity;
 import flooz.android.com.flooz.Utils.CustomFonts;
 import flooz.android.com.flooz.Utils.CustomNotificationIntents;
 import flooz.android.com.flooz.Utils.MenuItem;
 
-public class ProfileFragment extends Fragment
+public class ProfileFragment extends HomeBaseFragment
 {
-    public HomeActivity parentActivity;
-
     private LinearLayout accountUserView;
     private RoundedImageView userView;
     private TextView fullname;
@@ -127,17 +124,32 @@ public class ProfileFragment extends Fragment
                 if (parentActivity != null) {
                     switch (i) {
                         case 0:
+                            FloozRestClient.getInstance().updateCurrentUser(null);
                             parentActivity.pushMainFragment("profile_settings", R.animator.slide_up, android.R.animator.fade_out);
                             break;
                         case 1:
+                            ((NotificationFragment)parentActivity.contentFragments.get("notifications")).showCross = false;
                             parentActivity.pushMainFragment("notifications", R.animator.slide_up, android.R.animator.fade_out);
                             break;
                         case 2:
+                            parentActivity.pushMainFragment("invite", R.animator.slide_up, android.R.animator.fade_out);
                             break;
                         case 3:
-                            break;
+                            FloozRestClient.getInstance().showLoadView();
+                            FloozRestClient.getInstance().cashoutValidate(new FloozHttpResponseHandler() {
+                                @Override
+                                public void success(Object response) {
+                                    parentActivity.pushMainFragment("cashout", R.animator.slide_up, android.R.animator.fade_out);
+                                }
+
+                                @Override
+                                public void failure(int statusCode, FLError error) {
+
+                                }
+                            });
+                        break;
                         case 4:
-                            FloozRestClient.getInstance().logout();
+                            parentActivity.pushMainFragment("other_menu", R.animator.slide_up, android.R.animator.fade_out);
                             break;
                         default:
                             break;
