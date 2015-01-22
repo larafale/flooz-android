@@ -173,11 +173,9 @@ public class FloozApplication extends Application
             Intent intent = new Intent();
             intent.setClass(context, HomeActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            if (getCurrentActivity() != null)
-                getCurrentActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-
-            tmp.finish();
+            this.getCurrentActivity().startActivity(intent);
+            this.getCurrentActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            this.getCurrentActivity().finish();
         }
     }
 
@@ -187,16 +185,12 @@ public class FloozApplication extends Application
     }
 
     public void displayStartView() {
-        Activity tmp = this.getCurrentActivity();
-
         Intent intent = new Intent();
         intent.setClass(context, StartActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        if (getCurrentActivity() != null)
-            getCurrentActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-
-        tmp.finish();
+        this.getCurrentActivity().startActivity(intent);
+        this.getCurrentActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        this.getCurrentActivity().finish();
     }
 
     public Activity getCurrentActivity(){

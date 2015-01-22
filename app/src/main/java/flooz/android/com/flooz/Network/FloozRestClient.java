@@ -64,6 +64,8 @@ import flooz.android.com.flooz.UI.Activity.InvitationCodeActivity;
 import flooz.android.com.flooz.UI.Activity.SigninActivity;
 import flooz.android.com.flooz.UI.Activity.SignupActivity;
 import flooz.android.com.flooz.UI.Fragment.Home.NewFloozFragment;
+import flooz.android.com.flooz.UI.Fragment.Home.Settings.CreditCardSettingsFragment;
+import flooz.android.com.flooz.UI.Fragment.Home.Settings.Secure3DFragment;
 import flooz.android.com.flooz.UI.Tools.CustomToast;
 import flooz.android.com.flooz.Utils.ContactsManager;
 import flooz.android.com.flooz.Utils.CustomNotificationIntents;
@@ -1408,22 +1410,30 @@ public class FloozRestClient
     }
 
     private void handleTrigger3DSecureShow(JSONObject data) {
-//        if (floozApp.getCurrentActivity() instanceof SignupActivity) {
-//            SignupActivity tmp = (SignupActivity)floozApp.getCurrentActivity();
-//            ((SignupCardFragment)tmp.currentFragment).next3DSecure = true;
-//            ((SignupCardFragment)tmp.currentFragment).secureData = data.optString("html");
-//        }
+        if (floozApp.getCurrentActivity() instanceof HomeActivity) {
+            HomeActivity tmp = (HomeActivity)floozApp.getCurrentActivity();
+            ((CreditCardSettingsFragment)tmp.contentFragments.get("settings_credit_card")).next3DSecure = true;
+            ((CreditCardSettingsFragment)tmp.contentFragments.get("settings_credit_card")).secureData = data.optString("html");
+        }
     }
 
     private void handleTrigger3DSecureComplete() {
-        if (floozApp.getCurrentActivity() instanceof SignupActivity) {
-            floozApp.displayMainView();
+        Handler handler = new Handler(floozApp.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                updateCurrentUser(null);
+            }
+        });
+
+        if (floozApp.getCurrentActivity() instanceof HomeActivity) {
+            ((Secure3DFragment)((HomeActivity)floozApp.getCurrentActivity()).contentFragments.get("settings_3ds")).dismiss();
         }
     }
 
     private void handleTrigger3DSecureFail() {
-        if (floozApp.getCurrentActivity() instanceof SignupActivity) {
-//            ((Signup3DSecureFragment)((SignupActivity)floozApp.getCurrentActivity()).currentFragment).dismiss();
+        if (floozApp.getCurrentActivity() instanceof HomeActivity) {
+            ((Secure3DFragment)((HomeActivity)floozApp.getCurrentActivity()).contentFragments.get("settings_3ds")).dismiss();
         }
     }
 

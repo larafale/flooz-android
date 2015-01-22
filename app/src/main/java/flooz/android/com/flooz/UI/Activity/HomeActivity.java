@@ -41,6 +41,7 @@ import flooz.android.com.flooz.UI.Fragment.Home.Settings.PasswordSettingsFragmen
 import flooz.android.com.flooz.UI.Fragment.Home.Settings.PreferencesSettingsFragment;
 import flooz.android.com.flooz.UI.Fragment.Home.Settings.PrivacySettingsFragment;
 import flooz.android.com.flooz.UI.Fragment.Home.Settings.SecudeCodeSettingsFragment;
+import flooz.android.com.flooz.UI.Fragment.Home.Settings.Secure3DFragment;
 import flooz.android.com.flooz.UI.Fragment.Home.Settings.SecuritySettingsFragment;
 import flooz.android.com.flooz.Utils.CustomCameraHost;
 import flooz.android.com.flooz.Network.FloozRestClient;
@@ -258,6 +259,7 @@ public class HomeActivity extends SlidingFragmentActivity implements CameraHostP
         this.contentFragments.put("settings_privacy", new PrivacySettingsFragment());
         this.contentFragments.put("settings_secure_code", new SecudeCodeSettingsFragment());
         this.contentFragments.put("settings_security", new SecuritySettingsFragment());
+        this.contentFragments.put("settings_3ds", new Secure3DFragment());
 
         for (Map.Entry<String, HomeBaseFragment> entry : this.contentFragments.entrySet()) {
             entry.getValue().parentActivity = this;

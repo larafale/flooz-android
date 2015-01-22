@@ -251,16 +251,18 @@ public class SigninActivity extends FragmentActivity {
                 intent.setClass(this.getApplicationContext(), SignupActivity.class);
                 intent.putExtra("page", SignupActivity.SignupPageIdentifier.SignupPhone.ordinal());
                 intent.putExtra("signup", true);
-                startActivity(intent);
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                this.startActivity(intent);
+                this.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                this.finish();
                 return;
             case SigninResetPass:
                 Intent intent2 = new Intent();
                 intent2.setClass(this.getApplicationContext(), SignupActivity.class);
                 intent2.putExtra("page", SignupActivity.SignupPageIdentifier.SignupPhone.ordinal());
                 intent2.putExtra("signup", true);
-                startActivity(intent2);
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                this.startActivity(intent2);
+                this.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                this.finish();
             case SigninCode:
                 break;
             case SigninConfirmCode:

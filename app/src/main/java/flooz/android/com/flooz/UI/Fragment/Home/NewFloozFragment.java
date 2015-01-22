@@ -1,14 +1,20 @@
 package flooz.android.com.flooz.UI.Fragment.Home;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.FragmentTransaction;
+import android.app.PendingIntent;
 import android.app.Service;
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.telephony.SmsManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -486,12 +492,12 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
         FloozRestClient.getInstance().performTransaction(this.generateRequestParams(false), new FloozHttpResponseHandler() {
             @Override
             public void success(final Object response) {
+                final JSONObject jsonObject = (JSONObject) response;
                 if (havePicture) {
                     Handler handler = new Handler();
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            JSONObject jsonObject = (JSONObject) response;
                             String transacId = jsonObject.optJSONObject("item").optString("_id");
                             FloozRestClient.getInstance().uploadTransactionPic(transacId, ImageHelper.convertBitmapInFile(currentPicture), new FloozHttpResponseHandler() {
                                 @Override
@@ -507,8 +513,41 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
                         }
                     });
                 }
+                if (jsonObject.has("sms")) {
+                    final JSONObject smsObject = jsonObject.optJSONObject("sms");
+
+                    PendingIntent sentPI = PendingIntent.getBroadcast(context, 0,
+                            new Intent("SMS_SENT"), 0);
+
+                    context.registerReceiver(new BroadcastReceiver() {
+                        @Override
+                        public void onReceive(Context arg0, Intent arg1) {
+                            switch (getResultCode()) {
+                                case Activity.RESULT_OK:
+                                    parentActivity.popMainFragment(R.animator.slide_down, android.R.animator.fade_in);
+                                    break;
+                                case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
+                                    sendSMSIntent(smsObject.optString("phone"), smsObject.optString("message"));
+                                    break;
+                                case SmsManager.RESULT_ERROR_NO_SERVICE:
+                                    sendSMSIntent(smsObject.optString("phone"), smsObject.optString("message"));
+                                    break;
+                                case SmsManager.RESULT_ERROR_NULL_PDU:
+                                    sendSMSIntent(smsObject.optString("phone"), smsObject.optString("message"));
+                                    break;
+                                case SmsManager.RESULT_ERROR_RADIO_OFF:
+                                    sendSMSIntent(smsObject.optString("phone"), smsObject.optString("message"));
+                                    break;
+                            }
+                        }
+                    }, new IntentFilter("SMS_SENT"));
+
+                    SmsManager sms = SmsManager.getDefault();
+                    sms.sendTextMessage(smsObject.optString("phone"), null, smsObject.optString("message"), sentPI, null);
+                } else {
+                    parentActivity.popMainFragment(R.animator.slide_down, android.R.animator.fade_in);
+                }
                 FloozApplication.performLocalNotification(CustomNotificationIntents.reloadTimeline());
-                parentActivity.popMainFragment(R.animator.slide_down, android.R.animator.fade_in);
             }
 
             @Override
@@ -516,6 +555,17 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
 
             }
         });
+    }
+
+    private void sendSMSIntent(String phone, String content) {
+        Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+        sendIntent.setData(Uri.parse("sms:"));
+        sendIntent.putExtra("address", phone);
+        sendIntent.putExtra("sms_body", content);
+        if (sendIntent.resolveActivity(parentActivity.getPackageManager()) != null) {
+            parentActivity.startActivity(sendIntent);
+        }
+        parentActivity.popMainFragment(R.animator.slide_down, android.R.animator.fade_in);
     }
 
     @Override

@@ -6,21 +6,21 @@
     android:background="@color/background_header">
 
     <RelativeLayout
-        android:id="@+id/signup_3ds_header"
+        android:id="@+id/settings_3ds_header"
         android:layout_width="fill_parent"
         android:layout_height="@dimen/header_pager_view_height"
         android:gravity="center_vertical"
         android:layout_marginBottom="@dimen/timeline_cell_large_margin">
 
         <ImageView
-            android:id="@+id/signup_3ds_header_back"
+            android:id="@+id/settings_3ds_header_back"
             android:layout_width="@dimen/header_nav_back"
             android:layout_height="@dimen/header_nav_back"
             android:src="@drawable/nav_cross"
             android:padding="@dimen/timeline_cell_large_margin"/>
 
         <TextView
-            android:id="@+id/signup_3ds_header_title"
+            android:id="@+id/settings_3ds_header_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -31,7 +31,7 @@
     </RelativeLayout>
 
     <WebView
-        android:id="@+id/signup_3ds_webview"
+        android:id="@+id/settings_3ds_webview"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"/>
 

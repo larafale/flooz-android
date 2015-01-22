@@ -226,7 +226,7 @@
     <string name="TRANSACTION_SCOPE_PRIVATE">Privé</string>
 
     <string name="FILTER_SCOPE_PUBLIC">Public</string>
-    <string name="FILTER_SCOPE_FRIEND">Fils d\'actualités</string>
+    <string name="FILTER_SCOPE_FRIEND">Fil d\'actualité</string>
     <string name="FILTER_SCOPE_PRIVATE">Moi</string>
 
     <string name="EVENT_SCOPE_FRIEND">Ouverte aux amis</string>

@@ -109,8 +109,9 @@ public class StartActivity extends Activity {
 
         intent.putExtra("page", SignupActivity.SignupPageIdentifier.SignupPhone.ordinal());
 
-        startActivity(intent);
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        this.startActivity(intent);
+        this.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        this.finish();
     }
 
     private void refreshTransactions() {

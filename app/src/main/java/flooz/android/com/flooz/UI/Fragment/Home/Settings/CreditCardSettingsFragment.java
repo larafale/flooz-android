@@ -1,8 +1,10 @@
 package flooz.android.com.flooz.UI.Fragment.Home.Settings;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -18,6 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import flooz.android.com.flooz.App.FloozApplication;
 import flooz.android.com.flooz.Model.FLCreditCard;
 import flooz.android.com.flooz.Model.FLError;
 import flooz.android.com.flooz.Network.FloozHttpResponseHandler;
@@ -25,6 +28,7 @@ import flooz.android.com.flooz.Network.FloozRestClient;
 import flooz.android.com.flooz.R;
 import flooz.android.com.flooz.UI.Fragment.Home.HomeBaseFragment;
 import flooz.android.com.flooz.Utils.CustomFonts;
+import flooz.android.com.flooz.Utils.CustomNotificationIntents;
 import scanpay.it.ScanPay;
 import scanpay.it.ScanPayActivity;
 
@@ -52,12 +56,24 @@ public class CreditCardSettingsFragment extends HomeBaseFragment {
     private Button addCardButton;
 
     public Boolean next3DSecure = false;
+    public String secureData;
 
     private FLCreditCard creditCard;
+
+
+    private BroadcastReceiver reloadCurrentUserDataReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            reloadCreditCard();
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadCurrentUserDataReceiver,
+                CustomNotificationIntents.filterReloadCurrentUser());
     }
 
     @Override
@@ -269,11 +285,8 @@ public class CreditCardSettingsFragment extends HomeBaseFragment {
                     @Override
                     public void success(Object response) {
                         if (next3DSecure) {
-//                            Signup3DSecureFragment fragment = new Signup3DSecureFragment();
-//                            fragment.data = secureData;
-//
-//                            parentActivity.hideHeader();
-//                            parentActivity.changeCurrentPage(fragment, R.animator.slide_up, android.R.animator.fade_out);
+                            ((Secure3DFragment)parentActivity.contentFragments.get("settings_3ds")).data = secureData;
+                            parentActivity.pushMainFragment("settings_3ds", R.animator.slide_up, android.R.animator.fade_out);
                         }
                         else {
                             FloozRestClient.getInstance().updateCurrentUser(null);
@@ -303,7 +316,7 @@ public class CreditCardSettingsFragment extends HomeBaseFragment {
     public void reloadCreditCard() {
         this.creditCard = FloozRestClient.getInstance().currentUser.creditCard;
 
-        if (this.creditCard != null && this.creditCard.cvv == null) {
+        if (this.creditCard != null && this.creditCard.cardId != null) {
             this.createCardContainer.setVisibility(View.GONE);
             this.removeCardContainer.setVisibility(View.VISIBLE);
             this.creditCardNumber.setText(this.creditCard.number.replaceAll(".(?=.)", "$0 "));

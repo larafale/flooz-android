@@ -331,8 +331,9 @@ public class SignupActivity extends FragmentActivity implements CustomCameraHost
             case SignupPhone:
                 Intent intent2 = new Intent();
                 intent2.setClass(this.getApplicationContext(), StartActivity.class);
-                startActivity(intent2);
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                this.startActivity(intent2);
+                this.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                this.finish();
                 break;
             case SignupSMS:
                 this.currentPage = SignupPageIdentifier.SignupPhone;

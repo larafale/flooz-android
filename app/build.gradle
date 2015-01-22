@@ -30,7 +30,7 @@ android {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "boolean", "DEBUG_API", "false"
+            buildConfigField "boolean", "DEBUG_API", "true"
         }
     }
 
