@@ -52,7 +52,7 @@ public class NotificationFragment extends HomeBaseFragment {
         if (this.showCross)
             this.headerBackButton.setImageResource(R.drawable.nav_cross);
         else
-            this.headerBackButton.setImageResource(R.drawable.nav_back);
+            this.headerBackButton.setImageResource(R.drawable.nav_account_button);
 
         this.headerBackButton.setOnClickListener(new View.OnClickListener() {
             @Override

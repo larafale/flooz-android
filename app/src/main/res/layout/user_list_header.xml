@@ -6,7 +6,7 @@
     android:layout_height="@dimen/user_list_header_height"
     android:background="@color/background"
     android:gravity="center_vertical"
-    android:paddingLeft="@dimen/timeline_cell_large_margin">
+    android:paddingLeft="@dimen/dimen_large">
 
     <TextView
         android:id="@+id/user_list_header_text"

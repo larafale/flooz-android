@@ -3,7 +3,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/timeline_cell_large_margin">
+    android:paddingTop="@dimen/dimen_large">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/timeline_row_content"
@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/background"
-        android:paddingBottom="@dimen/timeline_cell_small_margin">
+        android:paddingBottom="@dimen/dimen_small">
 
         <com.makeramen.RoundedImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -19,9 +19,9 @@
             android:scaleType="centerCrop"
             android:layout_width="@dimen/timeline_cell_img"
             android:layout_height="@dimen/timeline_cell_img"
-            android:layout_marginLeft="@dimen/timeline_cell_large_margin"
-            android:layout_marginRight="@dimen/timeline_cell_large_margin"
-            android:layout_marginTop="@dimen/timeline_cell_xsmall_margin"
+            android:layout_marginLeft="@dimen/dimen_large"
+            android:layout_marginRight="@dimen/dimen_large"
+            android:layout_marginTop="@dimen/dimen_xsmall"
             android:layout_gravity="center_horizontal|top"
             app:corner_radius="30dip"
             app:mutate_background="true"
@@ -31,14 +31,14 @@
             android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/timeline_cell_large_margin"
-            android:paddingBottom="@dimen/timeline_cell_large_margin">
+            android:layout_marginRight="@dimen/dimen_large"
+            android:paddingBottom="@dimen/dimen_large">
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/timeline_cell_medium_margin">
+                android:layout_marginTop="@dimen/dimen_medium">
 
                 <TextView
                     android:id="@+id/timelineTransactionText3D1"
@@ -52,8 +52,8 @@
                     android:id="@+id/timelineTransactionText3D2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/timeline_cell_xsmall_margin"
-                    android:layout_marginRight="@dimen/timeline_cell_xsmall_margin"
+                    android:layout_marginLeft="@dimen/dimen_xsmall"
+                    android:layout_marginRight="@dimen/dimen_xsmall"
                     android:textColor="@color/placeholder"
                     android:textSize="@dimen/timeline_cell_title"/>
 
@@ -71,7 +71,7 @@
                 android:id="@+id/timelineTransactionText"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/timeline_cell_medium_margin"
+                android:layout_marginTop="@dimen/dimen_medium"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/timeline_cell_title"/>
 
@@ -86,7 +86,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:paddingTop="@dimen/timeline_cell_large_margin">
+                android:paddingTop="@dimen/dimen_large">
 
 
                 <LinearLayout
@@ -95,13 +95,13 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
-                    android:layout_marginRight="@dimen/timeline_cell_large_margin">
+                    android:layout_marginRight="@dimen/dimen_large">
 
                     <ImageView
                         android:layout_width="@dimen/timeline_cell_social_picto"
                         android:layout_height="@dimen/timeline_cell_social_picto"
                         android:src="@drawable/social_comment"
-                        android:layout_marginRight="@dimen/timeline_cell_medium_margin"/>
+                        android:layout_marginRight="@dimen/dimen_medium"/>
 
                     <TextView
                         android:id="@+id/timelineTransactionCommentsNumber"
@@ -123,7 +123,7 @@
                         android:layout_width="@dimen/timeline_cell_social_picto"
                         android:layout_height="@dimen/timeline_cell_social_picto"
                         android:src="@drawable/social_like"
-                        android:layout_marginRight="@dimen/timeline_cell_medium_margin"/>
+                        android:layout_marginRight="@dimen/dimen_medium"/>
 
                     <TextView
                         android:id="@+id/timelineTransactionLikesText"
@@ -146,9 +146,9 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:background="@color/background"
-        android:paddingBottom="@dimen/timeline_cell_large_margin"
-        android:paddingTop="@dimen/timeline_cell_medium_margin"
-        android:paddingRight="@dimen/timeline_cell_large_margin"
+        android:paddingBottom="@dimen/dimen_large"
+        android:paddingTop="@dimen/dimen_medium"
+        android:paddingRight="@dimen/dimen_large"
         android:paddingLeft="@dimen/timeline_cell_actionBar_leftPadding"
         android:gravity="center_vertical">
 
@@ -157,10 +157,10 @@
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/timeline_cell_small_margin"
-            android:paddingLeft="@dimen/timeline_cell_medium_margin"
-            android:paddingRight="@dimen/timeline_cell_medium_margin"
-            android:paddingBottom="@dimen/timeline_cell_small_margin"
+            android:paddingTop="@dimen/dimen_small"
+            android:paddingLeft="@dimen/dimen_medium"
+            android:paddingRight="@dimen/dimen_medium"
+            android:paddingBottom="@dimen/dimen_small"
             android:gravity="center_vertical"
             android:background="@drawable/timeline_row_action_button_background">
 
@@ -174,8 +174,8 @@
                 android:id="@+id/timelineTransactionLikesButtonText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/timeline_cell_xsmall_margin"
-                android:layout_marginLeft="@dimen/timeline_cell_small_margin"
+                android:paddingTop="@dimen/dimen_xsmall"
+                android:layout_marginLeft="@dimen/dimen_small"
                 android:textColor="@color/placeholder"
                 android:textSize="@dimen/timeline_cell_action_social_label"
                 android:text="@string/CELL_SOCIAL_LIKE"/>
@@ -187,11 +187,11 @@
             android:orientation="horizontal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/timeline_cell_small_margin"
-            android:paddingLeft="@dimen/timeline_cell_medium_margin"
-            android:paddingRight="@dimen/timeline_cell_medium_margin"
-            android:paddingBottom="@dimen/timeline_cell_small_margin"
-            android:layout_marginLeft="@dimen/timeline_cell_large_margin"
+            android:paddingTop="@dimen/dimen_small"
+            android:paddingLeft="@dimen/dimen_medium"
+            android:paddingRight="@dimen/dimen_medium"
+            android:paddingBottom="@dimen/dimen_small"
+            android:layout_marginLeft="@dimen/dimen_large"
             android:gravity="center_vertical"
             android:background="@drawable/timeline_row_action_button_background">
 
@@ -203,9 +203,9 @@
 
             <TextView
                 android:id="@+id/timelineTransactionCommentsButtonText"
-                android:layout_marginLeft="@dimen/timeline_cell_small_margin"
+                android:layout_marginLeft="@dimen/dimen_small"
                 android:layout_width="wrap_content"
-                android:paddingTop="@dimen/timeline_cell_xsmall_margin"
+                android:paddingTop="@dimen/dimen_xsmall"
                 android:layout_height="wrap_content"
                 android:textColor="@color/placeholder"
                 android:text="@string/CELL_SOCIAL_COMMENT"

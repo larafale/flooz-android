@@ -3,6 +3,7 @@ package flooz.android.com.flooz.Adapter;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -209,7 +210,7 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
             holder.pic = (RoundedImageView) convertView.findViewById(R.id.user_list_row_pic);
             holder.button = (ImageView) convertView.findViewById(R.id.user_list_row_button);
 
-            holder.username.setTypeface(CustomFonts.customTitleExtraLight(this.context));
+            holder.username.setTypeface(CustomFonts.customTitleExtraLight(this.context), Typeface.BOLD);
             holder.fullname.setTypeface(CustomFonts.customTitleExtraLight(this.context));
 
             convertView.setTag(holder);

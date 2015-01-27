@@ -6,10 +6,10 @@
     android:orientation="horizontal"
     android:background="@drawable/alert_success_background"
     android:gravity="center_vertical"
-    android:paddingTop="@dimen/timeline_cell_large_margin"
-    android:paddingBottom="@dimen/timeline_cell_large_margin"
-    android:paddingLeft="@dimen/timeline_cell_xlarge_margin"
-    android:paddingRight="@dimen/timeline_cell_xlarge_margin">
+    android:paddingTop="@dimen/dimen_large"
+    android:paddingBottom="@dimen/dimen_large"
+    android:paddingLeft="@dimen/dimen_xlarge"
+    android:paddingRight="@dimen/dimen_xlarge">
 
     <ImageView
         android:id="@+id/alert_img"
@@ -24,7 +24,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_marginLeft="@dimen/timeline_cell_large_margin"
+        android:layout_marginLeft="@dimen/dimen_large"
         android:gravity="center_vertical">
 
         <TextView

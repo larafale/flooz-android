@@ -24,7 +24,7 @@
             android:id="@+id/settings_preferences_header_back"
             android:layout_centerVertical="true"
             android:layout_width="@dimen/new_flooz_header_cross"
-            android:padding="@dimen/timeline_cell_large_margin"
+            android:padding="@dimen/dimen_large"
             android:layout_height="fill_parent"
             android:src="@drawable/nav_back"/>
 
@@ -40,10 +40,10 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:paddingLeft="@dimen/timeline_cell_xxlarge_margin"
-            android:paddingRight="@dimen/timeline_cell_xlarge_margin"
-            android:paddingTop="@dimen/timeline_cell_large_margin"
-            android:paddingBottom="@dimen/timeline_cell_large_margin">
+            android:paddingLeft="@dimen/dimen_xxlarge"
+            android:paddingRight="@dimen/dimen_xlarge"
+            android:paddingTop="@dimen/dimen_large"
+            android:paddingBottom="@dimen/dimen_large">
 
             <TextView
                 android:id="@+id/settings_preferences_fb_text"
@@ -68,10 +68,10 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:paddingLeft="@dimen/timeline_cell_xxlarge_margin"
-            android:paddingRight="@dimen/timeline_cell_xlarge_margin"
-            android:paddingTop="@dimen/timeline_cell_large_margin"
-            android:paddingBottom="@dimen/timeline_cell_large_margin">
+            android:paddingLeft="@dimen/dimen_xxlarge"
+            android:paddingRight="@dimen/dimen_xlarge"
+            android:paddingTop="@dimen/dimen_large"
+            android:paddingBottom="@dimen/dimen_large">
 
             <TextView
                 android:id="@+id/settings_preferences_notif_text"

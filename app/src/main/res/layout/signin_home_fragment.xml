@@ -19,7 +19,7 @@
 
             <EditText
                 android:id="@+id/signin_home_phone"
-                android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
+                android:layout_marginTop="@dimen/dimen_xlarge"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:gravity="bottom"
@@ -30,7 +30,7 @@
 
             <EditText
                 android:id="@+id/signin_home_password"
-                android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
+                android:layout_marginTop="@dimen/dimen_xlarge"
                 android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:gravity="bottom"
@@ -41,14 +41,14 @@
 
             <Button
                 android:id="@+id/signin_home_next"
-                android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
+                android:layout_marginTop="@dimen/dimen_xlarge"
                 android:layout_width="300dp"
                 android:layout_height="@dimen/signup_button_height"
                 android:gravity="center"
                 android:background="@drawable/background_action_button"
                 android:enabled="false"
                 android:text="@string/Send_Button_Mobile"
-                android:layout_marginBottom="@dimen/timeline_cell_xlarge_margin"
+                android:layout_marginBottom="@dimen/dimen_xlarge"
                 android:textSize="20sp"
                 android:textAllCaps="false"
                 android:textColor="@drawable/text_color_action_button"/>
@@ -61,7 +61,7 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
             android:layout_alignParentBottom="true"
-            android:padding="@dimen/timeline_cell_xlarge_margin"
+            android:padding="@dimen/dimen_xlarge"
             android:text="@string/FIELD_PASSWORD_FORGET"
             android:textColor="@android:color/white"/>
 

@@ -46,6 +46,14 @@ public class ImageGalleryManager {
         }
         cursor.close();
 
+        for (int i = 0; i < res.size(); i++) {
+            GalleryImage image = res.get(i);
+            if (image.thumbImg == null) {
+                res.remove(i);
+                --i;
+            }
+        }
+        
         return res;
     }
 

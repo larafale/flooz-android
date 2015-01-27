@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/card_comment_row_background"
-    android:paddingBottom="@dimen/timeline_cell_small_margin"
-    android:paddingTop="@dimen/timeline_cell_small_margin"
-    android:paddingRight="@dimen/timeline_cell_medium_margin"
-    android:paddingLeft="@dimen/timeline_cell_medium_margin">
+    android:paddingBottom="@dimen/dimen_small"
+    android:paddingTop="@dimen/dimen_small"
+    android:paddingRight="@dimen/dimen_medium"
+    android:paddingLeft="@dimen/dimen_medium">
 
     <com.makeramen.RoundedImageView
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -16,9 +16,9 @@
         android:scaleType="centerCrop"
         android:layout_width="@dimen/timeline_cell_img"
         android:layout_height="@dimen/timeline_cell_img"
-        android:layout_marginLeft="@dimen/timeline_cell_large_margin"
-        android:layout_marginRight="@dimen/timeline_cell_large_margin"
-        android:layout_marginTop="@dimen/timeline_cell_xsmall_margin"
+        android:layout_marginLeft="@dimen/dimen_large"
+        android:layout_marginRight="@dimen/dimen_large"
+        android:layout_marginTop="@dimen/dimen_xsmall"
         android:layout_gravity="center_horizontal|top"
         app:corner_radius="30dip"
         app:mutate_background="true"
@@ -28,9 +28,9 @@
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginRight="@dimen/timeline_cell_large_margin"
-        android:paddingBottom="@dimen/timeline_cell_large_margin"
-        android:layout_marginTop="@dimen/timeline_cell_medium_margin">
+        android:layout_marginRight="@dimen/dimen_large"
+        android:paddingBottom="@dimen/dimen_large"
+        android:layout_marginTop="@dimen/dimen_medium">
 
         <TextView
             android:id="@+id/card_comment_row_text"
@@ -41,7 +41,7 @@
 
         <TextView
             android:id="@+id/card_comment_row_infos"
-            android:layout_marginTop="@dimen/timeline_cell_medium_margin"
+            android:layout_marginTop="@dimen/dimen_medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/card_comment_infos"

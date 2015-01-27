@@ -46,7 +46,6 @@ public class GcmIntentService extends IntentService {
                 // If it's a regular GCM message, do some work.
             } else if (GoogleCloudMessaging.MESSAGE_TYPE_MESSAGE.equals(messageType)) {
                 sendNotification(extras);
-                Log.i("", "Received: " + extras.toString());
             }
         }
         GcmBroadcastReceiver.completeWakefulIntent(intent);
@@ -73,6 +72,7 @@ public class GcmIntentService extends IntentService {
                 .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                 .setAutoCancel(true)
                 .setExtras(extras)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_SOCIAL);
 
         if (!FloozApplication.appInForeground)

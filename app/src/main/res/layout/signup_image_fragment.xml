@@ -9,7 +9,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:layout_marginTop="@dimen/timeline_cell_large_margin">
+        android:layout_marginTop="@dimen/dimen_large">
 
         <com.makeramen.RoundedImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -17,7 +17,7 @@
             android:scaleType="centerCrop"
             android:layout_width="100dp"
             android:layout_height="100dp"
-            android:layout_marginBottom="@dimen/timeline_cell_small_margin"
+            android:layout_marginBottom="@dimen/dimen_small"
             app:corner_radius="30dip"
             app:mutate_background="true"
             android:src="@drawable/avatar_default"
@@ -25,27 +25,27 @@
 
         <TextView
             android:id="@+id/signup_image_info_label"
-            android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
+            android:layout_marginTop="@dimen/dimen_xlarge"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/SIGNUP_IMAGE_EXPLICATION"
-            android:paddingLeft="@dimen/timeline_cell_xxlarge_margin"
-            android:paddingRight="@dimen/timeline_cell_xxlarge_margin"
+            android:paddingLeft="@dimen/dimen_xxlarge"
+            android:paddingRight="@dimen/dimen_xxlarge"
             android:gravity="center"
-            android:lineSpacingExtra="@dimen/timeline_cell_small_margin"
+            android:lineSpacingExtra="@dimen/dimen_small"
             android:textColor="@color/placeholder"
             android:textSize="15dp"
-            android:layout_marginBottom="@dimen/timeline_cell_xlarge_margin"/>
+            android:layout_marginBottom="@dimen/dimen_xlarge"/>
 
         <RelativeLayout
             android:id="@+id/signup_image_fbButton"
             android:layout_width="fill_parent"
             android:layout_height="@dimen/signup_button_height"
             android:background="@color/blue_fb"
-            android:layout_marginRight="@dimen/timeline_cell_xlarge_margin"
-            android:layout_marginLeft="@dimen/timeline_cell_xlarge_margin"
-            android:layout_marginTop="@dimen/timeline_cell_large_margin"
-            android:layout_marginBottom="@dimen/timeline_cell_large_margin">
+            android:layout_marginRight="@dimen/dimen_xlarge"
+            android:layout_marginLeft="@dimen/dimen_xlarge"
+            android:layout_marginTop="@dimen/dimen_large"
+            android:layout_marginBottom="@dimen/dimen_large">
 
             <TextView
                 android:id="@+id/signup_image_fbButton_text"
@@ -54,7 +54,7 @@
                 android:layout_centerInParent="true"
                 android:text="@string/SIGNUP_IMAGE_BUTTON_FB"
                 android:textColor="@android:color/white"
-                android:padding="@dimen/timeline_cell_large_margin"
+                android:padding="@dimen/dimen_large"
                 />
 
             <ImageView
@@ -62,7 +62,7 @@
                 android:layout_height="30dp"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/timeline_cell_large_margin"
+                android:layout_marginLeft="@dimen/dimen_large"
                 android:src="@drawable/fb_grey"/>
             
         </RelativeLayout>
@@ -72,10 +72,10 @@
             android:layout_width="fill_parent"
             android:layout_height="@dimen/signup_button_height"
             android:background="@color/background"
-            android:layout_marginRight="@dimen/timeline_cell_xlarge_margin"
-            android:layout_marginLeft="@dimen/timeline_cell_xlarge_margin"
-            android:layout_marginTop="@dimen/timeline_cell_large_margin"
-            android:layout_marginBottom="@dimen/timeline_cell_large_margin">
+            android:layout_marginRight="@dimen/dimen_xlarge"
+            android:layout_marginLeft="@dimen/dimen_xlarge"
+            android:layout_marginTop="@dimen/dimen_large"
+            android:layout_marginBottom="@dimen/dimen_large">
 
             <TextView
                 android:id="@+id/signup_image_takeButton_text"
@@ -84,7 +84,7 @@
                 android:layout_centerInParent="true"
                 android:textColor="@android:color/white"
                 android:text="@string/SIGNUP_IMAGE_BUTTON_TAKE"
-                android:padding="@dimen/timeline_cell_large_margin"
+                android:padding="@dimen/dimen_large"
                 />
 
             <ImageView
@@ -92,7 +92,7 @@
                 android:layout_height="30dp"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/timeline_cell_large_margin"
+                android:layout_marginLeft="@dimen/dimen_large"
                 android:src="@drawable/camera_grey"/>
 
         </RelativeLayout>
@@ -102,10 +102,10 @@
             android:layout_width="fill_parent"
             android:layout_height="@dimen/signup_button_height"
             android:background="@color/background"
-            android:layout_marginRight="@dimen/timeline_cell_xlarge_margin"
-            android:layout_marginLeft="@dimen/timeline_cell_xlarge_margin"
-            android:layout_marginTop="@dimen/timeline_cell_large_margin"
-            android:layout_marginBottom="@dimen/timeline_cell_large_margin">
+            android:layout_marginRight="@dimen/dimen_xlarge"
+            android:layout_marginLeft="@dimen/dimen_xlarge"
+            android:layout_marginTop="@dimen/dimen_large"
+            android:layout_marginBottom="@dimen/dimen_large">
 
             <TextView
                 android:id="@+id/signup_image_chooseButton_text"
@@ -114,7 +114,7 @@
                 android:layout_centerInParent="true"
                 android:textColor="@android:color/white"
                 android:text="@string/SIGNUP_IMAGE_BUTTON_CHOOSE"
-                android:padding="@dimen/timeline_cell_large_margin"
+                android:padding="@dimen/dimen_large"
                 />
 
             <ImageView
@@ -122,7 +122,7 @@
                 android:layout_height="30dp"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="@dimen/timeline_cell_large_margin"
+                android:layout_marginLeft="@dimen/dimen_large"
                 android:src="@drawable/photo_album"/>
 
         </RelativeLayout>
@@ -135,10 +135,10 @@
         android:layout_height="@dimen/signup_button_height"
         android:layout_alignParentBottom="true"
         android:background="@color/background"
-        android:layout_marginRight="@dimen/timeline_cell_xlarge_margin"
-        android:layout_marginLeft="@dimen/timeline_cell_xlarge_margin"
-        android:layout_marginTop="@dimen/timeline_cell_large_margin"
-        android:layout_marginBottom="@dimen/timeline_cell_large_margin"
+        android:layout_marginRight="@dimen/dimen_xlarge"
+        android:layout_marginLeft="@dimen/dimen_xlarge"
+        android:layout_marginTop="@dimen/dimen_large"
+        android:layout_marginBottom="@dimen/dimen_large"
         android:textAllCaps="false"
         android:text="@string/GLOBAL_NEXT"/>
 

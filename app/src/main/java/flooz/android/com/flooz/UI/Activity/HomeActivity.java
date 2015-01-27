@@ -86,7 +86,7 @@ public class HomeActivity extends SlidingFragmentActivity implements CameraHostP
     public static final int RESULT_SCANPAY_ACTIVITY = 4;
 
     private FragmentManager fragmentManager;
-    private List<String> fragmentHistory;
+    private List<HomeBaseFragment> fragmentHistory;
     private Boolean isLeftMenuWasOpen = false;
     private Boolean isRightMenuWasOpen = false;
 
@@ -340,50 +340,66 @@ public class HomeActivity extends SlidingFragmentActivity implements CameraHostP
 
     public void pushMainFragment(String fragmentId) {
         if (this.contentFragments.containsKey(fragmentId)) {
+            if (this.imageViewer.getVisibility() == View.VISIBLE) {
+                this.imageViewerClose.performClick();
+            }
+            if (this.transactionCardContainer.getVisibility() == View.VISIBLE) {
+                this.hideTransactionCard();
+            }
+
             InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), 0);
 
-            this.fragmentHistory.add(fragmentId);
-            if (this.fragmentHistory.size() == 2) {
+            if (this.fragmentHistory.size() == 1) {
                 this.isRightMenuWasOpen = this.getSlidingMenu().isSecondaryMenuShowing();
                 if (!this.isRightMenuWasOpen)
                     this.isLeftMenuWasOpen = this.getSlidingMenu().isMenuShowing();
             }
-            this.getSlidingMenu().showContent(false);
+            this.getSlidingMenu().showContent(true);
             this.getSlidingMenu().setSlidingEnabled(false);
 
-            Fragment fragment = this.contentFragments.get(fragmentId);
+            HomeBaseFragment fragment = this.contentFragments.get(fragmentId);
+            this.fragmentHistory.add(fragment);
 
             FragmentTransaction ft = this.fragmentManager.beginTransaction();
 
-            ft.replace(R.id.main_fragment_container, fragment);
-            ft.addToBackStack(null).commit();
+            ft.add(R.id.main_fragment_container, fragment);
+            ft.addToBackStack(null);
+            ft.commit();
         }
     }
 
     public void pushMainFragment(String fragmentId, int animIn, int animOut) {
         if (this.contentFragments.containsKey(fragmentId)) {
+            if (this.imageViewer.getVisibility() == View.VISIBLE) {
+                this.imageViewerClose.performClick();
+            }
+            if (this.transactionCardContainer.getVisibility() == View.VISIBLE) {
+                this.hideTransactionCard();
+            }
+
             InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), 0);
 
-            this.fragmentHistory.add(fragmentId);
-
-            if (this.fragmentHistory.size() == 2) {
+            if (this.fragmentHistory.size() == 1) {
                 this.isRightMenuWasOpen = this.getSlidingMenu().isSecondaryMenuShowing();
                 if (!this.isRightMenuWasOpen)
                     this.isLeftMenuWasOpen = this.getSlidingMenu().isMenuShowing();
             }
-            this.getSlidingMenu().showContent(false);
+
+            this.getSlidingMenu().showContent(true);
             this.getSlidingMenu().setSlidingEnabled(false);
 
-            Fragment fragment = this.contentFragments.get(fragmentId);
+            HomeBaseFragment fragment = this.contentFragments.get(fragmentId);
+            this.fragmentHistory.add(fragment);
 
             FragmentTransaction ft = this.fragmentManager.beginTransaction();
 
             ft.setCustomAnimations(animIn, animOut);
 
-            ft.replace(R.id.main_fragment_container, fragment);
-            ft.addToBackStack(null).commit();
+            ft.add(R.id.main_fragment_container, fragment);
+            ft.addToBackStack(null);
+            ft.commit();
         }
     }
 
@@ -392,24 +408,24 @@ public class HomeActivity extends SlidingFragmentActivity implements CameraHostP
             InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), 0);
 
-            Fragment fragment = this.contentFragments.get(this.fragmentHistory.get(this.fragmentHistory.size() - 2));
+            HomeBaseFragment fragment = this.fragmentHistory.get(this.fragmentHistory.size() - 1);
 
             FragmentTransaction ft = this.fragmentManager.beginTransaction();
 
-            ft.replace(R.id.main_fragment_container, fragment);
-            ft.addToBackStack(null).commit();
+            ft.remove(fragment);
+            ft.addToBackStack(null);
+            ft.commit();
 
             this.fragmentHistory.remove(this.fragmentHistory.size() - 1);
 
             if (this.fragmentHistory.size() == 1) {
-
-//                if (this.isLeftMenuWasOpen) {
-//                    this.getSlidingMenu().showMenu(false);
-//                    this.getSlidingMenu().setSlidingEnabled(true);
-//                } else if (this.isRightMenuWasOpen) {
-//                    this.getSlidingMenu().showSecondaryMenu(false);
-//                    this.getSlidingMenu().setSlidingEnabled(true);
-//                }
+                if (this.isLeftMenuWasOpen) {
+                    this.getSlidingMenu().showMenu(true);
+                    this.getSlidingMenu().setSlidingEnabled(true);
+                } else if (this.isRightMenuWasOpen) {
+                    this.getSlidingMenu().showSecondaryMenu(true);
+                    this.getSlidingMenu().setSlidingEnabled(true);
+                }
 
                 this.isRightMenuWasOpen = false;
                 this.isLeftMenuWasOpen = false;
@@ -422,24 +438,25 @@ public class HomeActivity extends SlidingFragmentActivity implements CameraHostP
             InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), 0);
 
-            Fragment fragment = this.contentFragments.get(this.fragmentHistory.get(this.fragmentHistory.size() - 2));
+            HomeBaseFragment fragment = this.fragmentHistory.get(this.fragmentHistory.size() - 1);
 
             FragmentTransaction ft = this.fragmentManager.beginTransaction();
 
             ft.setCustomAnimations(animIn, animOut);
-            ft.replace(R.id.main_fragment_container, fragment);
-            ft.addToBackStack(null).commit();
+            ft.remove(fragment);
+            ft.addToBackStack(null);
+            ft.commit();
 
             this.fragmentHistory.remove(this.fragmentHistory.size() - 1);
 
             if (this.fragmentHistory.size() == 1) {
-//                if (this.isLeftMenuWasOpen) {
-//                    this.getSlidingMenu().showMenu(false);
-//                    this.getSlidingMenu().setSlidingEnabled(false);
-//                } else if (this.isRightMenuWasOpen) {
-//                    this.getSlidingMenu().showSecondaryMenu(false);
-//                    this.getSlidingMenu().setSlidingEnabled(false);
-//                }
+                if (this.isLeftMenuWasOpen) {
+                    this.getSlidingMenu().showMenu(true);
+                    this.getSlidingMenu().setSlidingEnabled(true);
+                } else if (this.isRightMenuWasOpen) {
+                    this.getSlidingMenu().showSecondaryMenu(true);
+                    this.getSlidingMenu().setSlidingEnabled(true);
+                }
 
                 this.isRightMenuWasOpen = false;
                 this.isLeftMenuWasOpen = false;
@@ -480,38 +497,16 @@ public class HomeActivity extends SlidingFragmentActivity implements CameraHostP
     public void changeMainFragment(String fragmentId)
     {
         if (this.contentFragments.containsKey(fragmentId)) {
-            InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), 0);
-
-            Fragment fragment = this.contentFragments.get(fragmentId);
-
-            FragmentTransaction ft = this.fragmentManager.beginTransaction();
-
-            ft.replace(R.id.main_fragment_container, fragment);
-            ft.addToBackStack(null).commit();
-
-            this.fragmentHistory.remove(this.fragmentHistory.size() - 1);
-            this.fragmentHistory.add(fragmentId);
+            this.popMainFragment();
+            this.pushMainFragment(fragmentId);
         }
     }
 
     public void changeMainFragment(String fragmentId, int animIn, int animOut)
     {
         if (this.contentFragments.containsKey(fragmentId)) {
-            InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), 0);
-
-            Fragment fragment = this.contentFragments.get(fragmentId);
-
-            FragmentTransaction ft = this.fragmentManager.beginTransaction();
-
-            ft.setCustomAnimations(animIn, animOut);
-
-            ft.replace(R.id.main_fragment_container, fragment);
-            ft.addToBackStack(null).commit();
-
-            this.fragmentHistory.remove(this.fragmentHistory.size() - 1);
-            this.fragmentHistory.add(fragmentId);
+            this.popMainFragment();
+            this.pushMainFragment(fragmentId, animIn, animOut);
         }
     }
 
@@ -631,6 +626,10 @@ public class HomeActivity extends SlidingFragmentActivity implements CameraHostP
             }
         });
         this.imageViewer.startAnimation(anim);
+    }
+
+    public void hideImageViewer() {
+        this.imageViewerClose.performClick();
     }
 
     @Override

@@ -11,6 +11,14 @@
         android:background="@color/background_header"
         android:gravity="center_vertical">
 
+        <ImageView
+            android:id="@+id/new_transac_close_button"
+            android:layout_centerVertical="true"
+            android:layout_width="@dimen/new_flooz_header_cross"
+            android:padding="@dimen/dimen_large"
+            android:layout_height="@dimen/new_flooz_header_cross"
+            android:src="@drawable/nav_cross"/>
+
         <TextView
             android:id="@+id/new_transac_header_text"
             android:layout_centerInParent="true"
@@ -21,12 +29,25 @@
             android:text="@string/NEW_TRANSACTION"/>
 
         <ImageView
-            android:id="@+id/new_transac_close_button"
+            android:id="@+id/new_transac_header_card"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dimen_large"
+            android:layout_width="wrap_content"
+            android:padding="@dimen/dimen_medium"
+            android:layout_height="30dp"
             android:layout_centerVertical="true"
-            android:layout_width="@dimen/new_flooz_header_cross"
-            android:padding="@dimen/timeline_cell_large_margin"
-            android:layout_height="@dimen/new_flooz_header_cross"
-            android:src="@drawable/nav_cross"/>
+            android:src="@drawable/cb_icon"
+            android:visibility="visible"/>
+
+        <TextView
+            android:id="@+id/new_transac_header_balance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="@dimen/dimen_large"
+            android:textColor="@color/blue"
+            android:textSize="15sp"/>
 
     </RelativeLayout>
 
@@ -59,8 +80,8 @@
                         android:scaleType="centerCrop"
                         android:layout_width="@dimen/new_flooz_to_img"
                         android:layout_height="@dimen/new_flooz_to_img"
-                        android:layout_marginLeft="@dimen/timeline_cell_large_margin"
-                        android:layout_marginRight="@dimen/timeline_cell_large_margin"
+                        android:layout_marginLeft="@dimen/dimen_large"
+                        android:layout_marginRight="@dimen/dimen_large"
                         app:corner_radius="30dip"
                         app:mutate_background="true"
                         android:src="@drawable/avatar_default"
@@ -107,7 +128,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:gravity="center_vertical|right"
-                    android:layout_marginRight="@dimen/timeline_cell_large_margin">
+                    android:layout_marginRight="@dimen/dimen_large">
 
                     <EditText
                         android:id="@+id/new_transac_amount_textfield"
@@ -116,6 +137,7 @@
                         android:textSize="@dimen/new_flooz_price"
                         android:inputType="numberDecimal"
                         android:maxLength="7"
+                        android:singleLine="true"
                         android:hint="0"
                         android:textColorHint="@color/placeholder"
                         android:textColor="@android:color/white"
@@ -124,7 +146,7 @@
 
                     <TextView
                         android:id="@+id/new_transac_currency_symbol"
-                        android:layout_marginLeft="@dimen/timeline_cell_medium_margin"
+                        android:layout_marginLeft="@dimen/dimen_medium"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:textColor="@android:color/white"
@@ -138,7 +160,7 @@
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
-                android:padding="@dimen/timeline_cell_large_margin"
+                android:padding="@dimen/dimen_large"
                 android:layout_height="fill_parent">
 
                 <EditText
@@ -158,7 +180,7 @@
                     android:id="@+id/new_transac_pic_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/timeline_cell_large_margin"
+                    android:layout_marginLeft="@dimen/dimen_large"
                     android:visibility="gone">
 
                     <ImageView
@@ -172,7 +194,7 @@
                         android:layout_width="30dp"
                         android:layout_height="30dp"
                         android:gravity="center"
-                        android:padding="@dimen/timeline_cell_small_margin"
+                        android:padding="@dimen/dimen_small"
                         android:src="@drawable/image_close"
                         android:layout_alignRight="@id/new_transac_pic"/>
 
@@ -190,9 +212,9 @@
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/new_flooz_main_social_zone"
-                android:layout_marginRight="@dimen/timeline_cell_large_margin"
-                android:layout_marginLeft="@dimen/timeline_cell_large_margin"
-                android:layout_marginBottom="@dimen/timeline_cell_medium_margin"
+                android:layout_marginRight="@dimen/dimen_large"
+                android:layout_marginLeft="@dimen/dimen_large"
+                android:layout_marginBottom="@dimen/dimen_medium"
                 android:gravity="center_vertical">
 
                 <LinearLayout
@@ -207,13 +229,13 @@
                         android:layout_width="@dimen/new_flooz_main_social_icn"
                         android:layout_height="@dimen/new_flooz_main_social_icn"
                         android:src="@drawable/scope_public"
-                        android:layout_marginRight="@dimen/timeline_cell_medium_margin"/>
+                        android:layout_marginRight="@dimen/dimen_medium"/>
 
                     <TextView
                         android:id="@+id/new_transac_scope_text"
                         android:layout_width="wrap_content"
                         android:layout_height="fill_parent"
-                        android:paddingTop="@dimen/timeline_cell_medium_margin"
+                        android:paddingTop="@dimen/dimen_medium"
                         android:textSize="@dimen/new_flooz_main_social_scope"
                         android:textColor="@android:color/white"
                         android:text="Public"/>
@@ -232,23 +254,24 @@
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/new_flooz_main_social_icn"
                         android:src="@drawable/photo_album"
-                        android:paddingTop="@dimen/timeline_cell_small_margin"
-                        android:paddingBottom="@dimen/timeline_cell_small_margin"
-                        android:layout_marginRight="@dimen/timeline_cell_xlarge_margin"/>
+                        android:paddingTop="@dimen/dimen_small"
+                        android:paddingBottom="@dimen/dimen_small"
+                        android:layout_marginRight="@dimen/dimen_xlarge"/>
 
                     <ImageView
                         android:id="@+id/new_transac_pic_button"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/new_flooz_main_social_icn"
                         android:src="@drawable/camera_grey"
-                        android:layout_marginRight="@dimen/timeline_cell_xlarge_margin"/>
+                        android:layout_marginRight="@dimen/dimen_xlarge"/>
 
                     <CheckBox
+                        android:visibility="gone"
                         android:id="@+id/new_transac_fb_checkbox"
                         android:layout_width="wrap_content"
                         android:layout_height="@dimen/new_flooz_main_social_icn"
                         android:button="@drawable/fb_checkbox"
-                        android:layout_marginRight="@dimen/timeline_cell_medium_margin"/>
+                        android:layout_marginRight="@dimen/dimen_medium"/>
 
                 </LinearLayout>
 
@@ -266,7 +289,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="@string/MENU_COLLECT"
-                    android:layout_margin="@dimen/timeline_cell_medium_margin"
+                    android:layout_margin="@dimen/dimen_medium"
                     android:textColor="@android:color/white"
                     android:background="@drawable/background_action_button"
                     android:gravity="center"/>
@@ -277,7 +300,7 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:text="@string/MENU_PAYMENT"
-                    android:layout_margin="@dimen/timeline_cell_medium_margin"
+                    android:layout_margin="@dimen/dimen_medium"
                     android:textColor="@android:color/white"
                     android:background="@drawable/background_action_button"
                     android:gravity="center"/>

@@ -64,9 +64,9 @@
     <string name="CREDIT_CARD_REMOVE">Supprimer cette carte</string>
 
     <string name="CASHOUT_BALANCE">Votre solde Flooz</string>
-    <string name="CASHOUT_PLACEHOLDER">Montant à retirer</string>
+    <string name="CASHOUT_PLACEHOLDER">Saisir le montant à retirer</string>
     <string name="CASHOUT_INFO">Virez la totalité ou une partie de votre porte-monnaie sur votre compte bancaire.</string>
-    
+
     <string name="NEW_TRANSACTION">Nouveau Flooz</string>
 
     <string name="INFORMATIONS_WHY">Sécurité</string>
@@ -346,7 +346,7 @@
 
     <string name="SIGNUP_PSEUDO_EXPLICATION">Donnez votre pseudo pour recevoir de l\'argent.\nC\'est votre identité, il est unique et non modifiable.</string>
     <string name="SIGNUP_PASSWORD_EXPLICATION">6 caractères min</string>
-    <string name="SIGNUP_IMAGE_EXPLICATION">Une bonne photo est indispensable pour être reconnaissable ! Utilisez votre photo facebook oou ajoutez-en une !</string>
+    <string name="SIGNUP_IMAGE_EXPLICATION">Une bonne photo est indispensable pour être reconnaissable ! Utilisez votre photo facebook ou ajoutez-en une !</string>
 
     <string name="SIGNUP_IMAGE_BUTTON_FB">Photo de profil Facebook</string>
     <string name="SIGNUP_IMAGE_BUTTON_TAKE">Prendre une photo</string>

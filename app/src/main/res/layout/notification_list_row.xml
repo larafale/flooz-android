@@ -2,24 +2,24 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/timeline_cell_large_margin"
-    android:paddingBottom="@dimen/timeline_cell_large_margin"
-    android:paddingLeft="@dimen/timeline_cell_large_margin"
-    android:paddingRight="@dimen/timeline_cell_xlarge_margin">
+    android:paddingTop="@dimen/dimen_large"
+    android:paddingBottom="@dimen/dimen_large"
+    android:paddingLeft="@dimen/dimen_large"
+    android:paddingRight="@dimen/dimen_xlarge">
 
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:paddingBottom="@dimen/timeline_cell_large_margin">
+        android:paddingBottom="@dimen/dimen_large">
 
         <ImageView
             android:id="@+id/notification_row_read_indicator"
-            android:layout_width="@dimen/timeline_cell_medium_margin"
-            android:layout_height="@dimen/timeline_cell_medium_margin"
+            android:layout_width="@dimen/dimen_medium"
+            android:layout_height="@dimen/dimen_medium"
             android:background="@drawable/notification_read_indicator"
-            android:layout_margin="@dimen/timeline_cell_medium_margin"/>
+            android:layout_margin="@dimen/dimen_medium"/>
 
         <com.makeramen.RoundedImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -27,9 +27,10 @@
             android:scaleType="centerCrop"
             android:layout_width="40dp"
             android:layout_height="40dp"
-            android:layout_marginLeft="@dimen/timeline_cell_large_margin"
-            android:layout_marginRight="@dimen/timeline_cell_large_margin"
-            android:layout_marginTop="@dimen/timeline_cell_xsmall_margin"
+            android:layout_marginLeft="@dimen/dimen_large"
+            android:layout_marginRight="@dimen/dimen_large"
+            android:layout_marginTop="@dimen/dimen_xsmall"
+            android:layout_marginBottom="@dimen/dimen_xsmall"
             android:layout_gravity="center_vertical"
             android:src="@drawable/avatar_default"
             app:corner_radius="30dip"

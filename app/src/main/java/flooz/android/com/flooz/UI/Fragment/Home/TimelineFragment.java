@@ -99,10 +99,13 @@ public class TimelineFragment extends Fragment implements TimelineListAdapter.Ti
         });
 
         if (this.transactions == null)
-            this.transactions = new ArrayList<FLTransaction>(0);
+            this.transactions = new ArrayList<>(0);
 
-        this.timelineAdapter = new TimelineListAdapter(FloozApplication.getAppContext(), this.transactions);
-        this.timelineAdapter.delegate = this;
+        if (this.timelineAdapter == null) {
+            this.timelineAdapter = new TimelineListAdapter(FloozApplication.getAppContext(), this.transactions);
+            this.timelineAdapter.delegate = this;
+        }
+
         this.timelineListView.setAdapter(this.timelineAdapter);
 
         return view;
@@ -161,8 +164,8 @@ public class TimelineFragment extends Fragment implements TimelineListAdapter.Ti
     }
 
     public void refreshTransactions() {
-        if (!this.transactions.isEmpty())
-            this.timelineAdapter.notifyDataSetChanged();
+//        if (!this.transactions.isEmpty())
+//            this.timelineAdapter.notifyDataSetChanged();
 
         FloozRestClient.getInstance().timeline(this.currentScope, new FloozHttpResponseHandler() {
             @Override

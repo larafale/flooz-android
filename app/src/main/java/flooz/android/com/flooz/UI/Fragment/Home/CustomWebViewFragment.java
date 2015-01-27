@@ -98,7 +98,6 @@ public class CustomWebViewFragment extends HomeBaseFragment {
         intent.putExtra(Intent.EXTRA_TEXT, body);
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         intent.putExtra(Intent.EXTRA_CC, cc);
-        intent.setType("message/rfc822");
         return intent;
     }
 

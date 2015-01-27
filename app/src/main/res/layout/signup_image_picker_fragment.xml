@@ -5,14 +5,14 @@
     android:background="@color/background_header">
 
     <GridView
-        android:padding="@dimen/timeline_cell_large_margin"
+        android:padding="@dimen/dimen_large"
         android:id="@+id/signup_image_picker_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:columnWidth="90dp"
         android:numColumns="auto_fit"
-        android:verticalSpacing="@dimen/timeline_cell_large_margin"
-        android:horizontalSpacing="@dimen/timeline_cell_large_margin"
+        android:verticalSpacing="@dimen/dimen_large"
+        android:horizontalSpacing="@dimen/dimen_large"
         android:stretchMode="columnWidth"
         android:gravity="center"
         />

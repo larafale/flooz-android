@@ -10,6 +10,7 @@
         android:textSize="@dimen/header_pager_view_fontsize"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/blue"/>
+        android:textColor="@color/blue"
+        android:enabled="false"/>
 
 </LinearLayout>

@@ -16,7 +16,7 @@
         android:layout_width="@dimen/photo_capture_icons"
         android:layout_height="@dimen/photo_capture_icons"
         android:src="@drawable/photo_album"
-        android:padding="@dimen/timeline_cell_large_margin"
+        android:padding="@dimen/dimen_large"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"/>
 
@@ -25,7 +25,7 @@
         android:layout_width="@dimen/photo_capture_shoot"
         android:layout_height="@dimen/photo_capture_shoot"
         android:src="@drawable/photo_shoot"
-        android:padding="@dimen/timeline_cell_large_margin"
+        android:padding="@dimen/dimen_large"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"/>
 
@@ -34,7 +34,7 @@
         android:layout_width="@dimen/photo_capture_icons"
         android:layout_height="@dimen/photo_capture_icons"
         android:src="@drawable/photo_switch"
-        android:padding="@dimen/timeline_cell_large_margin"
+        android:padding="@dimen/dimen_large"
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"/>
 
@@ -43,7 +43,7 @@
         android:layout_width="@dimen/photo_capture_icons"
         android:layout_height="@dimen/photo_capture_icons"
         android:src="@drawable/photo_expand"
-        android:padding="@dimen/timeline_cell_large_margin"
+        android:padding="@dimen/dimen_large"
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"/>
 
@@ -52,7 +52,7 @@
         android:layout_width="@dimen/photo_capture_icons"
         android:layout_height="@dimen/photo_capture_icons"
         android:src="@drawable/nav_close"
-        android:padding="@dimen/timeline_cell_large_margin"
+        android:padding="@dimen/dimen_large"
         android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"/>
 

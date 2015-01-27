@@ -88,7 +88,6 @@
 
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.VIBRATE"/>
-    <uses-permission android:name="android.permission.SEND_SMS"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <uses-permission android:name="android.permission.WAKE_LOCK"/>
     <uses-permission android:name="android.permission.BLUETOOTH"/>
@@ -104,5 +103,11 @@
     <uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
 
     <permission android:name="flooz.android.com.flooz.permission.C2D_MESSAGE" android:protectionLevel="signature" />
+
+    <supports-screens
+        android:smallScreens="false"
+        android:normalScreens="true"
+        android:largeScreens="true"
+        android:xlargeScreens="true"/>
 
 </manifest>

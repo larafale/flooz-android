@@ -33,7 +33,7 @@
                 android:gravity="center"
                 android:textAlignment="gravity"
                 android:padding="2dp"
-                android:layout_marginTop="@dimen/timeline_cell_medium_margin"
+                android:layout_marginTop="@dimen/dimen_medium"
                 android:textSize="12sp"
                 android:background="@drawable/notification_alert_background"
                 android:layout_alignRight="@id/profile_header_button"/>
@@ -41,7 +41,6 @@
         </RelativeLayout>
 
         <LinearLayout android:layout_width="wrap_content"
-            android:id="@+id/timeline_header"
             android:layout_height="match_parent"
             android:layout_centerHorizontal="true"
             android:orientation="vertical"
@@ -57,9 +56,15 @@
                 android:id="@+id/pagerindicator"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:paddingTop="@dimen/timeline_cell_small_margin"/>
+                android:paddingTop="@dimen/dimen_small"/>
 
         </LinearLayout>
+        
+        <View
+            android:id="@+id/timeline_header"
+            android:layout_centerHorizontal="true"
+            android:layout_width="200dp"
+            android:layout_height="fill_parent"/>
 
         <ImageView
             android:layout_alignParentRight="true"
@@ -91,7 +96,7 @@
             android:layout_centerHorizontal="true"
             android:layout_width="@dimen/timeline_new_flooz_button"
             android:layout_height="@dimen/timeline_new_flooz_button"
-            android:layout_marginBottom="@dimen/timeline_cell_xlarge_margin"
+            android:layout_marginBottom="@dimen/dimen_xlarge"
             android:src="@drawable/new_flooz"
             app:corner_radius="30dip"
             app:oval="true"/>

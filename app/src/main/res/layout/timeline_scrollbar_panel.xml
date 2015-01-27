@@ -2,10 +2,10 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:paddingLeft="@dimen/timeline_cell_large_margin"
-    android:paddingRight="@dimen/timeline_cell_large_margin"
-    android:paddingTop="@dimen/timeline_cell_medium_margin"
-    android:paddingBottom="@dimen/timeline_cell_medium_margin"
+    android:paddingLeft="@dimen/dimen_large"
+    android:paddingRight="@dimen/dimen_large"
+    android:paddingTop="@dimen/dimen_medium"
+    android:paddingBottom="@dimen/dimen_medium"
     android:background="@drawable/timeline_scrollbar_panel_background"
     android:gravity="center">
 
@@ -18,7 +18,7 @@
         android:id="@+id/timeline_scrollbar_panel_when"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/timeline_cell_medium_margin"
+        android:layout_marginLeft="@dimen/dimen_medium"
         android:textColor="@android:color/white"
         android:textSize="14sp"/>
 

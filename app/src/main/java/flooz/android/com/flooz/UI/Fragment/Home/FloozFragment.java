@@ -86,10 +86,11 @@ public class FloozFragment extends HomeBaseFragment implements TimelineFragment.
             }
         });
 
-        if (this.timelineViewPagerAdapter == null)
+        if (this.timelineViewPagerAdapter == null) {
             this.timelineViewPagerAdapter = new TimelinePagerAdapter(getChildFragmentManager());
-        this.timelineViewPagerAdapter.homeTimeline.delegate = this;
-        this.timelineViewPagerAdapter.publicTimeline.delegate = this;
+            this.timelineViewPagerAdapter.homeTimeline.delegate = this;
+            this.timelineViewPagerAdapter.publicTimeline.delegate = this;
+        }
 
         this.timelineViewPager = (ViewPager) view.findViewById(R.id.timeline_pager);
         this.timelineViewPager.setAdapter(this.timelineViewPagerAdapter);
@@ -124,7 +125,7 @@ public class FloozFragment extends HomeBaseFragment implements TimelineFragment.
         this.pageIndicator.setFillColor(inflater.getContext().getResources().getColor(R.color.blue));
         this.pageIndicator.setStrokeColor(inflater.getContext().getResources().getColor(R.color.blue));
 
-        this.headerProfileButton = (ImageView)view.findViewById(R.id.profile_header_button);
+        this.headerProfileButton = (ImageView) view.findViewById(R.id.profile_header_button);
 
         final int[] doubleClickChecker = {0};
         this.headerProfileButton.setOnClickListener(new View.OnClickListener() {
@@ -184,6 +185,12 @@ public class FloozFragment extends HomeBaseFragment implements TimelineFragment.
         });
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
     }
 
     @Override

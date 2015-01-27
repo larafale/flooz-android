@@ -3,25 +3,25 @@
     <item android:state_pressed="true" android:state_enabled="true">
         <shape android:shape="rectangle">
             <solid android:color="@color/blue_alpha"/>
-            <corners android:radius="@dimen/timeline_cell_small_margin"/>
+            <corners android:radius="@dimen/dimen_small"/>
         </shape>
     </item>
     <item android:state_focused="true" android:state_enabled="true">
         <shape android:shape="rectangle">
             <solid android:color="@color/blue_alpha"/>
-            <corners android:radius="@dimen/timeline_cell_small_margin"/>
+            <corners android:radius="@dimen/dimen_small"/>
         </shape>
     </item>
     <item android:state_enabled="true" android:state_focused="false" android:state_pressed="false">
         <shape android:shape="rectangle">
             <solid android:color="@color/blue"/>
-            <corners android:radius="@dimen/timeline_cell_small_margin"/>
+            <corners android:radius="@dimen/dimen_small"/>
         </shape>
     </item>
     <item android:state_enabled="false">
         <shape android:shape="rectangle">
             <solid android:color="@color/background"/>
-            <corners android:radius="@dimen/timeline_cell_small_margin"/>
+            <corners android:radius="@dimen/dimen_small"/>
         </shape>
     </item>
 </selector>

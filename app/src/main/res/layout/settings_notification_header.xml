@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:background="@color/background"
     android:gravity="center_vertical"
-    android:padding="@dimen/timeline_cell_large_margin">
+    android:padding="@dimen/dimen_large">
 
     <TextView
         android:id="@+id/settings_notification_header_text"

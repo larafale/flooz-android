@@ -23,7 +23,7 @@
             android:id="@+id/settings_privacy_header_back"
             android:layout_centerVertical="true"
             android:layout_width="@dimen/new_flooz_header_cross"
-            android:padding="@dimen/timeline_cell_large_margin"
+            android:padding="@dimen/dimen_large"
             android:layout_height="fill_parent"
             android:src="@drawable/nav_back"/>
 
@@ -33,9 +33,9 @@
         android:id="@+id/settings_privacy_infos"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
-        android:layout_marginLeft="@dimen/timeline_cell_xlarge_margin"
-        android:layout_marginRight="@dimen/timeline_cell_xlarge_margin"
+        android:layout_marginTop="@dimen/dimen_xlarge"
+        android:layout_marginLeft="@dimen/dimen_xlarge"
+        android:layout_marginRight="@dimen/dimen_xlarge"
         android:textColor="@android:color/white"
         android:gravity="center"
         android:textSize="16sp"
@@ -45,7 +45,7 @@
         android:id="@+id/settings_privacy_segment"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="@dimen/timeline_cell_xlarge_margin"
+        android:layout_margin="@dimen/dimen_xlarge"
         android:orientation="horizontal">
 
         <RadioButton

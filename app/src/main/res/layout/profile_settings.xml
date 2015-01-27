@@ -28,7 +28,7 @@
                 android:id="@+id/profile_settings_header_back"
                 android:layout_centerVertical="true"
                 android:layout_width="@dimen/new_flooz_header_cross"
-                android:padding="@dimen/timeline_cell_large_margin"
+                android:padding="@dimen/dimen_large"
                 android:layout_height="fill_parent"
                 android:src="@drawable/nav_account_button"/>
 
@@ -56,21 +56,21 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_alignParentBottom="true"
-        android:paddingRight="@dimen/timeline_cell_large_margin"
-        android:paddingLeft="@dimen/timeline_cell_large_margin"
+        android:paddingRight="@dimen/dimen_large"
+        android:paddingLeft="@dimen/dimen_large"
         android:gravity="center"
-        android:layout_marginBottom="@dimen/timeline_cell_large_margin">
+        android:layout_marginBottom="@dimen/dimen_large">
 
         <LinearLayout
             android:id="@+id/profile_settings_infos_notifs_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="@dimen/timeline_cell_large_margin"
+            android:layout_marginRight="@dimen/dimen_large"
             android:background="@drawable/settings_row_notifs"
-            android:paddingTop="@dimen/timeline_cell_small_margin"
-            android:paddingRight="@dimen/timeline_cell_large_margin"
-            android:paddingLeft="@dimen/timeline_cell_large_margin"
-            android:paddingBottom="@dimen/timeline_cell_small_margin"
+            android:paddingTop="@dimen/dimen_small"
+            android:paddingRight="@dimen/dimen_large"
+            android:paddingLeft="@dimen/dimen_large"
+            android:paddingBottom="@dimen/dimen_small"
             android:gravity="center"
             android:visibility="gone">
 

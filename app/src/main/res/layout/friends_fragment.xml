@@ -16,7 +16,7 @@
         <FrameLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:padding="@dimen/timeline_cell_large_margin">
+            android:padding="@dimen/dimen_large">
 
             <EditText
                 android:id="@+id/friends_search_textfield"
@@ -35,16 +35,16 @@
 
             <ImageView
                 android:id="@+id/friends_search_button"
-                android:layout_width="@dimen/timeline_cell_xlarge_margin"
-                android:layout_height="@dimen/timeline_cell_xlarge_margin"
+                android:layout_width="@dimen/dimen_xlarge"
+                android:layout_height="@dimen/dimen_xlarge"
                 android:layout_gravity="left|center_vertical"
                 android:layout_margin="10dp"
                 android:src="@drawable/search_button" />
 
             <ImageView
                 android:id="@+id/friends_search_clear"
-                android:layout_width="@dimen/timeline_cell_xlarge_margin"
-                android:layout_height="@dimen/timeline_cell_xlarge_margin"
+                android:layout_width="@dimen/dimen_xlarge"
+                android:layout_height="@dimen/dimen_xlarge"
                 android:layout_gravity="right|center_vertical"
                 android:layout_margin="8dp"
                 android:src="@drawable/nav_close"
@@ -90,16 +90,16 @@
 
             <Button
                 android:id="@+id/friends_invite_button"
-                android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
-                android:layout_marginLeft="@dimen/timeline_cell_xxlarge_margin"
-                android:layout_marginRight="@dimen/timeline_cell_xxlarge_margin"
+                android:layout_marginTop="@dimen/dimen_xlarge"
+                android:layout_marginLeft="@dimen/dimen_xxlarge"
+                android:layout_marginRight="@dimen/dimen_xxlarge"
                 android:layout_width="fill_parent"
                 android:layout_height="@dimen/signup_button_height"
                 android:gravity="center"
                 android:background="@drawable/background_action_button"
                 android:enabled="true"
                 android:text="@string/FRIEND_INVITE"
-                android:layout_marginBottom="@dimen/timeline_cell_xlarge_margin"
+                android:layout_marginBottom="@dimen/dimen_xlarge"
                 android:textSize="20sp"
                 android:textAllCaps="false"
                 android:textColor="@drawable/text_color_action_button"/>

@@ -1,6 +1,7 @@
 package flooz.android.com.flooz.UI.Fragment.Home.Settings;
 
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -87,7 +88,7 @@ public class IdentitySettingsFragment extends HomeBaseFragment implements Custom
         this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
         this.firstnameTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
         this.lastnameTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
-        this.usernameTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+        this.usernameTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()), Typeface.BOLD);
         this.birthdateTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
         this.cniRectoTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
         this.cniVersoTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));

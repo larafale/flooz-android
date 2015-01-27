@@ -20,7 +20,7 @@
     <style name="secure_code_keyboard_key">
         <item name="android:layout_width">@dimen/secure_code_key_size</item>
         <item name="android:layout_height">@dimen/secure_code_key_size</item>
-        <item name="android:layout_margin">@dimen/timeline_cell_large_margin</item>
+        <item name="android:layout_margin">@dimen/dimen_large</item>
         <item name="android:clickable">true</item>
         <item name="android:gravity">center</item>
         <item name="android:scaleType">centerInside</item>

@@ -27,7 +27,7 @@
         android:layout_width="fill_parent"
         android:layout_height="150dp"
         android:adjustViewBounds="true"
-        android:layout_marginTop="@dimen/timeline_cell_large_margin"
+        android:layout_marginTop="@dimen/dimen_large"
         app:corner_radius="5dp"
         app:oval="false"/>
 

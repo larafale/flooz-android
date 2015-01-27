@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_header"
-    android:layout_margin="@dimen/timeline_cell_large_margin">
+    android:layout_margin="@dimen/dimen_large">
 
     <RelativeLayout
         android:id="@+id/transac_card_header"
@@ -17,7 +17,7 @@
         <ImageView
             android:id="@+id/transac_card_header_report"
             android:layout_width="@dimen/card_header_close"
-            android:padding="@dimen/timeline_cell_large_margin"
+            android:padding="@dimen/dimen_large"
             android:layout_height="fill_parent"
             android:src="@drawable/report_button"
             android:layout_alignParentLeft="true"/>
@@ -33,12 +33,12 @@
                 android:id="@+id/transac_card_header_scope"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/timeline_cell_medium_margin"/>
+                android:layout_marginRight="@dimen/dimen_medium"/>
 
             <TextView
                 android:id="@+id/transac_card_header_date"
                 android:layout_width="wrap_content"
-                android:paddingTop="@dimen/timeline_cell_xsmall_margin"
+                android:paddingTop="@dimen/dimen_xsmall"
                 android:textSize="@dimen/card_header_date"
                 android:layout_height="wrap_content"/>
 
@@ -47,7 +47,7 @@
         <ImageView
             android:id="@+id/transac_card_header_close"
             android:layout_width="@dimen/card_header_close"
-            android:padding="@dimen/timeline_cell_large_margin"
+            android:padding="@dimen/dimen_large"
             android:layout_height="fill_parent"
             android:src="@drawable/nav_cross"
             android:layout_alignParentRight="true"/>
@@ -76,7 +76,7 @@
                     android:gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/timeline_cell_large_margin">
+                    android:layout_marginTop="@dimen/dimen_large">
 
                     <com.makeramen.RoundedImageView
                         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -84,7 +84,7 @@
                         android:scaleType="centerCrop"
                         android:layout_width="@dimen/profile_pic_large"
                         android:layout_height="@dimen/profile_pic_large"
-                        android:layout_marginRight="@dimen/timeline_cell_large_margin"
+                        android:layout_marginRight="@dimen/dimen_large"
                         android:src="@drawable/avatar_default"
                         app:corner_radius="30dip"
                         app:mutate_background="true"
@@ -93,7 +93,7 @@
                     <ImageView
                         android:layout_width="@dimen/card_link_arrow_width"
                         android:layout_height="wrap_content"
-                        android:padding="@dimen/timeline_cell_large_margin"
+                        android:padding="@dimen/dimen_large"
                         android:src="@drawable/card_arrow"/>
 
                     <com.makeramen.RoundedImageView
@@ -103,7 +103,7 @@
                         android:layout_width="@dimen/profile_pic_large"
                         android:layout_height="@dimen/profile_pic_large"
                         android:src="@drawable/avatar_default"
-                        android:layout_marginLeft="@dimen/timeline_cell_large_margin"
+                        android:layout_marginLeft="@dimen/dimen_large"
                         app:corner_radius="30dip"
                         app:mutate_background="true"
                         app:oval="true"/>
@@ -115,8 +115,8 @@
                     android:gravity="center"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/timeline_cell_large_margin"
-                    android:layout_marginBottom="@dimen/timeline_cell_large_margin">
+                    android:layout_marginTop="@dimen/dimen_large"
+                    android:layout_marginBottom="@dimen/dimen_large">
 
                     <LinearLayout
                         android:orientation="vertical"
@@ -204,10 +204,10 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/timeline_cell_large_margin"
-                    android:paddingBottom="@dimen/timeline_cell_large_margin"
-                    android:paddingLeft="@dimen/timeline_cell_xlarge_margin"
-                    android:paddingRight="@dimen/timeline_cell_xlarge_margin"
+                    android:paddingTop="@dimen/dimen_large"
+                    android:paddingBottom="@dimen/dimen_large"
+                    android:paddingLeft="@dimen/dimen_xlarge"
+                    android:paddingRight="@dimen/dimen_xlarge"
                     android:background="@color/background">
 
                     <LinearLayout
@@ -227,8 +227,8 @@
                             android:id="@+id/transac_card_3dText_2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/timeline_cell_xsmall_margin"
-                            android:layout_marginRight="@dimen/timeline_cell_xsmall_margin"
+                            android:layout_marginLeft="@dimen/dimen_xsmall"
+                            android:layout_marginRight="@dimen/dimen_xsmall"
                             android:textColor="@color/placeholder"
                             android:textSize="@dimen/card_3d_text"/>
 
@@ -246,7 +246,7 @@
                         android:id="@+id/transac_card_desc"
                         android:layout_width="fill_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/timeline_cell_medium_margin"
+                        android:layout_marginTop="@dimen/dimen_medium"
                         android:textColor="@android:color/white"
                         android:textSize="@dimen/card_content"/>
 
@@ -261,7 +261,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:gravity="center_vertical"
-                        android:paddingTop="@dimen/timeline_cell_large_margin">
+                        android:paddingTop="@dimen/dimen_large">
 
 
                         <LinearLayout
@@ -270,13 +270,13 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="center_vertical"
-                            android:layout_marginRight="@dimen/timeline_cell_large_margin">
+                            android:layout_marginRight="@dimen/dimen_large">
 
                             <ImageView
                                 android:layout_width="@dimen/timeline_cell_social_picto"
                                 android:layout_height="@dimen/timeline_cell_social_picto"
                                 android:src="@drawable/social_comment"
-                                android:layout_marginRight="@dimen/timeline_cell_medium_margin"/>
+                                android:layout_marginRight="@dimen/dimen_medium"/>
 
                             <TextView
                                 android:id="@+id/transac_card_comments_number"
@@ -298,7 +298,7 @@
                                 android:layout_width="@dimen/timeline_cell_social_picto"
                                 android:layout_height="@dimen/timeline_cell_social_picto"
                                 android:src="@drawable/social_like"
-                                android:layout_marginRight="@dimen/timeline_cell_medium_margin"/>
+                                android:layout_marginRight="@dimen/dimen_medium"/>
 
                             <TextView
                                 android:id="@+id/transac_card_likes_text"
@@ -318,9 +318,9 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
                     android:background="@color/background"
-                    android:paddingBottom="@dimen/timeline_cell_large_margin"
-                    android:paddingRight="@dimen/timeline_cell_xlarge_margin"
-                    android:paddingLeft="@dimen/timeline_cell_xlarge_margin"
+                    android:paddingBottom="@dimen/dimen_large"
+                    android:paddingRight="@dimen/dimen_xlarge"
+                    android:paddingLeft="@dimen/dimen_xlarge"
                     android:gravity="center_vertical">
 
                     <LinearLayout
@@ -328,10 +328,10 @@
                         android:orientation="horizontal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/timeline_cell_small_margin"
-                        android:paddingLeft="@dimen/timeline_cell_medium_margin"
-                        android:paddingRight="@dimen/timeline_cell_medium_margin"
-                        android:paddingBottom="@dimen/timeline_cell_small_margin"
+                        android:paddingTop="@dimen/dimen_small"
+                        android:paddingLeft="@dimen/dimen_medium"
+                        android:paddingRight="@dimen/dimen_medium"
+                        android:paddingBottom="@dimen/dimen_small"
                         android:gravity="center_vertical"
                         android:background="@drawable/timeline_row_action_button_background">
 
@@ -345,8 +345,8 @@
                             android:id="@+id/transac_card_likes_button_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:paddingTop="@dimen/timeline_cell_xsmall_margin"
-                            android:layout_marginLeft="@dimen/timeline_cell_small_margin"
+                            android:paddingTop="@dimen/dimen_xsmall"
+                            android:layout_marginLeft="@dimen/dimen_small"
                             android:textColor="@color/placeholder"
                             android:textSize="@dimen/timeline_cell_action_social_label"
                             android:text="@string/CELL_SOCIAL_LIKE"/>
@@ -358,11 +358,11 @@
                         android:orientation="horizontal"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingTop="@dimen/timeline_cell_small_margin"
-                        android:paddingLeft="@dimen/timeline_cell_medium_margin"
-                        android:paddingRight="@dimen/timeline_cell_medium_margin"
-                        android:paddingBottom="@dimen/timeline_cell_small_margin"
-                        android:layout_marginLeft="@dimen/timeline_cell_large_margin"
+                        android:paddingTop="@dimen/dimen_small"
+                        android:paddingLeft="@dimen/dimen_medium"
+                        android:paddingRight="@dimen/dimen_medium"
+                        android:paddingBottom="@dimen/dimen_small"
+                        android:layout_marginLeft="@dimen/dimen_large"
                         android:gravity="center_vertical"
                         android:background="@drawable/timeline_row_action_button_background">
 
@@ -374,9 +374,9 @@
 
                         <TextView
                             android:id="@+id/transac_card_comments_button_text"
-                            android:layout_marginLeft="@dimen/timeline_cell_small_margin"
+                            android:layout_marginLeft="@dimen/dimen_small"
                             android:layout_width="wrap_content"
-                            android:paddingTop="@dimen/timeline_cell_xsmall_margin"
+                            android:paddingTop="@dimen/dimen_xsmall"
                             android:layout_height="wrap_content"
                             android:textColor="@color/placeholder"
                             android:text="@string/CELL_SOCIAL_COMMENT"
@@ -400,7 +400,7 @@
                     android:orientation="vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/timeline_cell_medium_margin"/>
+                    android:layout_marginTop="@dimen/dimen_medium"/>
 
             </LinearLayout>
 
@@ -408,12 +408,12 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal|bottom"
-                android:layout_marginTop="@dimen/timeline_cell_large_margin"
-                android:layout_marginBottom="@dimen/timeline_cell_large_margin"
-                android:paddingLeft="@dimen/timeline_cell_xlarge_margin"
-                android:paddingRight="@dimen/timeline_cell_xlarge_margin"
-                android:paddingTop="@dimen/timeline_cell_large_margin"
-                android:paddingBottom="@dimen/timeline_cell_medium_margin"
+                android:layout_marginTop="@dimen/dimen_large"
+                android:layout_marginBottom="@dimen/dimen_large"
+                android:paddingLeft="@dimen/dimen_xlarge"
+                android:paddingRight="@dimen/dimen_xlarge"
+                android:paddingTop="@dimen/dimen_large"
+                android:paddingBottom="@dimen/dimen_medium"
                 android:orientation="horizontal">
 
                 <EditText
@@ -425,11 +425,11 @@
                     android:hint="@string/SEND_COMMENT"
                     android:textColor="@android:color/white"
                     android:textSize="@dimen/card_comment_textfield"
-                    android:layout_marginRight="@dimen/timeline_cell_medium_margin"
-                    android:paddingTop="@dimen/timeline_cell_medium_margin"
-                    android:paddingBottom="@dimen/timeline_cell_medium_margin"
-                    android:paddingLeft="@dimen/timeline_cell_xlarge_margin"
-                    android:paddingRight="@dimen/timeline_cell_large_margin"
+                    android:layout_marginRight="@dimen/dimen_medium"
+                    android:paddingTop="@dimen/dimen_medium"
+                    android:paddingBottom="@dimen/dimen_medium"
+                    android:paddingLeft="@dimen/dimen_xlarge"
+                    android:paddingRight="@dimen/dimen_large"
                     android:textColorHint="@color/placeholder"
                     android:background="@drawable/card_comment_input_background"/>
 

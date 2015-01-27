@@ -1,20 +1,17 @@
 package flooz.android.com.flooz.UI.Fragment.Home;
 
-import android.app.Activity;
 import android.app.Dialog;
-import android.app.FragmentTransaction;
-import android.app.PendingIntent;
 import android.app.Service;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.hardware.Camera;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
-import android.telephony.SmsManager;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +20,6 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -34,7 +30,6 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONObject;
 
-import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,7 +43,6 @@ import flooz.android.com.flooz.Network.FloozRestClient;
 import flooz.android.com.flooz.R;
 import flooz.android.com.flooz.UI.Fragment.Home.Authentication.AuthenticationFragment;
 import flooz.android.com.flooz.UI.Fragment.Home.Camera.CameraFullscreenFragment;
-import flooz.android.com.flooz.UI.Fragment.Home.Camera.CameraOverlayFragment;
 import flooz.android.com.flooz.UI.Fragment.Home.Camera.ImageGalleryFragment;
 import flooz.android.com.flooz.Utils.CustomCameraHost;
 import flooz.android.com.flooz.Utils.CustomFonts;
@@ -80,6 +74,8 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
     FLTransaction.TransactionType currentType;
     private FLTransaction.TransactionScope currentScope = FLTransaction.TransactionScope.TransactionScopePublic;
 
+    private TextView headerBalance;
+    private ImageView headerCB;
     private TextView headerTitle;
     private ImageView closeButton;
     private RoundedImageView toPic;
@@ -156,6 +152,8 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
         this.context = inflater.getContext();
         this.headerTitle = (TextView) view.findViewById(R.id.new_transac_header_text);
         this.closeButton = (ImageView) view.findViewById(R.id.new_transac_close_button);
+        this.headerBalance = (TextView) view.findViewById(R.id.new_transac_header_balance);
+        this.headerCB = (ImageView) view.findViewById(R.id.new_transac_header_card);
         this.toPic = (RoundedImageView) view.findViewById(R.id.new_transac_to_pic);
         this.toUsername = (TextView) view.findViewById(R.id.new_transac_to_username);
         this.toFullname = (TextView) view.findViewById(R.id.new_transac_to_fullname);
@@ -191,7 +189,7 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
         }
 
         this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
-        this.toUsername.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
+        this.toUsername.setTypeface(CustomFonts.customTitleLight(inflater.getContext()), Typeface.BOLD);
         this.toFullname.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
         this.toWho.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
         this.amountTextfield.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
@@ -200,6 +198,23 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
         this.scopeText.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
         this.chargeButton.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
         this.payButton.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
+        this.headerBalance.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
+
+        this.headerCB.setColorFilter(inflater.getContext().getResources().getColor(R.color.blue));
+
+        this.headerCB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBalanceDialog();
+            }
+        });
+
+        this.headerBalance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBalanceDialog();
+            }
+        });
 
         if (this.preset == null || !this.preset.blockTo) {
             this.toContainer.setOnClickListener(new View.OnClickListener() {
@@ -228,6 +243,23 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
             this.amountTextfield.setFocusable(false);
             this.amountTextfield.setFocusableInTouchMode(false);
         }
+
+        this.amountTextfield.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                updateBalanceIndicator();
+            }
+        });
 
         if (Camera.getNumberOfCameras() == 0)
             this.capturePicButton.setVisibility(View.GONE);
@@ -306,16 +338,6 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
                 this.contentTextfield.setFocusableInTouchMode(false);
             }
 
-            if (this.preset.focusAmount) {
-                this.amountTextfield.requestFocus();
-                InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Service.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(this.amountTextfield, 0);
-            } else if (this.preset.focusWhy) {
-                this.contentTextfield.requestFocus();
-                InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Service.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(this.contentTextfield, 0);
-            }
-
             if (this.preset.type == FLTransaction.TransactionType.TransactionTypeCharge) {
                 this.payButton.setVisibility(View.GONE);
             }
@@ -323,10 +345,6 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
                 this.chargeButton.setVisibility(View.GONE);
             }
 
-        } else {
-            this.amountTextfield.requestFocus();
-            InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Service.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(this.amountTextfield, 0);
         }
 
         return view;
@@ -334,10 +352,55 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
 
     public void onDestroyView() {
         super.onDestroyView();
+        this.saveData();
+    }
+
+    public void onPause() {
+        super.onPause();
+        this.saveData();
     }
 
     public void onStart() {
         super.onStart();
+        Handler handler = new Handler(this.context.getMainLooper());
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!clearFocus) {
+                    if (preset != null) {
+                        if (preset.focusWhy) {
+                            contentTextfield.setSelection(contentTextfield.getText().length());
+                            contentTextfield.requestFocus();
+                            InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Service.INPUT_METHOD_SERVICE);
+                            imm.showSoftInput(contentTextfield, 0);
+                        } else if (preset.focusAmount) {
+                            amountTextfield.setSelection(amountTextfield.getText().length());
+                            amountTextfield.requestFocus();
+                            InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Service.INPUT_METHOD_SERVICE);
+                            imm.showSoftInput(amountTextfield, 0);
+                        }
+                    } else {
+                        amountTextfield.setSelection(amountTextfield.getText().length());
+                        amountTextfield.requestFocus();
+                        InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Service.INPUT_METHOD_SERVICE);
+                        imm.showSoftInput(amountTextfield, 0);
+                    }
+                } else {
+                    contentTextfield.clearFocus();
+                    amountTextfield.clearFocus();
+                }
+                clearFocus = true;
+            }
+        }, 300);
+
+        this.amountTextfield.setText(this.savedAmount);
+        this.contentTextfield.setText(this.savedWhy);
+
+        this.updateBalanceIndicator();
+    }
+
+    public void onResume() {
+        super.onResume();
         Handler handler = new Handler(this.context.getMainLooper());
         handler.postDelayed(new Runnable() {
             @Override
@@ -371,6 +434,29 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
 
         this.amountTextfield.setText(this.savedAmount);
         this.contentTextfield.setText(this.savedWhy);
+
+        this.updateBalanceIndicator();
+    }
+
+    private void updateBalanceIndicator() {
+        float amount = FloozRestClient.getInstance().currentUser.amount.floatValue();
+
+        if (!this.amountTextfield.getText().toString().isEmpty()) {
+            amount = amount - Float.parseFloat(this.amountTextfield.getText().toString());
+        }
+
+        if (amount > 0) {
+            this.headerCB.setVisibility(View.GONE);
+            this.headerBalance.setVisibility(View.VISIBLE);
+            this.headerBalance.setText(String.format("%.2f €", amount));
+        } else {
+            this.headerCB.setVisibility(View.VISIBLE);
+            this.headerBalance.setVisibility(View.GONE);
+        }
+    }
+
+    private void showBalanceDialog() {
+
     }
 
     private void saveData() {
@@ -489,6 +575,7 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
 
     @Override
     public void authenticationValidated() {
+        FloozRestClient.getInstance().showLoadView();
         FloozRestClient.getInstance().performTransaction(this.generateRequestParams(false), new FloozHttpResponseHandler() {
             @Override
             public void success(final Object response) {
@@ -515,35 +602,7 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
                 }
                 if (jsonObject.has("sms")) {
                     final JSONObject smsObject = jsonObject.optJSONObject("sms");
-
-                    PendingIntent sentPI = PendingIntent.getBroadcast(context, 0,
-                            new Intent("SMS_SENT"), 0);
-
-                    context.registerReceiver(new BroadcastReceiver() {
-                        @Override
-                        public void onReceive(Context arg0, Intent arg1) {
-                            switch (getResultCode()) {
-                                case Activity.RESULT_OK:
-                                    parentActivity.popMainFragment(R.animator.slide_down, android.R.animator.fade_in);
-                                    break;
-                                case SmsManager.RESULT_ERROR_GENERIC_FAILURE:
-                                    sendSMSIntent(smsObject.optString("phone"), smsObject.optString("message"));
-                                    break;
-                                case SmsManager.RESULT_ERROR_NO_SERVICE:
-                                    sendSMSIntent(smsObject.optString("phone"), smsObject.optString("message"));
-                                    break;
-                                case SmsManager.RESULT_ERROR_NULL_PDU:
-                                    sendSMSIntent(smsObject.optString("phone"), smsObject.optString("message"));
-                                    break;
-                                case SmsManager.RESULT_ERROR_RADIO_OFF:
-                                    sendSMSIntent(smsObject.optString("phone"), smsObject.optString("message"));
-                                    break;
-                            }
-                        }
-                    }, new IntentFilter("SMS_SENT"));
-
-                    SmsManager sms = SmsManager.getDefault();
-                    sms.sendTextMessage(smsObject.optString("phone"), null, smsObject.optString("message"), sentPI, null);
+                    sendSMSIntent(smsObject.optString("phone"), smsObject.optString("message"));
                 } else {
                     parentActivity.popMainFragment(R.animator.slide_down, android.R.animator.fade_in);
                 }
@@ -558,8 +617,8 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
     }
 
     private void sendSMSIntent(String phone, String content) {
-        Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-        sendIntent.setData(Uri.parse("sms:"));
+        Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
+        sendIntent.setData(Uri.parse("sms:" + phone));
         sendIntent.putExtra("address", phone);
         sendIntent.putExtra("sms_body", content);
         if (sendIntent.resolveActivity(parentActivity.getPackageManager()) != null) {

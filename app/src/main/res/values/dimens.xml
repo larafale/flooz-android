@@ -15,13 +15,14 @@
     <dimen name="action_sheet_width">300dp</dimen>
     <dimen name="action_sheet_item_size">17sp</dimen>
 
+    <dimen name="dimen_xlarge">20dp</dimen>
+    <dimen name="dimen_xxlarge">40dp</dimen>
+    <dimen name="dimen_large">10dp</dimen>
+    <dimen name="dimen_medium">5dp</dimen>
+    <dimen name="dimen_small">3dp</dimen>
+    <dimen name="dimen_xsmall">1dp</dimen>
+
     <dimen name="timeline_cell_img">45dp</dimen>
-    <dimen name="timeline_cell_xlarge_margin">20dp</dimen>
-    <dimen name="timeline_cell_xxlarge_margin">40dp</dimen>
-    <dimen name="timeline_cell_large_margin">10dp</dimen>
-    <dimen name="timeline_cell_medium_margin">5dp</dimen>
-    <dimen name="timeline_cell_small_margin">3dp</dimen>
-    <dimen name="timeline_cell_xsmall_margin">1dp</dimen>
     <dimen name="timeline_cell_title">14sp</dimen>
     <dimen name="timeline_cell_social_label">12sp</dimen>
     <dimen name="timeline_cell_social_picto">15dp</dimen>
@@ -43,7 +44,7 @@
     <dimen name="new_flooz_to_zone">220dp</dimen>
     <dimen name="new_flooz_to_fullname">15sp</dimen>
     <dimen name="new_flooz_to_username">13sp</dimen>
-    <dimen name="new_flooz_price">20sp</dimen>
+    <dimen name="new_flooz_price">23sp</dimen>
     <dimen name="new_flooz_to_img">40dp</dimen>
     <dimen name="new_flooz_main_action_zone">45dp</dimen>
     <dimen name="new_flooz_main_social_zone">25dp</dimen>

@@ -135,7 +135,7 @@ public class TransactionCardFragment extends HomeBaseFragment implements Authent
         this.cardCommentsNumber = (TextView) view.findViewById(R.id.transac_card_comments_number);
 
         this.cardHeaderDate.setTypeface(CustomFonts.customTitleExtraLight(this.inflater.getContext()));
-        this.cardFromUsername.setTypeface(CustomFonts.customTitleExtraLight(this.inflater.getContext()));
+        this.cardFromUsername.setTypeface(CustomFonts.customTitleExtraLight(this.inflater.getContext()), Typeface.BOLD);
         this.cardFromFullname.setTypeface(CustomFonts.customTitleExtraLight(this.inflater.getContext()));
         this.cardToUsername.setTypeface(CustomFonts.customTitleExtraLight(this.inflater.getContext()));
         this.cardToFullname.setTypeface(CustomFonts.customTitleExtraLight(this.inflater.getContext()));
@@ -303,6 +303,16 @@ public class TransactionCardFragment extends HomeBaseFragment implements Authent
         }
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (this.insertComment) {
+            cardCommentsTextfield.requestFocus();
+            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(cardCommentsTextfield, InputMethodManager.SHOW_IMPLICIT);
+        }
+    }
+
     private void reloadView() {
 
         this.cardHeaderScope.setImageDrawable(FLTransaction.transactionScopeToImage(this.transaction.scope));
@@ -358,12 +368,14 @@ public class TransactionCardFragment extends HomeBaseFragment implements Authent
             this.cardSocialContainer.setVisibility(View.VISIBLE);
 
             if (this.transaction.social.commentsCount.intValue() > 0) {
-                this.cardCommentsNumber.setText(this.transaction.social.commentsCount.toString());
+                if (this.transaction.social.commentsCount.intValue() < 10)
+                    this.cardCommentsNumber.setText("0" + this.transaction.social.commentsCount.toString());
+                else
+                    this.cardCommentsNumber.setText(this.transaction.social.commentsCount.toString());
                 this.cardCommentsNumberContainer.setVisibility(View.VISIBLE);
             } else {
                 this.cardCommentsNumberContainer.setVisibility(View.GONE);
             }
-
 
             if (!this.transaction.social.likeText.isEmpty()) {
                 this.cardLikesText.setText(this.transaction.social.likeText);

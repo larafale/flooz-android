@@ -28,7 +28,7 @@
             android:id="@+id/main_transac_view"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/timeline_cell_xlarge_margin"
+            android:layout_margin="@dimen/dimen_xlarge"
             android:background="@color/background_header"
             android:layout_centerInParent="true"/>
 
@@ -63,8 +63,8 @@
             android:layout_height="wrap_content"
             android:src="@drawable/image_close"
             android:layout_alignParentRight="true"
-            android:padding="@dimen/timeline_cell_large_margin"
-            android:layout_margin="@dimen/timeline_cell_large_margin"/>
+            android:padding="@dimen/dimen_large"
+            android:layout_margin="@dimen/dimen_large"/>
 
     </RelativeLayout>
 

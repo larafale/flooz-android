@@ -64,7 +64,7 @@
     <string name="CREDIT_CARD_REMOVE">Supprimer cette carte</string>
 
     <string name="CASHOUT_BALANCE">Votre solde Flooz</string>
-    <string name="CASHOUT_PLACEHOLDER">Montant à retirer</string>
+    <string name="CASHOUT_PLACEHOLDER">Saisir le montant à retirer</string>
     <string name="CASHOUT_INFO">Virez la totalité ou une partie de votre porte-monnaie sur votre compte bancaire.</string>
     
     <string name="NEW_TRANSACTION">Nouveau Flooz</string>

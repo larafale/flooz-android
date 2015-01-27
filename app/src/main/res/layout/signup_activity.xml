@@ -10,14 +10,14 @@
         android:layout_width="fill_parent"
         android:layout_height="@dimen/header_pager_view_height"
         android:gravity="center_vertical"
-        android:layout_marginBottom="@dimen/timeline_cell_large_margin">
+        android:layout_marginBottom="@dimen/dimen_large">
 
         <ImageView
             android:id="@+id/signup_header_back"
             android:layout_width="@dimen/header_nav_back"
             android:layout_height="@dimen/header_nav_back"
             android:src="@drawable/nav_back"
-            android:padding="@dimen/timeline_cell_large_margin"/>
+            android:padding="@dimen/dimen_large"/>
 
         <TextView
             android:id="@+id/signup_header_title"

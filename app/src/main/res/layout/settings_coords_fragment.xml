@@ -25,7 +25,7 @@
             android:id="@+id/settings_coord_header_back"
             android:layout_centerVertical="true"
             android:layout_width="@dimen/new_flooz_header_cross"
-            android:padding="@dimen/timeline_cell_large_margin"
+            android:padding="@dimen/dimen_large"
             android:layout_height="fill_parent"
             android:src="@drawable/nav_back"/>
 
@@ -35,12 +35,12 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
-        android:paddingLeft="@dimen/timeline_cell_xlarge_margin"
-        android:paddingRight="@dimen/timeline_cell_xlarge_margin"
-        android:layout_marginTop="@dimen/timeline_cell_large_margin">
+        android:paddingLeft="@dimen/dimen_xlarge"
+        android:paddingRight="@dimen/dimen_xlarge"
+        android:layout_marginTop="@dimen/dimen_large">
 
         <FrameLayout
-            android:layout_marginTop="@dimen/timeline_cell_small_margin"
+            android:layout_marginTop="@dimen/dimen_small"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
 
@@ -68,7 +68,7 @@
         </FrameLayout>
 
         <FrameLayout
-            android:layout_marginTop="@dimen/timeline_cell_small_margin"
+            android:layout_marginTop="@dimen/dimen_small"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content">
 
@@ -144,20 +144,20 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_gravity="right"
-                android:padding="@dimen/timeline_cell_small_margin"
+                android:padding="@dimen/dimen_small"
                 android:src="@drawable/friends_accepted"/>
 
         </FrameLayout>
 
         <Button
             android:id="@+id/settings_coord_save"
-            android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
+            android:layout_marginTop="@dimen/dimen_xlarge"
             android:layout_width="fill_parent"
             android:layout_height="@dimen/signup_button_height"
             android:gravity="center"
             android:background="@drawable/background_action_button"
             android:text="@string/GLOBAL_SAVE"
-            android:layout_marginBottom="@dimen/timeline_cell_xlarge_margin"
+            android:layout_marginBottom="@dimen/dimen_xlarge"
             android:textSize="20sp"
             android:textAllCaps="false"
             android:textColor="@drawable/text_color_action_button"/>

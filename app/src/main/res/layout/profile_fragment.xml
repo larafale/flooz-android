@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="0.05"
             android:gravity="center_horizontal"
-            android:paddingTop="@dimen/timeline_cell_xlarge_margin"
+            android:paddingTop="@dimen/dimen_xlarge"
             android:background="@drawable/account_user_background">
 
             <com.makeramen.RoundedImageView
@@ -25,7 +25,7 @@
                 android:scaleType="centerCrop"
                 android:layout_width="@dimen/profile_pic_large"
                 android:layout_height="@dimen/profile_pic_large"
-                android:layout_marginBottom="@dimen/timeline_cell_small_margin"
+                android:layout_marginBottom="@dimen/dimen_small"
                 app:corner_radius="30dip"
                 app:mutate_background="true"
                 android:src="@drawable/avatar_default"
@@ -35,7 +35,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="20sp"
-                android:layout_marginBottom="@dimen/timeline_cell_xsmall_margin"
+                android:layout_marginBottom="@dimen/dimen_xsmall"
                 android:textColor="@android:color/white"
                 android:textAllCaps="true"
                 android:id="@+id/fullname"/>
@@ -44,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="15sp"
-                android:layout_marginBottom="@dimen/timeline_cell_small_margin"
+                android:layout_marginBottom="@dimen/dimen_small"
                 android:id="@+id/username"
                 android:textColor="@android:color/white"/>
 

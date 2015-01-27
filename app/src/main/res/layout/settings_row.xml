@@ -4,10 +4,10 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:paddingLeft="@dimen/timeline_cell_xxlarge_margin"
-    android:paddingRight="@dimen/timeline_cell_xlarge_margin"
-    android:paddingTop="@dimen/timeline_cell_large_margin"
-    android:paddingBottom="@dimen/timeline_cell_large_margin"
+    android:paddingLeft="@dimen/dimen_xxlarge"
+    android:paddingRight="@dimen/dimen_xlarge"
+    android:paddingTop="@dimen/dimen_large"
+    android:paddingBottom="@dimen/dimen_large"
     android:background="@color/background_header">
 
     <TextView
@@ -25,12 +25,12 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:layout_marginRight="@dimen/timeline_cell_xxlarge_margin"
+        android:layout_marginRight="@dimen/dimen_xxlarge"
         android:background="@drawable/settings_row_notifs"
-        android:paddingTop="@dimen/timeline_cell_small_margin"
-        android:paddingRight="@dimen/timeline_cell_large_margin"
-        android:paddingLeft="@dimen/timeline_cell_large_margin"
-        android:paddingBottom="@dimen/timeline_cell_small_margin"
+        android:paddingTop="@dimen/dimen_small"
+        android:paddingRight="@dimen/dimen_large"
+        android:paddingLeft="@dimen/dimen_large"
+        android:paddingBottom="@dimen/dimen_small"
         android:gravity="center">
 
         <TextView

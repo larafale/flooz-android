@@ -10,14 +10,14 @@
         android:layout_width="fill_parent"
         android:layout_height="@dimen/header_pager_view_height"
         android:gravity="center_vertical"
-        android:layout_marginBottom="@dimen/timeline_cell_large_margin">
+        android:layout_marginBottom="@dimen/dimen_large">
 
         <ImageView
             android:id="@+id/authentication_header_back"
             android:layout_width="@dimen/header_nav_back"
             android:layout_height="@dimen/header_nav_back"
             android:src="@drawable/nav_back"
-            android:padding="@dimen/timeline_cell_large_margin"/>
+            android:padding="@dimen/dimen_large"/>
 
         <TextView
             android:id="@+id/authentication_header_title"
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:padding="@dimen/timeline_cell_small_margin"
+            android:padding="@dimen/dimen_small"
             android:textSize="@dimen/header_pager_view_fontsize"
             android:textColor="@color/blue"
             android:src="@drawable/flooz_full"/>

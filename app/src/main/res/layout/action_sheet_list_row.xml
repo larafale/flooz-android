@@ -4,7 +4,7 @@
     android:id="@+id/action_sheet_list_item"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="@dimen/timeline_cell_large_margin"
+    android:padding="@dimen/dimen_large"
     android:textAlignment="gravity"
     android:textAllCaps="false"
     android:textSize="@dimen/action_sheet_item_size"

@@ -1039,6 +1039,8 @@ public class FloozRestClient
     public void showLoadView() {
         if (this.loadDialog == null || !this.loadDialog.isShowing()) {
             this.loadDialog = new ProgressDialog(this.floozApp.getCurrentActivity());
+            this.loadDialog.setCancelable(false);
+            this.loadDialog.setCanceledOnTouchOutside(false);
             this.loadDialog.setMessage(this.floozApp.getResources().getString(R.string.GLOBAL_WAIT));
             this.loadDialog.show();
         }
@@ -1320,7 +1322,10 @@ public class FloozRestClient
     }
 
     private void handleTriggerProfileShow() {
-        FloozApplication.performLocalNotification(CustomNotificationIntents.showSlidingLeftMenu());
+        if (floozApp.getCurrentActivity() instanceof HomeActivity) {
+            HomeActivity activity = (HomeActivity) floozApp.getCurrentActivity();
+            activity.pushMainFragment("profile_settings", R.animator.slide_up, android.R.animator.fade_out);
+        }
     }
 
     private void handleTriggerTransactionReload() {

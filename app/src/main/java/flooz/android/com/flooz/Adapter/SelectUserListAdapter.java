@@ -98,7 +98,7 @@ public class SelectUserListAdapter extends BaseAdapter implements StickyListHead
             holder.fullname = (TextView) convertView.findViewById(R.id.user_list_row_fullname);
             holder.pic = (RoundedImageView) convertView.findViewById(R.id.user_list_row_pic);
 
-            holder.username.setTypeface(CustomFonts.customTitleExtraLight(this.context));
+            holder.username.setTypeface(CustomFonts.customTitleExtraLight(this.context), Typeface.BOLD);
             holder.fullname.setTypeface(CustomFonts.customTitleExtraLight(this.context), Typeface.BOLD);
 
             convertView.setTag(holder);

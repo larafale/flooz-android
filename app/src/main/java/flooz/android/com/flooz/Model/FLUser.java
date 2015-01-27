@@ -263,6 +263,9 @@ public class FLUser
         if (this.avatarURL != null)
             res.put("avatarURL", this.avatarURL);
 
+        if (this.passCode != null)
+            res.put("secureCode", this.passCode);
+
         if (this.json != null && this.json.has("fb")) {
             Map<String, Object> fbData = new HashMap<String, Object>();
 
@@ -277,47 +280,6 @@ public class FLUser
 
         if (!last)
             res.put("validate", true);
-
-        return res;
-    }
-
-    public Map<String, Object> getParamsForSignup() {
-        Map<String, Object> res = new HashMap<String, Object>();
-
-        res.put("firstName", this.firstname);
-        res.put("lastName", this.lastname);
-        res.put("nick", this.username);
-        res.put("email", this.email);
-        res.put("birthdate", formattedBirthdate(this.birthdate));
-        res.put("phone", this.phone);
-        res.put("password", this.password);
-        res.put("secureCode", this.passCode);
-
-        if (this.coupon != null)
-            res.put("coupon", this.coupon);
-
-        if (this.fullname != null)
-            res.put("fullName", this.fullname);
-
-        if (this.avatarURL != null || this.avatarData != null)
-            res.put("hasImage", true);
-        else
-            res.put("hasImage", false);
-
-        if (this.avatarURL != null)
-            res.put("avatarURL", this.avatarURL);
-
-        if (this.json != null && this.json.has("fb")) {
-            Map<String, Object> fbData = new HashMap<String, Object>();
-
-            fbData.put("email", this.json.optJSONObject("fb").optString("email"));
-            fbData.put("id", this.json.optJSONObject("fb").optString("id"));
-            fbData.put("name", this.json.optJSONObject("fb").optString("name"));
-            fbData.put("token", this.json.optJSONObject("fb").optString("token"));
-
-            res.put("fb", fbData);
-            res.put("idFacebook", this.json.optJSONObject("fb").optString("id"));
-        }
 
         return res;
     }

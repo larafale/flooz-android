@@ -16,7 +16,7 @@
         <ImageView
             android:id="@+id/photo_gallery_header_close"
             android:layout_width="@dimen/photo_gallery_header_close"
-            android:padding="@dimen/timeline_cell_large_margin"
+            android:padding="@dimen/dimen_large"
             android:layout_height="@dimen/photo_gallery_header_close"
             android:layout_centerVertical="true"
             android:src="@drawable/nav_cross"
@@ -35,14 +35,14 @@
     </RelativeLayout>
 
     <GridView
-        android:padding="@dimen/timeline_cell_large_margin"
+        android:padding="@dimen/dimen_large"
         android:id="@+id/photo_gallery_grid"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:columnWidth="90dp"
         android:numColumns="auto_fit"
-        android:verticalSpacing="@dimen/timeline_cell_large_margin"
-        android:horizontalSpacing="@dimen/timeline_cell_large_margin"
+        android:verticalSpacing="@dimen/dimen_large"
+        android:horizontalSpacing="@dimen/dimen_large"
         android:stretchMode="columnWidth"
         android:gravity="center"
         />

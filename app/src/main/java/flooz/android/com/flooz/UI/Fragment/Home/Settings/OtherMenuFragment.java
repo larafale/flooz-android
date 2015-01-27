@@ -87,7 +87,7 @@ public class OtherMenuFragment extends HomeBaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Intent intent = CustomWebViewFragment.newEmailIntent("hello@flooz.me", list.get(position).getTitle(), "Voici quelques idées pour améliorer l'application : ", "");
-                startActivity(intent);
+                parentActivity.startActivity(intent);
             }
         }));
         list.add(new SettingsListItem(inflater.getContext().getResources().getString(R.string.SETTINGS_LOGOUT), new AdapterView.OnItemClickListener() {

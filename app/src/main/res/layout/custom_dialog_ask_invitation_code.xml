@@ -11,22 +11,22 @@
         android:layout_width="fill_parent"
         android:layout_height="@dimen/dialog_validate_flooz_pic_height"
         android:src="@drawable/flooz_icon_white"
-        android:layout_marginTop="@dimen/timeline_cell_large_margin"
-        android:layout_marginBottom="@dimen/timeline_cell_large_margin"/>
+        android:layout_marginTop="@dimen/dimen_large"
+        android:layout_marginBottom="@dimen/dimen_large"/>
 
     <EditText
         android:id="@+id/dialog_invitation_ask_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:singleLine="true"
-        android:layout_margin="@dimen/timeline_cell_large_margin"
+        android:layout_margin="@dimen/dimen_large"
         android:hint="@string/FIELD_FULLNAME"
         android:textColor="@android:color/white"
         android:textColorHint="@android:color/white"
-        android:padding="@dimen/timeline_cell_small_margin"
+        android:padding="@dimen/dimen_small"
         android:background="@drawable/custom_dialog_textfield_background"
-        android:layout_marginLeft="@dimen/timeline_cell_medium_margin"
-        android:layout_marginRight="@dimen/timeline_cell_medium_margin"
+        android:layout_marginLeft="@dimen/dimen_medium"
+        android:layout_marginRight="@dimen/dimen_medium"
         />
 
     <EditText
@@ -34,15 +34,15 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:singleLine="true"
-        android:layout_margin="@dimen/timeline_cell_large_margin"
+        android:layout_margin="@dimen/dimen_large"
         android:hint="@string/FIELD_EMAIL"
         android:inputType="textEmailAddress"
         android:textColor="@android:color/white"
         android:textColorHint="@android:color/white"
-        android:padding="@dimen/timeline_cell_small_margin"
+        android:padding="@dimen/dimen_small"
         android:background="@drawable/custom_dialog_textfield_background"
-        android:layout_marginLeft="@dimen/timeline_cell_medium_margin"
-        android:layout_marginRight="@dimen/timeline_cell_medium_margin"
+        android:layout_marginLeft="@dimen/dimen_medium"
+        android:layout_marginRight="@dimen/dimen_medium"
         />
 
     <Button
@@ -52,6 +52,6 @@
         android:background="@android:color/white"
         android:textColor="@color/blue"
         android:text="@string/INVITATION_CODE_ASK"
-        android:layout_marginTop="@dimen/timeline_cell_large_margin"/>
+        android:layout_marginTop="@dimen/dimen_large"/>
 
 </LinearLayout>

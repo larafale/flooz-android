@@ -14,7 +14,7 @@
         android:layout_weight="6"
         android:dividerHeight="1px"
         android:listSelector="@android:color/transparent"
-        android:layout_marginBottom="@dimen/timeline_cell_small_margin"
+        android:layout_marginBottom="@dimen/dimen_small"
         android:overScrollMode="never"/>
 
     <LinearLayout
@@ -24,7 +24,7 @@
         android:layout_weight="1"
         android:background="@drawable/login_button_background"
         android:gravity="center"
-        android:layout_margin="@dimen/timeline_cell_small_margin"
+        android:layout_margin="@dimen/dimen_small"
         android:orientation="vertical">
 
         <TextView
@@ -41,7 +41,7 @@
             android:id="@+id/start_login_image"
             android:layout_width="wrap_content"
             android:layout_height="35dp"
-            android:padding="@dimen/timeline_cell_small_margin"
+            android:padding="@dimen/dimen_small"
             android:src="@drawable/flooz_full"/>
 
     </LinearLayout>

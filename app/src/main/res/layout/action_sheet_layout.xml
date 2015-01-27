@@ -17,9 +17,9 @@
     <TextView
         android:id="@+id/action_sheet_cancel"
         android:layout_width="fill_parent"
-        android:layout_marginTop="@dimen/timeline_cell_large_margin"
-        android:layout_marginBottom="@dimen/timeline_cell_large_margin"
-        android:padding="@dimen/timeline_cell_large_margin"
+        android:layout_marginTop="@dimen/dimen_large"
+        android:layout_marginBottom="@dimen/dimen_large"
+        android:padding="@dimen/dimen_large"
         android:layout_height="wrap_content"
         android:textColor="@android:color/white"
         android:background="@drawable/action_sheet_cancel_background"

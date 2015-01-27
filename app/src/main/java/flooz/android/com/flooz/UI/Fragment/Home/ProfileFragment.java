@@ -7,7 +7,10 @@ package flooz.android.com.flooz.UI.Fragment.Home;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,12 +33,19 @@ import flooz.android.com.flooz.Model.FLUser;
 import flooz.android.com.flooz.Network.FloozHttpResponseHandler;
 import flooz.android.com.flooz.Network.FloozRestClient;
 import flooz.android.com.flooz.R;
+import flooz.android.com.flooz.UI.Fragment.Home.Camera.CameraFullscreenFragment;
+import flooz.android.com.flooz.UI.Fragment.Home.Camera.ImageGalleryFragment;
+import flooz.android.com.flooz.UI.Tools.ActionSheet;
+import flooz.android.com.flooz.UI.Tools.ActionSheetItem;
+import flooz.android.com.flooz.Utils.CustomCameraHost;
 import flooz.android.com.flooz.Utils.CustomFonts;
 import flooz.android.com.flooz.Utils.CustomNotificationIntents;
+import flooz.android.com.flooz.Utils.ImageHelper;
 import flooz.android.com.flooz.Utils.MenuItem;
 
-public class ProfileFragment extends HomeBaseFragment
+public class ProfileFragment extends HomeBaseFragment implements CustomCameraHost.CustomCameraHostDelegate
 {
+    private ProfileFragment instance;
     private LinearLayout accountUserView;
     private RoundedImageView userView;
     private TextView fullname;
@@ -79,9 +89,10 @@ public class ProfileFragment extends HomeBaseFragment
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.profile_fragment, null);
 
+        this.instance = this;
         this.accountUserView = (LinearLayout) view.findViewById(R.id.accountUserView);
         this.userView = (RoundedImageView) view.findViewById(R.id.userView);
         this.fullname = (TextView) view.findViewById(R.id.fullname);
@@ -118,6 +129,32 @@ public class ProfileFragment extends HomeBaseFragment
         this.listAdapter = new MenuListAdapter(inflater.getContext(), this.menuItems);
         this.menuActionList.setAdapter(this.listAdapter);
 
+        this.userView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<ActionSheetItem> items = new ArrayList<>();
+
+                items.add(new ActionSheetItem(inflater.getContext(), R.string.SIGNUP_IMAGE_BUTTON_TAKE, new ActionSheetItem.ActionSheetItemClickListener() {
+                    @Override
+                    public void onClick() {
+                        ((CameraFullscreenFragment)parentActivity.contentFragments.get("camera_fullscreen")).cameraHostDelegate = instance;
+                        ((CameraFullscreenFragment)parentActivity.contentFragments.get("camera_fullscreen")).canAccessAlbum = false;
+                        parentActivity.pushMainFragment("camera_fullscreen", R.animator.slide_up, android.R.animator.fade_out);
+                    }
+                }));
+
+                items.add(new ActionSheetItem(inflater.getContext(), R.string.SIGNUP_IMAGE_BUTTON_CHOOSE, new ActionSheetItem.ActionSheetItemClickListener() {
+                    @Override
+                    public void onClick() {
+                        ((ImageGalleryFragment)parentActivity.contentFragments.get("photo_gallery")).cameraHostDelegate = instance;
+                        parentActivity.pushMainFragment("photo_gallery", R.animator.slide_up, android.R.animator.fade_out);
+                    }
+                }));
+
+                ActionSheet.showWithItems(parentActivity, items);
+            }
+        });
+
         this.menuActionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -147,7 +184,7 @@ public class ProfileFragment extends HomeBaseFragment
 
                                 }
                             });
-                        break;
+                            break;
                         case 4:
                             parentActivity.pushMainFragment("other_menu", R.animator.slide_up, android.R.animator.fade_out);
                             break;
@@ -182,18 +219,7 @@ public class ProfileFragment extends HomeBaseFragment
                 ImageLoader.getInstance().displayImage(user.avatarURL, this.userView);
             else
                 this.userView.setImageDrawable(getResources().getDrawable(R.drawable.avatar_default));
-
-//            this.completeNb.setText(user.profileCompletion);
-//            this.floozNb.setText(user.transactionsCount.toString());
-//            this.friendsNb.setText(user.friendsCount.toString());
         }
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-
-
     }
 
     @Override
@@ -201,5 +227,27 @@ public class ProfileFragment extends HomeBaseFragment
     {
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadCurrentUserDataReceiver);
         super.onDestroy();
+    }
+
+    @Override
+    public void photoTaken(final Bitmap photo) {
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                FloozRestClient.getInstance().uploadDocument("picId", ImageHelper.convertBitmapInFile(photo), new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        FloozRestClient.getInstance().updateCurrentUser(null);
+                    }
+
+                    @Override
+                    public void failure(int statusCode, FLError error) {
+
+                    }
+                });
+                parentActivity.popMainFragment(R.animator.slide_down, android.R.animator.fade_in);
+            }
+        });
     }
 }

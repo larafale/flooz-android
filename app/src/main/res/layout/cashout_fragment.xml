@@ -24,7 +24,7 @@
             android:id="@+id/cashout_header_back"
             android:layout_centerVertical="true"
             android:layout_width="@dimen/new_flooz_header_cross"
-            android:padding="@dimen/timeline_cell_large_margin"
+            android:padding="@dimen/dimen_large"
             android:layout_height="fill_parent"
             android:src="@drawable/nav_account_button"/>
 
@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:gravity="center_horizontal"
             android:orientation="vertical"
-            android:padding="@dimen/timeline_cell_xlarge_margin">
+            android:padding="@dimen/dimen_xlarge">
 
             <TextView
                 android:id="@+id/cashout_balance_infos"
@@ -45,14 +45,14 @@
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
                 android:text="@string/CASHOUT_BALANCE"
-                android:layout_marginTop="@dimen/timeline_cell_large_margin"
+                android:layout_marginTop="@dimen/dimen_large"
                 android:textSize="19sp"/>
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/timeline_cell_large_margin"
+                android:layout_marginTop="@dimen/dimen_large"
                 android:gravity="center_horizontal">
 
                 <TextView
@@ -71,7 +71,7 @@
                     android:textColor="@color/blue"
                     android:text="@string/GLOBAL_EURO"
                     android:textSize="20sp"
-                    android:layout_marginLeft="@dimen/timeline_cell_medium_margin"
+                    android:layout_marginLeft="@dimen/dimen_medium"
                     android:gravity="top"/>
 
             </LinearLayout>
@@ -82,7 +82,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal|numberSigned"
-                android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
+                android:layout_marginTop="@dimen/dimen_xlarge"
                 android:textSize="19sp"
                 android:hint="@string/CASHOUT_PLACEHOLDER"/>
 
@@ -90,13 +90,13 @@
                 android:id="@+id/cashout_button"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
+                android:layout_marginTop="@dimen/dimen_xlarge"
                 android:text="@string/GLOBAL_CONFIRM"
                 android:background="@drawable/background_action_button"
                 android:enabled="false"
                 android:textColor="@drawable/text_color_action_button"
                 android:gravity="center"
-                android:padding="@dimen/timeline_cell_large_margin"
+                android:padding="@dimen/dimen_large"
                 android:textSize="18sp"/>
 
         </LinearLayout>
@@ -110,12 +110,12 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_marginTop="@dimen/timeline_cell_xxlarge_margin"
+            android:layout_marginTop="@dimen/dimen_xxlarge"
             android:layout_alignParentBottom="true"
-            android:layout_marginBottom="@dimen/timeline_cell_xlarge_margin"
+            android:layout_marginBottom="@dimen/dimen_xlarge"
             android:text="@string/CASHOUT_INFO"
-            android:paddingLeft="@dimen/timeline_cell_xlarge_margin"
-            android:paddingRight="@dimen/timeline_cell_xlarge_margin"
+            android:paddingLeft="@dimen/dimen_xlarge"
+            android:paddingRight="@dimen/dimen_xlarge"
             android:textColor="@color/placeholder"/>
 
     </RelativeLayout>

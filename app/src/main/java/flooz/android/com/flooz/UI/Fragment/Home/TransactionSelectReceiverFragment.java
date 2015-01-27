@@ -144,9 +144,20 @@ public class TransactionSelectReceiverFragment extends HomeBaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-
+        listAdapter.stopSearch();
+        searchTextfield.setText("");
+        searchTextfield.clearFocus();
+        clearSearchTextfieldButton.setVisibility(View.GONE);
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        listAdapter.stopSearch();
+        searchTextfield.setText("");
+        searchTextfield.clearFocus();
+        clearSearchTextfieldButton.setVisibility(View.GONE);
+    }
 
     @Override
     public void onBackPressed() {

@@ -168,6 +168,7 @@ public class AuthenticationSecureCodeFragment extends AuthenticationBaseFragment
                 this.currentCode = "";
                 this.refreshCodeContainer();
             } else if (FloozRestClient.getInstance().getSecureCode() == null) {
+                FloozRestClient.getInstance().showLoadView();
                 FloozRestClient.getInstance().checkSecureCodeForUser(this.currentCode, new FloozHttpResponseHandler() {
                     @Override
                     public void success(Object response) {

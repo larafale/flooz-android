@@ -4,10 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/background_header"
-    android:paddingBottom="@dimen/timeline_cell_medium_margin"
-    android:paddingTop="@dimen/timeline_cell_medium_margin"
-    android:paddingRight="@dimen/timeline_cell_medium_margin"
-    android:paddingLeft="@dimen/timeline_cell_medium_margin"
+    android:paddingBottom="@dimen/dimen_medium"
+    android:paddingTop="@dimen/dimen_medium"
+    android:paddingRight="@dimen/dimen_medium"
+    android:paddingLeft="@dimen/dimen_medium"
     android:gravity="center_vertical">
 
     <com.makeramen.RoundedImageView
@@ -17,9 +17,9 @@
         android:scaleType="centerCrop"
         android:layout_width="@dimen/user_list_row_pic"
         android:layout_height="@dimen/user_list_row_pic"
-        android:layout_marginLeft="@dimen/timeline_cell_large_margin"
-        android:layout_marginRight="@dimen/timeline_cell_large_margin"
-        android:layout_marginTop="@dimen/timeline_cell_xsmall_margin"
+        android:layout_marginLeft="@dimen/dimen_large"
+        android:layout_marginRight="@dimen/dimen_large"
+        android:layout_marginTop="@dimen/dimen_xsmall"
         android:layout_gravity="center_horizontal|top"
         app:corner_radius="30dip"
         app:mutate_background="true"
@@ -29,8 +29,8 @@
         android:orientation="vertical"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:paddingBottom="@dimen/timeline_cell_large_margin"
-        android:paddingTop="@dimen/timeline_cell_small_margin"
+        android:paddingBottom="@dimen/dimen_large"
+        android:paddingTop="@dimen/dimen_small"
         android:layout_weight="1"
         android:gravity="center_vertical">
 
@@ -45,7 +45,7 @@
 
         <TextView
             android:id="@+id/invite_list_row_phone"
-            android:layout_marginTop="@dimen/timeline_cell_small_margin"
+            android:layout_marginTop="@dimen/dimen_small"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:singleLine="true"
@@ -59,7 +59,7 @@
         android:layout_width="50dp"
         android:layout_height="fill_parent"
         android:src="@drawable/invite_image"
-        android:padding="@dimen/timeline_cell_medium_margin"
-        android:layout_marginRight="@dimen/timeline_cell_large_margin"/>
+        android:padding="@dimen/dimen_medium"
+        android:layout_marginRight="@dimen/dimen_large"/>
 
 </LinearLayout>

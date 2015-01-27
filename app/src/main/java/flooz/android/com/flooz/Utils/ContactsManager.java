@@ -42,8 +42,18 @@ public class ContactsManager {
                         user.username = ContactsManager.validatePhoneNumber(phoneNumber);
                         user.phone = user.username;
 
-                        if (user.username != null && !user.username.isEmpty() && user.fullname.toLowerCase().contains(searchString.toLowerCase()))
-                            resultList.add(user);
+                        if (user.username != null && !user.username.isEmpty() && user.fullname.toLowerCase().contains(searchString.toLowerCase())) {
+                            boolean alreadyExist = false;
+                            for (int i = 0; i < resultList.size(); i++) {
+                                FLUser tmpUser = resultList.get(i);
+                                if (tmpUser.fullname.contentEquals(user.fullname) && tmpUser.phone.contentEquals(user.phone)) {
+                                    alreadyExist = true;
+                                    break;
+                                }
+                            }
+                            if (!alreadyExist)
+                                resultList.add(user);
+                        }
                     }
                     phoneCursor.close();
                 }

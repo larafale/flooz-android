@@ -13,14 +13,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:src="@drawable/nav_close"
-        android:padding="@dimen/timeline_cell_medium_margin"/>
+        android:padding="@dimen/dimen_medium"/>
 
     <ImageView
         android:id="@+id/image_viewer_img"
         android:layout_centerInParent="true"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/timeline_cell_xlarge_margin"
+        android:padding="@dimen/dimen_xlarge"
         android:scaleType="centerCrop"
         android:adjustViewBounds="true"/>
 

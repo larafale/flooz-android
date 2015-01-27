@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,7 +29,7 @@ import flooz.android.com.flooz.Utils.CustomFonts;
 /**
  * Created by Flooz on 9/12/14.
  */
-public class TimelineListAdapter extends ArrayAdapter<FLTransaction> {
+public class TimelineListAdapter extends BaseAdapter {
 
     private List<FLTransaction> transactions;
     private Context context;
@@ -41,7 +42,6 @@ public class TimelineListAdapter extends ArrayAdapter<FLTransaction> {
     }
 
     public TimelineListAdapter(Context context, List<FLTransaction> values) {
-        super(context, R.layout.timeline_row, values);
         this.context = context;
         this.transactions = values;
     }
@@ -73,15 +73,28 @@ public class TimelineListAdapter extends ArrayAdapter<FLTransaction> {
     }
 
     @Override
+    public int getCount() {
+        return this.transactions.size();
+    }
+
+    @Override
+    public FLTransaction getItem(int position) {
+        return this.transactions.get(position);
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return 0;
+    }
+
+    @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        final LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
         View rowView;
         final ViewHolder holder;
 
         if (convertView == null) {
-            rowView = inflater.inflate(R.layout.timeline_row, parent, false);
+            rowView = LayoutInflater.from(context).inflate(R.layout.timeline_row, parent, false);
 
             holder = new ViewHolder();
 
@@ -110,15 +123,15 @@ public class TimelineListAdapter extends ArrayAdapter<FLTransaction> {
             holder.transactionCommentsButton = (LinearLayout) rowView.findViewById(R.id.timelineTransactionCommentsButton);
             holder.transactionLikesButton = (LinearLayout) rowView.findViewById(R.id.timelineTransactionLikesButton);
 
-            holder.transactionText.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
-            holder.transactionValue.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()), Typeface.BOLD);
-            holder.transactionText3D_1.setTypeface(CustomFonts.customContentRegular(inflater.getContext()), Typeface.BOLD);
-            holder.transactionText3D_2.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
-            holder.transactionText3D_3.setTypeface(CustomFonts.customContentRegular(inflater.getContext()), Typeface.BOLD);
-            holder.transactionCommentsNumber.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
-            holder.transactionLikesText.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
-            holder.transactionLikesButtonText.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
-            holder.transactionCommentsButtonText.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+            holder.transactionText.setTypeface(CustomFonts.customContentLight(context));
+            holder.transactionValue.setTypeface(CustomFonts.customTitleExtraLight(context), Typeface.BOLD);
+            holder.transactionText3D_1.setTypeface(CustomFonts.customContentRegular(context), Typeface.BOLD);
+            holder.transactionText3D_2.setTypeface(CustomFonts.customContentRegular(context));
+            holder.transactionText3D_3.setTypeface(CustomFonts.customContentRegular(context), Typeface.BOLD);
+            holder.transactionCommentsNumber.setTypeface(CustomFonts.customContentRegular(context));
+            holder.transactionLikesText.setTypeface(CustomFonts.customContentRegular(context));
+            holder.transactionLikesButtonText.setTypeface(CustomFonts.customContentRegular(context));
+            holder.transactionCommentsButtonText.setTypeface(CustomFonts.customContentRegular(context));
 
             rowView.setTag(holder);
         }
@@ -128,8 +141,6 @@ public class TimelineListAdapter extends ArrayAdapter<FLTransaction> {
         }
 
         final FLTransaction currentTransaction = this.transactions.get(position);
-
-        holder.userPic.setImageDrawable(null);
 
         holder.transactionRowContent.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,7 +195,10 @@ public class TimelineListAdapter extends ArrayAdapter<FLTransaction> {
             holder.transactionSocialContainer.setVisibility(View.VISIBLE);
 
             if (currentTransaction.social.commentsCount.intValue() > 0) {
-                holder.transactionCommentsNumber.setText(currentTransaction.social.commentsCount.toString());
+                if (currentTransaction.social.commentsCount.intValue() < 10)
+                    holder.transactionCommentsNumber.setText("0" + currentTransaction.social.commentsCount.toString());
+                else
+                    holder.transactionCommentsNumber.setText(currentTransaction.social.commentsCount.toString());
                 holder.transactionCommentsContainer.setVisibility(View.VISIBLE);
             } else {
                 holder.transactionCommentsContainer.setVisibility(View.GONE);

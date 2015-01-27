@@ -10,12 +10,16 @@ import android.os.Bundle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.ryanharter.android.tooltips.ToolTip;
+import com.ryanharter.android.tooltips.ToolTipLayout;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -25,7 +29,6 @@ import flooz.android.com.flooz.Model.FLError;
 import flooz.android.com.flooz.Network.FloozHttpResponseHandler;
 import flooz.android.com.flooz.Network.FloozRestClient;
 import flooz.android.com.flooz.R;
-import flooz.android.com.flooz.UI.View.tooltip.TooltipManager;
 import flooz.android.com.flooz.Utils.CustomFonts;
 
 /**
@@ -51,6 +54,8 @@ public class InviteFragment extends HomeBaseFragment {
     private ImageView fbImage;
     private ImageView twitterImage;
     private ImageView mailImage;
+    private ToolTip toolTip;
+    private ToolTipLayout tipContainer;
 
     private String _code;
     private JSONArray _appText;
@@ -89,6 +94,7 @@ public class InviteFragment extends HomeBaseFragment {
         this.fbImage = (ImageView) view.findViewById(R.id.invite_fb_image);
         this.twitterImage = (ImageView) view.findViewById(R.id.invite_twitter_image);
         this.mailImage = (ImageView) view.findViewById(R.id.invite_mail_image);
+        this.tipContainer = (ToolTipLayout) view.findViewById(R.id.invite_tooltip_container);
 
         this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
         this.h1.setTypeface(CustomFonts.customContentBold(inflater.getContext()));
@@ -112,25 +118,39 @@ public class InviteFragment extends HomeBaseFragment {
             }
         });
 
+        this.tipContainer.dismiss();
+        this.toolTip = null;
+
         this.content.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                TooltipManager.getInstance(parentActivity)
-                        .create(1)
-                        .anchor(content, TooltipManager.Gravity.TOP)
-                        .closePolicy(TooltipManager.ClosePolicy.TouchOutside, 5000)
-                        .text(R.string.INVITE_COPY_CODE)
-                        .maxWidth(600)
-                        .withCallback(new TooltipManager.onTooltipClosingCallback() {
-                            @Override
-                            public void onClosing(int id, boolean fromUser, final boolean containsTouch) {
-                                if (containsTouch) {
-                                    ClipboardManager _clipboard = (ClipboardManager) parentActivity.getSystemService(Context.CLIPBOARD_SERVICE);
-                                    _clipboard.setPrimaryClip(ClipData.newPlainText("FloozCode", _code));
-                                }
-                            }
-                        })
-                        .show();
+
+                if (toolTip != null) {
+                    tipContainer.dismiss();
+                    toolTip = null;
+                } else {
+                    View contentTooltip = inflater.inflate(R.layout.invite_tooltip_code, null);
+
+                    contentTooltip.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ClipboardManager _clipboard = (ClipboardManager) parentActivity.getSystemService(Context.CLIPBOARD_SERVICE);
+                            _clipboard.setPrimaryClip(ClipData.newPlainText("FloozCode", _code));
+                            tipContainer.dismiss();
+                            toolTip = null;
+                        }
+                    });
+
+                    toolTip = new ToolTip.Builder(inflater.getContext())
+                            .anchor(content)
+                            .gravity(Gravity.TOP)
+                            .color(inflater.getContext().getResources().getColor(R.color.black_alpha))
+                            .pointerSize(25)
+                            .contentView(contentTooltip)
+                            .build();
+
+                    tipContainer.addTooltip(toolTip, true);
+                }
             }
         });
 

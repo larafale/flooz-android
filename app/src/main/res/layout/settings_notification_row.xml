@@ -3,10 +3,10 @@
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:gravity="center_vertical"
-    android:paddingLeft="@dimen/timeline_cell_large_margin"
-    android:paddingRight="@dimen/timeline_cell_xlarge_margin"
-    android:paddingTop="@dimen/timeline_cell_large_margin"
-    android:paddingBottom="@dimen/timeline_cell_large_margin">
+    android:paddingLeft="@dimen/dimen_large"
+    android:paddingRight="@dimen/dimen_xlarge"
+    android:paddingTop="@dimen/dimen_large"
+    android:paddingBottom="@dimen/dimen_large">
 
     <TextView
         android:id="@+id/settings_notification_row_text"

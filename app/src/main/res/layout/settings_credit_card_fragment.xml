@@ -25,7 +25,7 @@
             android:id="@+id/settings_credit_card_header_back"
             android:layout_centerVertical="true"
             android:layout_width="@dimen/new_flooz_header_cross"
-            android:padding="@dimen/timeline_cell_large_margin"
+            android:padding="@dimen/dimen_large"
             android:layout_height="fill_parent"
             android:src="@drawable/nav_back"/>
 
@@ -42,9 +42,9 @@
             android:id="@+id/settings_credit_card_container"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/timeline_cell_xxlarge_margin"
-            android:layout_marginRight="@dimen/timeline_cell_xxlarge_margin"
-            android:paddingTop="@dimen/timeline_cell_large_margin">
+            android:layout_marginLeft="@dimen/dimen_xxlarge"
+            android:layout_marginRight="@dimen/dimen_xxlarge"
+            android:paddingTop="@dimen/dimen_large">
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -58,7 +58,7 @@
                 android:orientation="vertical"
                 android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
-                android:layout_marginLeft="@dimen/timeline_cell_xlarge_margin"
+                android:layout_marginLeft="@dimen/dimen_xlarge"
                 android:paddingTop="70dp"
                 android:gravity="left">
 
@@ -74,7 +74,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAllCaps="true"
-                    android:layout_marginTop="@dimen/timeline_cell_large_margin"
+                    android:layout_marginTop="@dimen/dimen_large"
                     android:textSize="15sp"
                     android:textColor="@android:color/white"/>
 
@@ -94,12 +94,12 @@
                 android:background="@color/background"
                 android:layout_centerHorizontal="true"
                 android:layout_alignParentBottom="true"
-                android:paddingTop="@dimen/timeline_cell_large_margin"
-                android:paddingBottom="@dimen/timeline_cell_large_margin"
-                android:paddingLeft="@dimen/timeline_cell_xxlarge_margin"
-                android:paddingRight="@dimen/timeline_cell_xxlarge_margin"
+                android:paddingTop="@dimen/dimen_large"
+                android:paddingBottom="@dimen/dimen_large"
+                android:paddingLeft="@dimen/dimen_xxlarge"
+                android:paddingRight="@dimen/dimen_xxlarge"
                 android:gravity="center_vertical"
-                android:layout_marginBottom="@dimen/timeline_cell_xlarge_margin">
+                android:layout_marginBottom="@dimen/dimen_xlarge">
 
                 <ImageView
                     android:layout_width="wrap_content"
@@ -111,7 +111,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="@string/CREDIT_CARD_REMOVE"
-                    android:layout_marginLeft="@dimen/timeline_cell_large_margin"/>
+                    android:layout_marginLeft="@dimen/dimen_large"/>
 
             </LinearLayout>
 
@@ -123,15 +123,15 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
-        android:layout_marginTop="@dimen/timeline_cell_large_margin"
-        android:paddingLeft="@dimen/timeline_cell_xlarge_margin"
-        android:paddingRight="@dimen/timeline_cell_xlarge_margin">
+        android:layout_marginTop="@dimen/dimen_large"
+        android:paddingLeft="@dimen/dimen_xlarge"
+        android:paddingRight="@dimen/dimen_xlarge">
 
         <EditText
             android:id="@+id/settings_credit_card_create_owner"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/timeline_cell_medium_margin"
+            android:layout_marginTop="@dimen/dimen_medium"
             android:singleLine="true"
             android:hint="@string/SIGNUP_FIELD_CARD_OWNER_PLACEHOLDER"
             android:textColorHint="@color/placeholder"/>
@@ -140,7 +140,7 @@
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/timeline_cell_medium_margin">
+            android:layout_marginTop="@dimen/dimen_medium">
 
             <EditText
                 android:id="@+id/settings_credit_card_create_number"
@@ -159,7 +159,7 @@
                 android:layout_height="wrap_content"
                 android:src="@drawable/camera_grey"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/timeline_cell_large_margin"
+                android:layout_marginRight="@dimen/dimen_large"
                 android:layout_centerVertical="true"
                 android:visibility="gone"/>
 
@@ -169,7 +169,7 @@
             android:id="@+id/settings_credit_card_create_expires"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/timeline_cell_medium_margin"
+            android:layout_marginTop="@dimen/dimen_medium"
             android:singleLine="true"
             android:inputType="date"
             android:hint="@string/SIGNUP_FIELD_CARD_EXPIRES_PLACEHOLDER"
@@ -179,7 +179,7 @@
             android:id="@+id/settings_credit_card_create_cvv"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/timeline_cell_medium_margin"
+            android:layout_marginTop="@dimen/dimen_medium"
             android:singleLine="true"
             android:inputType="number|text"
             android:hint="@string/SIGNUP_FIELD_CARD_CVV_PLACEHOLDER"
@@ -187,14 +187,14 @@
 
         <Button
             android:id="@+id/settings_credit_card_create_add"
-            android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
+            android:layout_marginTop="@dimen/dimen_xlarge"
             android:layout_width="fill_parent"
             android:layout_height="@dimen/signup_button_height"
             android:gravity="center"
             android:background="@drawable/background_action_button"
             android:enabled="false"
             android:text="@string/SIGNUP_VIEW_IGNORE_BUTTON_2"
-            android:layout_marginBottom="@dimen/timeline_cell_xlarge_margin"
+            android:layout_marginBottom="@dimen/dimen_xlarge"
             android:textSize="20sp"
             android:textColor="@drawable/text_color_action_button"/>
 

@@ -30,7 +30,7 @@
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
+                android:layout_marginTop="@dimen/dimen_xlarge"
                 android:gravity="center">
 
                 <ImageView
@@ -38,7 +38,7 @@
                     android:layout_width="@dimen/secure_code_indicator"
                     android:layout_height="@dimen/secure_code_indicator"
                     android:background="@drawable/secure_code_indicator_background"
-                    android:layout_margin="@dimen/timeline_cell_large_margin"
+                    android:layout_margin="@dimen/dimen_large"
                     />
 
                 <ImageView
@@ -46,7 +46,7 @@
                     android:layout_width="@dimen/secure_code_indicator"
                     android:layout_height="@dimen/secure_code_indicator"
                     android:background="@drawable/secure_code_indicator_background"
-                    android:layout_margin="@dimen/timeline_cell_large_margin"
+                    android:layout_margin="@dimen/dimen_large"
                     />
 
                 <ImageView
@@ -54,7 +54,7 @@
                     android:layout_width="@dimen/secure_code_indicator"
                     android:layout_height="@dimen/secure_code_indicator"
                     android:background="@drawable/secure_code_indicator_background"
-                    android:layout_margin="@dimen/timeline_cell_large_margin"
+                    android:layout_margin="@dimen/dimen_large"
                     />
 
                 <ImageView
@@ -62,7 +62,7 @@
                     android:layout_width="@dimen/secure_code_indicator"
                     android:layout_height="@dimen/secure_code_indicator"
                     android:background="@drawable/secure_code_indicator_background"
-                    android:layout_margin="@dimen/timeline_cell_large_margin"
+                    android:layout_margin="@dimen/dimen_large"
                     />
 
             </LinearLayout>

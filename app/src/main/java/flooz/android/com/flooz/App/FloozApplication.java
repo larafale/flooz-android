@@ -71,7 +71,7 @@ public class FloozApplication extends Application
     public void onCreate(){
         super.onCreate();
 
-        this.mixpanelAPI = MixpanelAPI.getInstance(this, "86108691338079db55b5fac30140d895");
+        mixpanelAPI = MixpanelAPI.getInstance(this, "86108691338079db55b5fac30140d895");
 
         FloozApplication.instance = this;
         FloozApplication.context = getApplicationContext();
@@ -173,9 +173,11 @@ public class FloozApplication extends Application
             Intent intent = new Intent();
             intent.setClass(context, HomeActivity.class);
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            this.getCurrentActivity().startActivity(intent);
-            this.getCurrentActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            this.getCurrentActivity().finish();
+            startActivity(intent);
+            if (this.getCurrentActivity() != null) {
+                this.getCurrentActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                this.getCurrentActivity().finish();
+            }
         }
     }
 
@@ -188,9 +190,11 @@ public class FloozApplication extends Application
         Intent intent = new Intent();
         intent.setClass(context, StartActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        this.getCurrentActivity().startActivity(intent);
-        this.getCurrentActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        this.getCurrentActivity().finish();
+        startActivity(intent);
+        if (this.getCurrentActivity() != null) {
+            this.getCurrentActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            this.getCurrentActivity().finish();
+        }
     }
 
     public Activity getCurrentActivity(){

@@ -1,6 +1,7 @@
 package flooz.android.com.flooz.UI.Fragment.Signup;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -47,7 +48,7 @@ public class SignupUsernameFragment extends SignupBaseFragment {
 
         infoLabel.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
 
-        usernameTextfield.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
+        usernameTextfield.setTypeface(CustomFonts.customContentLight(inflater.getContext()), Typeface.BOLD);
 
         if (parentActivity.userData.username != null) {
             usernameTextfield.setText(parentActivity.userData.username);

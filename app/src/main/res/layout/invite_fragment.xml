@@ -23,162 +23,172 @@
             android:id="@+id/invite_header_back"
             android:layout_centerVertical="true"
             android:layout_width="@dimen/new_flooz_header_cross"
-            android:padding="@dimen/timeline_cell_large_margin"
+            android:padding="@dimen/dimen_large"
             android:layout_height="fill_parent"
             android:src="@drawable/nav_account_button"/>
 
     </RelativeLayout>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical">
-
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
-            android:padding="@dimen/timeline_cell_large_margin">
-
-            <ImageView
-                android:id="@+id/invite_worldmap"
-                android:src="@drawable/worldmap"
-                android:layout_width="fill_parent"
-                android:layout_height="190dp"
-                android:scaleType="fitStart"/>
-
-            <TextView
-                android:id="@+id/invite_h1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:textColor="@android:color/white"
-                android:textSize="27sp"/>
-
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/invite_content"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/timeline_cell_xlarge_margin"
-            android:gravity="center"
-            android:textSize="18sp"
-            android:layout_marginTop="@dimen/timeline_cell_xlarge_margin"
-            />
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
 
         <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:gravity="bottom"
-            android:paddingBottom="@dimen/timeline_cell_xxlarge_margin">
+            android:orientation="vertical">
 
-            <LinearLayout
-                android:id="@+id/invite_sms"
-                android:orientation="vertical"
-                android:layout_width="0dp"
+            <RelativeLayout
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal">
+                android:gravity="center"
+                android:layout_marginTop="@dimen/dimen_xlarge"
+                android:padding="@dimen/dimen_large">
 
                 <ImageView
-                    android:id="@+id/invite_sms_image"
-                    android:layout_width="@dimen/invite_button_size"
-                    android:layout_height="@dimen/invite_button_size"
-                    android:src="@drawable/sms"/>
+                    android:id="@+id/invite_worldmap"
+                    android:src="@drawable/worldmap"
+                    android:layout_width="fill_parent"
+                    android:layout_height="190dp"
+                    android:scaleType="fitStart"/>
 
                 <TextView
-                    android:id="@+id/invite_sms_text"
+                    android:id="@+id/invite_h1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/timeline_cell_large_margin"
-                    android:textAllCaps="true"
-                    android:textSize="@dimen/invite_text_size"
-                    android:text="@string/INVITE_SMS"/>
+                    android:layout_centerInParent="true"
+                    android:textColor="@android:color/white"
+                    android:textSize="27sp"/>
 
-            </LinearLayout>
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/invite_content"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/dimen_xlarge"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:layout_marginTop="@dimen/dimen_xlarge"
+                />
 
             <LinearLayout
-                android:id="@+id/invite_fb"
-                android:orientation="vertical"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:visibility="gone">
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="bottom"
+                android:paddingBottom="@dimen/dimen_xxlarge">
 
-                <ImageView
-                    android:id="@+id/invite_fb_image"
-                    android:layout_width="@dimen/invite_button_size"
-                    android:layout_height="@dimen/invite_button_size"
-                    android:src="@drawable/fb_circle"/>
-
-                <TextView
-                    android:id="@+id/invite_fb_text"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/invite_sms"
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/timeline_cell_large_margin"
-                    android:textAllCaps="true"
-                    android:textSize="@dimen/invite_text_size"
-                    android:text="@string/INVITE_FB"/>
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal">
 
-            </LinearLayout>
+                    <ImageView
+                        android:id="@+id/invite_sms_image"
+                        android:layout_width="@dimen/invite_button_size"
+                        android:layout_height="@dimen/invite_button_size"
+                        android:src="@drawable/sms"/>
 
-            <LinearLayout
-                android:id="@+id/invite_twitter"
-                android:orientation="vertical"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal"
-                android:visibility="gone">
+                    <TextView
+                        android:id="@+id/invite_sms_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimen_large"
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/invite_text_size"
+                        android:text="@string/INVITE_SMS"/>
 
-                <ImageView
-                    android:id="@+id/invite_twitter_image"
-                    android:layout_width="@dimen/invite_button_size"
-                    android:layout_height="@dimen/invite_button_size"
-                    android:src="@drawable/twitter"/>
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/invite_twitter_text"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/invite_fb"
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/timeline_cell_large_margin"
-                    android:textAllCaps="true"
-                    android:textSize="@dimen/invite_text_size"
-                    android:text="@string/INVITE_TWITTER"/>
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:visibility="gone">
 
-            </LinearLayout>
+                    <ImageView
+                        android:id="@+id/invite_fb_image"
+                        android:layout_width="@dimen/invite_button_size"
+                        android:layout_height="@dimen/invite_button_size"
+                        android:src="@drawable/fb_circle"/>
 
-            <LinearLayout
-                android:id="@+id/invite_mail"
-                android:orientation="vertical"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center_horizontal">
+                    <TextView
+                        android:id="@+id/invite_fb_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimen_large"
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/invite_text_size"
+                        android:text="@string/INVITE_FB"/>
 
-                <ImageView
-                    android:id="@+id/invite_mail_image"
-                    android:layout_width="@dimen/invite_button_size"
-                    android:layout_height="@dimen/invite_button_size"
-                    android:src="@drawable/email"/>
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/invite_mail_text"
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/invite_twitter"
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/timeline_cell_large_margin"
-                    android:textAllCaps="true"
-                    android:textSize="@dimen/invite_text_size"
-                    android:text="@string/INVITE_MAIL"/>
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal"
+                    android:visibility="gone">
+
+                    <ImageView
+                        android:id="@+id/invite_twitter_image"
+                        android:layout_width="@dimen/invite_button_size"
+                        android:layout_height="@dimen/invite_button_size"
+                        android:src="@drawable/twitter"/>
+
+                    <TextView
+                        android:id="@+id/invite_twitter_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimen_large"
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/invite_text_size"
+                        android:text="@string/INVITE_TWITTER"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/invite_mail"
+                    android:orientation="vertical"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center_horizontal">
+
+                    <ImageView
+                        android:id="@+id/invite_mail_image"
+                        android:layout_width="@dimen/invite_button_size"
+                        android:layout_height="@dimen/invite_button_size"
+                        android:src="@drawable/email"/>
+
+                    <TextView
+                        android:id="@+id/invite_mail_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimen_large"
+                        android:textAllCaps="true"
+                        android:textSize="@dimen/invite_text_size"
+                        android:text="@string/INVITE_MAIL"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
+        <com.ryanharter.android.tooltips.ToolTipLayout
+            android:id="@+id/invite_tooltip_container"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+    </RelativeLayout>
 
 </LinearLayout>

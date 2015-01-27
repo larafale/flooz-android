@@ -11,13 +11,13 @@
         android:layout_width="fill_parent"
         android:layout_height="@dimen/dialog_validate_flooz_pic_height"
         android:src="@drawable/flooz_icon_white"
-        android:layout_marginTop="@dimen/timeline_cell_large_margin"/>
+        android:layout_marginTop="@dimen/dimen_large"/>
 
     <TextView
         android:id="@+id/dialog_validate_flooz_text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:padding="@dimen/timeline_cell_xlarge_margin"
+        android:padding="@dimen/dimen_xlarge"
         android:textColor="@android:color/white"
         android:textSize="@dimen/dialog_validate_flooz_text_size"
         android:textAlignment="center"
@@ -37,7 +37,7 @@
             android:background="@android:color/white"
             android:textColor="@color/blue"
             android:text="@string/GLOBAL_NO"
-            android:layout_marginRight="@dimen/timeline_cell_xsmall_margin"/>
+            android:layout_marginRight="@dimen/dimen_xsmall"/>
 
         <Button
             android:id="@+id/dialog_validate_flooz_accept"

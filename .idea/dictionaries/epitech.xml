@@ -1,8 +1,24 @@
 <component name="ProjectDictionaryState">
   <dictionary name="epitech">
     <words>
+      <w>&amp;api</w>
+      <w>&amp;via</w>
+      <w>autologin</w>
+      <w>cashout</w>
+      <w>cashouts</w>
+      <w>coords</w>
       <w>flooz</w>
+      <w>fullname</w>
+      <w>infos</w>
+      <w>looz</w>
+      <w>multipart</w>
+      <w>notfification</w>
+      <w>notif</w>
+      <w>signup</w>
       <w>timeline</w>
+      <w>transac</w>
+      <w>websocket</w>
+      <w>webview</w>
     </words>
   </dictionary>
 </component>
