@@ -1,0 +1,397 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyDashes">
+
+    <string name="app_name">Flooz</string>
+    <string name="facebook_app_id">152779318256915</string>
+
+    <string name="GLOBAL_OR">ou</string>
+    <string name="GLOBAL_OK">Ok</string>
+    <string name="GLOBAL_BY">par</string>
+    <string name="GLOBAL_ERROR">Erreur</string>
+    <string name="GLOBAL_CANCEL">Annuler</string>
+    <string name="GLOBAL_CAMERA">Appareil photo</string>
+    <string name="GLOBAL_ALBUMS">Albums</string>
+    <string name="GLOBAL_EURO">€</string>
+    <string name="GLOBAL_SEND">Publier</string>
+    <string name="GLOBAL_YES">Oui</string>
+    <string name="GLOBAL_NO">Non</string>
+    <string name="GLOBAL_CLEAR">Effacer</string>
+    <string name="GLOBAL_WAIT">Veuillez patienter…</string>
+    <string name="GLOBAL_NEXT">Suivant</string>
+    <string name="GLOBAL_CONFIRM">Confirmer</string>
+    <string name="GLOBAL_PAY">Payer</string>
+    <string name="GLOBAL_SAVE">Enregistrer</string>
+    <string name="GLOBAL_EDIT">Changer</string>
+    <string name="GLOBAL_JOIN">Rejoindre</string>
+    <string name="GLOBAL_START">Démarrer</string>
+    <string name="GLOBAL_VALIDATE">Valider</string>
+    <string name="GLOBAL_INTERO">\?</string>
+
+    <string name="LEARN_MORE">En savoir plus</string>
+
+    <string name="SEND_COMMENT">Écrire un commentaire…</string>
+
+    <string name="NAV_HOME">Fil d\'actualité</string>
+    <string name="NAV_PUBLIC">Explorer</string>
+    <string name="NAV_LOGIN">Se connecter</string>
+    <string name="NAV_SIGNUP">S\'inscrire</string>
+    <string name="NAV_ACCOUNT">Mon profil</string>
+    <string name="NAV_SETTINGS">Paramètres</string>
+    <string name="NAV_TIMELINE">Flooz</string>
+    <string name="NAV_EDIT_ACCOUNT">Modifier</string>
+    <string name="NAV_INFORMATIONS">Informations</string>
+    <string name="NAV_NOTIFICATIONS">Notifications</string>
+    <string name="NAV_CASHOUT">Virer à ma banque</string>
+    <string name="NAV_RIB">RIB</string>
+    <string name="NAV_PASSWORD">Mot de passe</string>
+    <string name="NAV_PASSWORD_FORGET">MDP oublié</string>
+    <string name="NAV_CREDIT_CARD">Carte bancaire</string>
+    <string name="NAV_CREDIT_CARD_ADD">Ajouter une carte bancaire</string>
+    <string name="NAV_EVENT_PARTICIPANTS">Participants</string>
+    <string name="NAV_FRIENDS">Mes amis</string>
+    <string name="NAV_DOCUMENTS">Justificatifs</string>
+    <string name="NAV_SECURE_CODE">Sécurité</string>
+    <string name="NAV_INVIT_CODE">Code</string>
+    <string name="NAV_PHOTO_GALLERY">Galerie Photo</string>
+    <string name="NAV_3D_SECURE">3D Secure</string>
+    <string name="NAV_INVITATION">Inviter mes amis</string>
+    <string name="NAV_FRIEND_PICKER">Choisir un contact</string>
+
+    <string name="HOME_LOGIN">Connexion</string>
+    <string name="HOME_SIGNUP">S\'inscrire</string>
+
+    <string name="CREDIT_CARD_SCAN">Scanner ma carte, c\'est plus rapide !</string>
+    <string name="CREDIT_CARD_REMOVE">Supprimer cette carte</string>
+
+    <string name="CASHOUT_BALANCE">Votre solde Flooz</string>
+    <string name="CASHOUT_PLACEHOLDER">Montant à retirer</string>
+    <string name="CASHOUT_INFO">Virez la totalité ou une partie de votre porte-monnaie sur votre compte bancaire.</string>
+    
+    <string name="NEW_TRANSACTION">Nouveau Flooz</string>
+
+    <string name="INFORMATIONS_WHY">Sécurité</string>
+    <string name="INFORMATIONS_TERMS">CGU / CGV</string>
+    <string name="INFORMATIONS_FAQ">FAQ</string>
+    <string name="INFORMATIONS_PREVIEW">Visite Guidée</string>
+    <string name="INFORMATIONS_ABOUT">A Propos</string>
+    <string name="INFORMATIONS_CONTACT">Contactez-nous</string>
+    <string name="INFORMATIONS_REVIEW">Idées/Critiques</string>
+
+    <string name="MISSING_FIELDS">Complétez votre profil pour finaliser votre inscription</string>
+
+    <string name="NOTIFICATIONS_SECTION_FEED">Feed</string>
+    <string name="NOTIFICATIONS_SECTION_PUSH">Push</string>
+    <string name="NOTIFICATIONS_SECTION_PHONE">SMS</string>
+    <string name="NOTIFICATIONS_SECTION_EMAIL">Email</string>
+
+    <string name="PAYEMENT_FIELD_WALLET">Porte-monnaie</string>
+    <string name="PAYEMENT_FIELD_CARD">Carte Bancaire</string>
+
+    <string name="SOCIAL_FILTER_FRIENDS">Amis</string>
+    <string name="SOCIAL_FILTER_EVENTS">Cagnotte</string>
+    <string name="SOCIAL_FILTER_ACTIVITIES">ACTIVITE</string>
+
+    <string name="FIELD_USERNAME">Pseudo</string>
+    <string name="FIELD_BIRTHDATE">Date de naissance</string>
+    <string name="FIELD_BIRTHDATE_EX">jj / mm / aa</string>
+    <string name="FIELD_FIRSTNAME">Prénom</string>
+    <string name="FIELD_LASTNAME">Nom</string>
+    <string name="FIELD_PHONE">N° de mobile</string>
+    <string name="FIELD_EMAIL">Email</string>
+    <string name="FIELD_PASSWORD">Mot de passe</string>
+    <string name="FIELD_PASSWORD_EX">6 car. minimum</string>
+    <string name="FIELD_CODE">Code secret</string>
+    <string name="FIELD_ADDRESS">Adresse</string>
+    <string name="FIELD_ZIP_CODE">Code postal</string>
+    <string name="FIELD_CITY">Ville</string>
+    <string name="FIELD_FULLNAME">Nom et Prénom</string>
+
+    <string name="FIELD_IBAN">Code IBAN</string>
+    <string name="FIELD_IBAN_PLACEHOLDER">FR</string>
+    <string name="FIELD_BIC">Code BIC</string>
+    <string name="FIELD_BIC_PLACEHOLDER"></string>
+
+    <string name="FIELD_CARD_OWNER">Titulaire de la carte</string>
+    <string name="FIELD_CARD_OWNER_PLACEHOLDER"></string>
+    <string name="FIELD_CARD_NUMBER">Numero de carte</string>
+    <string name="FIELD_CARD_NUMBER_PLACEHOLDER"></string>
+    <string name="FIELD_CARD_EXPIRES">Date d\'expiration</string>
+    <string name="FIELD_CARD_EXPIRES_PLACEHOLDER">MMYY</string>
+    <string name="FIELD_CARD_CVV">Cryptogramme</string>
+    <string name="FIELD_CARD_CVV_PLACEHOLDER">Code à 3 chiffres au dos de la carte </string>
+
+    <string name="FIELD_CURRENT_PASSWORD">Mot de passe actuel</string>
+    <string name="FIELD_NEW_PASSWORD">Nouveau mot de passe</string>
+    <string name="FIELD_PASSWORD_CONFIRMATION">Confirmation</string>
+
+    <string name="FIELD_PASSWORD_FORGET">Oups, mot de passe oublié ?</string>
+
+    <string name="FIELD_TRANSACTION_DATE">Se termine le :</string>
+    <string name="FIELD_TRANSACTION_TITLE">Pour :</string>
+    <string name="FIELD_TRANSACTION_TITLE_PLACEHOLDER">Restaurant entre amis</string>
+    <string name="FIELD_TRANSACTION_TO">À :</string>
+    <string name="FIELD_TRANSACTION_TO_PLACEHOLDER">Personnes à notifier</string>
+    <string name="FIELD_TRANSACTION_CONTENT_PLACEHOLDER">Ajouter une description…</string>
+    <string name="FIELD_TRANSACTION_EVENT_PLACEHOLDER">Ajouter plus d\'info…</string>
+    <string name="FIELD_TRANSACTION_SELECT_FRIEND">A qui ?</string>
+    <string name="FIELD_TRANSACTION_HIDE">Masquer ma participation</string>
+
+    <string name="SIGNUP_FACEBOOK">Avec Facebook</string>
+
+    <string name="LOGIN_FACEBOOK">Utiliser mes infos Facebook</string>
+    <string name="LOGIN_OR">ou</string>
+    <string name="LOGIN_PASSWORD_FORGOT">Oublié ?</string>
+
+    <string name="MENU_NEW_TRANSACTION_EVENT">Collecter</string>
+    <string name="MENU_NEW_TRANSACTION_PAYMENT">Payer</string>
+    <string name="MENU_NEW_TRANSACTION_COLLECT">Réclamer</string>
+
+    <string name="MENU_PAYMENT">Payer</string>
+    <string name="MENU_COLLECT">Réclamer</string>
+    <string name="MENU_NEW_FLOOZ">Nouveau Flooz</string>
+    <string name="MENU_ADD_FRIENDS">Ajouter aux amis</string>
+    <string name="MENU_REMOVE_FRIENDS">Supprimer des amis</string>
+    <string name="MENU_AVATAR">Voir la photo</string>
+    <string name="MENU_OTHER">Autre…</string>
+    <string name="MENU_BLOCK_USER">Bloquer</string>
+    <string name="MENU_REPORT_USER">Signaler</string>
+    <string name="MENU_REPORT_LINE">Signaler ce contenu</string>
+
+    <string name="BLOCK_USER_ALERT_MESSAGE">Êtes-vous sûr de vouloir bloquer cet utilisateur ?</string>
+    <string name="REPORT_USER_ALERT_MESSAGE">Êtes-vous sûr de vouloir signaler cet utilisateur ?</string>
+    <string name="REPORT_LINE_ALERT_MESSAGE">Êtes-vous sûr de vouloir signaler ce contenu ?</string>
+
+    <string name="ACTIVITIES_NOTIFICATIONS">Notifications</string>
+    <string name="ACTIVITIES_NEW_NOTIFICATIONS">nouvelles notifications</string>
+
+    <string name="ACCOUNT_BALANCE">Porte-monnaie</string>
+
+    <string name="ACCOUNT_MENU_NOTIFICATION">Notifications</string>
+    <string name="ACCOUNT_MENU_SHARE">Inviter vos amis</string>
+    <string name="ACCOUNT_MENU_CASHOUT">Virer à ma banque</string>
+    <string name="ACCOUNT_MENU_SETTINGS">Paramètres</string>
+    <string name="ACCOUNT_MENU_IDEAS">Idées / Critiques</string>
+    <string name="ACCOUNT_MENU_PROFILE">Mon profil</string>
+    <string name="ACCOUNT_MENU_OTHER">À propos</string>
+
+    <string name="SETTINGS_NOTIFICATIONS">Notifications</string>
+    <string name="SETTINGS_CODE">Code de sécurité</string>
+    <string name="SETTINGS_CARD">Carte Bancaire</string>
+    <string name="SETTINGS_RIB">Compte Bancaire</string>
+    <string name="SETTINGS_DOCUMENTS">Justificatifs</string>
+    <string name="SETTINGS_PASSWORD">Mot de passe</string>
+    <string name="SETTINGS_IDENTITY">Identité</string>
+    <string name="SETTINGS_COORD">Coordonnées</string>
+    <string name="SETTINGS_SECURITY">Sécurité</string>
+    <string name="SETTINGS_PREFERENCES">Préférences</string>
+    <string name="SETTINGS_LOGOUT">Déconnexion</string>
+    <string name="SETTINGS_PRIVACY">Partage &amp; vie privée</string>
+
+    <string name="SETTINGS_PRIVACY_INFOS">Pratique ! Choisissez la visibilité par défault de vos flooz. Vous avez toutefois la possibilité de la changer lors de chacun de vos paiements</string>
+
+    <string name="EDIT_ACCOUNT_SEND_SMS">Renvoyer SMS</string>
+    <string name="EDIT_ACCOUNT_SEND_MAIL">Renvoyer email</string>
+    <string name="EDIT_ACCOUNT_PERSONAL_INFO">Adresse Postale</string>
+    <string name="EDIT_ACCOUNT_SOCIAL_INFO">Réseaux sociaux</string>
+    <string name="EDIT_ACCOUNT_FACEBOOK">Facebook</string>
+
+    <string name="CELL_SOCIAL_COMMENT">Commenter</string>
+    <string name="CELL_SOCIAL_LIKE">J\'aime</string>
+
+    <string name="FRIEND_PCIKER_SELECTION_CELL">Résultats</string>
+
+    <string name="FRIEND_REQUEST_ACCEPT">Accepter</string>
+    <string name="FRIEND_REQUEST_REFUSE">Refuser</string>
+
+    <string name="FRIEND_INVITE">Inviter ses amis</string>
+
+    <string name="TRANSACTION_FIELD_GOAL">Montant / pers. (facultatif)</string>
+
+    <string name="TRANSACTION_ACTION_ACCEPT">ACCEPTER</string>
+    <string name="TRANSACTION_ACTION_REFUSE">REFUSER</string>
+    <string name="TRANSACTION_ACTION_CANCEL">ANNULER</string>
+    <string name="TRANSACTION_ACTION_WAITING">EN ATTENTE</string>
+
+    <string name="TRANSACTION_STATUS_ACCEPTED">Accepted</string>
+    <string name="TRANSACTION_STATUS_REFUSED">Refused</string>
+    <string name="TRANSACTION_STATUS_PENDING">Waiting</string>
+    <string name="TRANSACTION_STATUS_CANCELED">Canceled</string>
+    <string name="TRANSACTION_STATUS_EXPIRED">Expired</string>
+
+    <string name="TRANSACTION_TYPE_PAYMENT">PAYMENT</string>
+    <string name="TRANSACTION_TYPE_COLLECTION">COLLECTION</string>
+
+    <string name="TRANSACTION_SCOPE_PUBLIC">Public</string>
+    <string name="TRANSACTION_SCOPE_FRIEND">Amis</string>
+    <string name="TRANSACTION_SCOPE_PRIVATE">Privé</string>
+
+    <string name="FILTER_SCOPE_PUBLIC">Public</string>
+    <string name="FILTER_SCOPE_FRIEND">Fil d\'actualité</string>
+    <string name="FILTER_SCOPE_PRIVATE">Moi</string>
+
+    <string name="EVENT_SCOPE_FRIEND">Ouverte aux amis</string>
+    <string name="EVENT_SCOPE_PRIVATE">Sur invitation</string>
+
+    <string name="FRIENDS_FRIENDS_SEARCH">Rechercher</string>
+    <string name="SEARCH_FRIENDS">Retrouver des amis</string>
+    <string name="FRIENDS_SEARCH_FRIENDS">Recherche des amis sur Flooz</string>
+    <string name="FRIENDS_FRIENDS_REQUEST">Demande d’amis</string>
+    <string name="FRIENDS_FRIENDS_SUGGESTION">Vous connaissez peut-être</string>
+    <string name="FRIENDS_FRIENDS">Mes amis</string>
+
+    <string name="FRIEND_PIKER_PLACEHOLDER">Pseudo ou 06</string>
+    <string name="FRIEND_PICKER_FRIENDS_RECENT">Récent</string>
+    <string name="FRIEND_PICKER_FRIENDS">Mes amis</string>
+    <string name="FRIEND_PICKER_ADDRESS_BOOK">Carnet d\'adresse</string>
+
+    <string name="EVENT_AMOUNT">Argent récolté</string>
+    <string name="EVENT_AMOUNT_FREE">Montant libre</string>
+
+    <string name="EVENT_HEADER_MONEY_COLLECTED">Collectés</string>
+    <string name="EVENT_HEADER_DAY_LEFT">Jours restants</string>
+    <string name="EVENT_HEADER_DAY_LEFT_CLOSED">Clôturée</string>
+
+    <string name="EVENT_START_BY">Créée par </string>
+
+    <string name="EVENT_INVITE_PARTICIPANT">Inviter des amis</string>
+    <string name="EVENT_PARTICIPANTS">Participants</string>
+    <string name="EVENT_PARTICIPANTS_S">Participant(s)</string>
+    <string name="EVENT_PARTICIPANTS_INVITED">%.2d AUTRES PARTICIPANTS</string>
+    <string name="EVENT_PARTICIPANT_INVITE">Inviter des amis</string>
+
+    <string name="EVENT_ACTION_REFUSE">REFUSER</string>
+    <string name="EVENT_ACTION_CANCEL">ANNULER</string>
+    <string name="EVENT_ACTION_DECLINE">DECLINER L\'INVITATION</string>
+    <string name="EVENT_ACTION_PARTICIPATE">PARTICIPER À LA CAGNOTTE</string>
+    <string name="EVENT_ACTION_ACCEPT">ACCEPTER</string>
+
+    <string name="EVENT_ACTION_COLLECT">Clôturer et encaisser</string>
+    <string name="EVENT_ACTION_OFFER">OFFRIR</string>
+
+    <string name="EVENT_STATUS_ACCEPTED">J\'y participe</string>
+    <string name="EVENT_STATUS_WAITING">Invité</string>
+
+    <string name="SECORE_CODE_TEXT_FIRST_TIME">Ce code vous permet de sécuriser vos paiements en cas de perte/vol de votre mobile.</string>
+    <string name="SECORE_CODE_TEXT_CURRENT">Entrez votre code secret :</string>
+    <string name="SECORE_CODE_TEXT_OLD">Entrez votre ancien code :</string>
+    <string name="SECORE_CODE_TEXT_NEW">Entrez votre nouveau code :</string>
+    <string name="SECORE_CODE_TEXT_CONFIRM">Confirmez votre nouveau code:</string>
+    <string name="SECORE_CODE_TEXT_LOGIN">Identifiez vous pour réinitialiser votre code</string>
+    <string name="SECURE_CODE_FORGOT">Code oublié ?</string>
+    <string name="SECORE_CODE_CHOOSE">Choisissez votre code secret</string>
+    <string name="SECORE_CODE_CHOOSE_CONFIRM">Veuillez retapez votre code</string>
+
+    <string name="DOCUMENTS_CARD_ID_RECTO">Carte d’identité (Recto)</string>
+    <string name="DOCUMENTS_CARD_ID_VERSO">Carte d’identité (Verso)</string>
+    <string name="DOCUMENTS_HOME">Justificatif de domicile</string>
+
+    <string name="INVITE_CODE_TEXT">Offrez à vos amis la possibilité\nd\'accéder à l\'application !</string>
+    <string name="INVITE_CODE_CODE">Votre code</string>
+    <string name="INVITE_CODE_SHARE">Partagez</string>
+    <string name="INVITATION_CODE_EXPLICATION">Seules les personnes invitées peuvent rejoindre la Flooz Family.</string>
+    <string name="INVITATION_CODE_WAITING_EXPLICATION">Nous avons bien reçu votre demande d\'invitation. Chaque semaine, nous augmentons le nombre d\'utilisateurs pouvant accéder à Flooz. L\'équipe Flooz vous enverra un e-mail d\'invitation.</string>
+    <string name="INVITATION_CODE_ACCESS">J\'ai déjà une invitation</string>
+    <string name="INVITATION_CODE_ASK">Demander une invitation</string>
+    <string name="INVITATION_CODE_PLACEHOLDER">Entrer votre code</string>
+
+    <string name="INVITE_SMS">sms</string>
+    <string name="INVITE_FB">fb</string>
+    <string name="INVITE_TWITTER">tweeter</string>
+    <string name="INVITE_MAIL">e-mail</string>
+    <string name="INVITE_COPY_CODE">Copier le code</string>
+
+    <string name="SIGNUP_PHONE_PLACEHOLDER">Entrez votre n° de mobile</string>
+    <string name="SIGNUP_PHONE_HINT_SMS">Un lien de confirmation vous sera\nenvoyé par SMS</string>
+
+    <string name="SIGNUP_HEAD_TITLE">Bienvenue sur Flooz</string>
+    <string name="SIGNUP_VIEW_1_TITLE_1">PAYEZ VOS AMIS</string>
+    <string name="SIGNUP_VIEW_1_SUBTITLE_1">Choisissez un contact, entrez un montant et un bref message, c’est envoyé !</string>
+    <string name="SIGNUP_VIEW_1_TITLE_2">EN TOUTE SÉCURITÉ</string>
+    <string name="SIGNUP_VIEW_1_SUBTITLE_2">Un code secret à 4 chiffres sécurise chaque paiement.</string>
+    <string name="SIGNUP_VIEW_1_TITLE_3">100% GRATUIT</string>
+    <string name="SIGNUP_VIEW_1_SUBTITLE_3">Aucun frais à aucun moment, simplement gratuit… que du bonheur!</string>
+    <string name="SIGNUP_VIEW_1_BUTTON">Commencez</string>
+
+    <string name="SIGNUP_HEAD_TITLE_2">Créer votre compte</string>
+    <string name="SIGNUP_VIEW_2_TITLE_1">INSCRIPTION RAPIDE</string>
+    <string name="SIGNUP_VIEW_2_SUBTITLE_1">Vous êtes à quelques secondes de votre 1er Flooz !</string>
+    <string name="SIGNUP_VIEW_2_TITLE_2">PRÉPAREZ VOTRE CARTE</string>
+    <string name="SIGNUP_VIEW_2_SUBTITLE_2">Liez votre carte bancaire une fois seuelement.</string>
+    <string name="SIGNUP_VIEW_2_TITLE_3">AJOUTER DES AMIS</string>
+    <string name="SIGNUP_VIEW_2_SUBTITLE_3">Retrouvez vos amis déjà présents sur Flooz ou invitez-les.</string>
+    <string name="SIGNUP_VIEW_2_BUTTON">Démarrez l\'expérience Flooz</string>
+
+    <string name="SIGNUP_VIEW_IGNORE_BUTTON">Plus tard</string>
+    <string name="SIGNUP_VIEW_IGNORE_BUTTON_2">Ajouter</string>
+
+    <string name="SIGNUP_PHONE_ALERT_TITLE">Confirmer votre numéro</string>
+    <string name="SIGNUP_PHONE_ALERT_CONTENT">Vous allez recevoir un SMS de confirmation. Veuillez confirmer que le %s est bien votre n° de mobile.</string>
+
+    <string name="SIGNUP_SMS_PLACEHOLDER">Saisir le code reçu par SMS</string>
+    <string name="SIGNUP_SMS_RESEND">Renvoyer le code %d</string>
+    <string name="SIGNUP_SMS_RESEND_EMPTY">Renvoyer le code</string>
+
+    <string name="SIGNUP_PAGE_TITLE_NumMobile">Identification</string>
+    <string name="SIGNUP_PAGE_TITLE_Pseudo">Créez votre pseudo</string>
+    <string name="SIGNUP_PAGE_TITLE_Sms">SMS de validation</string>
+    <string name="SIGNUP_PAGE_TITLE_Info">Inscription</string>
+    <string name="SIGNUP_PAGE_TITLE_Image">Soyez reconnaissable</string>
+    <string name="SIGNUP_PAGE_TITLE_Password">Mot de passe</string>
+    <string name="SIGNUP_PAGE_TITLE_Code">Code de sécurité</string>
+    <string name="SIGNUP_PAGE_TITLE_CodeVerif">Confirmation</string>
+    <string name="SIGNUP_PAGE_TITLE_CB">Carte bancaire</string>
+    <string name="SIGNUP_PAGE_TITLE_CGU">C.G.U.</string>
+    <string name="SIGNUP_PAGE_TITLE_Ask_Contact">Accès à vos contacts</string>
+    <string name="SIGNUP_PAGE_TITLE_Friends">Ajouter des amis</string>
+
+    <string name="SIGNUP_PSEUDO_EXPLICATION">Donnez votre pseudo pour recevoir de l\'argent.\nC\'est votre identité, il est unique et non modifiable.</string>
+    <string name="SIGNUP_PASSWORD_EXPLICATION">6 caractères min</string>
+    <string name="SIGNUP_IMAGE_EXPLICATION">Une bonne photo est indispensable pour être reconnaissable ! Utilisez votre photo facebook oou ajoutez-en une !</string>
+
+    <string name="SIGNUP_IMAGE_BUTTON_FB">Photo de profil Facebook</string>
+    <string name="SIGNUP_IMAGE_BUTTON_TAKE">Prendre une photo</string>
+    <string name="SIGNUP_IMAGE_BUTTON_CHOOSE">Album photo</string>
+
+    <string name="SIGNUP_READ_CGU">En passant à l\'étape suivante, vous déclarez accepter les <u>conditions générales d\'utilisation</u> de Flooz.</string>
+
+    <string name="SIGNUP_FIELD_CARD_OWNER_PLACEHOLDER">Titulaire de la carte</string>
+    <string name="SIGNUP_FIELD_CARD_NUMBER_PLACEHOLDER">Numéro de carte</string>
+    <string name="SIGNUP_FIELD_CARD_EXPIRES_PLACEHOLDER">Date d\'expiration (MMYY)</string>
+    <string name="SIGNUP_FIELD_CARD_CVV_PLACEHOLDER">CVV (3 chiffres au dos)</string>
+
+    <string name="SIGNUP_FRIENDS_MESSAGE">Pour envoyer de l\'argent à vos amis, Flooz a besoin d\'accéder à votre carnet de contact.</string>
+
+    <string name="Send_Button_Mobile">Suivant</string>
+    <string name="Invite_Friends_Button">Inviter</string>
+    <string name="ALERT_CONTACT_DENIES_ACCESS">Vous n\'avez pas autorisé à lire les contacts!\nVous passez directement à l\'étape suivante.</string>
+    <string name="ALERT_CONTACT_DENIES_ACCESS_PREVIOUS">Vous n\'avez pas autorisé à lire les contacts précédemment!\nVous passez directement à l\'étape suivante.</string>
+    <string name="ALERT_CONTACT_MESSAGE_FAILED">L\'envoi de votre message a échoué, essayez de recommencer.</string>
+
+    <string name="CONTACT_PICKER_NON_FLOOZ">Invitez les sur Flooz</string>
+    <string name="CONTACT_PICKER_FLOOZ">Déjà sur Flooz</string>
+
+    <string name="textmotdepasse">6 caractères minimum</string>
+    <string name="Invite_Friends_Message_SMS">Prends cette appli elle est vraiment top pour s\'échanger de l\'argent http://flooz.me/download utilises ce code pour l\'inscription: </string>
+
+    <string name="SECURE_LOGIN_TITLE">Sécurité</string>
+    <string name="CODE_INVITATION_TITLE">Code d\'invitation</string>
+    <string name="CODE_INVITATION_EXPLICATION">Vous devez disposer d\'un code d\'invitation pour vivre l\'expérience flooz.</string>
+
+
+    <!-- Moment Date Implementation -->
+
+    <string name="future">dans %s</string>
+    <string name="past">il y a %s</string>
+    <string name="s">quelques secondes</string>
+    <string name="m">une minute</string>
+    <string name="mm">%d minutes</string>
+    <string name="h">une heure</string>
+    <string name="hh">%d heures</string>
+    <string name="d">un jour</string>
+    <string name="dd">%d jours</string>
+    <string name="M">un mois</string>
+    <string name="MM">%d mois</string>
+    <string name="y">un an</string>
+    <string name="yy">%d ans</string>
+
+</resources>
