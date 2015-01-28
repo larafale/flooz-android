@@ -4,6 +4,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.hardware.Camera;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -26,6 +27,8 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
  * Created by Flooz on 10/2/14.
  */
 public class TransactionSelectReceiverFragment extends HomeBaseFragment {
+
+    private Context context;
 
     private ImageView backButton;
     private TextView headerTitle;
@@ -56,6 +59,7 @@ public class TransactionSelectReceiverFragment extends HomeBaseFragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.transaction_select_receiver, null);
 
+        this.context = inflater.getContext();
         this.backButton = (ImageView) view.findViewById(R.id.transaction_select_receiver_header_back);
         this.headerTitle = (TextView) view.findViewById(R.id.transaction_select_receiver_header_text);
 
@@ -78,8 +82,6 @@ public class TransactionSelectReceiverFragment extends HomeBaseFragment {
         this.clearSearchTextfieldButton = (ImageView) view.findViewById(R.id.transaction_select_receiver_search_clear);
 
         this.resultList = (StickyListHeadersListView) view.findViewById(R.id.transaction_select_receiver_result_list);
-        this.listAdapter = new SelectUserListAdapter(inflater.getContext());
-        this.resultList.setAdapter(this.listAdapter);
 
         this.resultList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -144,19 +146,31 @@ public class TransactionSelectReceiverFragment extends HomeBaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        listAdapter.stopSearch();
-        searchTextfield.setText("");
-        searchTextfield.clearFocus();
-        clearSearchTextfieldButton.setVisibility(View.GONE);
+        if (this.listAdapter != null) {
+            resultList.setAdapter(listAdapter);
+            listAdapter.stopSearch();
+            searchTextfield.setText("");
+            searchTextfield.clearFocus();
+            clearSearchTextfieldButton.setVisibility(View.GONE);
+        } else {
+            listAdapter = new SelectUserListAdapter(context);
+            resultList.setAdapter(listAdapter);
+        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        listAdapter.stopSearch();
-        searchTextfield.setText("");
-        searchTextfield.clearFocus();
-        clearSearchTextfieldButton.setVisibility(View.GONE);
+        if (this.listAdapter != null) {
+            resultList.setAdapter(listAdapter);
+            listAdapter.stopSearch();
+            searchTextfield.setText("");
+            searchTextfield.clearFocus();
+            clearSearchTextfieldButton.setVisibility(View.GONE);
+        } else {
+            listAdapter = new SelectUserListAdapter(context);
+            resultList.setAdapter(listAdapter);
+        }
     }
 
     @Override

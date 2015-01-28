@@ -38,7 +38,7 @@ public class CashoutFragment extends HomeBaseFragment {
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.cashout_fragment, null);
 
         this.headerBackButton = (ImageView) view.findViewById(R.id.cashout_header_back);
@@ -57,6 +57,8 @@ public class CashoutFragment extends HomeBaseFragment {
         this.balanceCurrency.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
         this.amountTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
         this.cashoutButton.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+
+        this.cashoutButton.setText(String.format(inflater.getContext().getResources().getString(R.string.CASHOUT_BUTTON), ""));
 
         String amountValue = FloozRestClient.getInstance().currentUser.amount.toString();
 
@@ -85,10 +87,14 @@ public class CashoutFragment extends HomeBaseFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() > 0)
+                if (s.length() > 0) {
+                    cashoutButton.setText(String.format(inflater.getContext().getResources().getString(R.string.CASHOUT_BUTTON), s.toString() + " €"));
                     cashoutButton.setEnabled(true);
-                else
+                }
+                else {
                     cashoutButton.setEnabled(false);
+                    cashoutButton.setText(String.format(inflater.getContext().getResources().getString(R.string.CASHOUT_BUTTON), ""));
+                }
             }
         });
 

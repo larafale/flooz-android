@@ -66,6 +66,7 @@
     <string name="CASHOUT_BALANCE">Votre solde Flooz</string>
     <string name="CASHOUT_PLACEHOLDER">Saisir le montant à retirer</string>
     <string name="CASHOUT_INFO">Virez la totalité ou une partie de votre porte-monnaie sur votre compte bancaire.</string>
+    <string name="CASHOUT_BUTTON">Virez %s</string>
 
     <string name="NEW_TRANSACTION">Nouveau Flooz</string>
 
@@ -148,7 +149,7 @@
 
     <string name="MENU_PAYMENT">Payer</string>
     <string name="MENU_COLLECT">Réclamer</string>
-    <string name="MENU_NEW_FLOOZ">Nouveau Flooz</string>
+    <string name="MENU_NEW_FLOOZ">Floozer @%s</string>
     <string name="MENU_ADD_FRIENDS">Ajouter aux amis</string>
     <string name="MENU_REMOVE_FRIENDS">Supprimer des amis</string>
     <string name="MENU_AVATAR">Voir la photo</string>

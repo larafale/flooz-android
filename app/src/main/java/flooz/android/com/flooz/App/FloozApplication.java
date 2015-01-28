@@ -353,7 +353,7 @@ public class FloozApplication extends Application
 
         List<ActionSheetItem> items = new ArrayList<>();
 
-        items.add(new ActionSheetItem(this, R.string.MENU_NEW_FLOOZ, createTransaction));
+        items.add(new ActionSheetItem(this, String.format(this.getResources().getString(R.string.MENU_NEW_FLOOZ), user.username), createTransaction));
 
         if (!this.userActionMenu.isFriend() && !this.userActionMenu.isFriendRequest())
             items.add(new ActionSheetItem(this, R.string.MENU_ADD_FRIENDS, addFriend));
