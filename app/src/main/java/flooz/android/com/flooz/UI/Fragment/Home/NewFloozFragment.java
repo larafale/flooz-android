@@ -405,7 +405,7 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (clearFocus == false) {
+                if (!clearFocus) {
                     if (preset != null) {
                         if (preset.focusWhy) {
                             contentTextfield.setSelection(contentTextfield.getText().length());

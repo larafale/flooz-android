@@ -1,6 +1,7 @@
 package flooz.android.com.flooz.UI.Fragment.Signup;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -97,30 +98,31 @@ public class SignupPassFragment extends SignupBaseFragment implements NumericKey
                 this.parentActivity.gotToNextPage();
             }
             else if (this.currentCode.equals(this.parentActivity.userData.passCode)) {
+                FloozRestClient.getInstance().showLoadView();
                 FloozRestClient.getInstance().signup(this.parentActivity.userData.getParamsForStep(true), new FloozHttpResponseHandler() {
                     @Override
                     public void success(Object response) {
                         if (parentActivity.userData.avatarData != null) {
-                            FloozRestClient.getInstance().showLoadView();
-                            FloozRestClient.getInstance().uploadDocument("picId", ImageHelper.convertBitmapInFile(parentActivity.userData.avatarData), new FloozHttpResponseHandler() {
+                            Handler handler = new Handler();
+                            handler.post(new Runnable() {
                                 @Override
-                                public void success(Object response) {
-                                    FloozRestClient.getInstance().setSecureCode(currentCode);
-                                    parentActivity.floozApp.displayMainView();
-                                }
+                                public void run() {
+                                    FloozRestClient.getInstance().uploadDocument("picId", ImageHelper.convertBitmapInFile(parentActivity.userData.avatarData), new FloozHttpResponseHandler() {
+                                        @Override
+                                        public void success(Object response) {
+                                        }
 
-                                @Override
-                                public void failure(int statusCode, FLError error) {
+                                        @Override
+                                        public void failure(int statusCode, FLError error) {
 
+                                        }
+                                    });
                                 }
                             });
                         }
-                        else {
-                            FloozRestClient.getInstance().sendUserContacts();
-                            FloozRestClient.getInstance().setSecureCode(currentCode);
-                            parentActivity.floozApp.displayMainView();
-                        }
-
+                        FloozRestClient.getInstance().setSecureCode(currentCode);
+                        parentActivity.floozApp.displayMainView();
+                        FloozRestClient.getInstance().sendUserContacts();
                     }
 
                     @Override

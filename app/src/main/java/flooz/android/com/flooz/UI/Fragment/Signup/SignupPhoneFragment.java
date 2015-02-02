@@ -63,12 +63,12 @@ public class SignupPhoneFragment extends SignupBaseFragment implements NumericKe
 
             keyboard.maxLenght = 10;
 
-            if (phoneTextfield.getText().length() >= 10)
-                nextButton.setEnabled(true);
-
             keyboard.value = parentActivity.userData.phone;
             phoneTextfield.setText(parentActivity.userData.phone);
             phoneTextfield.setSelection(keyboard.value.length());
+
+            if (phoneTextfield.getText().length() >= 10)
+                nextButton.setEnabled(true);
         }
 
         nextButton.setOnClickListener(new View.OnClickListener() {

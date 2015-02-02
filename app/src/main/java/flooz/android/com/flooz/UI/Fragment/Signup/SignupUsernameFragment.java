@@ -53,6 +53,10 @@ public class SignupUsernameFragment extends SignupBaseFragment {
         if (parentActivity.userData.username != null) {
             usernameTextfield.setText(parentActivity.userData.username);
             usernameTextfield.setSelection(parentActivity.userData.username.length());
+            if (usernameTextfield.getText().length() >= 3)
+                nextButton.setEnabled(true);
+            else
+                nextButton.setEnabled(false);
         }
 
         this.usernameTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {

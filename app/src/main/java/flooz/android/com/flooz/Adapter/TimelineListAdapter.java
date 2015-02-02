@@ -163,11 +163,17 @@ public class TimelineListAdapter extends BaseAdapter {
         else
             holder.userPic.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
 
-        holder.transactionText3D_1.setText(currentTransaction.text3d.get(0).toString());
-        holder.transactionText3D_2.setText(currentTransaction.text3d.get(1).toString());
-        holder.transactionText3D_3.setText(currentTransaction.text3d.get(2).toString());
+        if (currentTransaction.text3d != null) {
+            holder.transactionText3D_1.setText(currentTransaction.text3d.get(0).toString());
+            holder.transactionText3D_2.setText(currentTransaction.text3d.get(1).toString());
+            holder.transactionText3D_3.setText(currentTransaction.text3d.get(2).toString());
+        } else {
+            holder.transactionText3D_1.setText("");
+            holder.transactionText3D_2.setText("");
+            holder.transactionText3D_3.setText("");
+        }
 
-        if (!currentTransaction.content.isEmpty()) {
+        if (currentTransaction.content != null && !currentTransaction.content.isEmpty()) {
             holder.transactionText.setText(currentTransaction.content);
             holder.transactionText.setVisibility(View.VISIBLE);
         }
@@ -175,7 +181,7 @@ public class TimelineListAdapter extends BaseAdapter {
             holder.transactionText.setVisibility(View.GONE);
         }
 
-        if (!currentTransaction.attachmentURL.isEmpty()) {
+        if (currentTransaction.attachmentURL != null &&!currentTransaction.attachmentURL.isEmpty()) {
             holder.transactionPic.setImageFromUrl(currentTransaction.attachmentThumbURL);
             holder.transactionPic.setVisibility(View.VISIBLE);
 
@@ -191,7 +197,8 @@ public class TimelineListAdapter extends BaseAdapter {
             holder.transactionPic.setVisibility(View.GONE);
         }
 
-        if (!currentTransaction.social.likeText.isEmpty() || currentTransaction.social.commentsCount.intValue() > 0) {
+        if ((currentTransaction.social != null && currentTransaction.social.likeText != null && currentTransaction.social.commentsCount != null)
+                && (!currentTransaction.social.likeText.isEmpty() || currentTransaction.social.commentsCount.intValue() > 0)) {
             holder.transactionSocialContainer.setVisibility(View.VISIBLE);
 
             if (currentTransaction.social.commentsCount.intValue() > 0) {
@@ -215,7 +222,7 @@ public class TimelineListAdapter extends BaseAdapter {
         else
             holder.transactionSocialContainer.setVisibility(View.GONE);
 
-        if (currentTransaction.social.isLiked) {
+        if (currentTransaction.social != null && currentTransaction.social.isLiked) {
             holder.transactionLikesButton.setBackground(this.context.getResources().getDrawable(R.drawable.timeline_row_action_button_background_selected));
             holder.transactionLikesButtonText.setTextColor(this.context.getResources().getColor(android.R.color.white));
             holder.transactionLikesButtonPicto.setImageDrawable(this.context.getResources().getDrawable(R.drawable.social_like_full));

@@ -37,9 +37,17 @@ public class LoadingActivity extends Activity {
         TextView loadingText = (TextView)this.findViewById(R.id.loading_text);
         loadingText.setTypeface(CustomFonts.customContentRegular(this.getApplicationContext()));
 
-        if (!FloozRestClient.getInstance().autologin())
+        if (!FloozRestClient.getInstance().autologin()) {
             FloozApplication.getInstance().displayStartView();
+            this.finish();
+        }
 
+    }
+
+    protected void onStart() {
+        super.onStart();
+        floozApp.setCurrentActivity(this);
+        AppEventsLogger.activateApp(this);
     }
 
     protected void onResume() {

@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
 
@@ -547,16 +548,22 @@ public class FloozRestClient
     }
 
     public void sendUserContacts() {
-        List<FLUser> list = ContactsManager.getContactsList();
-        List<String> phones = new ArrayList<>(list.size());
-        for (int i = 0; i < list.size(); i++) {
-            phones.add(list.get(i).phone);
-        }
+        Handler handler = new Handler();
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                List<FLUser> list = ContactsManager.getContactsList();
+                List<String> phones = new ArrayList<>(list.size());
+                for (int i = 0; i < list.size(); i++) {
+                    phones.add(list.get(i).phone);
+                }
 
-        Map<String, Object> params = new HashMap<>(1);
-        params.put("phones", phones);
+                Map<String, Object> params = new HashMap<>(1);
+                params.put("phones", phones);
 
-        this.request("/users/contacts", HttpRequestType.POST, params, null);
+                request("/users/contacts", HttpRequestType.POST, params, null);
+            }
+        });
     }
 
     /***************************/
@@ -972,8 +979,11 @@ public class FloozRestClient
         JSONArray transactions = jsonObject.optJSONArray("items");
 
         if (transactions != null && transactions.length() > 0) {
-            for (int i = 0; i < transactions.length(); i++)
-                ret.add(new FLTransaction(transactions.optJSONObject(i)));
+            for (int i = 0; i < transactions.length(); i++) {
+                FLTransaction tmp = new FLTransaction(transactions.optJSONObject(i));
+                if (tmp.transactionId != null && tmp.text3d != null)
+                    ret.add(tmp);
+            }
         }
 
         return ret;
@@ -1364,31 +1374,13 @@ public class FloozRestClient
     }
 
     private void handleTriggerSignupCodeShow(final JSONObject data) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(floozApp.getCurrentActivity());
-
-        builder.setTitle(R.string.SIGNUP_PHONE_ALERT_TITLE);
-        builder.setMessage(String.format(floozApp.getResources().getString(R.string.SIGNUP_PHONE_ALERT_CONTENT),  data.optString("phone")));
-        builder.setNegativeButton(R.string.GLOBAL_EDIT, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-            }
-        });
-        builder.setPositiveButton(R.string.GLOBAL_OK, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.dismiss();
-                Intent intent = new Intent();
-                intent.putExtra("phone", data.optString("phone"));
-                intent.setClass(floozApp, InvitationCodeActivity.class);
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                floozApp.getCurrentActivity().startActivity(intent);
-                floozApp.getCurrentActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                floozApp.getCurrentActivity().finish();
-            }
-        });
-
-        builder.show();
+        Intent intent = new Intent();
+        intent.putExtra("phone", data.optString("phone"));
+        intent.setClass(floozApp, InvitationCodeActivity.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        floozApp.getCurrentActivity().startActivity(intent);
+        floozApp.getCurrentActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+        floozApp.getCurrentActivity().finish();
     }
 
     private void handleTriggerLogout() {
@@ -1481,8 +1473,11 @@ public class FloozRestClient
         }
     }
 
-    public void handleTrigger(final FLTrigger trigger) {
+    private void handleTriggerFeedReload() {
+        FloozApplication.performLocalNotification(CustomNotificationIntents.reloadNotifications());
+    }
 
+    public void handleTrigger(final FLTrigger trigger) {
         switch (trigger.type) {
             case TriggerNone:
                 break;
@@ -1561,6 +1556,9 @@ public class FloozRestClient
             case TriggerShowInvitation:
                 handleTriggerInvitationShow();
                 break;
+            case TriggerFeedReload:
+                handleTriggerFeedReload();
+                break;
             default:
                 break;
         }
@@ -1573,7 +1571,7 @@ public class FloozRestClient
                 for (int i = 0; i < t.length(); i++) {
                     final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
                     if (trigger.delay.intValue() > 0) {
-                        Handler handler = new Handler();
+                        Handler handler = new Handler(Looper.getMainLooper());
                         handler.postDelayed(new Runnable() {
                             @Override
                             public void run() {

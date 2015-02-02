@@ -105,7 +105,7 @@ public class FLTransaction {
 
             if (json.has("amount")) {
                 this.amount = json.getDouble("amount");
-                if (!this.amount.equals(0) && json.getBoolean("payer") == true)
+                if (!this.amount.equals(0) && json.getBoolean("payer"))
                     this.amount = this.amount.floatValue() * -1.0;
             }
 
@@ -128,7 +128,7 @@ public class FLTransaction {
             if (json.getString("currentScope").equals("private"))
                 this.isPrivate = true;
 
-            this.scope = this.transactionScopeParamToEnum(json.getString("currentScope"));
+            this.scope = transactionScopeParamToEnum(json.getString("currentScope"));
 
             this.isCancelable = false;
             this.isAcceptable = false;

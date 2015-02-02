@@ -63,7 +63,6 @@ public class SignupImageFragment extends SignupBaseFragment {
         this.fbButtonText.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
         this.takeButtonText.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
         this.chooseButtonText.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
-        this.nextButton.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
 
         this.fbButton.setOnClickListener(new View.OnClickListener() {
             @Override

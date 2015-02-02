@@ -17,19 +17,19 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:nextFocusForward="@+id/signup_infos_email"
+            android:nextFocusForward="@+id/signup_infos_firstname"
             android:singleLine="true"
             android:hint="@string/FIELD_LASTNAME"
             android:textColorHint="@color/placeholder"/>
 
         <EditText
-            android:id="@+id/signup_infos_firstname"
+            android:id="@id/signup_infos_firstname"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:singleLine="true"
             android:layout_marginRight="@dimen/dimen_small"
-            android:nextFocusForward="@+id/signup_infos_lastname"
+            android:nextFocusForward="@+id/signup_infos_email"
             android:hint="@string/FIELD_FIRSTNAME"
             android:textColorHint="@color/placeholder"/>
 

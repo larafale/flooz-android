@@ -156,9 +156,17 @@ public class HomeActivity extends SlidingFragmentActivity implements CameraHostP
 
         Intent intent = getIntent();
         JSONArray triggersArray = null;
-        if (intent != null && intent.getExtras() != null) {
-            if (!FloozRestClient.getInstance().autologin())
+        if (intent != null && intent.getAction() != null && intent.getAction().contentEquals(Intent.ACTION_VIEW)) {
+            if (!FloozRestClient.getInstance().autologin()) {
                 FloozApplication.getInstance().displayStartView();
+                this.finish();
+            }
+        }
+        if (intent != null && intent.getExtras() != null) {
+            if (!FloozRestClient.getInstance().autologin()) {
+                FloozApplication.getInstance().displayStartView();
+                this.finish();
+            }
 
             String message = intent.getExtras().getString("triggers");
             try {
@@ -670,7 +678,7 @@ public class HomeActivity extends SlidingFragmentActivity implements CameraHostP
             this.getSlidingMenu().showContent(true);
             this.getSlidingMenu().setSlidingEnabled(false);
         } else if (this.fragmentHistory.size() > 0) {
-            this.contentFragments.get(this.fragmentHistory.get(this.fragmentHistory.size() - 1)).onBackPressed();
+            this.fragmentHistory.get(this.fragmentHistory.size() - 1).onBackPressed();
         } else {
             this.finish();
         }

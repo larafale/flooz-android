@@ -35,7 +35,8 @@ public class FLTrigger {
         TriggerSecureCodeCheck,
         TriggerPresetLine,
         TriggerFeedRead,
-        TriggerShowInvitation
+        TriggerShowInvitation,
+        TriggerFeedReload
     }
 
     public FLTriggerType type;
@@ -62,56 +63,58 @@ public class FLTrigger {
     }
 
     public static FLTriggerType triggerTypeParamToEnum(String param) {
-        if (param.equals("timeline:reload"))
+        if (param.contentEquals("timeline:reload"))
             return TriggerReloadTimeline;
-        else if (param.equals("line:show"))
+        else if (param.contentEquals("line:show"))
             return TriggerShowLine;
-        else if (param.equals("avatar:show"))
+        else if (param.contentEquals("avatar:show"))
             return TriggerShowAvatar;
-        else if (param.equals("profile:reload"))
+        else if (param.contentEquals("profile:reload"))
             return TriggerReloadProfile;
-        else if (param.equals("card:show"))
+        else if (param.contentEquals("card:show"))
             return TriggerShowCard;
-        else if (param.equals("friend:show"))
+        else if (param.contentEquals("friend:show"))
             return TriggerShowFriend;
-        else if (param.equals("friend:reload"))
+        else if (param.contentEquals("friend:reload"))
             return TriggerReloadFriend;
-        else if (param.equals("line:reload"))
+        else if (param.contentEquals("line:reload"))
             return TriggerReloadLine;
-        else if (param.equals("profile:show"))
+        else if (param.contentEquals("profile:show"))
             return TriggerShowProfile;
-        else if (param.equals("signup:show"))
+        else if (param.contentEquals("signup:show"))
             return TriggerShowSignup;
-        else if (param.equals("login:show"))
+        else if (param.contentEquals("login:show"))
             return TriggerShowLogin;
-        else if (param.equals("signup:invitation"))
+        else if (param.contentEquals("signup:invitation"))
             return TriggerShowSignupCode;
-        else if (param.equals("logout"))
+        else if (param.contentEquals("logout"))
             return TriggerLogout;
-        else if (param.equals("app:update"))
+        else if (param.contentEquals("app:update"))
             return TriggerAppUpdate;
-        else if (param.equals("contactInfo:show"))
+        else if (param.contentEquals("contactInfo:show"))
             return TriggerShowContactInfo;
-        else if (param.equals("identity:show"))
+        else if (param.contentEquals("identity:show"))
             return TriggerShowUserIdentity;
-        else if (param.equals("3dSecure:show"))
+        else if (param.contentEquals("3dSecure:show"))
             return TriggerShow3DSecure;
-        else if (param.equals("3dSecure:complete"))
+        else if (param.contentEquals("3dSecure:complete"))
             return TriggerComplete3DSecure;
-        else if (param.equals("password:change"))
+        else if (param.contentEquals("password:change"))
             return TriggerResetPassword;
-        else if (param.equals("3dSecure:fail"))
+        else if (param.contentEquals("3dSecure:fail"))
             return TriggerFail3DSecure;
-        else if (param.equals("secureCode:clear"))
+        else if (param.contentEquals("secureCode:clear"))
             return TriggerSecureCodeClear;
-        else if (param.equals("secureCode:check"))
+        else if (param.contentEquals("secureCode:check"))
             return TriggerSecureCodeCheck;
-        else if (param.equals("line:preset"))
+        else if (param.contentEquals("line:preset"))
             return TriggerPresetLine;
-        else if (param.equals("feed:read"))
+        else if (param.contentEquals("feed:read"))
             return TriggerFeedRead;
-        else if (param.equals("invitation:show"))
+        else if (param.contentEquals("invitation:show"))
             return TriggerShowInvitation;
+        else if (param.contentEquals("feed:reload"))
+            return TriggerFeedReload;
         else
             return TriggerNone;
     }
