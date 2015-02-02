@@ -154,7 +154,7 @@ public class HomeActivity extends SlidingFragmentActivity implements CameraHostP
     {
         super.onCreate(savedInstanceState);
 
-        Intent intent = getIntent();
+        final Intent intent = getIntent();
         JSONArray triggersArray = null;
         if (intent != null && intent.getAction() != null && intent.getAction().contentEquals(Intent.ACTION_VIEW)) {
             if (!FloozRestClient.getInstance().autologin()) {
@@ -182,12 +182,15 @@ public class HomeActivity extends SlidingFragmentActivity implements CameraHostP
                     @Override
                     public void run() {
                         if (floozApp.getCurrentActivity() instanceof HomeActivity) {
-                            for (int i = 0; i < finalJsonObject.length(); i++) {
-                                FloozRestClient.getInstance().handleTrigger(new FLTrigger(finalJsonObject.optJSONObject(i)));
+                            if (FloozRestClient.getInstance().currentUser != null
+                                    && FloozRestClient.getInstance().currentUser.userId.contentEquals(intent.getExtras().getString("userId"))) {
+                                for (int i = 0; i < finalJsonObject.length(); i++) {
+                                    FloozRestClient.getInstance().handleTrigger(new FLTrigger(finalJsonObject.optJSONObject(i)));
+                                }
                             }
                         }
                     }
-                }, 100);
+                }, 300);
             }
         }
 

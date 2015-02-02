@@ -5,7 +5,8 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:background="@color/background">
+    android:background="@color/background"
+    android:clickable="true">
 
     <com.baoyz.widget.PullRefreshLayout
         android:id="@+id/timeline_refresh_container"

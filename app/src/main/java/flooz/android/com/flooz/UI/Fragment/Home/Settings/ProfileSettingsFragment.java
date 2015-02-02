@@ -1,6 +1,7 @@
 package flooz.android.com.flooz.UI.Fragment.Home.Settings;
 
 import android.app.Fragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -34,6 +35,7 @@ import flooz.android.com.flooz.Utils.JSONHelper;
  */
 public class ProfileSettingsFragment extends HomeBaseFragment {
 
+    private Context context;
     private ImageView headerBackButton;
     private TextView headerTitle;
     private ListView contentList;
@@ -50,6 +52,8 @@ public class ProfileSettingsFragment extends HomeBaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.profile_settings, null);
+
+        this.context = inflater.getContext();
 
         this.headerBackButton = (ImageView) view.findViewById(R.id.profile_settings_header_back);
         this.headerTitle = (TextView) view.findViewById(R.id.profile_settings_header_title);
@@ -70,6 +74,12 @@ public class ProfileSettingsFragment extends HomeBaseFragment {
             }
         });
 
+        this.updateList();
+
+        return view;
+    }
+
+    public void updateList() {
         int cardNotif = 0;
         int bankNotif = 0;
         int indentityNotif = 0;
@@ -103,58 +113,62 @@ public class ProfileSettingsFragment extends HomeBaseFragment {
         else
             this.infosContainer.setVisibility(View.GONE);
 
-        itemList.add(new SettingsListItem(inflater.getContext().getResources().getString(R.string.SETTINGS_CARD), cardNotif, new AdapterView.OnItemClickListener() {
+        itemList.add(new SettingsListItem(this.context.getResources().getString(R.string.SETTINGS_CARD), cardNotif, new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 parentActivity.pushMainFragment("settings_credit_card", R.animator.slide_in_left, R.animator.slide_out_right);
             }
         }));
 
-        itemList.add(new SettingsListItem(inflater.getContext().getResources().getString(R.string.SETTINGS_RIB), bankNotif, new AdapterView.OnItemClickListener() {
+        itemList.add(new SettingsListItem(this.context.getResources().getString(R.string.SETTINGS_RIB), bankNotif, new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 parentActivity.pushMainFragment("settings_bank", R.animator.slide_in_left, R.animator.slide_out_right);
             }
         }));
 
-        itemList.add(new SettingsListItem(inflater.getContext().getResources().getString(R.string.SETTINGS_IDENTITY), indentityNotif, new AdapterView.OnItemClickListener() {
+        itemList.add(new SettingsListItem(this.context.getResources().getString(R.string.SETTINGS_IDENTITY), indentityNotif, new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 parentActivity.pushMainFragment("settings_identity", R.animator.slide_in_left, R.animator.slide_out_right);
             }
         }));
 
-        itemList.add(new SettingsListItem(inflater.getContext().getResources().getString(R.string.SETTINGS_COORD), coordsNotif, new AdapterView.OnItemClickListener() {
+        itemList.add(new SettingsListItem(this.context.getResources().getString(R.string.SETTINGS_COORD), coordsNotif, new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 parentActivity.pushMainFragment("settings_coords", R.animator.slide_in_left, R.animator.slide_out_right);
             }
         }));
 
-        itemList.add(new SettingsListItem(inflater.getContext().getResources().getString(R.string.SETTINGS_SECURITY), new AdapterView.OnItemClickListener() {
+        itemList.add(new SettingsListItem(this.context.getResources().getString(R.string.SETTINGS_SECURITY), new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 parentActivity.pushMainFragment("settings_security", R.animator.slide_in_left, R.animator.slide_out_right);
             }
         }));
 
-        itemList.add(new SettingsListItem(inflater.getContext().getResources().getString(R.string.SETTINGS_PREFERENCES), new AdapterView.OnItemClickListener() {
+        itemList.add(new SettingsListItem(this.context.getResources().getString(R.string.SETTINGS_PREFERENCES), new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 parentActivity.pushMainFragment("settings_preferences", R.animator.slide_in_left, R.animator.slide_out_right);
             }
         }));
 
-        itemList.add(new SettingsListItem(inflater.getContext().getResources().getString(R.string.SETTINGS_PRIVACY), new AdapterView.OnItemClickListener() {
+        itemList.add(new SettingsListItem(this.context.getResources().getString(R.string.SETTINGS_PRIVACY), new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 parentActivity.pushMainFragment("settings_privacy", R.animator.slide_in_left, R.animator.slide_out_right);
             }
         }));
 
-        this.listAdapter = new SettingsListAdapter(inflater.getContext(), itemList, this.contentList);
+        this.listAdapter = new SettingsListAdapter(this.context, itemList, this.contentList);
+    }
 
-        return view;
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.updateList();
     }
 
     @Override

@@ -235,8 +235,8 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
                 @Override
                 public void onClick(View v) {
                     amountTextfield.requestFocus();
-                    InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Service.INPUT_METHOD_SERVICE);
-                    imm.showSoftInput(amountTextfield, 0);
+                    InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(amountTextfield, InputMethodManager.SHOW_FORCED);
                 }
             });
         } else if (preset != null) {
@@ -344,7 +344,6 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
             else if (this.preset.type == FLTransaction.TransactionType.TransactionTypePayment) {
                 this.chargeButton.setVisibility(View.GONE);
             }
-
         }
 
         return view;
@@ -380,10 +379,7 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
                             imm.showSoftInput(amountTextfield, 0);
                         }
                     } else {
-                        amountTextfield.setSelection(amountTextfield.getText().length());
-                        amountTextfield.requestFocus();
-                        InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Service.INPUT_METHOD_SERVICE);
-                        imm.showSoftInput(amountTextfield, 0);
+                        amountContainer.performClick();
                     }
                 } else {
                     contentTextfield.clearFocus();
@@ -391,7 +387,7 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
                 }
                 clearFocus = true;
             }
-        }, 300);
+        }, 500);
 
         this.amountTextfield.setText(this.savedAmount);
         this.contentTextfield.setText(this.savedWhy);
@@ -401,36 +397,6 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
 
     public void onResume() {
         super.onResume();
-        Handler handler = new Handler(this.context.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!clearFocus) {
-                    if (preset != null) {
-                        if (preset.focusWhy) {
-                            contentTextfield.setSelection(contentTextfield.getText().length());
-                            contentTextfield.requestFocus();
-                            InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Service.INPUT_METHOD_SERVICE);
-                            imm.showSoftInput(contentTextfield, 0);
-                        } else if (preset.focusAmount) {
-                            amountTextfield.setSelection(amountTextfield.getText().length());
-                            amountTextfield.requestFocus();
-                            InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Service.INPUT_METHOD_SERVICE);
-                            imm.showSoftInput(amountTextfield, 0);
-                        }
-                    } else {
-                        amountTextfield.setSelection(amountTextfield.getText().length());
-                        amountTextfield.requestFocus();
-                        InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Service.INPUT_METHOD_SERVICE);
-                        imm.showSoftInput(amountTextfield, 0);
-                    }
-                } else {
-                    contentTextfield.clearFocus();
-                    amountTextfield.clearFocus();
-                }
-                clearFocus = true;
-            }
-        }, 500);
 
         this.amountTextfield.setText(this.savedAmount);
         this.contentTextfield.setText(this.savedWhy);
@@ -565,6 +531,8 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
             public void run() {
                 havePicture = true;
                 currentPicture = photo;
+                picContainer.setVisibility(View.VISIBLE);
+                pic.setImageBitmap(currentPicture);
 
                 parentActivity.popMainFragment(R.animator.slide_down, android.R.animator.fade_in);
             }

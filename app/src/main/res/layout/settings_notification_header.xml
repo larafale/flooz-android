@@ -5,7 +5,8 @@
     android:layout_height="wrap_content"
     android:background="@color/background"
     android:gravity="center_vertical"
-    android:padding="@dimen/dimen_large">
+    android:padding="@dimen/dimen_large"
+    android:clickable="true">
 
     <TextView
         android:id="@+id/settings_notification_header_text"
