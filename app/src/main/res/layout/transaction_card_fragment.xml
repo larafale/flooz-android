@@ -55,6 +55,7 @@
     </RelativeLayout>
 
     <ScrollView
+        android:id="@+id/card_scroll"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:fillViewport="true"
@@ -413,7 +414,7 @@
                 android:paddingLeft="@dimen/dimen_xlarge"
                 android:paddingRight="@dimen/dimen_xlarge"
                 android:paddingTop="@dimen/dimen_large"
-                android:paddingBottom="@dimen/dimen_medium"
+                android:paddingBottom="@dimen/dimen_large"
                 android:orientation="horizontal">
 
                 <EditText
@@ -441,8 +442,7 @@
                     android:text="@string/GLOBAL_SEND"
                     android:textSize="12sp"
                     android:textColor="@android:color/white"
-                    android:gravity="center"
-                    android:textAllCaps="true"/>
+                    android:gravity="center"/>
 
             </LinearLayout>
 

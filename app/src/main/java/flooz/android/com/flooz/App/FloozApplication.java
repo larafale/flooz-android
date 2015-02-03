@@ -162,7 +162,6 @@ public class FloozApplication extends Application
     }
 
     public void didConnected() {
-        FloozRestClient.getInstance().initializeSockets();
         mixpanelAPI.identify(FloozRestClient.getInstance().currentUser.userId);
     }
 
@@ -202,13 +201,11 @@ public class FloozApplication extends Application
     }
 
     public void setCurrentActivity(Activity activity){
-        if (activity != null)
-            appInForeground = true;
-        else
-            appInForeground = false;
-        if (this.currentActivity == null && activity != null) {
+        appInForeground = activity != null;
+
+        if (this.currentActivity == null && activity != null && activity instanceof HomeActivity) {
             FloozRestClient.getInstance().initializeSockets();
-        } else if (this.currentActivity != null && activity == null) {
+        } else if (this.currentActivity != null && activity == null && FloozRestClient.getInstance().isSocketConnected) {
             FloozRestClient.getInstance().closeSockets();
         }
 

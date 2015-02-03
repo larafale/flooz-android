@@ -4,10 +4,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.gc.materialdesign.views.Switch;
 
 import flooz.android.com.flooz.Network.FloozRestClient;
 import flooz.android.com.flooz.R;
@@ -23,7 +23,7 @@ public class PreferencesSettingsFragment extends HomeBaseFragment {
     private TextView headerTitle;
     private TextView fbText;
     private TextView notifText;
-    private Switch fbSwitch;
+    private CheckBox fbSwitch;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -38,7 +38,7 @@ public class PreferencesSettingsFragment extends HomeBaseFragment {
         this.headerTitle = (TextView) view.findViewById(R.id.settings_preferences_header_title);
         this.fbText = (TextView) view.findViewById(R.id.settings_preferences_fb_text);
         this.notifText = (TextView) view.findViewById(R.id.settings_preferences_notif_text);
-        this.fbSwitch = (Switch) view.findViewById(R.id.settings_preferences_fb_toggle);
+        this.fbSwitch = (CheckBox) view.findViewById(R.id.settings_preferences_fb_toggle);
 
         this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
         this.notifText.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
@@ -56,10 +56,10 @@ public class PreferencesSettingsFragment extends HomeBaseFragment {
         else
             this.fbSwitch.setChecked(false);
 
-        this.fbSwitch.setOncheckListener(new Switch.OnCheckListener() {
+        this.fbSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheck(boolean check) {
-                if (check) {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
                     FloozRestClient.getInstance().connectFacebook();
                 } else {
                     FloozRestClient.getInstance().disconnectFacebook();

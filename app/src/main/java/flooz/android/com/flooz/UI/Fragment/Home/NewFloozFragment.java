@@ -5,6 +5,7 @@ import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.hardware.Camera;
 import android.net.Uri;
@@ -174,6 +175,8 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
         this.fbCheckbox = (CheckBox) view.findViewById(R.id.new_transac_fb_checkbox);
         this.chargeButton = (TextView) view.findViewById(R.id.new_transac_collect);
         this.payButton = (TextView) view.findViewById(R.id.new_transac_paid);
+
+        ((ImageView) view.findViewById(R.id.new_transac_scope_arrow)).setColorFilter(inflater.getContext().getResources().getColor(android.R.color.white));
 
         if (this.preset == null || !this.preset.blockBack) {
             this.closeButton.setVisibility(View.VISIBLE);

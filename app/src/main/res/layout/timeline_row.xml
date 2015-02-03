@@ -46,7 +46,8 @@
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
                     android:textColor="@android:color/white"
-                    android:textSize="@dimen/timeline_cell_title"/>
+                    android:textSize="@dimen/timeline_cell_title"
+                    android:singleLine="true"/>
 
                 <TextView
                     android:id="@+id/timelineTransactionText3D2"
@@ -55,7 +56,8 @@
                     android:layout_marginLeft="@dimen/dimen_xsmall"
                     android:layout_marginRight="@dimen/dimen_xsmall"
                     android:textColor="@color/placeholder"
-                    android:textSize="@dimen/timeline_cell_title"/>
+                    android:textSize="@dimen/timeline_cell_title"
+                    android:singleLine="true"/>
 
                 <TextView
                     android:id="@+id/timelineTransactionText3D3"
@@ -63,7 +65,8 @@
                     android:layout_height="wrap_content"
                     android:textColor="@android:color/white"
                     android:textStyle="bold"
-                    android:textSize="@dimen/timeline_cell_title"/>
+                    android:textSize="@dimen/timeline_cell_title"
+                    android:singleLine="true"/>
 
             </LinearLayout>
 

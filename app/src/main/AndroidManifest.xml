@@ -91,6 +91,7 @@
             </intent-filter>
         </receiver>
         <service android:name=".App.GcmIntentService" />
+        <meta-data android:name="com.crashlytics.ApiKey" android:value="4f18178e0b7894ec76bb6f01a60f34baf68acbf7"/>
     </application>
 
     <uses-permission android:name="android.permission.CAMERA"/>

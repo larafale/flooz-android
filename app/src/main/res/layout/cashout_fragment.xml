@@ -111,7 +111,7 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:layout_marginTop="@dimen/dimen_xxlarge"
+            android:layout_marginTop="@dimen/dimen_xxxlarge"
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="@dimen/dimen_xlarge"
             android:text="@string/CASHOUT_INFO"

@@ -16,13 +16,14 @@
         android:text="@string/SETTINGS_CARD"
         android:textSize="16sp"
         android:textColor="@android:color/white"
-        android:singleLine="true"/>
+        android:singleLine="true"
+        android:layout_centerVertical="true"/>
 
-    <com.gc.materialdesign.views.Switch
+    <CheckBox
         android:id="@+id/settings_notification_row_toggle"
-        android:layout_width="70dp"
-        android:layout_height="25dp"
-        android:background="@color/blue"
-        android:layout_alignParentRight="true"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"/>
 
 </RelativeLayout>

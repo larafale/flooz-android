@@ -74,7 +74,7 @@ public class CustomWebViewFragment extends HomeBaseFragment {
                 else if (url.startsWith("mailto:")) {
                     MailTo mt = MailTo.parse(url);
                     Intent i = newEmailIntent(mt.getTo(), mt.getSubject(), mt.getBody(), mt.getCc());
-                    startActivity(Intent.createChooser(i, "Envoyé un mail..."));
+                    startActivity(Intent.createChooser(i, "Envoyer un mail..."));
                 }
                 else if (url.startsWith("http:") || url.startsWith("https:")) {
                     view.loadUrl(url);

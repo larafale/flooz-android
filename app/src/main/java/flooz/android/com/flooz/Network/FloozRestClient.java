@@ -1,9 +1,12 @@
 package flooz.android.com.flooz.Network;
 
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -17,6 +20,7 @@ import com.facebook.Session;
 import com.facebook.SessionState;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.engineio.client.transports.WebSocket;
+import com.github.nkzawa.socketio.client.Ack;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.loopj.android.http.AsyncHttpClient;
@@ -80,13 +84,15 @@ public class FloozRestClient
     private String accessToken = null;
     private String fbAccessToken= null;
 
+    public static String customIpAdress = "http://dev.flooz.me";
+
     public SharedPreferences appSettings;
 
     private String BASE_URL;
 
     public NotificationsManager notificationsManager;
 
-    private static FloozRestClient instance = new FloozRestClient();
+    private static FloozRestClient instance;
 
     private Socket socket;
     public Boolean isSocketConnected = false;
@@ -95,6 +101,8 @@ public class FloozRestClient
 
     public static FloozRestClient getInstance()
     {
+        if (instance == null)
+            instance = new FloozRestClient();
         return instance;
     }
 
@@ -110,7 +118,9 @@ public class FloozRestClient
 
         this.floozApp = (FloozApplication)FloozApplication.getAppContext().getApplicationContext();
 
-        if (BuildConfig.DEBUG_API)
+        if (BuildConfig.LOCAL_API)
+            this.BASE_URL = FloozRestClient.customIpAdress;
+        else if (BuildConfig.DEBUG_API)
             this.BASE_URL = "http://dev.flooz.me";
         else
             this.BASE_URL = "https://api.flooz.me";
@@ -242,28 +252,12 @@ public class FloozRestClient
         Map<String, Object> params = new HashMap<>();
         params.put("device", floozApp.regid);
 
-        this.updateUser(params, new FloozHttpResponseHandler() {
-            @Override
-            public void success(Object response) {
-                currentUser.device = floozApp.regid;
-            }
-
-            @Override
-            public void failure(int statusCode, FLError error) {
-
-            }
-        });
+        this.updateUser(params, null);
     }
 
     /***************************/
     /********  SIGNUP  *********/
     /***************************/
-
-    public void verifySignup(Map<String, Object> params, final FloozHttpResponseHandler responseHandler) {
-
-        this.showLoadView();
-        this.request("/users/signup", HttpRequestType.POST, params, responseHandler);
-    }
 
     public void signupPassStep(String step, Map<String, Object> params, FloozHttpResponseHandler responseHandler) {
         this.request("/users/signup/step-" + step, HttpRequestType.POST, params, responseHandler);
@@ -292,28 +286,13 @@ public class FloozRestClient
         });
     }
 
-    public void askInvitationCode(String fullname, String email, String phone, final FloozHttpResponseHandler responseHandler) {
-        Map<String, Object> param = new HashMap<>(3);
-
-        param.put("phone", phone);
-        param.put("email", email);
-        param.put("name", fullname);
-
-        this.request("/invitations/ask", HttpRequestType.POST, param, responseHandler);
-    }
-
     public void verifyInvitationCode(String code, String phone, final FloozHttpResponseHandler responseHandler) {
         Map<String, Object> param = new HashMap<>(1);
 
-        param.put("phone", phone); // Fix to redirect signup
+        param.put("phone", phone);
         param.put("distinctId", floozApp.mixpanelAPI.getDistinctId());
 
         this.globalVerify(VerifyAction.InvitationCode, code, param, responseHandler);
-    }
-
-    public void verifyPseudo(String pseudo, final FloozHttpResponseHandler responseHandler) {
-        this.showLoadView();
-        this.globalVerify(VerifyAction.Username, pseudo, null, responseHandler);
     }
 
     public void globalVerify(VerifyAction field, String value, Map<String, Object> params, final FloozHttpResponseHandler responseHandler) {
@@ -408,6 +387,7 @@ public class FloozRestClient
 
         checkDeviceToken();
 
+        this.initializeSockets();
         floozApp.didConnected();
     }
 
@@ -417,7 +397,9 @@ public class FloozRestClient
             public void success(Object response) {
                 JSONObject responseObject = (JSONObject)response;
 
-                if (responseObject.optJSONObject("item").has("fb"))
+                if (responseObject.optJSONObject("item").has("fb")
+                        && responseObject.optJSONObject("item").optJSONObject("fb") != null
+                        && responseObject.optJSONObject("item").optJSONObject("fb").optString("token") != null)
                     fbAccessToken = responseObject.optJSONObject("item").optJSONObject("fb").optString("token");
 
                 if (currentUser == null) {
@@ -452,7 +434,9 @@ public class FloozRestClient
             public void success(Object response) {
                 JSONObject responseObject = (JSONObject)response;
 
-                if (responseObject.optJSONObject("item").has("fb"))
+                if (responseObject.optJSONObject("item").has("fb")
+                        && responseObject.optJSONObject("item").optJSONObject("fb") != null
+                        && responseObject.optJSONObject("item").optJSONObject("fb").optString("token") != null)
                     fbAccessToken = responseObject.optJSONObject("item").optJSONObject("fb").optString("token");
 
                 currentUser.setJson(responseObject.optJSONObject("item"));
@@ -1186,6 +1170,9 @@ public class FloozRestClient
     }
 
     public void disconnectFacebook() {
+        if (Session.getActiveSession() != null)
+            Session.getActiveSession().closeAndClearTokenInformation();
+
         this.fbAccessToken = null;
 
         Map<String, Object> data = new HashMap<>();
@@ -1372,8 +1359,20 @@ public class FloozRestClient
         this.logout();
     }
 
-    private void handleTriggerAppUpdate(JSONObject data) {
-//    [appDelegate lockForUpdate:data[@"uri"]];
+    private void handleTriggerAppUpdate(final JSONObject data) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(floozApp.getCurrentActivity());
+        builder.setTitle(R.string.GLOBAL_UPDATE);
+        builder.setMessage(R.string.MSG_UPDATE);
+        builder.setPositiveButton(R.string.BTN_UPDATE, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(data.optString("uri")));
+                floozApp.getCurrentActivity().startActivity(i);
+                floozApp.getCurrentActivity().finish();
+            }
+        });
+        builder.show();
     }
 
     private void handleTriggerContactInfoShow() {
@@ -1575,22 +1574,28 @@ public class FloozRestClient
     /***************************/
 
     public void initializeSockets() {
-        if (!this.isSocketConnected && this.currentUser != null) {
+        if (!this.isSocketConnected && this.currentUser != null && this.socket == null) {
             try {
                 IO.Options options = new IO.Options();
-                options.secure = !BuildConfig.DEBUG_API;
                 options.transports = new String[] {WebSocket.NAME};
+
+                if (BuildConfig.DEBUG_API || BuildConfig.LOCAL_API)
+                    options.secure = false;
+                else
+                    options.secure = true;
 
                 this.socket = IO.socket(BASE_URL, options);
                 this.socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
                     @Override
                     public void call(Object... args) {
                         try {
-                            JSONObject obj = new JSONObject();
-                            obj.put("nick", currentUser.username);
-                            obj.put("token", accessToken);
-                            socket.emit("session start", obj);
-                            isSocketConnected = true;
+                            if (!isSocketConnected) {
+                                JSONObject obj = new JSONObject();
+                                obj.put("nick", currentUser.username);
+                                obj.put("token", accessToken);
+                                socket.emit("session start", obj);
+                                isSocketConnected = true;
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
@@ -1608,9 +1613,28 @@ public class FloozRestClient
                 }).on("feed", new Emitter.Listener() {
                     @Override
                     public void call(Object... args) {
-                        Log.d("Socket", "Feed Socket");
+                        JSONObject data = (JSONObject) args[0];
+
+                        Integer badgeNb = data.optInt("total");
+                        FloozRestClient.getInstance().notificationsManager.nbUnreadNotifications = badgeNb;
+                        FloozApplication.performLocalNotification(CustomNotificationIntents.reloadNotifications());
                     }
                 }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
+                    @Override
+                    public void call(Object... args) {
+                        isSocketConnected = false;
+                    }
+                }).on(Socket.EVENT_ERROR, new Emitter.Listener() {
+                    @Override
+                    public void call(Object... args) {
+                        isSocketConnected = false;
+                    }
+                }).on(Socket.EVENT_CONNECT_ERROR, new Emitter.Listener() {
+                    @Override
+                    public void call(Object... args) {
+                        isSocketConnected = false;
+                    }
+                }).on(Socket.EVENT_CONNECT_TIMEOUT, new Emitter.Listener() {
                     @Override
                     public void call(Object... args) {
                         isSocketConnected = false;
@@ -1629,7 +1653,14 @@ public class FloozRestClient
             try {
                 obj.put("nick", currentUser.username);
                 obj.put("token", accessToken);
-                this.socket.emit("session end", obj);
+                this.socket.emit("session end", obj, new Ack() {
+                    @Override
+                    public void call(Object... args) {
+                        socket.disconnect();
+                        socket.close();
+                        socket = null;
+                    }
+                });
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -1639,8 +1670,6 @@ public class FloozRestClient
     public void closeSockets() {
         if (this.socket != null && this.isSocketConnected && this.currentUser != null) {
             this.socketSendSessionEnd();
-            this.socket.close();
-            this.socket = null;
         }
         this.isSocketConnected = false;
     }

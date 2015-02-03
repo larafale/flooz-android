@@ -241,6 +241,13 @@
                         android:textColor="@android:color/white"
                         android:text="Public"/>
 
+                    <ImageView
+                        android:id="@+id/new_transac_scope_arrow"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/swipe_arrow"
+                        android:layout_marginLeft="@dimen/dimen_small"/>
+
                 </LinearLayout>
 
                 <LinearLayout

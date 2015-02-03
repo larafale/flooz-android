@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyDashes">
 
-    <string name="app_name">Flooz</string>
+    <!--<string name="app_name">Flooz</string>-->
     <string name="facebook_app_id">152779318256915</string>
 
     <string name="GLOBAL_OR">ou</string>
@@ -26,6 +26,10 @@
     <string name="GLOBAL_START">Démarrer</string>
     <string name="GLOBAL_VALIDATE">Valider</string>
     <string name="GLOBAL_INTERO">\?</string>
+    <string name="GLOBAL_UPDATE">Mise à jour disponible !</string>
+
+    <string name="MSG_UPDATE">Bonne nouvelle ! Une nouvelle version de Flooz est disponible.</string>
+    <string name="BTN_UPDATE">Mettre à jour</string>
 
     <string name="LEARN_MORE">En savoir plus</string>
 
@@ -177,8 +181,8 @@
 
     <string name="SETTINGS_NOTIFICATIONS">Notifications</string>
     <string name="SETTINGS_CODE">Code de sécurité</string>
-    <string name="SETTINGS_CARD">Carte Bancaire</string>
-    <string name="SETTINGS_RIB">Compte Bancaire</string>
+    <string name="SETTINGS_CARD">Carte bancaire</string>
+    <string name="SETTINGS_RIB">Compte bancaire</string>
     <string name="SETTINGS_DOCUMENTS">Justificatifs</string>
     <string name="SETTINGS_PASSWORD">Mot de passe</string>
     <string name="SETTINGS_IDENTITY">Identité</string>
@@ -188,7 +192,7 @@
     <string name="SETTINGS_LOGOUT">Déconnexion</string>
     <string name="SETTINGS_PRIVACY">Partage &amp; vie privée</string>
 
-    <string name="SETTINGS_PRIVACY_INFOS">Pratique ! Choisissez la visibilité par défault de vos flooz. Vous avez toutefois la possibilité de la changer lors de chacun de vos paiements</string>
+    <string name="SETTINGS_PRIVACY_INFOS">Pratique ! Choisissez la visibilité par défaut de vos flooz. Vous avez toutefois la possibilité de la changer lors de chacun de vos paiements</string>
 
     <string name="EDIT_ACCOUNT_SEND_SMS">Renvoyer SMS</string>
     <string name="EDIT_ACCOUNT_SEND_MAIL">Renvoyer email</string>

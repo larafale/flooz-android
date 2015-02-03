@@ -15,12 +15,13 @@
     <dimen name="action_sheet_width">300dp</dimen>
     <dimen name="action_sheet_item_size">17sp</dimen>
 
+    <dimen name="dimen_xsmall">1dp</dimen>
+    <dimen name="dimen_small">3dp</dimen>
+    <dimen name="dimen_medium">5dp</dimen>
+    <dimen name="dimen_large">10dp</dimen>
     <dimen name="dimen_xlarge">20dp</dimen>
     <dimen name="dimen_xxlarge">40dp</dimen>
-    <dimen name="dimen_large">10dp</dimen>
-    <dimen name="dimen_medium">5dp</dimen>
-    <dimen name="dimen_small">3dp</dimen>
-    <dimen name="dimen_xsmall">1dp</dimen>
+    <dimen name="dimen_xxxlarge">80dp</dimen>
 
     <dimen name="timeline_cell_img">45dp</dimen>
     <dimen name="timeline_cell_title">14sp</dimen>

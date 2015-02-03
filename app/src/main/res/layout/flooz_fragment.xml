@@ -24,6 +24,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:padding="5dp"
+                android:layout_marginLeft="@dimen/dimen_medium"
                 android:src="@drawable/nav_account_button"/>
 
             <TextView
@@ -75,7 +76,9 @@
             android:padding="5dp"
             android:scaleType="centerInside"
             android:layout_gravity="center"
-            android:src="@drawable/friends_list"/>
+            android:src="@drawable/friends_list"
+            android:layout_marginRight="@dimen/dimen_medium"
+            />
 
     </RelativeLayout>
 

@@ -53,14 +53,16 @@
                 android:text="@string/EDIT_ACCOUNT_FACEBOOK"
                 android:textSize="@dimen/settings_list_item_size"
                 android:textColor="@android:color/white"
-                android:singleLine="true"/>
+                android:singleLine="true"
+                android:layout_centerVertical="true"/>
 
-            <com.gc.materialdesign.views.Switch
+            <CheckBox
                 android:id="@+id/settings_preferences_fb_toggle"
-                android:layout_width="70dp"
-                android:layout_height="25dp"
-                android:background="@color/blue"
-                android:layout_alignParentRight="true"/>
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="@dimen/dimen_small"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"/>
 
         </RelativeLayout>
 

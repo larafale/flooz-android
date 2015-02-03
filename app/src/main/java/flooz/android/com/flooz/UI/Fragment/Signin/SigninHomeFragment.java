@@ -148,7 +148,7 @@ public class SigninHomeFragment extends SigninBaseFragment {
                 emailIntent.putExtra(Intent.EXTRA_TEXT, "J'ai oublié mon mot de passe. Je souhaite être contacté au " + phoneTextfield.getText().toString() + ".");
 
                 try {
-                    startActivity(Intent.createChooser(emailIntent, "Envoyé un mail..."));
+                    startActivity(Intent.createChooser(emailIntent, "Envoyer un mail..."));
                 } catch (android.content.ActivityNotFoundException ex) {
 
                 }

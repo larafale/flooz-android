@@ -87,13 +87,27 @@ public class NotificationFragment extends HomeBaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 FLNotification notif = (FLNotification)listAdapter.getItem(position);
+                notif.isRead = true;
                 for (int i = 0; i < notif.triggers.size(); i++) {
                     FloozRestClient.getInstance().handleTrigger(notif.triggers.get(i));
                 }
+                listAdapter.notifyDataSetChanged();
             }
         });
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        FloozRestClient.getInstance().updateNotificationFeed(null);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        FloozRestClient.getInstance().updateNotificationFeed(null);
     }
 
     @Override

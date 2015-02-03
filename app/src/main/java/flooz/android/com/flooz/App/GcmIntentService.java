@@ -70,7 +70,7 @@ public class GcmIntentService extends IntentService {
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setCategory(NotificationCompat.CATEGORY_SOCIAL);
 
-        if (!FloozApplication.appInForeground)
+//        if (!FloozApplication.appInForeground)
             this.notificationManager.notify(NOTIFICATION_ID, builder.build());
     }
 }

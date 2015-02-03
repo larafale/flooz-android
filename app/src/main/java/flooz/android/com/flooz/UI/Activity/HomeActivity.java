@@ -114,6 +114,7 @@ public class HomeActivity extends SlidingFragmentActivity implements CameraHostP
                 getSlidingMenu().setSlidingEnabled(false);
             }
             else {
+                FloozRestClient.getInstance().updateCurrentUser(null);
                 getSlidingMenu().showMenu(true);
                 getSlidingMenu().setSlidingEnabled(true);
             }
@@ -215,8 +216,6 @@ public class HomeActivity extends SlidingFragmentActivity implements CameraHostP
         this.imageViewerImage = (ImageView) this.findViewById(R.id.main_image_image);
 
         this.transactionCardContainer = (RelativeLayout) this.findViewById(R.id.main_transac_container);
-
-
 
         this.imageViewerAttacher = new PhotoViewAttacher(this.imageViewerImage);
 
@@ -542,7 +541,7 @@ public class HomeActivity extends SlidingFragmentActivity implements CameraHostP
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-
+                    transactionCardFragment.updateComment();
                 }
 
                 @Override

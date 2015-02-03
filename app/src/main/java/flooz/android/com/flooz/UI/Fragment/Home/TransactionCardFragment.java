@@ -1,7 +1,6 @@
 package flooz.android.com.flooz.UI.Fragment.Home;
 
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -18,6 +17,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.makeramen.RoundedImageView;
@@ -48,6 +48,7 @@ public class TransactionCardFragment extends HomeBaseFragment implements Authent
 
     private FLTransaction transaction = null;
 
+    private ScrollView cardScroll;
     private RelativeLayout cardHeader;
     private ImageView cardHeaderScope;
     private TextView cardHeaderDate;
@@ -99,6 +100,7 @@ public class TransactionCardFragment extends HomeBaseFragment implements Authent
         this.context = inflater2.getContext();
         this.inflater = inflater2;
 
+        this.cardScroll = (ScrollView) view.findViewById(R.id.card_scroll);
         this.cardHeader = (RelativeLayout) view.findViewById(R.id.transac_card_header);
         this.cardHeaderScope = (ImageView) view.findViewById(R.id.transac_card_header_scope);
         this.cardHeaderDate = (TextView) view.findViewById(R.id.transac_card_header_date);
@@ -450,6 +452,20 @@ public class TransactionCardFragment extends HomeBaseFragment implements Authent
                 }
             }
         });
+    }
+
+    public void updateComment() {
+        if (this.insertComment) {
+            this.cardScroll.post(new Runnable() {
+                @Override
+                public void run() {
+                    cardScroll.fullScroll(ScrollView.FOCUS_DOWN);
+                }
+            });
+            this.cardCommentsTextfield.requestFocus();
+            InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(this.cardCommentsTextfield, InputMethodManager.SHOW_IMPLICIT);
+        }
     }
 
     private View createCommentRowView(FLComment comment) {

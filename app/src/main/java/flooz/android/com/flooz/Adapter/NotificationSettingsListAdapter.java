@@ -5,9 +5,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
-
-import com.gc.materialdesign.views.Switch;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -92,6 +92,18 @@ public class NotificationSettingsListAdapter extends BaseAdapter implements Stic
         return (String)this.notificationsText.get(key);
     }
 
+    public String getItemKey(int position) {
+
+        String key;
+
+        if (position < ((HashMap)this.notifications.get("push")).size())
+            key = (String)((HashMap)this.notifications.get("push")).keySet().toArray()[position];
+        else
+            key = (String)((HashMap)this.notifications.get("email")).keySet().toArray()[position - ((HashMap)this.notifications.get("push")).size()];
+
+        return key;
+    }
+
     @Override
     public long getItemId(int position) {
         return 0;
@@ -101,38 +113,33 @@ public class NotificationSettingsListAdapter extends BaseAdapter implements Stic
     public View getView(final int position, View convertView, ViewGroup parent) {
         final ViewHolder holder;
 
-        if (convertView == null) {
-            holder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.settings_notification_row, parent, false);
-            holder.settingName = (TextView) convertView.findViewById(R.id.settings_notification_row_text);
-            holder.settingSwitch = (Switch) convertView.findViewById(R.id.settings_notification_row_toggle);
+        holder = new ViewHolder();
+        convertView = inflater.inflate(R.layout.settings_notification_row, parent, false);
+        holder.settingName = (TextView) convertView.findViewById(R.id.settings_notification_row_text);
+        holder.settingSwitch = (CheckBox) convertView.findViewById(R.id.settings_notification_row_toggle);
 
-            holder.settingName.setTypeface(CustomFonts.customTitleExtraLight(this.context));
+        holder.settingName.setTypeface(CustomFonts.customTitleExtraLight(this.context));
 
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
+        convertView.setTag(holder);
 
-        holder.settingName.setText(getItemTitle(position));
-        holder.settingSwitch.setChecked(getItem(position));
+        final String itemKey = getItemKey(position);
+        String itemTitle = getItemTitle(position);
+        Boolean itemValue = getItem(position);
 
-        holder.settingSwitch.setOncheckListener(new Switch.OnCheckListener() {
+        holder.settingName.setText(itemTitle);
+        holder.settingSwitch.setChecked(itemValue);
+
+        holder.settingSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheck(boolean check) {
-                String key;
-
-                if (position < ((HashMap)notifications.get("push")).size()) {
-                    key = (String) ((HashMap) notifications.get("push")).keySet().toArray()[position];
-                    ((HashMap) notifications.get("push")).put(key, check);
-                    FloozRestClient.getInstance().updateNotificationSettings("push", key, check, null);
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (position < ((HashMap) notifications.get("push")).size()) {
+                    ((HashMap) notifications.get("push")).put(itemKey, isChecked);
+                    FloozRestClient.getInstance().updateNotificationSettings("push", itemKey, isChecked, null);
+                } else {
+                    ((HashMap) notifications.get("email")).put(itemKey, isChecked);
+                    FloozRestClient.getInstance().updateNotificationSettings("email", itemKey, isChecked, null);
                 }
-                else {
-                    key = (String) ((HashMap) notifications.get("email")).keySet().toArray()[position - ((HashMap) notifications.get("push")).size()];
-                    ((HashMap) notifications.get("email")).put(key, check);
-                    FloozRestClient.getInstance().updateNotificationSettings("email", key, check, null);
-                }
-            notifyDataSetChanged();
+                notifyDataSetChanged();
             }
         });
 
@@ -145,6 +152,6 @@ public class NotificationSettingsListAdapter extends BaseAdapter implements Stic
 
     class ViewHolder {
         TextView settingName;
-        Switch settingSwitch;
+        CheckBox settingSwitch;
     }
 }

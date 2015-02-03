@@ -166,6 +166,12 @@ public class ProfileSettingsFragment extends HomeBaseFragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        this.updateList();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         this.updateList();
