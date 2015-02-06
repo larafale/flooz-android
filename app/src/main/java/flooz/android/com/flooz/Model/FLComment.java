@@ -8,6 +8,9 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
 
+import flooz.android.com.flooz.App.FloozApplication;
+import flooz.android.com.flooz.Utils.MomentDate;
+
 /**
  * Created by Flooz on 9/9/14.
  */
@@ -15,7 +18,7 @@ public class FLComment {
 
     public FLUser user;
     public String content;
-    public Date date;
+    public MomentDate date;
     public String when;
     public String dateText;
 
@@ -28,11 +31,9 @@ public class FLComment {
         try {
             this.content = json.getString("comment");
             this.user = new FLUser(json);
+            this.user.userId = json.getString("userId");
 
-            SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'");
-            dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
-
-            this.date = dateFormatter.parse(json.getString("cAt"));
+            this.date = new MomentDate(FloozApplication.getAppContext(), json.getString("cAt"));
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -40,28 +41,4 @@ public class FLComment {
             e.printStackTrace();
         }
     }
-
-//    {
-//        static NSDateFormatter *dateFormatter;
-//        if(!dateFormatter){
-//            dateFormatter = [NSDateFormatter new];
-//            [dateFormatter setTimeZone:[NSTimeZone timeZoneWithName:@"UTC"]];
-//            [dateFormatter setDateFormat:@"dd' 'MMMM', 'HH':'mm"];
-//            [dateFormatter setDateStyle:NSDateFormatterShortStyle];
-//            [dateFormatter setTimeStyle:NSDateFormatterShortStyle];
-//            [dateFormatter setDoesRelativeDateFormatting:YES];
-//
-//        }
-//        NSTimeZone *currentTimeZone = [NSTimeZone localTimeZone];
-//        NSTimeZone *utcTimeZone = [NSTimeZone timeZoneWithAbbreviation:@"UTC"];
-//        NSInteger currentGMTOffset = [currentTimeZone secondsFromGMTForDate:_date];
-//        NSInteger gmtOffset = [utcTimeZone secondsFromGMTForDate:_date];
-//        NSTimeInterval gmtInterval = currentGMTOffset - gmtOffset;
-//        NSDate *destinationDate = [[NSDate alloc] initWithTimeInterval:gmtInterval sinceDate:_date];
-//
-//        _dateText = [dateFormatter stringFromDate: destinationDate];
-//    }
-//
-//    _when = [FLHelper formatedDateFromNow:_date];
-
 }

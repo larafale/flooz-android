@@ -46,9 +46,9 @@ public class SelectUserListAdapter extends BaseAdapter implements StickyListHead
         this.inflater = LayoutInflater.from(context2);
         this.context = context2;
 
-        this.searchPhoneContacts = new ArrayList<FLUser>(0);
-        this.searchFloozUsers = new ArrayList<FLUser>(0);
-        this.searchFloozFriends = new ArrayList<FLUser>(0);
+        this.searchPhoneContacts = new ArrayList<>(0);
+        this.searchFloozUsers = new ArrayList<>(0);
+        this.searchFloozFriends = new ArrayList<>(0);
 
         this.phoneContactList = ContactsManager.getContactsList();
         this.recentFriendList = FloozRestClient.getInstance().currentUser.friendsRecent;
@@ -59,11 +59,11 @@ public class SelectUserListAdapter extends BaseAdapter implements StickyListHead
     public int getCount() {
         if (!this.isSearchActive)
             return this.recentFriendList.size() + this.friendList.size() + this.phoneContactList.size();
-        return this.searchFloozUsers.size() + this.searchFloozFriends.size() + this.searchPhoneContacts.size();
+        return this.searchFloozFriends.size() + this.searchFloozUsers.size() + this.searchPhoneContacts.size();
     }
 
     @Override
-    public Object getItem(int position) {
+    public FLUser getItem(int position) {
         if (!this.isSearchActive) {
             if (position < this.recentFriendList.size())
                 return this.recentFriendList.get(position);
@@ -73,10 +73,10 @@ public class SelectUserListAdapter extends BaseAdapter implements StickyListHead
                 return this.phoneContactList.get(position - this.recentFriendList.size() - this.friendList.size());
         }
         else {
-            if (position < this.searchFloozUsers.size())
-                return this.searchFloozUsers.get(position);
-            else if (position >= this.searchFloozUsers.size() && position < this.searchFloozUsers.size() + this.searchFloozFriends.size())
-                return this.searchFloozFriends.get(position - this.searchFloozUsers.size());
+            if (position < this.searchFloozFriends.size())
+                return this.searchFloozFriends.get(position);
+            else if (position >= this.searchFloozFriends.size() && position < this.searchFloozUsers.size() + this.searchFloozFriends.size())
+                return this.searchFloozUsers.get(position - this.searchFloozFriends.size());
             else
                 return this.searchPhoneContacts.get(position - this.searchFloozUsers.size() - this.searchFloozFriends.size());
         }
@@ -109,16 +109,18 @@ public class SelectUserListAdapter extends BaseAdapter implements StickyListHead
         FLUser user = (FLUser)this.getItem(position);
 
         holder.fullname.setText(user.fullname);
-        holder.username.setText("@" + user.username);
+        if (user.userKind == FLUser.UserKind.PhoneUser)
+            holder.username.setText(user.phone);
+        else
+            holder.username.setText("@" + user.username);
 
+        holder.pic.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
         if (user.avatarURL != null && !user.avatarURL.isEmpty()) {
             if (user.userKind == FLUser.UserKind.FloozUser)
                 ImageLoader.getInstance().displayImage(user.avatarURL, holder.pic);
             else
                 holder.pic.setImageURI(Uri.parse(user.avatarURL));
         }
-        else
-            holder.pic.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
 
         return convertView;
     }
@@ -148,10 +150,10 @@ public class SelectUserListAdapter extends BaseAdapter implements StickyListHead
                 holder.text.setText(this.context.getResources().getString(R.string.FRIEND_PICKER_ADDRESS_BOOK));
         }
         else {
-            if (position < this.searchFloozUsers.size())
-                holder.text.setText(this.context.getResources().getString(R.string.FRIEND_PCIKER_SELECTION_CELL));
-            else if (position >= this.searchFloozUsers.size() && position < this.searchFloozUsers.size() + this.searchFloozFriends.size())
+            if (position < this.searchFloozFriends.size())
                 holder.text.setText(this.context.getResources().getString(R.string.FRIEND_PICKER_FRIENDS));
+            else if (position >= this.searchFloozFriends.size() && position < this.searchFloozFriends.size() + this.searchFloozUsers.size())
+                holder.text.setText(this.context.getResources().getString(R.string.FRIEND_PCIKER_SELECTION_CELL));
             else
                 holder.text.setText(this.context.getResources().getString(R.string.FRIEND_PICKER_ADDRESS_BOOK));
         }
@@ -163,19 +165,19 @@ public class SelectUserListAdapter extends BaseAdapter implements StickyListHead
     public long getHeaderId(int position) {
         if (!this.isSearchActive) {
             if (position < this.recentFriendList.size())
-                return 0;
+                return FLUser.FLUserSelectedCanal.RecentCanal.ordinal();
             else if (position >= this.recentFriendList.size() && position < this.recentFriendList.size() + this.friendList.size())
-                return 1;
+                return FLUser.FLUserSelectedCanal.FriendsCanal.ordinal();
             else
-                return 2;
+                return FLUser.FLUserSelectedCanal.ContactCanal.ordinal();
         }
         else {
-            if (position < this.searchFloozUsers.size())
-                return 0;
-            else if (position >= this.searchFloozUsers.size() && position < this.searchFloozUsers.size() + this.searchFloozFriends.size())
-                return 1;
+            if (position < this.searchFloozFriends.size())
+                return FLUser.FLUserSelectedCanal.FriendsCanal.ordinal();
+            else if (position >= this.searchFloozFriends.size() && position < this.searchFloozFriends.size() + this.searchFloozUsers.size())
+                return FLUser.FLUserSelectedCanal.SearchCanal.ordinal();
             else
-                return 2;
+                return FLUser.FLUserSelectedCanal.ContactCanal.ordinal();
         }
     }
 
@@ -207,7 +209,7 @@ public class SelectUserListAdapter extends BaseAdapter implements StickyListHead
             FloozRestClient.getInstance().searchUser(searchString, true, new FloozHttpResponseHandler() {
                 @Override
                 public void success(Object response) {
-                    searchFloozUsers = new ArrayList<FLUser>((List<FLUser>)response);
+                    searchFloozUsers = new ArrayList<>((List<FLUser>)response);
                     if (isSearchActive)
                         notifyDataSetChanged();
                 }

@@ -214,7 +214,7 @@ public class InviteFragment extends HomeBaseFragment {
                 sendIntent.putExtra(Intent.EXTRA_TEXT, _mailData.optString("content"));
                 sendIntent.putExtra(Intent.EXTRA_SUBJECT, _mailData.optString("title"));
                 if (sendIntent.resolveActivity(parentActivity.getPackageManager()) != null) {
-                    parentActivity.startActivity(Intent.createChooser(sendIntent, "Partagé par mail..."));
+                    parentActivity.startActivity(Intent.createChooser(sendIntent, "Partager par mail..."));
                 }
             }
         });

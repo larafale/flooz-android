@@ -60,10 +60,20 @@ public class FLUser
     public JSONObject json;
 
     public UserKind userKind;
+    public FLUserSelectedCanal selectedCanal;
 
     public enum UserKind {
         FloozUser,
         PhoneUser
+    }
+
+    public enum FLUserSelectedCanal {
+        RecentCanal,
+        SuggestionCanal,
+        FriendsCanal,
+        ContactCanal,
+        SearchCanal,
+        TimelineCanal
     }
 
     public FLUser(JSONObject data)
@@ -192,6 +202,9 @@ public class FLUser
             if (this.json.has("cards") && this.json.getJSONArray("cards").length() > 0)
                 this.creditCard = new FLCreditCard(this.json.getJSONArray("cards").getJSONObject(0));
 
+            if (this.json.has("cactus") && this.json.optBoolean("cactus"))
+                this.username = null;
+
         } catch (JSONException e) {
             e.printStackTrace();
         }
@@ -212,14 +225,38 @@ public class FLUser
     public static String formattedBirthdate(String birthdate) {
         String[] tmp = birthdate.split("/");
 
-        return tmp[2] + "-" + tmp[1] + "-" + tmp[0];
+        if (tmp.length == 3)
+            return tmp[2] + "-" + tmp[1] + "-" + tmp[0];
+        else
+            return birthdate;
     }
 
     public static String formattedBirthdateFromFacebook(String birthdate) {
         String[] tmp = birthdate.split("/");
 
-        return tmp[1] + "/" + tmp[0] + "/" + tmp[2];
+        if (tmp.length == 3)
+            return tmp[1] + "/" + tmp[0] + "/" + tmp[2];
+        else
+            return birthdate;
+    }
 
+    public String getSelectedCanal() {
+        switch (this.selectedCanal) {
+            case RecentCanal:
+                return "recent";
+            case SuggestionCanal:
+                return "suggestion";
+            case FriendsCanal:
+                return "friends";
+            case SearchCanal:
+                return "search";
+            case TimelineCanal:
+                return "timeline";
+            case ContactCanal:
+                return "contact";
+            default:
+                return "";
+        }
     }
 
     public Map<String, Object> getParamsForStep(Boolean last) {

@@ -1,50 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/layout"
-    android:layout_width="wrap_content"
+    android:layout_width="fill_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
-    android:background="@drawable/alert_warning_background"
-    android:gravity="center_vertical"
-    android:paddingTop="@dimen/dimen_large"
-    android:paddingBottom="@dimen/dimen_large"
-    android:paddingLeft="@dimen/dimen_xlarge"
-    android:paddingRight="@dimen/dimen_xlarge">
-
-    <ImageView
-        android:id="@+id/alert_img"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/alert_icon"
-        android:layout_marginBottom="4dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginTop="4dp"
-        android:src="@drawable/alert_warning" />
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingRight="@dimen/dimen_large"
+    android:paddingLeft="@dimen/dimen_large">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:id="@+id/layout"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_marginLeft="@dimen/dimen_large"
-        android:gravity="center_vertical">
+        android:orientation="horizontal"
+        android:background="@drawable/alert_warning_background"
+        android:gravity="center_vertical"
+        android:paddingTop="@dimen/dimen_large"
+        android:paddingBottom="@dimen/dimen_large"
+        android:paddingLeft="@dimen/dimen_xlarge"
+        android:paddingRight="@dimen/dimen_xlarge">
 
-        <TextView
-            android:id="@+id/alert_title"
+        <ImageView
+            android:id="@+id/alert_img"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/alert_icon"
+            android:layout_marginBottom="4dp"
+            android:layout_marginLeft="4dp"
+            android:layout_marginTop="4dp"
+            android:src="@drawable/alert_warning" />
+
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:singleLine="true"
-            android:textColor="@android:color/white"
-            android:text="Success"
-            android:textSize="@dimen/alert_title"
-            android:textStyle="bold"/>
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/dimen_large"
+            android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/alert_content"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:text="Success"
-            android:textSize="@dimen/alert_content"/>
+            <TextView
+                android:id="@+id/alert_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:singleLine="true"
+                android:textColor="@android:color/white"
+                android:text="Success"
+                android:textSize="@dimen/alert_title"
+                android:textStyle="bold"/>
+
+            <TextView
+                android:id="@+id/alert_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:text="Success"
+                android:textSize="@dimen/alert_content"/>
+
+        </LinearLayout>
 
     </LinearLayout>
-
 </LinearLayout>

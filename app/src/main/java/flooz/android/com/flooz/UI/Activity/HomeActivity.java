@@ -183,15 +183,12 @@ public class HomeActivity extends SlidingFragmentActivity implements CameraHostP
                     @Override
                     public void run() {
                         if (floozApp.getCurrentActivity() instanceof HomeActivity) {
-                            if (FloozRestClient.getInstance().currentUser != null
-                                    && FloozRestClient.getInstance().currentUser.userId.contentEquals(intent.getExtras().getString("userId"))) {
-                                for (int i = 0; i < finalJsonObject.length(); i++) {
-                                    FloozRestClient.getInstance().handleTrigger(new FLTrigger(finalJsonObject.optJSONObject(i)));
-                                }
+                            for (int i = 0; i < finalJsonObject.length(); i++) {
+                                FloozRestClient.getInstance().handleTrigger(new FLTrigger(finalJsonObject.optJSONObject(i)));
                             }
                         }
                     }
-                }, 300);
+                }, 500);
             }
         }
 
@@ -350,6 +347,14 @@ public class HomeActivity extends SlidingFragmentActivity implements CameraHostP
 
     public void pushMainFragment(String fragmentId) {
         if (this.contentFragments.containsKey(fragmentId)) {
+            HomeBaseFragment fragment = this.contentFragments.get(fragmentId);
+
+            if (this.fragmentHistory.contains(fragment)) {
+                if (this.fragmentHistory.indexOf(fragment) == this.fragmentHistory.size() - 1)
+                    this.changeMainFragment(fragmentId);
+                return;
+            }
+
             if (this.imageViewer.getVisibility() == View.VISIBLE) {
                 this.imageViewerClose.performClick();
             }
@@ -368,7 +373,6 @@ public class HomeActivity extends SlidingFragmentActivity implements CameraHostP
             this.getSlidingMenu().showContent(true);
             this.getSlidingMenu().setSlidingEnabled(false);
 
-            HomeBaseFragment fragment = this.contentFragments.get(fragmentId);
             this.fragmentHistory.add(fragment);
 
             FragmentTransaction ft = this.fragmentManager.beginTransaction();
@@ -381,6 +385,14 @@ public class HomeActivity extends SlidingFragmentActivity implements CameraHostP
 
     public void pushMainFragment(String fragmentId, int animIn, int animOut) {
         if (this.contentFragments.containsKey(fragmentId)) {
+            HomeBaseFragment fragment = this.contentFragments.get(fragmentId);
+
+            if (this.fragmentHistory.contains(fragment)) {
+                if (this.fragmentHistory.indexOf(fragment) == this.fragmentHistory.size() - 1)
+                    this.changeMainFragment(fragmentId, animIn, animOut);
+                return;
+            }
+
             if (this.imageViewer.getVisibility() == View.VISIBLE) {
                 this.imageViewerClose.performClick();
             }
@@ -400,7 +412,6 @@ public class HomeActivity extends SlidingFragmentActivity implements CameraHostP
             this.getSlidingMenu().showContent(true);
             this.getSlidingMenu().setSlidingEnabled(false);
 
-            HomeBaseFragment fragment = this.contentFragments.get(fragmentId);
             this.fragmentHistory.add(fragment);
 
             FragmentTransaction ft = this.fragmentManager.beginTransaction();

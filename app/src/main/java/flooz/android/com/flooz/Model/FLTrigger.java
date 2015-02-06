@@ -63,6 +63,9 @@ public class FLTrigger {
     }
 
     public static FLTriggerType triggerTypeParamToEnum(String param) {
+        if (param == null || param.isEmpty())
+            return TriggerNone;
+
         if (param.contentEquals("timeline:reload"))
             return TriggerReloadTimeline;
         else if (param.contentEquals("line:show"))

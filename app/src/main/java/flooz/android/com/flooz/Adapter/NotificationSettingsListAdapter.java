@@ -74,10 +74,16 @@ public class NotificationSettingsListAdapter extends BaseAdapter implements Stic
 
     @Override
     public Boolean getItem(int position) {
-        if (position < ((HashMap)this.notifications.get("push")).size())
-            return (Boolean)((HashMap)this.notifications.get("push")).values().toArray()[position];
-        else
-            return (Boolean)((HashMap)this.notifications.get("email")).values().toArray()[position - ((HashMap)this.notifications.get("push")).size()];
+        if (position < ((HashMap)this.notifications.get("push")).size()) {
+            HashMap<String, Boolean> map = (HashMap<String, Boolean>)this.notifications.get("push");
+            Object[] values = map.values().toArray();
+            return (Boolean)values[position];
+        }
+        else {
+            HashMap<String, Boolean> map = (HashMap<String, Boolean>)this.notifications.get("email");
+            Object[] values = map.values().toArray();
+            return (Boolean)values[position - ((HashMap) this.notifications.get("push")).size()];
+        }
     }
 
     public String getItemTitle(int position) {

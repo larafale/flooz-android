@@ -308,6 +308,12 @@ public class CreditCardSettingsFragment extends HomeBaseFragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        this.reloadCreditCard();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         this.reloadCreditCard();

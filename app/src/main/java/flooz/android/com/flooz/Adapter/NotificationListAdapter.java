@@ -91,10 +91,9 @@ public class NotificationListAdapter extends BaseAdapter {
 
         holder.content.setText(notif.content);
 
+        holder.img.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
         if (notif.user.avatarURL != null && !notif.user.avatarURL.isEmpty())
             ImageLoader.getInstance().displayImage(notif.user.avatarURL, holder.img);
-        else
-            holder.img.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
 
         holder.date.setText(notif.dateText);
 

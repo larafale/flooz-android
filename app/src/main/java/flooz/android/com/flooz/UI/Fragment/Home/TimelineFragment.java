@@ -164,9 +164,6 @@ public class TimelineFragment extends Fragment implements TimelineListAdapter.Ti
     }
 
     public void refreshTransactions() {
-//        if (!this.transactions.isEmpty())
-//            this.timelineAdapter.notifyDataSetChanged();
-
         FloozRestClient.getInstance().timeline(this.currentScope, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {

@@ -117,7 +117,7 @@ public class SigninCodeFragment extends SigninBaseFragment  implements NumericKe
 
                     @Override
                     public void failure(int statusCode, FLError error) {
-                        Log.d("Secure Code", "" + statusCode);
+
                     }
                 });
             }

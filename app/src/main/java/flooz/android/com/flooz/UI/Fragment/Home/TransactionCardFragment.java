@@ -4,7 +4,11 @@ import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
 import android.text.format.DateFormat;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,10 +29,15 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Locale;
+import java.util.TimeZone;
+
 import flooz.android.com.flooz.App.FloozApplication;
 import flooz.android.com.flooz.Model.FLComment;
 import flooz.android.com.flooz.Model.FLError;
 import flooz.android.com.flooz.Model.FLTransaction;
+import flooz.android.com.flooz.Model.FLUser;
 import flooz.android.com.flooz.Network.FloozHttpResponseHandler;
 import flooz.android.com.flooz.Network.FloozRestClient;
 import flooz.android.com.flooz.R;
@@ -64,9 +73,7 @@ public class TransactionCardFragment extends HomeBaseFragment implements Authent
     private LinearLayout cardActionBar;
     private TextView cardActionBarDecline;
     private TextView cardActionBarAccept;
-    private TextView card3dText1;
-    private TextView card3dText2;
-    private TextView card3dText3;
+    private TextView card3dText;
     private TextView cardDesc;
     private LoadingImageView cardPic;
     private LinearLayout cardLikesContainer;
@@ -116,9 +123,7 @@ public class TransactionCardFragment extends HomeBaseFragment implements Authent
         this.cardActionBar = (LinearLayout) view.findViewById(R.id.transac_card_actionBar);
         this.cardActionBarDecline = (TextView) view.findViewById(R.id.transac_card_actionBar_decline);
         this.cardActionBarAccept = (TextView) view.findViewById(R.id.transac_card_actionBar_accept);
-        this.card3dText1 = (TextView) view.findViewById(R.id.transac_card_3dText_1);
-        this.card3dText2 = (TextView) view.findViewById(R.id.transac_card_3dText_2);
-        this.card3dText3 = (TextView) view.findViewById(R.id.transac_card_3dText_3);
+        this.card3dText = (TextView) view.findViewById(R.id.transac_card_3dText);
         this.cardDesc = (TextView) view.findViewById(R.id.transac_card_desc);
         this.cardPic = (LoadingImageView) view.findViewById(R.id.transac_card_pic);
         this.cardLikesContainer = (LinearLayout) view.findViewById(R.id.transac_card_likes_container);
@@ -139,14 +144,12 @@ public class TransactionCardFragment extends HomeBaseFragment implements Authent
         this.cardHeaderDate.setTypeface(CustomFonts.customTitleExtraLight(this.inflater.getContext()));
         this.cardFromUsername.setTypeface(CustomFonts.customTitleExtraLight(this.inflater.getContext()), Typeface.BOLD);
         this.cardFromFullname.setTypeface(CustomFonts.customTitleExtraLight(this.inflater.getContext()));
-        this.cardToUsername.setTypeface(CustomFonts.customTitleExtraLight(this.inflater.getContext()));
+        this.cardToUsername.setTypeface(CustomFonts.customTitleExtraLight(this.inflater.getContext()), Typeface.BOLD);
         this.cardToFullname.setTypeface(CustomFonts.customTitleExtraLight(this.inflater.getContext()));
         this.cardValue.setTypeface(CustomFonts.customTitleExtraLight(this.inflater.getContext()), Typeface.BOLD);
         this.cardActionBarDecline.setTypeface(CustomFonts.customTitleLight(this.inflater.getContext()), Typeface.BOLD);
         this.cardActionBarAccept.setTypeface(CustomFonts.customTitleLight(this.inflater.getContext()), Typeface.BOLD);
-        this.card3dText1.setTypeface(CustomFonts.customContentRegular(this.inflater.getContext()), Typeface.BOLD);
-        this.card3dText2.setTypeface(CustomFonts.customContentRegular(this.inflater.getContext()));
-        this.card3dText3.setTypeface(CustomFonts.customContentRegular(this.inflater.getContext()), Typeface.BOLD);
+        this.card3dText.setTypeface(CustomFonts.customContentRegular(this.inflater.getContext()));
         this.cardDesc.setTypeface(CustomFonts.customContentLight(this.inflater.getContext()));
         this.cardLikesText.setTypeface(CustomFonts.customContentRegular(this.inflater.getContext()));
         this.cardCommentsNumber.setTypeface(CustomFonts.customContentRegular(this.inflater.getContext()));
@@ -211,6 +214,7 @@ public class TransactionCardFragment extends HomeBaseFragment implements Authent
         this.cardFromPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                transaction.from.selectedCanal = FLUser.FLUserSelectedCanal.TimelineCanal;
                 FloozApplication.getInstance().showUserActionMenu(transaction.from);
             }
         });
@@ -218,6 +222,7 @@ public class TransactionCardFragment extends HomeBaseFragment implements Authent
         this.cardToPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                transaction.to.selectedCanal = FLUser.FLUserSelectedCanal.TimelineCanal;
                 FloozApplication.getInstance().showUserActionMenu(transaction.to);
             }
         });
@@ -319,21 +324,41 @@ public class TransactionCardFragment extends HomeBaseFragment implements Authent
 
         this.cardHeaderScope.setImageDrawable(FLTransaction.transactionScopeToImage(this.transaction.scope));
 
-        this.cardHeaderDate.setText(DateFormat.format("dd MMM à hh:mm", this.transaction.date.getDate()));
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM à HH:mm", Locale.FRANCE);
+        sdf.setTimeZone(TimeZone.getTimeZone("GMT+1"));
 
+        this.cardHeaderDate.setText(sdf.format(this.transaction.date.getDate()));
+
+        this.cardFromPic.setImageDrawable(null);
         if (this.transaction.from.avatarURL != null && !this.transaction.from.avatarURL.isEmpty())
             ImageLoader.getInstance().displayImage(this.transaction.from.avatarURL, this.cardFromPic);
         else
             this.cardFromPic.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
 
+        this.cardToPic.setImageDrawable(null);
         if (this.transaction.to.avatarURL != null && !this.transaction.to.avatarURL.isEmpty())
             ImageLoader.getInstance().displayImage(this.transaction.to.avatarURL, this.cardToPic);
         else
             this.cardToPic.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
 
-        this.cardFromUsername.setText("@" + this.transaction.from.username);
+        if (this.transaction.from.username != null) {
+            this.cardFromUsername.setVisibility(View.VISIBLE);
+            this.cardFromUsername.setText("@" + this.transaction.from.username);
+        }
+        else {
+            this.cardFromUsername.setVisibility(View.INVISIBLE);
+        }
+
         this.cardFromFullname.setText(this.transaction.from.fullname);
-        this.cardToUsername.setText("@" + this.transaction.to.username);
+
+        if (this.transaction.from.username != null) {
+            this.cardToUsername.setVisibility(View.VISIBLE);
+            this.cardToUsername.setText("@" + this.transaction.to.username);
+        }
+        else {
+            this.cardToUsername.setVisibility(View.INVISIBLE);
+        }
+
         this.cardToFullname.setText(this.transaction.to.fullname);
 
         if (this.transaction.amountText != null && !this.transaction.amountText.isEmpty()) {
@@ -344,18 +369,38 @@ public class TransactionCardFragment extends HomeBaseFragment implements Authent
             this.cardValue.setText("");
             this.cardValue.setVisibility(View.GONE);
         }
+
         if (this.transaction.isAcceptable || this.transaction.isCancelable) {
             this.cardActionBar.setVisibility(View.VISIBLE);
-            this.cardActionBarAccept.setText(this.context.getResources().getString(R.string.GLOBAL_PAY) + " " + Math.abs(this.transaction.amount.floatValue()) + this.context.getResources().getString(R.string.GLOBAL_EURO))
-            ;
+            this.cardActionBarAccept.setText(this.context.getResources().getString(R.string.GLOBAL_PAY) + " " + Math.abs(this.transaction.amount.floatValue()) + this.context.getResources().getString(R.string.GLOBAL_EURO));
         }
         else {
             this.cardActionBar.setVisibility(View.GONE);
         }
 
-        this.card3dText1.setText(this.transaction.text3d.get(0).toString());
-        this.card3dText2.setText(this.transaction.text3d.get(1).toString());
-        this.card3dText3.setText(this.transaction.text3d.get(2).toString());
+        final SpannableStringBuilder sb = new SpannableStringBuilder(this.transaction.text3d.get(0).toString() + this.transaction.text3d.get(1).toString() + this.transaction.text3d.get(2).toString());
+
+        final ForegroundColorSpan usernameColor = new ForegroundColorSpan(this.context.getResources().getColor(android.R.color.white));
+        final ForegroundColorSpan username2Color = new ForegroundColorSpan(this.context.getResources().getColor(android.R.color.white));
+        final ForegroundColorSpan textColor = new ForegroundColorSpan(this.context.getResources().getColor(R.color.placeholder));
+        final StyleSpan usernameBold = new StyleSpan(Typeface.BOLD);
+        final StyleSpan username2Bold = new StyleSpan(Typeface.BOLD);
+
+        int pos = 0;
+
+        sb.setSpan(usernameColor, pos, pos + this.transaction.text3d.get(0).toString().length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        sb.setSpan(usernameBold, pos, pos + this.transaction.text3d.get(0).toString().length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+        pos += this.transaction.text3d.get(0).toString().length();
+
+        sb.setSpan(textColor, pos, pos + this.transaction.text3d.get(1).toString().length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+        pos += this.transaction.text3d.get(1).toString().length();
+
+        sb.setSpan(username2Color, pos, pos + this.transaction.text3d.get(2).toString().length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        sb.setSpan(username2Bold, pos, pos + this.transaction.text3d.get(2).toString().length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+        this.card3dText.setText(sb);
 
         this.cardDesc.setText(this.transaction.content);
 
@@ -435,6 +480,29 @@ public class TransactionCardFragment extends HomeBaseFragment implements Authent
                             transaction.social.isCommented = true;
                             transaction.social.commentsCount = transaction.comments.size();
 
+                            if (!transaction.social.likeText.isEmpty() || transaction.social.commentsCount.intValue() > 0) {
+                                cardSocialContainer.setVisibility(View.VISIBLE);
+
+                                if (transaction.social.commentsCount.intValue() > 0) {
+                                    if (transaction.social.commentsCount.intValue() < 10)
+                                        cardCommentsNumber.setText("0" + transaction.social.commentsCount.toString());
+                                    else
+                                        cardCommentsNumber.setText(transaction.social.commentsCount.toString());
+                                    cardCommentsNumberContainer.setVisibility(View.VISIBLE);
+                                } else {
+                                    cardCommentsNumberContainer.setVisibility(View.GONE);
+                                }
+
+                                if (!transaction.social.likeText.isEmpty()) {
+                                    cardLikesText.setText(transaction.social.likeText);
+                                    cardLikesContainer.setVisibility(View.VISIBLE);
+                                } else {
+                                    cardLikesContainer.setVisibility(View.GONE);
+                                }
+                            }
+                            else
+                                cardSocialContainer.setVisibility(View.GONE);
+
                             cardCommentsContainer.addView(createCommentRowView(com));
                         }
 
@@ -468,7 +536,7 @@ public class TransactionCardFragment extends HomeBaseFragment implements Authent
         }
     }
 
-    private View createCommentRowView(FLComment comment) {
+    private View createCommentRowView(final FLComment comment) {
         View commentRow;
         TextView commentText;
         TextView commentInfos;
@@ -489,7 +557,15 @@ public class TransactionCardFragment extends HomeBaseFragment implements Authent
             commentPic.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
 
         commentText.setText(comment.content);
-        commentInfos.setText("@" + comment.user.username + " - " + DateFormat.format("dd MMM à hh:mm", comment.date));
+        commentInfos.setText("@" + comment.user.username + " - " + comment.date.fromNow());
+
+        commentPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                comment.user.selectedCanal = FLUser.FLUserSelectedCanal.TimelineCanal;
+                FloozApplication.getInstance().showUserActionMenu(comment.user);
+            }
+        });
 
         return commentRow;
     }

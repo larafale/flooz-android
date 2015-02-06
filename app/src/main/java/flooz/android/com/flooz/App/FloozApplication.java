@@ -11,6 +11,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
+import android.view.inputmethod.InputMethodManager;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
@@ -205,7 +206,9 @@ public class FloozApplication extends Application
 
         if (this.currentActivity == null && activity != null && activity instanceof HomeActivity) {
             FloozRestClient.getInstance().initializeSockets();
-        } else if (this.currentActivity != null && activity == null && FloozRestClient.getInstance().isSocketConnected) {
+        } else if (this.currentActivity != null && activity == null) {
+            InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(this.getCurrentActivity().getWindow().getDecorView().getRootView().getWindowToken(), 0);
             FloozRestClient.getInstance().closeSockets();
         }
 
@@ -225,7 +228,7 @@ public class FloozApplication extends Application
     private ActionSheetItem.ActionSheetItemClickListener addFriend = new ActionSheetItem.ActionSheetItemClickListener() {
         @Override
         public void onClick() {
-            FloozRestClient.getInstance().sendFriendRequest(userActionMenu.userId, new FloozHttpResponseHandler() {
+            FloozRestClient.getInstance().sendFriendRequest(userActionMenu.userId, userActionMenu.getSelectedCanal(), new FloozHttpResponseHandler() {
                 @Override
                 public void success(Object response) {
                     FloozRestClient.getInstance().updateCurrentUser(null);

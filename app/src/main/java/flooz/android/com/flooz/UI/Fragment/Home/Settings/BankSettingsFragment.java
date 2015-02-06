@@ -1,6 +1,10 @@
 package flooz.android.com.flooz.UI.Fragment.Home.Settings;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -16,12 +20,14 @@ import android.widget.TextView;
 import java.util.HashMap;
 import java.util.Map;
 
+import flooz.android.com.flooz.App.FloozApplication;
 import flooz.android.com.flooz.Model.FLError;
 import flooz.android.com.flooz.Network.FloozHttpResponseHandler;
 import flooz.android.com.flooz.Network.FloozRestClient;
 import flooz.android.com.flooz.R;
 import flooz.android.com.flooz.UI.Fragment.Home.HomeBaseFragment;
 import flooz.android.com.flooz.Utils.CustomFonts;
+import flooz.android.com.flooz.Utils.CustomNotificationIntents;
 
 /**
  * Created by Flooz on 12/15/14.
@@ -33,6 +39,13 @@ public class BankSettingsFragment extends HomeBaseFragment {
     private EditText ibanTextfield;
     private Button saveButton;
 
+    private BroadcastReceiver reloadCurrentUserDataReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            reloadView();
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,6 +54,9 @@ public class BankSettingsFragment extends HomeBaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.settings_bank_fragment, null);
+
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadCurrentUserDataReceiver,
+                CustomNotificationIntents.filterReloadCurrentUser());
 
         this.headerBackButton = (ImageView) view.findViewById(R.id.settings_bank_header_back);
         this.headerTitle = (TextView) view.findViewById(R.id.settings_bank_header_title);
@@ -57,9 +73,7 @@ public class BankSettingsFragment extends HomeBaseFragment {
             }
         });
 
-        if (FloozRestClient.getInstance().currentUser.sepa != null) {
-            this.ibanTextfield.setText((String)FloozRestClient.getInstance().currentUser.sepa.get("iban"));
-        }
+        this.reloadView();
 
         this.ibanTextfield.addTextChangedListener(new TextWatcher() {
             @Override
@@ -128,6 +142,24 @@ public class BankSettingsFragment extends HomeBaseFragment {
         });
 
         return view;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        this.reloadView();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.reloadView();
+    }
+
+    private void reloadView() {
+        if (FloozRestClient.getInstance().currentUser.sepa != null) {
+            this.ibanTextfield.setText((String)FloozRestClient.getInstance().currentUser.sepa.get("iban"));
+        }
     }
 
     @Override

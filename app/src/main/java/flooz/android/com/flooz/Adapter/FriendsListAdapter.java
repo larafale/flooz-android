@@ -30,7 +30,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class FriendsListAdapter extends BaseAdapter implements StickyListHeadersAdapter {
 
-    private Boolean isSearchActive = false;
+    public Boolean isSearchActive = false;
 
     private Context context;
     private LayoutInflater inflater;
@@ -148,12 +148,12 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
             if (position < this.suggestionList.size())
                 holder.text.setText(this.context.getResources().getString(R.string.FRIENDS_FRIENDS_SUGGESTION));
             else if (position >= this.suggestionList.size() && position < this.pendingList.size() + this.suggestionList.size())
-                holder.text.setText(this.context.getResources().getString(R.string.FRIENDS_FRIENDS_REQUEST));
+                holder.text.setText(this.context.getResources().getString(R.string.FRIENDS_FRIENDS_REQUEST) + " (" + this.pendingList.size() + ")");
             else
-                holder.text.setText(this.context.getResources().getString(R.string.FRIENDS_FRIENDS));
+                holder.text.setText(this.context.getResources().getString(R.string.FRIENDS_FRIENDS) + " (" + this.friendList.size() + ")");
         }
         else
-            holder.text.setText(this.context.getResources().getString(R.string.FRIEND_PCIKER_SELECTION_CELL));
+            holder.text.setText(this.context.getResources().getString(R.string.FRIEND_PCIKER_SELECTION_CELL) + " (" + this.searchFloozUsers.size() + ")");
 
         return convertView;
     }
@@ -162,14 +162,14 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
     public long getHeaderId(int i) {
         if (!this.isSearchActive) {
             if (i < this.suggestionList.size())
-                return 0;
+                return FLUser.FLUserSelectedCanal.SuggestionCanal.ordinal();
             else if (i >= this.suggestionList.size() && i < this.pendingList.size() + this.suggestionList.size())
-                return 1;
+                return FLUser.FLUserSelectedCanal.FriendsCanal.ordinal();
             else
-                return 2;
+                return FLUser.FLUserSelectedCanal.FriendsCanal.ordinal();
         }
         else
-            return 0;
+            return FLUser.FLUserSelectedCanal.SearchCanal.ordinal();
     }
 
     @Override
@@ -180,7 +180,7 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
     }
 
     @Override
-    public Object getItem(int i) {
+    public FLUser getItem(int i) {
         if (!this.isSearchActive) {
             if (i < this.suggestionList.size())
                 return this.suggestionList.get(i);
@@ -223,11 +223,9 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
         holder.fullname.setText(user.fullname);
         holder.username.setText("@" + user.username);
 
-        if (user.avatarURL != null && !user.avatarURL.isEmpty()) {
+        holder.pic.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
+        if (user.avatarURL != null && !user.avatarURL.isEmpty())
             ImageLoader.getInstance().displayImage(user.avatarURL, holder.pic);
-        }
-        else
-            holder.pic.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
 
         if (!this.isSearchActive && position < this.suggestionList.size()) {
             holder.button.setImageResource(R.drawable.friends_add);
@@ -238,7 +236,8 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
                 public void onClick(View view) {
                     holder.button.setOnClickListener(null);
                     holder.button.setImageResource(R.drawable.friends_accepted);
-                    FloozRestClient.getInstance().sendFriendRequest(user.userId, new FloozHttpResponseHandler() {
+                    user.selectedCanal = FLUser.FLUserSelectedCanal.SuggestionCanal;
+                    FloozRestClient.getInstance().sendFriendRequest(user.userId, user.getSelectedCanal(), new FloozHttpResponseHandler() {
                         @Override
                         public void success(Object response) {
                             reloadSuggestions();
@@ -267,7 +266,8 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
                 public void onClick(View view) {
                     holder.button.setOnClickListener(null);
                     holder.button.setImageResource(R.drawable.friends_accepted);
-                    FloozRestClient.getInstance().sendFriendRequest(user.userId, new FloozHttpResponseHandler() {
+                    user.selectedCanal = FLUser.FLUserSelectedCanal.SearchCanal;
+                    FloozRestClient.getInstance().sendFriendRequest(user.userId, user.getSelectedCanal(), new FloozHttpResponseHandler() {
                         @Override
                         public void success(Object response) {
                             FloozRestClient.getInstance().updateCurrentUser(null);

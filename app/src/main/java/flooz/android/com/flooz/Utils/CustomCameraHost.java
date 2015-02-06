@@ -3,12 +3,10 @@ package flooz.android.com.flooz.Utils;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.hardware.Camera;
 
 import com.commonsware.cwac.camera.PictureTransaction;
 import com.commonsware.cwac.camera.SimpleCameraHost;
 
-import java.util.List;
 
 /**
  * Created by Flooz on 10/6/14.
@@ -40,13 +38,18 @@ public class CustomCameraHost extends SimpleCameraHost {
     }
 
     @Override
+    public boolean useSingleShotMode() {
+        return true;
+    }
+
+    @Override
     public boolean useFrontFacingCamera() {
         return this.useFrontCam;
     }
 
     @Override
     public boolean mirrorFFC() {
-        return this.useFrontCam;
+        return false;
     }
 
     @Override

@@ -84,7 +84,7 @@
 
     <dimen name="card_header_close">50dp</dimen>
     <dimen name="card_header_date">13sp</dimen>
-    <dimen name="card_user_fullname">13sp</dimen>
+    <dimen name="card_user_fullname">12sp</dimen>
     <dimen name="card_3d_text">13sp</dimen>
     <dimen name="card_content">13sp</dimen>
     <dimen name="card_user_username">11sp</dimen>

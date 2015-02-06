@@ -151,18 +151,8 @@ public class FriendsFragment extends HomeBaseFragment implements FriendsListAdap
         this.clearSearchTextfieldButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                listAdapter.stopSearch();
                 searchTextfield.setText("");
-                searchTextfield.clearFocus();
-                clearSearchTextfieldButton.setVisibility(View.GONE);
-                InputMethodManager imm = (InputMethodManager)inflater.getContext().getSystemService(
-                        Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(parentActivity.getWindow().getDecorView().getRootView().getWindowToken(), 0);
-
-                if (listAdapter.getCount() == 0)
-                    backgroundView.setVisibility(View.VISIBLE);
-                else
-                    backgroundView.setVisibility(View.GONE);
+                listAdapter.searchUser("");
             }
         });
 
@@ -174,7 +164,9 @@ public class FriendsFragment extends HomeBaseFragment implements FriendsListAdap
         this.resultList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                FloozApplication.getInstance().showUserActionMenu((FLUser)listAdapter.getItem(position));
+                FLUser user = listAdapter.getItem(position);
+                user.selectedCanal = FLUser.FLUserSelectedCanal.values()[(int)listAdapter.getHeaderId(position)];
+                FloozApplication.getInstance().showUserActionMenu(user);
             }
         });
 
@@ -191,7 +183,7 @@ public class FriendsFragment extends HomeBaseFragment implements FriendsListAdap
 
     @Override
     public void dataReloaded() {
-        if (listAdapter.getCount() == 0)
+        if (listAdapter.getCount() == 0 && !listAdapter.isSearchActive)
             backgroundView.setVisibility(View.VISIBLE);
         else
             backgroundView.setVisibility(View.GONE);

@@ -69,14 +69,14 @@
 
     <string name="CASHOUT_BALANCE">Votre solde Flooz</string>
     <string name="CASHOUT_PLACEHOLDER">Saisir le montant à retirer</string>
-    <string name="CASHOUT_INFO">Virez la totalité ou une partie de votre porte-monnaie sur votre compte bancaire.</string>
-    <string name="CASHOUT_BUTTON">Virez %s</string>
+    <string name="CASHOUT_INFO">Virer la totalité ou une partie de votre porte-monnaie sur votre compte bancaire.</string>
+    <string name="CASHOUT_BUTTON">Virer %s</string>
 
     <string name="NEW_TRANSACTION">Nouveau Flooz</string>
 
     <string name="INFORMATIONS_WHY">Sécurité</string>
-    <string name="INFORMATIONS_TERMS">CGU / CGV</string>
-    <string name="INFORMATIONS_FAQ">FAQ</string>
+    <string name="INFORMATIONS_TERMS">Conditions d\'utilisation</string>
+    <string name="INFORMATIONS_FAQ">Questions / Réponses</string>
     <string name="INFORMATIONS_PREVIEW">Visite Guidée</string>
     <string name="INFORMATIONS_ABOUT">A Propos</string>
     <string name="INFORMATIONS_CONTACT">Contactez-nous</string>
@@ -238,10 +238,10 @@
     <string name="EVENT_SCOPE_PRIVATE">Sur invitation</string>
 
     <string name="FRIENDS_FRIENDS_SEARCH">Rechercher</string>
-    <string name="SEARCH_FRIENDS">Retrouver des amis</string>
+    <string name="SEARCH_FRIENDS">Rechercher des amis</string>
     <string name="FRIENDS_SEARCH_FRIENDS">Recherche des amis sur Flooz</string>
     <string name="FRIENDS_FRIENDS_REQUEST">Demande d’amis</string>
-    <string name="FRIENDS_FRIENDS_SUGGESTION">Vous connaissez peut-être</string>
+    <string name="FRIENDS_FRIENDS_SUGGESTION">Vous connaissez peut-être...</string>
     <string name="FRIENDS_FRIENDS">Mes amis</string>
 
     <string name="FRIEND_PIKER_PLACEHOLDER">Pseudo ou 06</string>
@@ -280,7 +280,7 @@
     <string name="SECORE_CODE_TEXT_CURRENT">Entrez votre code secret :</string>
     <string name="SECORE_CODE_TEXT_OLD">Entrez votre ancien code :</string>
     <string name="SECORE_CODE_TEXT_NEW">Entrez votre nouveau code :</string>
-    <string name="SECORE_CODE_TEXT_CONFIRM">Confirmez votre nouveau code:</string>
+    <string name="SECORE_CODE_TEXT_CONFIRM">Confirmez votre nouveau code :</string>
     <string name="SECORE_CODE_TEXT_LOGIN">Identifiez vous pour réinitialiser votre code</string>
     <string name="SECURE_CODE_FORGOT">Code oublié ?</string>
     <string name="SECORE_CODE_CHOOSE">Choisissez votre code secret</string>
@@ -288,7 +288,7 @@
 
     <string name="DOCUMENTS_CARD_ID_RECTO">Carte d’identité (Recto)</string>
     <string name="DOCUMENTS_CARD_ID_VERSO">Carte d’identité (Verso)</string>
-    <string name="DOCUMENTS_HOME">Justificatif de domicile</string>
+    <string name="DOCUMENTS_HOME">Justificatif de domicile (&lt; 3 mois)</string>
 
     <string name="INVITE_CODE_TEXT">Offrez à vos amis la possibilité\nd\'accéder à l\'application !</string>
     <string name="INVITE_CODE_CODE">Votre code</string>
@@ -366,6 +366,9 @@
 
     <string name="SIGNUP_FRIENDS_MESSAGE">Pour envoyer de l\'argent à vos amis, Flooz a besoin d\'accéder à votre carnet de contact.</string>
 
+    <string name="POPUP_WALLET_TITLE">Ceci est votre porte-monnaie.</string>
+    <string name="POPUP_WALLET_MSG">Quand vous payez, Flooz utilise votre porte-monnaie si vous disposez des fonds suffisants pour couvrir la totalité du paiement, sinon, c\'est votre CB qui sera utilisée.</string>
+
     <string name="Send_Button_Mobile">Suivant</string>
     <string name="Invite_Friends_Button">Inviter</string>
     <string name="ALERT_CONTACT_DENIES_ACCESS">Vous n\'avez pas autorisé à lire les contacts!\nVous passez directement à l\'étape suivante.</string>
@@ -376,7 +379,7 @@
     <string name="CONTACT_PICKER_FLOOZ">Déjà sur Flooz</string>
 
     <string name="textmotdepasse">6 caractères minimum</string>
-    <string name="Invite_Friends_Message_SMS">Prends cette appli elle est vraiment top pour s\'échanger de l\'argent http://flooz.me/download utilises ce code pour l\'inscription: </string>
+    <string name="Invite_Friends_Message_SMS">Prends cette appli elle est vraiment top pour s\'échanger de l\'argent http://flooz.me/download utilises ce code pour l\'inscription : </string>
 
     <string name="SECURE_LOGIN_TITLE">Sécurité</string>
     <string name="CODE_INVITATION_TITLE">Code d\'invitation</string>

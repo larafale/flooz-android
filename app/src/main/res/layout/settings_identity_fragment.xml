@@ -40,28 +40,19 @@
         android:paddingRight="@dimen/dimen_xlarge"
         android:layout_marginTop="@dimen/dimen_large">
 
-        <LinearLayout
-            android:orientation="horizontal"
+        <EditText
+            android:id="@+id/settings_identity_lastname"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:inputType="textCapWords|textNoSuggestions"
+            android:hint="@string/FIELD_LASTNAME"/>
 
-            <EditText
-                android:id="@+id/settings_identity_firstname"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:inputType="textCapWords|textNoSuggestions"
-                android:hint="@string/FIELD_FIRSTNAME"/>
-
-            <EditText
-                android:id="@+id/settings_identity_lastname"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:inputType="textCapWords|textNoSuggestions"
-                android:layout_weight="1"
-                android:hint="@string/FIELD_LASTNAME"/>
-
-        </LinearLayout>
+        <EditText
+            android:id="@+id/settings_identity_firstname"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textCapWords|textNoSuggestions"
+            android:hint="@string/FIELD_FIRSTNAME"/>
 
         <EditText
             android:id="@+id/settings_identity_username"
@@ -72,6 +63,7 @@
             android:cursorVisible="false"
             android:focusable="false"
             android:focusableInTouchMode="false"
+            android:visibility="gone"
             android:hint="@string/FIELD_USERNAME"/>
 
         <FrameLayout

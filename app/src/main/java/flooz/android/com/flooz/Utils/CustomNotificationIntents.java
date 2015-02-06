@@ -28,4 +28,7 @@ public class CustomNotificationIntents
 
     public static Intent reloadNotifications() {return new Intent("NotificationReloadNotifications");}
     public static IntentFilter filterReloadNotifications() {return new IntentFilter("NotificationReloadNotifications");}
+
+    public static Intent reloadFriends() {return new Intent("NotificationReloadFriends");}
+    public static IntentFilter filterReloadFriends() {return new IntentFilter("NotificationReloadFriends");}
 }

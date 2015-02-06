@@ -132,7 +132,6 @@ public class PasswordSettingsFragment extends HomeBaseFragment {
 
                 Map<String, Object> params = new HashMap<>();
 
-                params.put("phone", FloozRestClient.getInstance().currentUser.phone);
                 params.put("password", oldPassword.getText().toString());
                 params.put("newPassword", newPassword.getText().toString());
                 params.put("confirm", confirmPassword.getText().toString());

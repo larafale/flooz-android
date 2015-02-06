@@ -22,4 +22,12 @@ public class FLHelper {
 
         return randomString;
     }
+
+    public static String trimTrailingZeros(String number) {
+        if(!number.contains(".")) {
+            return number;
+        }
+
+        return number.replaceAll("\\.?0*$", "");
+    }
 }

@@ -131,14 +131,18 @@
                             android:layout_height="wrap_content"
                             android:textAllCaps="true"
                             android:textSize="@dimen/card_user_fullname"
-                            android:textColor="@android:color/white"/>
+                            android:textColor="@android:color/white"
+                            android:gravity="center_horizontal"
+                            android:singleLine="true"/>
 
                         <TextView
                             android:id="@+id/transac_card_from_username"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:textSize="@dimen/card_user_username"
-                            android:textColor="@color/blue"/>
+                            android:textColor="@color/blue"
+                            android:gravity="center_horizontal"
+                            android:singleLine="true"/>
 
                     </LinearLayout>
 
@@ -158,14 +162,18 @@
                             android:layout_height="wrap_content"
                             android:textAllCaps="true"
                             android:textSize="@dimen/card_user_fullname"
-                            android:textColor="@android:color/white"/>
+                            android:textColor="@android:color/white"
+                            android:gravity="center_horizontal"
+                            android:singleLine="true"/>
 
                         <TextView
                             android:id="@+id/transac_card_to_username"
                             android:layout_width="wrap_content"
                             android:textSize="@dimen/card_user_username"
                             android:layout_height="wrap_content"
-                            android:textColor="@color/blue"/>
+                            android:textColor="@color/blue"
+                            android:gravity="center_horizontal"
+                            android:singleLine="true"/>
 
                     </LinearLayout>
 
@@ -217,29 +225,11 @@
                         android:layout_height="wrap_content">
 
                         <TextView
-                            android:id="@+id/transac_card_3dText_1"
+                            android:id="@+id/transac_card_3dText"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:textStyle="bold"
-                            android:textColor="@android:color/white"
-                            android:textSize="@dimen/card_3d_text"/>
-
-                        <TextView
-                            android:id="@+id/transac_card_3dText_2"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/dimen_xsmall"
-                            android:layout_marginRight="@dimen/dimen_xsmall"
-                            android:textColor="@color/placeholder"
-                            android:textSize="@dimen/card_3d_text"/>
-
-                        <TextView
-                            android:id="@+id/transac_card_3dText_3"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@android:color/white"
-                            android:textStyle="bold"
-                            android:textSize="@dimen/card_3d_text"/>
+                            android:textSize="@dimen/card_3d_text"
+                            android:inputType="none"/>
 
                     </LinearLayout>
 

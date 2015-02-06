@@ -1,6 +1,10 @@
 package flooz.android.com.flooz.Model;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Flooz on 9/9/14.
@@ -19,6 +23,7 @@ public class FLError {
     public Number code;
     public Boolean isVisible = true;
     public ErrorType type;
+    public List<FLTrigger> triggers;
 
     public FLError(JSONObject json) {
         super();
@@ -33,6 +38,18 @@ public class FLError {
         this.code = json.optInt("code");
         this.isVisible = json.optBoolean("visible");
         this.type = errorTypeParamToEnum(json.optString("type"));
+        this.triggers = new ArrayList<>();
+
+        if (this.time == null || this.time.intValue() == 0)
+            this.time = 3;
+
+        if (json.has("triggers")) {
+            JSONArray t = json.optJSONArray("triggers");
+            for (int i = 0; i < t.length(); i++) {
+                FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
+                this.triggers.add(trigger);
+            }
+        }
     }
 
     public static ErrorType errorTypeParamToEnum(String param) {

@@ -135,7 +135,7 @@ public class SigninPassFragment extends SigninBaseFragment {
 
                     @Override
                     public void failure(int statusCode, FLError error) {
-                        Log.d("Reset Pass", "" + statusCode);
+
                     }
                 });
             }

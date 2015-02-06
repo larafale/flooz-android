@@ -43,10 +43,11 @@
 
             <ImageView
                 android:id="@+id/friends_search_clear"
-                android:layout_width="@dimen/dimen_xlarge"
-                android:layout_height="@dimen/dimen_xlarge"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
                 android:layout_gravity="right|center_vertical"
-                android:layout_margin="8dp"
+                android:padding="@dimen/dimen_medium"
+                android:paddingRight="@dimen/dimen_small"
                 android:src="@drawable/nav_close"
                 android:visibility="gone"/>
 

@@ -90,6 +90,7 @@ public class FloozFragment extends HomeBaseFragment implements TimelineFragment.
             this.timelineViewPagerAdapter = new TimelinePagerAdapter(getChildFragmentManager());
             this.timelineViewPagerAdapter.homeTimeline.delegate = this;
             this.timelineViewPagerAdapter.publicTimeline.delegate = this;
+            this.timelineViewPagerAdapter.privateTimeline.delegate = this;
         }
 
         this.timelineViewPager = (ViewPager) view.findViewById(R.id.timeline_pager);

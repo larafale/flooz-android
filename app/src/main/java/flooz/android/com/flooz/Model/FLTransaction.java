@@ -124,11 +124,9 @@ public class FLTransaction {
 
             this.social = new FLSocial(json);
 
-            this.isPrivate = false;
-            if (json.getString("currentScope").equals("private"))
-                this.isPrivate = true;
+            this.isPrivate = json.getString("scopeString").contentEquals("private");
 
-            this.scope = transactionScopeParamToEnum(json.getString("currentScope"));
+            this.scope = transactionScopeParamToEnum(json.getString("scopeString"));
 
             this.isCancelable = false;
             this.isAcceptable = false;
@@ -253,9 +251,9 @@ public class FLTransaction {
 
     public static TransactionScope transactionScopeParamToEnum(String param)
     {
-        if (param.equals("private"))
+        if (param.contentEquals("private"))
             return TransactionScope.TransactionScopePrivate;
-        else if (param.equals("friend"))
+        else if (param.contentEquals("friend"))
             return TransactionScope.TransactionScopeFriend;
 
         return TransactionScope.TransactionScopePublic;

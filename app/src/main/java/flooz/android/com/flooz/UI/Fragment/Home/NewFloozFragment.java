@@ -401,6 +401,24 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
     public void onResume() {
         super.onResume();
 
+        if (this.currentReceiver != null) {
+            this.toWho.setVisibility(View.GONE);
+            this.toFullname.setVisibility(View.VISIBLE);
+            this.toUsername.setVisibility(View.VISIBLE);
+
+            this.toFullname.setText(this.currentReceiver.fullname);
+            this.toUsername.setText("@" + this.currentReceiver.username);
+
+            if (this.currentReceiver.avatarURL != null && !this.currentReceiver.avatarURL.isEmpty()) {
+                if (this.currentReceiver.userKind == FLUser.UserKind.FloozUser)
+                    ImageLoader.getInstance().displayImage(this.currentReceiver.avatarURL, this.toPic);
+                else
+                    this.toPic.setImageURI(Uri.parse(this.currentReceiver.avatarURL));
+            }
+            else
+                this.toPic.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
+        }
+
         this.amountTextfield.setText(this.savedAmount);
         this.contentTextfield.setText(this.savedWhy);
 
@@ -417,7 +435,7 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
         if (amount > 0) {
             this.headerCB.setVisibility(View.GONE);
             this.headerBalance.setVisibility(View.VISIBLE);
-            this.headerBalance.setText(String.format("%.2f €", amount));
+            this.headerBalance.setText(FLHelper.trimTrailingZeros(String.format("%.2f", amount)) + " €");
         } else {
             this.headerCB.setVisibility(View.VISIBLE);
             this.headerBalance.setVisibility(View.GONE);
@@ -425,7 +443,31 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
     }
 
     private void showBalanceDialog() {
+        InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(parentActivity.getWindow().getDecorView().getRootView().getWindowToken(), 0);
 
+        final Dialog dialog = new Dialog(this.context);
+
+        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        dialog.setContentView(R.layout.custom_dialog_balance);
+
+        TextView title = (TextView) dialog.findViewById(R.id.dialog_wallet_title);
+        title.setTypeface(CustomFonts.customContentRegular(this.context), Typeface.BOLD);
+
+        TextView text = (TextView) dialog.findViewById(R.id.dialog_wallet_msg);
+        text.setTypeface(CustomFonts.customContentRegular(this.context));
+
+        Button close = (Button) dialog.findViewById(R.id.dialog_wallet_btn);
+
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.setCanceledOnTouchOutside(true);
+        dialog.show();
     }
 
     private void saveData() {
@@ -442,20 +484,23 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
         this.currentType = type;
 
         FloozRestClient.getInstance().performTransaction(this.generateRequestParams(true), new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
-                        JSONObject jsonObject = (JSONObject) response;
-                        showValidationDialog(jsonObject.optString("confirmationText"));
-                    }
+            @Override
+            public void success(Object response) {
+                JSONObject jsonObject = (JSONObject) response;
+                showValidationDialog(jsonObject.optString("confirmationText"));
+            }
 
-                    @Override
-                    public void failure(int statusCode, FLError error) {
+            @Override
+            public void failure(int statusCode, FLError error) {
 
-                    }
-                });
+            }
+        });
     }
 
     private void showValidationDialog(String content) {
+        InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(parentActivity.getWindow().getDecorView().getRootView().getWindowToken(), 0);
+
         final Dialog dialog = new Dialog(this.context);
 
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -485,6 +530,7 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
             }
         });
 
+        dialog.setCanceledOnTouchOutside(false);
         dialog.show();
     }
 
@@ -524,6 +570,24 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
     @Override
     public void changeUser(FLUser user) {
         this.currentReceiver = user;
+
+        if (this.currentReceiver != null && this.toContainer != null) {
+            this.toWho.setVisibility(View.GONE);
+            this.toFullname.setVisibility(View.VISIBLE);
+            this.toUsername.setVisibility(View.VISIBLE);
+
+            this.toFullname.setText(this.currentReceiver.fullname);
+            this.toUsername.setText("@" + this.currentReceiver.username);
+
+            if (this.currentReceiver.avatarURL != null && !this.currentReceiver.avatarURL.isEmpty()) {
+                if (this.currentReceiver.userKind == FLUser.UserKind.FloozUser)
+                    ImageLoader.getInstance().displayImage(this.currentReceiver.avatarURL, this.toPic);
+                else
+                    this.toPic.setImageURI(Uri.parse(this.currentReceiver.avatarURL));
+            }
+            else
+                this.toPic.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
+        }
     }
 
     @Override
@@ -604,12 +668,17 @@ public class NewFloozFragment extends HomeBaseFragment implements TransactionSel
     }
 
     private Map<String, Object> generateRequestParams(boolean validate) {
+
+        Map<String, String> metrics = new HashMap<>(1);
+
         Map<String, Object> params = new HashMap<>();
         params.put("amount", this.amountTextfield.getText().toString());
-        if (currentReceiver != null)
+        if (currentReceiver != null) {
             params.put("to", currentReceiver.username);
-        else
-            params.put("to", "");
+            metrics.put("selectedFrom", currentReceiver.getSelectedCanal());
+            params.put("metrics", metrics);
+        } else
+        params.put("to", "");
 
         params.put("random", random);
         params.put("method", FLTransaction.transactionTypeToParams(this.currentType));

@@ -26,7 +26,6 @@ public class ActionSheet {
         final Dialog dialog = new Dialog(context, R.style.action_sheet_style);
 
         dialog.setContentView(R.layout.action_sheet_layout);
-        dialog.getWindow().getAttributes().windowAnimations = R.anim.action_sheet_slide_up;
         dialog.setCanceledOnTouchOutside(true);
 
         LinearLayout actionList = (LinearLayout) dialog.findViewById(R.id.action_sheet_list);

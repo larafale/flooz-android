@@ -5,9 +5,11 @@ import android.graphics.Bitmap;
 import android.net.Uri;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 
 import java.util.List;
 
@@ -46,9 +48,11 @@ public class ImageGalleryAdapter extends BaseAdapter {
 
         if (convertView == null) {
             imageView = new ImageView(this.context);
-            imageView.setLayoutParams(new GridView.LayoutParams(260, 250));
-            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 
+            AbsListView.LayoutParams layoutParams = new AbsListView.LayoutParams(250, 250);
+
+            imageView.setLayoutParams(layoutParams);
+            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
         } else {
             imageView = (ImageView) convertView;
         }

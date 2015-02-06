@@ -2,13 +2,19 @@ package flooz.android.com.flooz.UI.Tools;
 
 import android.content.Context;
 import android.os.Handler;
+import android.os.Looper;
+import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import flooz.android.com.flooz.App.FloozApplication;
 import flooz.android.com.flooz.Model.FLError;
+import flooz.android.com.flooz.Network.FloozRestClient;
 import flooz.android.com.flooz.R;
 
 /**
@@ -22,70 +28,61 @@ public class CustomToast {
             mainHandler.post(new Runnable() {
                 @Override
                 public void run() {
+                    int layoutId;
                     switch (content.type) {
                         case ErrorTypeSuccess:
-                            CustomToast.showSuccess(ctx, content.title, content.text, content.time.intValue());
+                            layoutId = R.layout.alert_success;
                             break;
                         case ErrorTypeWarning:
-                            CustomToast.showWarning(ctx, content.title, content.text, content.time.intValue());
+                            layoutId = R.layout.alert_warning;
                             break;
                         case ErrorTypeError:
-                            CustomToast.showError(ctx, content.title, content.text, content.time.intValue());
+                            layoutId = R.layout.alert_error;
                             break;
+                        default:
+                            return;
                     }
+
+                    LayoutInflater myInflater = LayoutInflater.from(ctx);
+                    View view = myInflater.inflate(layoutId, null);
+
+                    TextView titleView = (TextView) view.findViewById(R.id.alert_title);
+                    titleView.setText(content.title);
+
+                    TextView contentView = (TextView) view.findViewById(R.id.alert_content);
+                    contentView.setText(content.text);
+
+                    view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+
+                    final PopupWindow popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, false);
+                    popupWindow.setContentView(view);
+
+                    view.findViewById(R.id.layout).setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            for (int i = 0; i < content.triggers.size(); i++) {
+                                FloozRestClient.getInstance().handleTrigger(content.triggers.get(i));
+                            }
+                            popupWindow.dismiss();
+                        }
+                    });
+
+                    popupWindow.setOutsideTouchable(true);
+                    popupWindow.setTouchable(true);
+
+                    popupWindow.showAtLocation(FloozApplication.getInstance().getCurrentActivity().findViewById(android.R.id.content), Gravity.TOP, 0, view.getMeasuredHeight() / 2 + 10);
+                    popupWindow.setAnimationStyle(R.style.alert_animation);
+
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            if (popupWindow.isShowing())
+                                popupWindow.dismiss();
+                        }
+                    }, content.time.intValue() * 1000);
                 }
             });
         }
-    }
-
-    public static void showSuccess(Context ctx, String title, String content, int duration) {
-        LayoutInflater myInflater = LayoutInflater.from(ctx);
-        View view = myInflater.inflate(R.layout.alert_success, null);
-
-        TextView titleView = (TextView) view.findViewById(R.id.alert_title);
-        titleView.setText(title);
-
-        TextView contentView = (TextView) view.findViewById(R.id.alert_content);
-        contentView.setText(content);
-
-        Toast toast = new Toast(ctx);
-
-        toast.setView(view);
-        toast.setDuration(duration);
-        toast.show();
-    }
-
-    public static void showWarning(Context ctx, String title, String content, int duration) {
-        LayoutInflater myInflater = LayoutInflater.from(ctx);
-        View view = myInflater.inflate(R.layout.alert_warning, null);
-
-        TextView titleView = (TextView) view.findViewById(R.id.alert_title);
-        titleView.setText(title);
-
-        TextView contentView = (TextView) view.findViewById(R.id.alert_content);
-        contentView.setText(content);
-
-        Toast toast = new Toast(ctx);
-
-        toast.setView(view);
-        toast.setDuration(duration);
-        toast.show();
-    }
-
-    public static void showError(Context ctx, String title, String content, int duration) {
-        LayoutInflater myInflater = LayoutInflater.from(ctx);
-        View view = myInflater.inflate(R.layout.alert_error, null);
-
-        TextView titleView = (TextView) view.findViewById(R.id.alert_title);
-        titleView.setText(title);
-
-        TextView contentView = (TextView) view.findViewById(R.id.alert_content);
-        contentView.setText(content);
-
-        Toast toast = new Toast(ctx);
-
-        toast.setView(view);
-        toast.setDuration(duration);
-        toast.show();
     }
 }

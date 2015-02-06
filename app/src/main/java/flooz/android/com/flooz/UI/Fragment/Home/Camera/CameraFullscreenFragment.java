@@ -1,6 +1,5 @@
 package flooz.android.com.flooz.UI.Fragment.Home.Camera;
 
-import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.hardware.Camera;
 import android.os.Bundle;
@@ -9,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import flooz.android.com.flooz.R;
-import flooz.android.com.flooz.UI.Activity.HomeActivity;
 import flooz.android.com.flooz.UI.Fragment.Home.HomeBaseFragment;
 import flooz.android.com.flooz.Utils.CustomCameraHost;
 

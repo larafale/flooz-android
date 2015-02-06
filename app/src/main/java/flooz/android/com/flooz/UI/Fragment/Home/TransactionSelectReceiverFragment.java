@@ -90,14 +90,16 @@ public class TransactionSelectReceiverFragment extends HomeBaseFragment {
                         Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(parentActivity.getWindow().getDecorView().getRootView().getWindowToken(), 0);
 
+                FLUser user = listAdapter.getItem(position);
+                user.selectedCanal = FLUser.FLUserSelectedCanal.values()[(int)listAdapter.getHeaderId(position)];
                 if (firstNewFlooz) {
                     firstNewFlooz = false;
-                    ((NewFloozFragment) parentActivity.contentFragments.get("create")).initWithUser((FLUser)listAdapter.getItem(position));
+                    ((NewFloozFragment) parentActivity.contentFragments.get("create")).initWithUser(user);
                     parentActivity.changeMainFragment("create", R.animator.slide_up, android.R.animator.fade_out);
                 }
                 else {
                     if (delegate != null)
-                        delegate.changeUser((FLUser)listAdapter.getItem(position));
+                        delegate.changeUser(user);
                     parentActivity.popMainFragment(R.animator.slide_down, android.R.animator.fade_in);
                 }
             }

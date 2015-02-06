@@ -1,8 +1,13 @@
 package flooz.android.com.flooz.UI.Fragment.Home.Settings;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -20,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import flooz.android.com.flooz.App.FloozApplication;
 import flooz.android.com.flooz.Model.FLError;
 import flooz.android.com.flooz.Model.FLUser;
 import flooz.android.com.flooz.Network.FloozHttpResponseHandler;
@@ -32,6 +38,7 @@ import flooz.android.com.flooz.UI.Tools.ActionSheet;
 import flooz.android.com.flooz.UI.Tools.ActionSheetItem;
 import flooz.android.com.flooz.Utils.CustomCameraHost;
 import flooz.android.com.flooz.Utils.CustomFonts;
+import flooz.android.com.flooz.Utils.CustomNotificationIntents;
 import flooz.android.com.flooz.Utils.ImageHelper;
 
 /**
@@ -59,6 +66,13 @@ public class CoordsSettingsFragment extends HomeBaseFragment  implements CustomC
 
     private String currentDoc;
 
+    private BroadcastReceiver reloadCurrentUserDataReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            reloadView();
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -68,6 +82,9 @@ public class CoordsSettingsFragment extends HomeBaseFragment  implements CustomC
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.settings_coords_fragment, null);
+
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadCurrentUserDataReceiver,
+                CustomNotificationIntents.filterReloadCurrentUser());
 
         this.headerBackButton = (ImageView) view.findViewById(R.id.settings_coord_header_back);
         this.headerTitle = (TextView) view.findViewById(R.id.settings_coord_header_title);
@@ -92,55 +109,7 @@ public class CoordsSettingsFragment extends HomeBaseFragment  implements CustomC
         this.sendVerifyMail.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
         this.justificatoryTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
 
-        FLUser currentUser = FloozRestClient.getInstance().currentUser;
-
-        this.phoneTextfield.setText(currentUser.phone.replace("+33", "0"));
-        this.emailTextfield.setText(currentUser.email);
-        this.addressTextfield.setText(currentUser.address.get("address"));
-        this.zipCodeTextfield.setText(currentUser.address.get("zipCode"));
-        this.cityTextfield.setText(currentUser.address.get("city"));
-
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                parentActivity.popMainFragment(R.animator.slide_out_left, R.animator.slide_in_right);
-            }
-        });
-
-        if (currentUser.checkDocuments.get("justificatory").equals(0))
-            this.justificatoryButton.setImageResource(R.drawable.document_refused);
-        if (currentUser.checkDocuments.get("justificatory").equals(3))
-            this.justificatoryButton.setImageResource(R.drawable.friends_add);
-
-        if (currentUser.checkDocuments.get("phone").equals(3)) {
-            this.sendVerifyPhone.setVisibility(View.VISIBLE);
-            this.phoneTextfield.setFocusable(false);
-            this.phoneTextfield.setFocusableInTouchMode(false);
-            this.phoneTextfield.setCursorVisible(false);
-            this.phoneTextfield.setClickable(false);
-        }
-        else {
-            this.sendVerifyPhone.setVisibility(View.GONE);
-            this.phoneTextfield.setFocusable(true);
-            this.phoneTextfield.setFocusableInTouchMode(true);
-            this.phoneTextfield.setCursorVisible(true);
-            this.phoneTextfield.setClickable(true);
-        }
-
-        if (currentUser.checkDocuments.get("email").equals(3)) {
-            this.sendVerifyMail.setVisibility(View.VISIBLE);
-            this.emailTextfield.setFocusable(false);
-            this.emailTextfield.setFocusableInTouchMode(false);
-            this.emailTextfield.setCursorVisible(false);
-            this.emailTextfield.setClickable(false);
-        }
-        else {
-            this.sendVerifyMail.setVisibility(View.GONE);
-            this.emailTextfield.setFocusable(true);
-            this.emailTextfield.setFocusableInTouchMode(true);
-            this.emailTextfield.setCursorVisible(true);
-            this.emailTextfield.setClickable(true);
-        }
+        this.reloadView();
 
         this.sendVerifyPhone.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -246,6 +215,19 @@ public class CoordsSettingsFragment extends HomeBaseFragment  implements CustomC
         return view;
     }
 
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        this.reloadView();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.reloadView();
+    }
+
     public void showImageActionMenu() {
         List<ActionSheetItem> items = new ArrayList<>();
 
@@ -253,7 +235,66 @@ public class CoordsSettingsFragment extends HomeBaseFragment  implements CustomC
         items.add(new ActionSheetItem(parentActivity, R.string.GLOBAL_ALBUMS, showGallery));
 
         ActionSheet.showWithItems(parentActivity, items);
+    }
 
+    private void reloadView() {
+        FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+        this.phoneTextfield.setText(currentUser.phone.replace("+33", "0"));
+        this.emailTextfield.setText(currentUser.email);
+        this.addressTextfield.setText(currentUser.address.get("address"));
+        this.zipCodeTextfield.setText(currentUser.address.get("zipCode"));
+        this.cityTextfield.setText(currentUser.address.get("city"));
+
+        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                parentActivity.popMainFragment(R.animator.slide_out_left, R.animator.slide_in_right);
+            }
+        });
+
+        this.reloadDocuments();
+
+        if (currentUser.checkDocuments.get("phone").equals(3)) {
+            this.sendVerifyPhone.setVisibility(View.VISIBLE);
+            this.phoneTextfield.setFocusable(false);
+            this.phoneTextfield.setFocusableInTouchMode(false);
+            this.phoneTextfield.setCursorVisible(false);
+            this.phoneTextfield.setClickable(false);
+        }
+        else {
+            this.sendVerifyPhone.setVisibility(View.GONE);
+            this.phoneTextfield.setFocusable(true);
+            this.phoneTextfield.setFocusableInTouchMode(true);
+            this.phoneTextfield.setCursorVisible(true);
+            this.phoneTextfield.setClickable(true);
+        }
+
+        if (currentUser.checkDocuments.get("email").equals(3)) {
+            this.sendVerifyMail.setVisibility(View.VISIBLE);
+            this.emailTextfield.setFocusable(false);
+            this.emailTextfield.setFocusableInTouchMode(false);
+            this.emailTextfield.setCursorVisible(false);
+            this.emailTextfield.setClickable(false);
+        }
+        else {
+            this.sendVerifyMail.setVisibility(View.GONE);
+            this.emailTextfield.setFocusable(true);
+            this.emailTextfield.setFocusableInTouchMode(true);
+            this.emailTextfield.setCursorVisible(true);
+            this.emailTextfield.setClickable(true);
+        }
+    }
+
+    private void reloadDocuments() {
+        FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+        if (currentUser.checkDocuments.get("justificatory").equals(0))
+            this.justificatoryButton.setImageResource(R.drawable.document_refused);
+        else if (currentUser.checkDocuments.get("justificatory").equals(3))
+            this.justificatoryButton.setImageResource(R.drawable.friends_add);
+        else
+            this.justificatoryButton.setImageResource(R.drawable.friends_accepted);
     }
 
     private ActionSheetItem.ActionSheetItemClickListener showCamera = new ActionSheetItem.ActionSheetItemClickListener() {
@@ -279,8 +320,9 @@ public class CoordsSettingsFragment extends HomeBaseFragment  implements CustomC
         if (currentDoc != null) {
             FLUser currentUser = FloozRestClient.getInstance().currentUser;
             currentUser.checkDocuments.put(currentDoc, 1);
+            this.reloadDocuments();
 
-            Handler mainHandler = new Handler();
+            Handler mainHandler = new Handler(Looper.getMainLooper());
             Runnable myRunnable = new Runnable() {
                 @Override
                 public void run() {

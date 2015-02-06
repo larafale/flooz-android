@@ -25,6 +25,7 @@ import flooz.android.com.flooz.R;
 import flooz.android.com.flooz.UI.Fragment.Home.Authentication.AuthenticationFragment;
 import flooz.android.com.flooz.Utils.CustomFonts;
 import flooz.android.com.flooz.Utils.CustomNotificationIntents;
+import flooz.android.com.flooz.Utils.FLHelper;
 import flooz.android.com.flooz.Utils.ImageHelper;
 
 /**
@@ -101,7 +102,7 @@ public class CashoutFragment extends HomeBaseFragment implements AuthenticationF
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.length() > 0) {
-                    cashoutButton.setText(String.format(inflater.getContext().getResources().getString(R.string.CASHOUT_BUTTON), s.toString() + " €"));
+                    cashoutButton.setText(String.format(inflater.getContext().getResources().getString(R.string.CASHOUT_BUTTON), FLHelper.trimTrailingZeros(s.toString()) + " €"));
                     cashoutButton.setEnabled(true);
                 }
                 else {

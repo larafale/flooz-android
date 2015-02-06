@@ -1,10 +1,14 @@
 package flooz.android.com.flooz.UI.Fragment.Home.Settings;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
@@ -23,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import flooz.android.com.flooz.App.FloozApplication;
 import flooz.android.com.flooz.Model.FLError;
 import flooz.android.com.flooz.Model.FLUser;
 import flooz.android.com.flooz.Network.FloozHttpResponseHandler;
@@ -35,6 +40,7 @@ import flooz.android.com.flooz.UI.Tools.ActionSheet;
 import flooz.android.com.flooz.UI.Tools.ActionSheetItem;
 import flooz.android.com.flooz.Utils.CustomCameraHost;
 import flooz.android.com.flooz.Utils.CustomFonts;
+import flooz.android.com.flooz.Utils.CustomNotificationIntents;
 import flooz.android.com.flooz.Utils.ImageHelper;
 
 /**
@@ -62,6 +68,13 @@ public class IdentitySettingsFragment extends HomeBaseFragment implements Custom
 
     private String currentDoc;
 
+    private BroadcastReceiver reloadCurrentUserDataReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            reloadView();
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +84,9 @@ public class IdentitySettingsFragment extends HomeBaseFragment implements Custom
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.settings_identity_fragment, null);
+
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadCurrentUserDataReceiver,
+                CustomNotificationIntents.filterReloadCurrentUser());
 
         this.headerBackButton = (ImageView) view.findViewById(R.id.settings_identity_header_back);
         this.headerTitle = (TextView) view.findViewById(R.id.settings_identity_header_title);
@@ -93,34 +109,7 @@ public class IdentitySettingsFragment extends HomeBaseFragment implements Custom
         this.cniRectoTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
         this.cniVersoTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
 
-        FLUser currentUser = FloozRestClient.getInstance().currentUser;
-
-        this.firstnameTextfield.setText(currentUser.firstname.substring(0,1).toUpperCase() + currentUser.firstname.substring(1));
-        this.lastnameTextfield.setText(currentUser.lastname.substring(0,1).toUpperCase() + currentUser.lastname.substring(1));
-        this.usernameTextfield.setText(currentUser.username);
-        this.birthdateTextfield.setText(currentUser.birthdate);
-
-        if (this.birthdateTextfield.getText().length() > 0)
-            this.birthdateHint.setVisibility(View.GONE);
-        else
-            this.birthdateHint.setVisibility(View.VISIBLE);
-
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                parentActivity.popMainFragment(R.animator.slide_out_left, R.animator.slide_in_right);
-            }
-        });
-
-        if (currentUser.checkDocuments.get("cniRecto").equals(0))
-            cniRectoButton.setImageResource(R.drawable.document_refused);
-        if (currentUser.checkDocuments.get("cniRecto").equals(3))
-            cniRectoButton.setImageResource(R.drawable.friends_add);
-
-        if (currentUser.checkDocuments.get("cniVerso").equals(0))
-            cniVersoButton.setImageResource(R.drawable.document_refused);
-        if (currentUser.checkDocuments.get("cniVerso").equals(3))
-            cniVersoButton.setImageResource(R.drawable.friends_add);
+        this.reloadView();
 
         this.birthdateTextfield.addTextChangedListener(new TextWatcher() {
             @Override
@@ -240,6 +229,59 @@ public class IdentitySettingsFragment extends HomeBaseFragment implements Custom
         return view;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        this.reloadView();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        this.reloadView();
+    }
+
+    private void reloadView() {
+        FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+        this.firstnameTextfield.setText(currentUser.firstname.substring(0,1).toUpperCase() + currentUser.firstname.substring(1));
+        this.lastnameTextfield.setText(currentUser.lastname.substring(0,1).toUpperCase() + currentUser.lastname.substring(1));
+        this.usernameTextfield.setText(currentUser.username);
+        this.birthdateTextfield.setText(currentUser.birthdate);
+
+        if (this.birthdateTextfield.getText().length() > 0)
+            this.birthdateHint.setVisibility(View.GONE);
+        else
+            this.birthdateHint.setVisibility(View.VISIBLE);
+
+        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                parentActivity.popMainFragment(R.animator.slide_out_left, R.animator.slide_in_right);
+            }
+        });
+
+        this.reloadDocuments();
+    }
+
+    private void reloadDocuments() {
+        FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+        if (currentUser.checkDocuments.get("cniRecto").equals(0))
+            cniRectoButton.setImageResource(R.drawable.document_refused);
+        else if (currentUser.checkDocuments.get("cniRecto").equals(3))
+            cniRectoButton.setImageResource(R.drawable.friends_add);
+        else
+            cniRectoButton.setImageResource(R.drawable.friends_accepted);
+
+        if (currentUser.checkDocuments.get("cniVerso").equals(0))
+            cniVersoButton.setImageResource(R.drawable.document_refused);
+        else if (currentUser.checkDocuments.get("cniVerso").equals(3))
+            cniVersoButton.setImageResource(R.drawable.friends_add);
+        else
+            cniRectoButton.setImageResource(R.drawable.friends_accepted);
+    }
+
     public void showImageActionMenu() {
         List<ActionSheetItem> items = new ArrayList<>();
 
@@ -247,7 +289,6 @@ public class IdentitySettingsFragment extends HomeBaseFragment implements Custom
         items.add(new ActionSheetItem(parentActivity, R.string.GLOBAL_ALBUMS, showGallery));
 
         ActionSheet.showWithItems(parentActivity, items);
-
     }
 
     private ActionSheetItem.ActionSheetItemClickListener showCamera = new ActionSheetItem.ActionSheetItemClickListener() {
@@ -273,8 +314,9 @@ public class IdentitySettingsFragment extends HomeBaseFragment implements Custom
         if (currentDoc != null) {
             FLUser currentUser = FloozRestClient.getInstance().currentUser;
             currentUser.checkDocuments.put(currentDoc, 1);
+            this.reloadDocuments();
 
-            Handler mainHandler = new Handler();
+            Handler mainHandler = new Handler(Looper.getMainLooper());
             Runnable myRunnable = new Runnable() {
                 @Override
                 public void run() {

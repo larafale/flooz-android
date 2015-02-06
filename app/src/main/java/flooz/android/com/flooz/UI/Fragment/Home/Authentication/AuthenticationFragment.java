@@ -233,6 +233,7 @@ public class AuthenticationFragment extends HomeBaseFragment {
             case AuthenticationResetCode:
                 break;
             case AuthenticationResetCodeConfirm:
+                this.currentPage = AuthenticationPageIdentifier.AuthenticationResetCode;
                 break;
             case AuthenticationChangePass:
                 break;

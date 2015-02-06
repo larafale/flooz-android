@@ -3,7 +3,8 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/dimen_large">
+    android:paddingTop="@dimen/dimen_large"
+    android:background="@drawable/timeline_row_background">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/timeline_row_content"
@@ -41,32 +42,12 @@
                 android:layout_marginTop="@dimen/dimen_medium">
 
                 <TextView
-                    android:id="@+id/timelineTransactionText3D1"
+                    android:id="@+id/timelineTransactionText3D"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textStyle="bold"
-                    android:textColor="@android:color/white"
                     android:textSize="@dimen/timeline_cell_title"
-                    android:singleLine="true"/>
-
-                <TextView
-                    android:id="@+id/timelineTransactionText3D2"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/dimen_xsmall"
-                    android:layout_marginRight="@dimen/dimen_xsmall"
-                    android:textColor="@color/placeholder"
-                    android:textSize="@dimen/timeline_cell_title"
-                    android:singleLine="true"/>
-
-                <TextView
-                    android:id="@+id/timelineTransactionText3D3"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/white"
-                    android:textStyle="bold"
-                    android:textSize="@dimen/timeline_cell_title"
-                    android:singleLine="true"/>
+                    android:inputType="none"/>
 
             </LinearLayout>
 

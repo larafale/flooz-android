@@ -4,10 +4,12 @@ package flooz.android.com.flooz.UI.Fragment.Home;
  * Created by Flooz on 9/2/14.
  */
 
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -15,7 +17,9 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -40,6 +44,7 @@ import flooz.android.com.flooz.UI.Tools.ActionSheetItem;
 import flooz.android.com.flooz.Utils.CustomCameraHost;
 import flooz.android.com.flooz.Utils.CustomFonts;
 import flooz.android.com.flooz.Utils.CustomNotificationIntents;
+import flooz.android.com.flooz.Utils.FLHelper;
 import flooz.android.com.flooz.Utils.ImageHelper;
 import flooz.android.com.flooz.Utils.MenuItem;
 
@@ -129,6 +134,34 @@ public class ProfileFragment extends HomeBaseFragment implements CustomCameraHos
         this.listAdapter = new MenuListAdapter(inflater.getContext(), this.menuItems);
         this.menuActionList.setAdapter(this.listAdapter);
 
+        this.balanceValue.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Dialog dialog = new Dialog(inflater.getContext());
+
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.custom_dialog_balance);
+
+                TextView title = (TextView) dialog.findViewById(R.id.dialog_wallet_title);
+                title.setTypeface(CustomFonts.customContentRegular(inflater.getContext()), Typeface.BOLD);
+
+                TextView text = (TextView) dialog.findViewById(R.id.dialog_wallet_msg);
+                text.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+
+                Button close = (Button) dialog.findViewById(R.id.dialog_wallet_btn);
+
+                close.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
+            }
+        });
+
         this.userView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -212,7 +245,7 @@ public class ProfileFragment extends HomeBaseFragment implements CustomCameraHos
         if (user != null) {
             this.fullname.setText(user.fullname);
 
-            this.balanceValue.setText(String.format("%.2f", user.amount.floatValue()).replace(',', '.') + " €");
+            this.balanceValue.setText(FLHelper.trimTrailingZeros(String.format("%.2f", user.amount.floatValue()).replace(',', '.')) + " €");
             this.username.setText("@" + user.username);
 
             if (user.avatarURL != null)
@@ -235,6 +268,9 @@ public class ProfileFragment extends HomeBaseFragment implements CustomCameraHos
         handler.post(new Runnable() {
             @Override
             public void run() {
+                int nh = (int) ( photo.getHeight() * (512.0 / photo.getWidth()) );
+                Bitmap scaled = Bitmap.createScaledBitmap(photo, 512, nh, true);
+                userView.setImageBitmap(scaled);
                 FloozRestClient.getInstance().uploadDocument("picId", ImageHelper.convertBitmapInFile(photo), new FloozHttpResponseHandler() {
                     @Override
                     public void success(Object response) {
@@ -243,7 +279,12 @@ public class ProfileFragment extends HomeBaseFragment implements CustomCameraHos
 
                     @Override
                     public void failure(int statusCode, FLError error) {
+                        FLUser user = FloozRestClient.getInstance().currentUser;
 
+                        if (user.avatarURL != null)
+                            ImageLoader.getInstance().displayImage(user.avatarURL, userView);
+                        else
+                            userView.setImageDrawable(getResources().getDrawable(R.drawable.avatar_default));
                     }
                 });
                 parentActivity.popMainFragment(R.animator.slide_down, android.R.animator.fade_in);

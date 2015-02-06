@@ -27,7 +27,7 @@ import flooz.android.com.flooz.Utils.CustomFonts;
 /**
  * Created by Flooz on 9/17/14.
  */
-public class StartActivity extends Activity {
+public class StartActivity extends Activity implements TimelineListAdapter.TimelineListRowDelegate {
 
     public FloozApplication floozApp;
 
@@ -56,6 +56,7 @@ public class StartActivity extends Activity {
         this.transactions = new ArrayList<>(0);
 
         this.timelineAdapter = new TimelineListAdapter(this, this.transactions);
+        this.timelineAdapter.delegate = this;
         this.timelineListView = (ListView) this.findViewById(R.id.start_timeline_list);
         this.timelineListView.setAdapter(this.timelineAdapter);
 
@@ -136,5 +137,17 @@ public class StartActivity extends Activity {
     @Override
     public void onBackPressed() {
         this.finish();
+    }
+
+    public void ListItemClick(FLTransaction transac) {
+
+    }
+
+    public void ListItemCommentClick(FLTransaction transac) {
+        this.launchLogin();
+    }
+
+    public void ListItemImageClick(String imgUrl) {
+
     }
 }

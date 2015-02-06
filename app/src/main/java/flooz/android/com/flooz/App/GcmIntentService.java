@@ -6,6 +6,7 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.os.Bundle;
@@ -47,30 +48,34 @@ public class GcmIntentService extends IntentService {
     }
 
     private void sendNotification(Bundle extras) {
-        this.notificationManager = (NotificationManager)this.getSystemService(Context.NOTIFICATION_SERVICE);
+        SharedPreferences appSettings = FloozApplication.getAppContext().getSharedPreferences("FloozPrefs", Context.MODE_PRIVATE);
+        String userId = appSettings.getString("userId", null);
 
-        String array = extras.getCharSequence("triggers").toString();
+        if (!FloozApplication.appInForeground && userId != null && userId.contentEquals(extras.getCharSequence("userId"))) {
+            this.notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-        Intent pendingIntentContent = new Intent(this, HomeActivity.class);
-        pendingIntentContent.putExtra("triggers", array);
+            String array = extras.getCharSequence("triggers").toString();
 
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, pendingIntentContent, PendingIntent.FLAG_UPDATE_CURRENT);
+            Intent pendingIntentContent = new Intent(this, HomeActivity.class);
+            pendingIntentContent.putExtra("triggers", array);
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
-                .setContentTitle(extras.getCharSequence("title"))
-                .setStyle(new NotificationCompat.BigTextStyle().bigText(extras.getCharSequence("text")))
-                .setContentText(extras.getCharSequence("text"))
-                .setSmallIcon(R.drawable.flooz_icon_white)
-                .setLargeIcon(BitmapFactory.decodeResource(FloozApplication.getAppContext().getResources(),
-                        R.drawable.flooz))
-                .setContentIntent(contentIntent)
-                .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
-                .setAutoCancel(true)
-                .setExtras(extras)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setCategory(NotificationCompat.CATEGORY_SOCIAL);
+            PendingIntent contentIntent = PendingIntent.getActivity(this, 0, pendingIntentContent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-//        if (!FloozApplication.appInForeground)
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this)
+                    .setContentTitle(extras.getCharSequence("title"))
+                    .setStyle(new NotificationCompat.BigTextStyle().bigText(extras.getCharSequence("text")))
+                    .setContentText(extras.getCharSequence("text"))
+                    .setSmallIcon(R.drawable.flooz_icon_white)
+                    .setLargeIcon(BitmapFactory.decodeResource(FloozApplication.getAppContext().getResources(),
+                            R.drawable.flooz))
+                    .setContentIntent(contentIntent)
+                    .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
+                    .setAutoCancel(true)
+                    .setExtras(extras)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setCategory(NotificationCompat.CATEGORY_SOCIAL);
+
             this.notificationManager.notify(NOTIFICATION_ID, builder.build());
+        }
     }
 }

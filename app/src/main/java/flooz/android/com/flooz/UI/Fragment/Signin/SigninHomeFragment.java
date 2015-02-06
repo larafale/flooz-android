@@ -138,19 +138,14 @@ public class SigninHomeFragment extends SigninBaseFragment {
             @Override
             public void onClick(View v) {
                 String[] TO = {"support@flooz.me"};
-                Intent emailIntent = new Intent(Intent.ACTION_SENDTO);
-                emailIntent.setData(Uri.parse("mailto:"));
-                emailIntent.setType("text/plain");
 
-
-                emailIntent.putExtra(Intent.EXTRA_EMAIL, TO);
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Mot de passe oublié");
-                emailIntent.putExtra(Intent.EXTRA_TEXT, "J'ai oublié mon mot de passe. Je souhaite être contacté au " + phoneTextfield.getText().toString() + ".");
-
-                try {
-                    startActivity(Intent.createChooser(emailIntent, "Envoyer un mail..."));
-                } catch (android.content.ActivityNotFoundException ex) {
-
+                Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
+                sendIntent.setData(Uri.parse("mailto:"));
+                sendIntent.putExtra(Intent.EXTRA_EMAIL, TO);
+                sendIntent.putExtra(Intent.EXTRA_TEXT, "J'ai oublié mon mot de passe. Je souhaite être contacté au " + phoneTextfield.getText().toString() + ".");
+                sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Mot de passe oublié");
+                if (sendIntent.resolveActivity(parentActivity.getPackageManager()) != null) {
+                    parentActivity.startActivity(Intent.createChooser(sendIntent, "Envoyer un mail..."));
                 }
             }
         });
