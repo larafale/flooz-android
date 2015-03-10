@@ -40,7 +40,7 @@
 
     </LinearLayout>
 
-    <flooz.android.com.flooz.UI.View.NumericKeyboard
+    <me.flooz.app.UI.View.NumericKeyboard
         android:id="@+id/signup_sms_keypad"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

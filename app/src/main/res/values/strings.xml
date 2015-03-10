@@ -28,6 +28,11 @@
     <string name="GLOBAL_INTERO">\?</string>
     <string name="GLOBAL_UPDATE">Mise à jour disponible !</string>
 
+    <string name="LOGOUT_INFO">Êtes-vous sûr de vouloir vous déconnecter ?</string>
+
+    <string name="START_SIGNUP">Je suis nouveau</string>
+    <string name="START_LOGIN">J\'ai déjà un compte Flooz</string>
+
     <string name="MSG_UPDATE">Bonne nouvelle ! Une nouvelle version de Flooz est disponible.</string>
     <string name="BTN_UPDATE">Mettre à jour</string>
 
@@ -59,13 +64,14 @@
     <string name="NAV_PHOTO_GALLERY">Galerie Photo</string>
     <string name="NAV_3D_SECURE">3D Secure</string>
     <string name="NAV_INVITATION">Inviter mes amis</string>
-    <string name="NAV_FRIEND_PICKER">Choisir un contact</string>
+    <string name="NAV_FRIEND_PICKER">Choisir un destinataire</string>
 
     <string name="HOME_LOGIN">Connexion</string>
     <string name="HOME_SIGNUP">S\'inscrire</string>
 
     <string name="CREDIT_CARD_SCAN">Scanner ma carte, c\'est plus rapide !</string>
     <string name="CREDIT_CARD_REMOVE">Supprimer cette carte</string>
+    <string name="CREDIT_CARD_INFOS">Vos données bancaires ne sont pas stockées dans l\'application. Elles sont cryptées et conservées chez Rentabiliweb, établissement de paiement certifié PCI-DSS niveau 1, soit le plus haut niveau d\'exigence en matière de sécurité des données bancaires sur Internet. Vous pouvez supprimer votre carte bancaire à tout moment.</string>
 
     <string name="CASHOUT_BALANCE">Votre solde Flooz</string>
     <string name="CASHOUT_PLACEHOLDER">Saisir le montant à retirer</string>
@@ -92,10 +98,6 @@
     <string name="PAYEMENT_FIELD_WALLET">Porte-monnaie</string>
     <string name="PAYEMENT_FIELD_CARD">Carte Bancaire</string>
 
-    <string name="SOCIAL_FILTER_FRIENDS">Amis</string>
-    <string name="SOCIAL_FILTER_EVENTS">Cagnotte</string>
-    <string name="SOCIAL_FILTER_ACTIVITIES">ACTIVITE</string>
-
     <string name="FIELD_USERNAME">Pseudo</string>
     <string name="FIELD_BIRTHDATE">Date de naissance</string>
     <string name="FIELD_BIRTHDATE_EX">jj / mm / aa</string>
@@ -113,13 +115,9 @@
 
     <string name="FIELD_IBAN">Code IBAN</string>
     <string name="FIELD_IBAN_PLACEHOLDER">FR</string>
-    <string name="FIELD_BIC">Code BIC</string>
-    <string name="FIELD_BIC_PLACEHOLDER"></string>
 
     <string name="FIELD_CARD_OWNER">Titulaire de la carte</string>
-    <string name="FIELD_CARD_OWNER_PLACEHOLDER"></string>
     <string name="FIELD_CARD_NUMBER">Numero de carte</string>
-    <string name="FIELD_CARD_NUMBER_PLACEHOLDER"></string>
     <string name="FIELD_CARD_EXPIRES">Date d\'expiration</string>
     <string name="FIELD_CARD_EXPIRES_PLACEHOLDER">MMYY</string>
     <string name="FIELD_CARD_CVV">Cryptogramme</string>
@@ -136,7 +134,7 @@
     <string name="FIELD_TRANSACTION_TITLE_PLACEHOLDER">Restaurant entre amis</string>
     <string name="FIELD_TRANSACTION_TO">À :</string>
     <string name="FIELD_TRANSACTION_TO_PLACEHOLDER">Personnes à notifier</string>
-    <string name="FIELD_TRANSACTION_CONTENT_PLACEHOLDER">Ajouter une description…</string>
+    <string name="FIELD_TRANSACTION_CONTENT_PLACEHOLDER">Ajouter un commentaire…</string>
     <string name="FIELD_TRANSACTION_EVENT_PLACEHOLDER">Ajouter plus d\'info…</string>
     <string name="FIELD_TRANSACTION_SELECT_FRIEND">A qui ?</string>
     <string name="FIELD_TRANSACTION_HIDE">Masquer ma participation</string>
@@ -167,7 +165,6 @@
     <string name="REPORT_LINE_ALERT_MESSAGE">Êtes-vous sûr de vouloir signaler ce contenu ?</string>
 
     <string name="ACTIVITIES_NOTIFICATIONS">Notifications</string>
-    <string name="ACTIVITIES_NEW_NOTIFICATIONS">nouvelles notifications</string>
 
     <string name="ACCOUNT_BALANCE">Porte-monnaie</string>
 
@@ -244,37 +241,10 @@
     <string name="FRIENDS_FRIENDS_SUGGESTION">Vous connaissez peut-être...</string>
     <string name="FRIENDS_FRIENDS">Mes amis</string>
 
-    <string name="FRIEND_PIKER_PLACEHOLDER">Pseudo ou 06</string>
-    <string name="FRIEND_PICKER_FRIENDS_RECENT">Récent</string>
+    <string name="FRIEND_PIKER_PLACEHOLDER">Chercher un contact / Entrer un 06</string>
+    <string name="FRIEND_PICKER_FRIENDS_RECENT">Contacts Récents</string>
     <string name="FRIEND_PICKER_FRIENDS">Mes amis</string>
     <string name="FRIEND_PICKER_ADDRESS_BOOK">Carnet d\'adresse</string>
-
-    <string name="EVENT_AMOUNT">Argent récolté</string>
-    <string name="EVENT_AMOUNT_FREE">Montant libre</string>
-
-    <string name="EVENT_HEADER_MONEY_COLLECTED">Collectés</string>
-    <string name="EVENT_HEADER_DAY_LEFT">Jours restants</string>
-    <string name="EVENT_HEADER_DAY_LEFT_CLOSED">Clôturée</string>
-
-    <string name="EVENT_START_BY">Créée par </string>
-
-    <string name="EVENT_INVITE_PARTICIPANT">Inviter des amis</string>
-    <string name="EVENT_PARTICIPANTS">Participants</string>
-    <string name="EVENT_PARTICIPANTS_S">Participant(s)</string>
-    <string name="EVENT_PARTICIPANTS_INVITED">%.2d AUTRES PARTICIPANTS</string>
-    <string name="EVENT_PARTICIPANT_INVITE">Inviter des amis</string>
-
-    <string name="EVENT_ACTION_REFUSE">REFUSER</string>
-    <string name="EVENT_ACTION_CANCEL">ANNULER</string>
-    <string name="EVENT_ACTION_DECLINE">DECLINER L\'INVITATION</string>
-    <string name="EVENT_ACTION_PARTICIPATE">PARTICIPER À LA CAGNOTTE</string>
-    <string name="EVENT_ACTION_ACCEPT">ACCEPTER</string>
-
-    <string name="EVENT_ACTION_COLLECT">Clôturer et encaisser</string>
-    <string name="EVENT_ACTION_OFFER">OFFRIR</string>
-
-    <string name="EVENT_STATUS_ACCEPTED">J\'y participe</string>
-    <string name="EVENT_STATUS_WAITING">Invité</string>
 
     <string name="SECORE_CODE_TEXT_FIRST_TIME">Ce code vous permet de sécuriser vos paiements en cas de perte/vol de votre mobile.</string>
     <string name="SECORE_CODE_TEXT_CURRENT">Entrez votre code secret :</string>
@@ -336,7 +306,7 @@
     <string name="SIGNUP_SMS_RESEND">Renvoyer le code %d</string>
     <string name="SIGNUP_SMS_RESEND_EMPTY">Renvoyer le code</string>
 
-    <string name="SIGNUP_PAGE_TITLE_NumMobile">Identification</string>
+    <string name="SIGNUP_PAGE_TITLE_NumMobile">N° de mobile</string>
     <string name="SIGNUP_PAGE_TITLE_Pseudo">Créez votre pseudo</string>
     <string name="SIGNUP_PAGE_TITLE_Sms">SMS de validation</string>
     <string name="SIGNUP_PAGE_TITLE_Info">Inscription</string>
@@ -349,7 +319,7 @@
     <string name="SIGNUP_PAGE_TITLE_Ask_Contact">Accès à vos contacts</string>
     <string name="SIGNUP_PAGE_TITLE_Friends">Ajouter des amis</string>
 
-    <string name="SIGNUP_PSEUDO_EXPLICATION">Donnez votre pseudo pour recevoir de l\'argent.\nC\'est votre identité, il est unique et non modifiable.</string>
+    <string name="SIGNUP_PSEUDO_EXPLICATION">Votre pseudo, c\'est votre identité. C\'est comme ça que les autres vous verront sur l\'app. Soyez créatifs ;)</string>
     <string name="SIGNUP_PASSWORD_EXPLICATION">6 caractères min</string>
     <string name="SIGNUP_IMAGE_EXPLICATION">Une bonne photo est indispensable pour être reconnaissable ! Utilisez votre photo facebook ou ajoutez-en une !</string>
 
@@ -385,6 +355,8 @@
     <string name="CODE_INVITATION_TITLE">Code d\'invitation</string>
     <string name="CODE_INVITATION_EXPLICATION">Vous devez disposer d\'un code d\'invitation pour vivre l\'expérience flooz.</string>
 
+    <string name="NETWORK_UNAVAILABLE_TITLE">Erreur de connexion</string>
+    <string name="NETWORK_UNAVAILABLE_TEXT">La connexion internet semble interrompue :(</string>
 
     <!-- Moment Date Implementation -->
 

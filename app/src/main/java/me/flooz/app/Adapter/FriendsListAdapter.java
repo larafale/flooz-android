@@ -1,0 +1,375 @@
+package me.flooz.app.Adapter;
+
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Typeface;
+import android.support.v4.content.LocalBroadcastManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.BaseAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.makeramen.RoundedImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import me.flooz.app.App.FloozApplication;
+import me.flooz.app.Model.FLError;
+import me.flooz.app.Model.FLUser;
+import me.flooz.app.Network.FloozHttpResponseHandler;
+import me.flooz.app.Network.FloozRestClient;
+import me.flooz.app.R;
+import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.CustomNotificationIntents;
+import me.flooz.app.App.FloozApplication;
+import me.flooz.app.Model.FLError;
+import me.flooz.app.Model.FLUser;
+import me.flooz.app.Network.FloozHttpResponseHandler;
+import me.flooz.app.Network.FloozRestClient;
+import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
+
+public class FriendsListAdapter extends BaseAdapter implements StickyListHeadersAdapter {
+
+    public Boolean isSearchActive = false;
+
+    private Context context;
+    private LayoutInflater inflater;
+
+    public FriendsListAdapterDelegate delegate;
+
+    public List<FLUser> suggestionList = new ArrayList<>(0);
+    public List<FLUser> friendList = new ArrayList<>(0);
+    public List<FLUser> pendingList = new ArrayList<>(0);
+
+    public List<FLUser> searchFloozUsers = new ArrayList<>(0);
+
+    private BroadcastReceiver reloadFriendsReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+
+            FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+            pendingList = currentUser.friendsRequest;
+            friendList = currentUser.friends;
+
+            if (pendingList == null)
+                pendingList = new ArrayList<>(0);
+
+            if (friendList == null)
+                friendList = new ArrayList<>(0);
+
+            notifyDataSetChanged();
+        }
+    };
+
+    private BroadcastReceiver reloadContent = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            FloozRestClient.getInstance().updateCurrentUser(null);
+        }
+    };
+
+    private BroadcastReceiver reloadSuggest = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            reloadSuggestions();
+        }
+    };
+
+    public FriendsListAdapter(Context ctx) {
+        this.inflater = LayoutInflater.from(ctx);
+        this.context = ctx;
+
+        this.reloadSuggestions();
+    }
+
+    public void loadBroadcastReceivers() {
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadFriendsReceiver,
+                CustomNotificationIntents.filterReloadCurrentUser());
+
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadContent,
+                CustomNotificationIntents.filterShowSlidingRightMenu());
+
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadSuggest,
+                CustomNotificationIntents.filterReloadFriends());
+    }
+
+    public void unloadBroadcastReceivers() {
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadFriendsReceiver);
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadContent);
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadSuggest);
+    }
+
+    public void reloadSuggestions() {
+        FloozRestClient.getInstance().loadFriendSuggestions(new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                suggestionList.clear();
+                suggestionList.addAll((List<FLUser>)response);
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+
+            }
+        });
+    }
+
+    public void reloadFriends() {
+        FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+        pendingList = currentUser.friendsRequest;
+        friendList = currentUser.friends;
+
+        if (pendingList == null)
+            pendingList = new ArrayList<FLUser>(0);
+
+        if (friendList == null)
+            friendList = new ArrayList<FLUser>(0);
+
+        notifyDataSetChanged();
+    }
+
+    public void reloadSuggestions(List<FLUser> friends) {
+        suggestionList.clear();
+        suggestionList.addAll(friends);
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public void notifyDataSetChanged() {
+        super.notifyDataSetChanged();
+
+        if (this.delegate != null)
+            this.delegate.dataReloaded();
+    }
+
+    @Override
+    public View getHeaderView(int position, View convertView, ViewGroup parent) {
+        HeaderViewHolder holder;
+
+        if (convertView == null) {
+            holder = new HeaderViewHolder();
+            convertView = inflater.inflate(R.layout.user_list_header, parent, false);
+            holder.text = (TextView) convertView.findViewById(R.id.user_list_header_text);
+
+            holder.text.setTypeface(CustomFonts.customTitleExtraLight(this.context));
+
+            convertView.setTag(holder);
+        } else {
+            holder = (HeaderViewHolder) convertView.getTag();
+        }
+
+        if (!this.isSearchActive) {
+            if (position < this.suggestionList.size())
+                holder.text.setText(this.context.getResources().getString(R.string.FRIENDS_FRIENDS_SUGGESTION));
+            else if (position >= this.suggestionList.size() && position < this.pendingList.size() + this.suggestionList.size())
+                holder.text.setText(this.context.getResources().getString(R.string.FRIENDS_FRIENDS_REQUEST) + " (" + this.pendingList.size() + ")");
+            else
+                holder.text.setText(this.context.getResources().getString(R.string.FRIENDS_FRIENDS) + " (" + this.friendList.size() + ")");
+        }
+        else
+            holder.text.setText(this.context.getResources().getString(R.string.FRIEND_PCIKER_SELECTION_CELL) + " (" + this.searchFloozUsers.size() + ")");
+
+        return convertView;
+    }
+
+    @Override
+    public long getHeaderId(int i) {
+        if (!this.isSearchActive) {
+            if (i < this.suggestionList.size())
+                return FLUser.FLUserSelectedCanal.SuggestionCanal.ordinal();
+            else if (i >= this.suggestionList.size() && i < this.pendingList.size() + this.suggestionList.size())
+                return FLUser.FLUserSelectedCanal.PendingCanal.ordinal();
+            else
+                return FLUser.FLUserSelectedCanal.FriendsCanal.ordinal();
+        }
+        else
+            return FLUser.FLUserSelectedCanal.SearchCanal.ordinal();
+    }
+
+    @Override
+    public int getCount() {
+        if (!this.isSearchActive)
+            return this.suggestionList.size() + this.friendList.size() + this.pendingList.size();
+        return this.searchFloozUsers.size();
+    }
+
+    @Override
+    public FLUser getItem(int i) {
+        if (!this.isSearchActive) {
+            if (i < this.suggestionList.size())
+                return this.suggestionList.get(i);
+            else if (i >= this.suggestionList.size() && i < this.pendingList.size() + this.suggestionList.size())
+                return this.pendingList.get(i - this.suggestionList.size());
+            else
+                return this.friendList.get(i - this.suggestionList.size() - this.pendingList.size());
+        }
+        else
+            return this.searchFloozUsers.get(i);
+    }
+
+    @Override
+    public long getItemId(int i) {
+        return i;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        final ViewHolder holder;
+
+        if (convertView == null) {
+            holder = new ViewHolder();
+            convertView = inflater.inflate(R.layout.user_list_row, parent, false);
+            holder.username = (TextView) convertView.findViewById(R.id.user_list_row_username);
+            holder.fullname = (TextView) convertView.findViewById(R.id.user_list_row_fullname);
+            holder.pic = (RoundedImageView) convertView.findViewById(R.id.user_list_row_pic);
+            holder.button = (ImageView) convertView.findViewById(R.id.user_list_row_button);
+
+            holder.username.setTypeface(CustomFonts.customTitleExtraLight(this.context), Typeface.BOLD);
+            holder.fullname.setTypeface(CustomFonts.customTitleExtraLight(this.context));
+
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
+
+        final FLUser user = (FLUser)this.getItem(position);
+
+        holder.fullname.setText(user.fullname);
+        holder.username.setText("@" + user.username);
+
+        holder.pic.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
+        if (user.avatarURL != null && !user.avatarURL.isEmpty())
+            ImageLoader.getInstance().displayImage(user.avatarURL, holder.pic);
+
+        if (!this.isSearchActive && position < this.suggestionList.size()) {
+            holder.button.setImageResource(R.drawable.friends_add);
+            holder.button.setVisibility(View.VISIBLE);
+
+            holder.button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.button.setOnClickListener(null);
+                    holder.button.setImageResource(R.drawable.friends_accepted);
+                    user.selectedCanal = FLUser.FLUserSelectedCanal.SuggestionCanal;
+                    FloozRestClient.getInstance().sendFriendRequest(user.userId, user.getSelectedCanal(), new FloozHttpResponseHandler() {
+                        @Override
+                        public void success(Object response) {
+                            reloadSuggestions();
+                            FloozRestClient.getInstance().updateCurrentUser(null);
+                        }
+
+                        @Override
+                        public void failure(int statusCode, FLError error) {
+
+                        }
+                    });
+                }
+            });
+        }
+        else if (this.isSearchActive && FloozRestClient.getInstance().currentUser.userIsAFriend(user)) {
+            holder.button.setImageResource(R.drawable.friends_accepted);
+            holder.button.setVisibility(View.VISIBLE);
+            holder.button.setOnClickListener(null);
+        }
+        else if (this.isSearchActive) {
+            holder.button.setImageResource(R.drawable.friends_add);
+            holder.button.setVisibility(View.VISIBLE);
+
+            holder.button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    holder.button.setOnClickListener(null);
+                    holder.button.setImageResource(R.drawable.friends_accepted);
+                    user.selectedCanal = FLUser.FLUserSelectedCanal.SearchCanal;
+                    FloozRestClient.getInstance().sendFriendRequest(user.userId, user.getSelectedCanal(), new FloozHttpResponseHandler() {
+                        @Override
+                        public void success(Object response) {
+                            FloozRestClient.getInstance().updateCurrentUser(null);
+                        }
+
+                        @Override
+                        public void failure(int statusCode, FLError error) {
+
+                        }
+                    });
+                }
+            });
+        }
+        else
+            holder.button.setVisibility(View.GONE);
+
+        return convertView;
+    }
+
+    public FriendKind getUserKind(int position) {
+        if (!this.isSearchActive) {
+            if (position < this.suggestionList.size())
+                return FriendKind.SUGGESTION;
+            else if (position >= this.suggestionList.size() && position < this.pendingList.size() + this.suggestionList.size())
+                return FriendKind.REQUEST;
+            else
+                return FriendKind.FRIEND;
+        }
+        else
+            return FriendKind.SEARCH;
+    }
+
+    public void searchUser(String searchString) {
+
+        if (searchString != null && searchString.length() > 0) {
+            this.isSearchActive = true;
+
+            this.searchFloozUsers.clear();
+
+            this.notifyDataSetChanged();
+
+            FloozRestClient.getInstance().searchUser(searchString, false, new FloozHttpResponseHandler() {
+                @Override
+                public void success(Object response) {
+                    searchFloozUsers = new ArrayList<FLUser>((List<FLUser>)response);
+                    if (isSearchActive)
+                        notifyDataSetChanged();
+                }
+
+                @Override
+                public void failure(int statusCode, FLError error) {
+
+                }
+            });
+        }
+        else
+            this.stopSearch();
+    }
+
+    public void stopSearch() {
+//        this.reloadSuggestions();
+        this.isSearchActive = false;
+        this.notifyDataSetChanged();
+    }
+
+    public enum FriendKind {
+        SUGGESTION,
+        REQUEST,
+        FRIEND,
+        SEARCH
+    }
+
+    class HeaderViewHolder {
+        TextView text;
+    }
+
+    class ViewHolder {
+        TextView fullname;
+        TextView username;
+        RoundedImageView pic;
+        ImageView button;
+    }
+}

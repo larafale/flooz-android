@@ -241,7 +241,7 @@
                         android:textColor="@android:color/white"
                         android:textSize="@dimen/card_content"/>
 
-                    <flooz.android.com.flooz.UI.View.LoadingImageView
+                    <me.flooz.app.UI.View.LoadingImageView
                         android:id="@+id/transac_card_pic"
                         android:layout_width="fill_parent"
                         android:layout_height="150dp"/>

@@ -117,8 +117,7 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_gravity="right"
-                android:padding="@dimen/dimen_small"
-                android:src="@drawable/friends_accepted"/>
+                android:padding="@dimen/dimen_small"/>
 
         </FrameLayout>
 
@@ -146,8 +145,7 @@
                 android:layout_width="35dp"
                 android:layout_height="35dp"
                 android:layout_gravity="right"
-                android:padding="@dimen/dimen_small"
-                android:src="@drawable/friends_accepted"/>
+                android:padding="@dimen/dimen_small"/>
 
         </FrameLayout>
 

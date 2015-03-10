@@ -11,6 +11,12 @@
         android:layout_height="match_parent"
         android:background="@color/background_header"/>
 
+    <View
+        android:id="@+id/camera_overlay_touch"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:clickable="true"/>
+
     <ImageView
         android:id="@+id/camera_overlay_album"
         android:layout_width="@dimen/photo_capture_icons"

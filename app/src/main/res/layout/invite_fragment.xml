@@ -26,7 +26,7 @@
             android:layout_width="@dimen/new_flooz_header_cross"
             android:padding="@dimen/dimen_large"
             android:layout_height="fill_parent"
-            android:src="@drawable/nav_account_button"/>
+            android:src="@drawable/nav_cross"/>
 
     </RelativeLayout>
 

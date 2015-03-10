@@ -6,43 +6,54 @@
     android:layout_height="match_parent"
     android:background="@color/background">
 
+    <!--<ImageView-->
+        <!--android:layout_width="fill_parent"-->
+        <!--android:layout_height="55dp"-->
+        <!--android:src="@drawable/flooz_full"-->
+        <!--android:paddingBottom="@dimen/dimen_medium"-->
+        <!--android:paddingTop="@dimen/dimen_medium"-->
+        <!--android:background="@color/background_header"/>-->
+
     <ListView
         android:id="@+id/start_timeline_list"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
+        android:layout_weight="7"
         android:divider="@drawable/timeline_dividers"
-        android:layout_weight="6"
         android:dividerHeight="1px"
         android:listSelector="@android:color/transparent"
         android:layout_marginBottom="@dimen/dimen_small"
         android:overScrollMode="never"/>
 
     <LinearLayout
-        android:id="@+id/start_login_button"
         android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:background="@drawable/login_button_background"
+        android:layout_height="wrap_content"
         android:gravity="center"
-        android:layout_margin="@dimen/dimen_small"
+        android:layout_alignParentBottom="true"
+        android:background="#55000000"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/start_login_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/GLOBAL_START"
+        <Button
+            android:id="@+id/start_signup_button"
+            android:layout_width="fill_parent"
+            android:layout_height="60dp"
             android:gravity="center"
+            android:background="@color/blue"
+            android:text="@string/START_SIGNUP"
+            android:textSize="20sp"
             android:textAllCaps="true"
-            android:textColor="@android:color/white"
-            android:textSize="18sp"/>
+            android:textColor="@drawable/text_color_action_button"/>
 
-        <ImageView
-            android:id="@+id/start_login_image"
-            android:layout_width="wrap_content"
-            android:layout_height="35dp"
-            android:padding="@dimen/dimen_small"
-            android:src="@drawable/flooz_full"/>
+        <Button
+            android:id="@+id/start_login_button"
+            android:layout_width="fill_parent"
+            android:layout_height="40dp"
+            android:background="#0A79B3"
+            android:gravity="center"
+            android:text="@string/START_LOGIN"
+            android:textSize="18sp"
+            android:textAllCaps="false"
+            android:textColor="@drawable/text_color_action_button"/>
 
     </LinearLayout>
 

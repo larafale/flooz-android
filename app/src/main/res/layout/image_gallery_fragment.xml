@@ -35,17 +35,31 @@
 
     </RelativeLayout>
 
-    <GridView
-        android:padding="@dimen/dimen_large"
-        android:id="@+id/photo_gallery_grid"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:columnWidth="90dp"
-        android:numColumns="auto_fit"
-        android:verticalSpacing="@dimen/dimen_large"
-        android:horizontalSpacing="@dimen/dimen_large"
-        android:stretchMode="columnWidth"
-        android:gravity="center"
-        />
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <GridView
+            android:padding="@dimen/dimen_large"
+            android:id="@+id/photo_gallery_grid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:columnWidth="90dp"
+            android:numColumns="auto_fit"
+            android:verticalSpacing="@dimen/dimen_large"
+            android:horizontalSpacing="@dimen/dimen_large"
+            android:stretchMode="columnWidth"
+            android:gravity="center"
+            />
+
+        <ProgressBar
+            android:layout_centerInParent="true"
+            android:id="@+id/photo_gallery_progress"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" >
+        </ProgressBar>
+
+    </RelativeLayout>
 
 </LinearLayout>

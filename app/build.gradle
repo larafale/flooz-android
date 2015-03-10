@@ -39,11 +39,11 @@ android {
     }
 
     defaultConfig {
-        applicationId "flooz.android.com.flooz"
+        applicationId "me.flooz.app"
         minSdkVersion 17
         targetSdkVersion 21
-        versionCode 1
-        versionName "1.0"
+        versionCode 4
+        versionName "1.0.3"
         signingConfig signingConfigs.release
     }
 
@@ -74,11 +74,8 @@ android {
     buildTypes {
         local {
             buildConfigField "boolean", "LOCAL_API", "true"
-            buildConfigField "boolean", "DEBUG_API", "false"
+            buildConfigField "boolean", "DEBUG_API", "true"
             signingConfig signingConfigs.local
-            debuggable true
-            jniDebuggable true
-            renderscriptDebuggable true
             applicationIdSuffix 'local'
         }
         debug {
@@ -91,7 +88,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "boolean", "LOCAL_API", "false"
-            buildConfigField "boolean", "DEBUG_API", "true"
+            buildConfigField "boolean", "DEBUG_API", "false"
         }
     }
 
@@ -120,15 +117,14 @@ dependencies {
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile 'com.makeramen:roundedimageview:1.3.0'
     compile 'com.loopj.android:android-async-http:1.4.6'
-    compile 'com.navercorp.pulltorefresh:library:3.2.0@aar'
     compile 'com.viewpagerindicator:library:2.4.1@aar'
-    compile 'se.emilsjolander:stickylistheaders:2.5.1'
-    compile 'com.googlecode.libphonenumber:libphonenumber:6.3'
-    compile 'com.commonsware.cwac:camera:0.6.12'
-    compile 'org.apache.james:apache-mime4j:0.5'
-    compile 'com.github.nkzawa:socket.io-client:0.4.0'
-    compile 'com.mixpanel.android:mixpanel-android:4.4.1@aar'
-    compile 'com.google.android.gms:play-services:6.1.71'
+    compile 'se.emilsjolander:stickylistheaders:2.5.2'
+    compile 'com.googlecode.libphonenumber:libphonenumber:7.0.2'
+    compile 'com.commonsware.cwac:camera:0.6.+'
+    compile 'org.apache.james:apache-mime4j:0.7.2'
+    compile 'com.github.nkzawa:socket.io-client:0.4.1'
+    compile 'com.mixpanel.android:mixpanel-android:4.5.3@aar'
+    compile 'com.google.android.gms:play-services:6.+'
     compile 'info.hoang8f:android-segmented:1.0.4'
     compile 'com.github.chrisbanes.photoview:library:1.2.3'
     compile 'com.github.navasmdc:MaterialDesign:1.+@aar'

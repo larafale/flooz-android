@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<flooz.android.com.flooz.Utils.SwipeViewGroup xmlns:android="http://schemas.android.com/apk/res/android"
+<me.flooz.app.Utils.SwipeViewGroup xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background_header">
@@ -164,4 +164,4 @@
 
     </ListView>
 
-</flooz.android.com.flooz.Utils.SwipeViewGroup>
+</me.flooz.app.Utils.SwipeViewGroup>

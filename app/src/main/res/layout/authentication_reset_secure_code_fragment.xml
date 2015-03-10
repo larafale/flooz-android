@@ -69,7 +69,7 @@
             </LinearLayout>
         </LinearLayout>
 
-        <flooz.android.com.flooz.UI.View.NumericKeyboard
+        <me.flooz.app.UI.View.NumericKeyboard
             android:id="@+id/authentication_reset_secure_code_keypad"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

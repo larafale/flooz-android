@@ -16,7 +16,7 @@
         app:type="material"
         android:background="@android:color/transparent">
 
-        <flooz.android.com.flooz.UI.View.TimelineListView
+        <me.flooz.app.UI.View.TimelineListView
             android:id="@+id/timeline_list"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
