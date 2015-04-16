@@ -2,7 +2,6 @@ package me.flooz.app.Utils;
 
 import android.view.GestureDetector;
 import android.view.MotionEvent;
-import android.view.View;
 
 /**
  * Created by Flooz on 9/22/14.

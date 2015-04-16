@@ -6,7 +6,12 @@ import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.provider.MediaStore;
 import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -15,38 +20,48 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.commonsware.cwac.camera.CameraHost;
-import com.commonsware.cwac.camera.CameraHostProvider;
 import com.facebook.Session;
+
+import org.json.JSONObject;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLUser;
 import me.flooz.app.R;
 import me.flooz.app.UI.Fragment.Signup.SignupBaseFragment;
 import me.flooz.app.UI.Fragment.Signup.SignupCGUFragment;
-import me.flooz.app.UI.Fragment.Signup.SignupImageCaptureFragment;
 import me.flooz.app.UI.Fragment.Signup.SignupImageFragment;
-import me.flooz.app.UI.Fragment.Signup.SignupImagePickerFragment;
 import me.flooz.app.UI.Fragment.Signup.SignupInfosFragment;
+import me.flooz.app.UI.Fragment.Signup.SignupInvitationFragment;
 import me.flooz.app.UI.Fragment.Signup.SignupPassFragment;
 import me.flooz.app.UI.Fragment.Signup.SignupPhoneFragment;
 import me.flooz.app.UI.Fragment.Signup.SignupSMSFragment;
 import me.flooz.app.UI.Fragment.Signup.SignupUsernameFragment;
-import me.flooz.app.Utils.CustomCameraHost;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.ImageHelper;
+import me.flooz.app.Utils.ViewServer;
 import scanpay.it.CreditCard;
 import scanpay.it.ScanPay;
 
 /**
  * Created by Flooz on 9/17/14.
  */
-public class SignupActivity extends FragmentActivity implements CustomCameraHost.CustomCameraHostDelegate, CameraHostProvider {
+public class SignupActivity extends FragmentActivity {
 
+    private SignupActivity instance;
     public FloozApplication floozApp;
 
-    public FLUser userData = new FLUser();
+    public FLUser userData;
 
     public static final int RESULT_SCANPAY_ACTIVITY = 4;
+    public static final int SELECT_PICTURE = 1;
+    public static final int TAKE_PICTURE = 2;
+
+    private Uri tmpUriImage;
 
     public enum SignupPageIdentifier {
         SignupPhone,
@@ -56,10 +71,9 @@ public class SignupActivity extends FragmentActivity implements CustomCameraHost
         SignupInfos,
         SignupPass,
         SignupPassConfirm,
-        SignupImageCapture,
-        SignupImagePicker,
         SignupCGU,
-    };
+        SignupInvitation
+    }
 
     public RelativeLayout header;
     public TextView headerTitle;
@@ -68,15 +82,26 @@ public class SignupActivity extends FragmentActivity implements CustomCameraHost
     public SignupPageIdentifier currentPage;
     public SignupBaseFragment currentFragment;
 
+    public List<SignupBaseFragment> fragmentHistory;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).addWindow(this);
+
+        instance = this;
         floozApp = (FloozApplication)this.getApplicationContext();
 
         setContentView(R.layout.signup_activity);
 
+        this.fragmentHistory = new ArrayList<>();
+
         this.currentPage = SignupPageIdentifier.values()[getIntent().getIntExtra("page", SignupPageIdentifier.SignupPhone.ordinal())];
+
+        this.userData = new FLUser();
+
         if (getIntent().getStringExtra("phone") != null && getIntent().getStringExtra("phone").length() > 0) {
             this.userData.phone = getIntent().getStringExtra("phone");
             if (this.userData.phone.startsWith("+33"))
@@ -86,7 +111,7 @@ public class SignupActivity extends FragmentActivity implements CustomCameraHost
         if (getIntent().getStringExtra("coupon") != null && getIntent().getStringExtra("coupon").length() > 0)
             this.userData.coupon = getIntent().getStringExtra("coupon");
 
-        this.userData.distinctId = floozApp.mixpanelAPI.getDistinctId();
+        this.userData.distinctId = FloozApplication.mixpanelAPI.getDistinctId();
 
         this.header = (RelativeLayout)this.findViewById(R.id.signup_header);
         this.headerTitle = (TextView)this.findViewById(R.id.signup_header_title);
@@ -105,14 +130,24 @@ public class SignupActivity extends FragmentActivity implements CustomCameraHost
 
     protected void onResume() {
         super.onResume();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).setFocusedWindow(this);
+
         floozApp.setCurrentActivity(this);
     }
+
     protected void onPause() {
         clearReferences();
         super.onPause();
     }
+
     protected void onDestroy() {
         clearReferences();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).removeWindow(this);
+
         super.onDestroy();
     }
 
@@ -132,49 +167,45 @@ public class SignupActivity extends FragmentActivity implements CustomCameraHost
         InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), 0);
 
-        Fragment fragment = this.getFragmentForCurrentPage();
+        SignupBaseFragment fragment = this.getFragmentForCurrentPage();
 
         FragmentTransaction ft = this.getFragmentManager().beginTransaction();
 
         ft.setCustomAnimations(android.R.animator.fade_in, android.R.animator.fade_out);
 
-        ft.replace(R.id.signup_fragment_container, fragment);
+        ft.add(R.id.signup_fragment_container, fragment);
         ft.addToBackStack(null).commit();
+
+        if (this.currentPage == SignupPageIdentifier.SignupSMS) {
+            this.fragmentHistory.clear();
+            this.fragmentHistory.add(new SignupPhoneFragment());
+        }
+
+        this.fragmentHistory.add(fragment);
+        this.currentFragment = fragment;
 
         this.changeTitleForCurrentPage();
     }
 
-
-    public void changeCurrentPage(SignupPageIdentifier page, int animIn, int animOut) {
+    public void changeCurrentPage(SignupPageIdentifier page, int animIn, int animOut, JSONObject data) {
         this.currentPage = page;
         InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), 0);
 
-        Fragment fragment = this.getFragmentForCurrentPage();
+        SignupBaseFragment fragment = this.getFragmentForCurrentPage();
+
+        if (data != null)
+            fragment.setInitData(data);
 
         FragmentTransaction ft = this.getFragmentManager().beginTransaction();
 
         ft.setCustomAnimations(animIn, animOut);
 
-        ft.replace(R.id.signup_fragment_container, fragment);
+        ft.add(R.id.signup_fragment_container, fragment);
         ft.addToBackStack(null).commit();
 
-        this.changeTitleForCurrentPage();
-    }
-
-    public void changeCurrentPage(SignupBaseFragment fragment, int animIn, int animOut) {
-        InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), 0);
-
+        this.fragmentHistory.add(fragment);
         this.currentFragment = fragment;
-        this.currentFragment.parentActivity = this;
-
-        FragmentTransaction ft = this.getFragmentManager().beginTransaction();
-
-        ft.setCustomAnimations(animIn, animOut);
-
-        ft.replace(R.id.signup_fragment_container, this.currentFragment);
-        ft.addToBackStack(null).commit();
 
         this.changeTitleForCurrentPage();
     }
@@ -203,13 +234,10 @@ public class SignupActivity extends FragmentActivity implements CustomCameraHost
                 break;
             case SignupPassConfirm:
                 break;
-            case SignupImageCapture:
-                break;
-            case SignupImagePicker:
-                title = this.getApplicationContext().getResources().getString(R.string.NAV_PHOTO_GALLERY);
-                break;
             case SignupCGU:
                 title = this.getApplicationContext().getResources().getString(R.string.INFORMATIONS_TERMS);
+                break;
+            case SignupInvitation:
                 break;
         }
 
@@ -243,22 +271,18 @@ public class SignupActivity extends FragmentActivity implements CustomCameraHost
                 fragment = new SignupPassFragment();
                 ((SignupPassFragment)fragment).confirmMode = true;
                 break;
-            case SignupImageCapture:
-                fragment = new SignupImageCaptureFragment();
-                ((SignupImageCaptureFragment)fragment).cameraHostDelegate = this;
-                break;
-            case SignupImagePicker:
-                fragment = new SignupImagePickerFragment();
-                ((SignupImagePickerFragment)fragment).cameraHostDelegate = this;
-                break;
             case SignupCGU:
                 fragment = new SignupCGUFragment();
+                break;
+            case SignupInvitation:
+                fragment = new SignupInvitationFragment();
                 break;
             default:
                 break;
         }
 
         fragment.parentActivity = this;
+        fragment.pageId = this.currentPage;
 
         this.currentFragment = fragment;
 
@@ -281,109 +305,130 @@ public class SignupActivity extends FragmentActivity implements CustomCameraHost
         this.headerBackButton.setVisibility(View.VISIBLE);
     }
 
-    public void gotToNextPage() {
-        switch (this.currentPage) {
-            case SignupPhone:
-                this.currentPage = SignupPageIdentifier.SignupSMS;
-                break;
-            case SignupSMS:
-                this.currentPage = SignupPageIdentifier.SignupUsername;
-                break;
-            case SignupUsername:
-                this.currentPage = SignupPageIdentifier.SignupImage;
-                break;
-            case SignupImage:
-                this.currentPage = SignupPageIdentifier.SignupInfos;
-                break;
-            case SignupInfos:
-                this.currentPage = SignupPageIdentifier.SignupPass;
-                break;
-            case SignupPass:
-                this.currentPage = SignupPageIdentifier.SignupPassConfirm;
-                break;
-            case SignupPassConfirm:
-                break;
-            case SignupImageCapture:
-                break;
-            case SignupImagePicker:
-                break;
-            case SignupCGU:
-                break;
+    public void gotToNextPage(String step, JSONObject data) {
+
+        if (step == null || step.isEmpty()) {
+            switch (this.currentPage) {
+                case SignupPhone:
+                    this.currentPage = SignupPageIdentifier.SignupSMS;
+                    break;
+                case SignupSMS:
+                    this.currentPage = SignupPageIdentifier.SignupUsername;
+                    break;
+                case SignupUsername:
+                    this.currentPage = SignupPageIdentifier.SignupImage;
+                    break;
+                case SignupImage:
+                    this.currentPage = SignupPageIdentifier.SignupInfos;
+                    break;
+                case SignupInfos:
+                    this.currentPage = SignupPageIdentifier.SignupPass;
+                    break;
+                case SignupPass:
+                    this.currentPage = SignupPageIdentifier.SignupPassConfirm;
+                    break;
+                case SignupPassConfirm:
+                    break;
+                case SignupCGU:
+                    break;
+                case SignupInvitation:
+                    this.currentPage = SignupPageIdentifier.SignupPass;
+                    break;
+            }
+        } else {
+            switch (step) {
+                case "step-nick":
+                    this.currentPage = SignupPageIdentifier.SignupUsername;
+                    break;
+                case "step-image":
+                    this.currentPage = SignupPageIdentifier.SignupImage;
+                    break;
+                case "step-infos":
+                    this.currentPage = SignupPageIdentifier.SignupInfos;
+                    break;
+                case "step-invitation":
+                    this.currentPage = SignupPageIdentifier.SignupInvitation;
+                    break;
+                case "step-securecode":
+                    this.currentPage = SignupPageIdentifier.SignupPass;
+                    break;
+            }
         }
 
-        InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), 0);
-
-        Fragment fragment = this.getFragmentForCurrentPage();
-
-        FragmentTransaction ft = this.getFragmentManager().beginTransaction();
-
-        ft.setCustomAnimations(R.animator.slide_in_left, R.animator.slide_out_right);
-
-        ft.replace(R.id.signup_fragment_container, fragment);
-        ft.addToBackStack(null).commit();
-
-        this.changeTitleForCurrentPage();
+        this.changeCurrentPage(this.currentPage, R.animator.slide_in_left, R.animator.slide_out_right, data);
     }
 
     public void backToPreviousPage() {
-        switch (this.currentPage) {
-            case SignupPhone:
-                Intent intent2 = new Intent();
-                intent2.setClass(this.getApplicationContext(), StartActivity.class);
-                this.startActivity(intent2);
-                this.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                this.finish();
-                break;
-            case SignupSMS:
-                this.currentPage = SignupPageIdentifier.SignupPhone;
-                break;
-            case SignupUsername:
-                this.currentPage = SignupPageIdentifier.SignupSMS;
-                break;
-            case SignupImage:
-                this.currentPage = SignupPageIdentifier.SignupUsername;
-                break;
-            case SignupInfos:
-                this.currentPage = SignupPageIdentifier.SignupImage;
-                break;
-            case SignupPass:
-                this.currentPage = SignupPageIdentifier.SignupInfos;
-                break;
-            case SignupPassConfirm:
-                this.currentPage = SignupPageIdentifier.SignupPass;
-                break;
-            case SignupImageCapture:
-                this.currentPage = SignupPageIdentifier.SignupImage;
-                break;
-            case SignupImagePicker:
-                this.currentPage = SignupPageIdentifier.SignupImage;
-                break;
-            case SignupCGU:
-                this.currentPage = SignupPageIdentifier.SignupInfos;
-                break;
+        if (this.fragmentHistory.size() > 1) {
+            InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), 0);
+
+            SignupBaseFragment fragment = this.fragmentHistory.get(this.fragmentHistory.size() - 1);
+
+            FragmentTransaction ft = this.getFragmentManager().beginTransaction();
+
+            ft.setCustomAnimations(R.animator.slide_in_right, R.animator.slide_out_left);
+
+            ft.remove(fragment);
+            ft.addToBackStack(null).commit();
+
+            this.fragmentHistory.remove(this.fragmentHistory.size() - 1);
+            this.currentPage = this.fragmentHistory.get(this.fragmentHistory.size() - 1).pageId;
+
+            this.currentFragment = this.fragmentHistory.get(this.fragmentHistory.size() - 1);
+            this.currentFragment.onResume();
+
+            this.changeTitleForCurrentPage();
+        } else {
+            Intent intent = new Intent();
+            intent.setClass(this.getApplicationContext(), StartActivity.class);
+            this.startActivity(intent);
+            this.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            this.finish();
         }
-
-        InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), 0);
-
-        Fragment fragment = this.getFragmentForCurrentPage();
-
-        FragmentTransaction ft = this.getFragmentManager().beginTransaction();
-
-        ft.setCustomAnimations(R.animator.slide_in_right, R.animator.slide_out_left);
-
-        ft.replace(R.id.signup_fragment_container, fragment);
-        ft.addToBackStack(null).commit();
-
-        this.changeTitleForCurrentPage();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == RESULT_SCANPAY_ACTIVITY && resultCode == ScanPay.RESULT_SCAN_SUCCESS)
+        if (requestCode == SELECT_PICTURE || requestCode == TAKE_PICTURE) {
+            if (resultCode == RESULT_OK) {
+                Uri imageUri;
+                if (data == null || data.getData() == null)
+                    imageUri = this.tmpUriImage;
+                else
+                    imageUri = data.getData();
+
+                this.tmpUriImage = null;
+
+                final Uri selectedImageUri = imageUri;
+                if (selectedImageUri != null) {
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            String path = ImageHelper.getPath(instance, selectedImageUri);
+                            if (path != null) {
+                                File image = new File(path);
+                                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                                Bitmap photo = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
+
+                                int rotation = ImageHelper.getRotation(instance, selectedImageUri);
+                                if (rotation != 0) {
+                                    photo = ImageHelper.rotateBitmap(photo, rotation);
+                                }
+
+                                userData.avatarData = photo;
+                                userData.avatarURL = null;
+                                currentFragment.refreshView();
+                            }
+                        }
+                    });
+                }
+            }
+        }
+        else if (requestCode == RESULT_SCANPAY_ACTIVITY && resultCode == ScanPay.RESULT_SCAN_SUCCESS)
         {
             CreditCard creditCard = data.getParcelableExtra(ScanPay.EXTRA_CREDIT_CARD);
             Toast.makeText(this, creditCard.number + " " + creditCard.month + "/" + creditCard.year + " " + creditCard.cvv, Toast.LENGTH_LONG).show();
@@ -392,24 +437,29 @@ public class SignupActivity extends FragmentActivity implements CustomCameraHost
         {
             Toast.makeText(this, "Scan cancel", Toast.LENGTH_LONG).show();
         }
-        else
+        else if (Session.getActiveSession() != null)
             Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
     }
 
-    @Override
-    public void photoTaken(Bitmap photo) {
-        userData.avatarData = photo;
-        userData.avatarURL = null;
+    public void takeImageFromCam() {
+        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+        Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
+        tmpUriImage = fileUri;
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+
+        startActivityForResult(intent, HomeActivity.TAKE_PICTURE);
+    }
+
+    public void takeImageFromGallery() {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, HomeActivity.SELECT_PICTURE);
     }
 
     @Override
     public void onBackPressed() {
         this.backToPreviousPage();
-    }
-
-    @Override
-    public CameraHost getCameraHost() {
-        return(new CustomCameraHost(this));
     }
 }
 

@@ -11,6 +11,8 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
+import org.json.JSONObject;
+
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
@@ -34,7 +36,6 @@ public class SignupSMSFragment extends SignupBaseFragment implements NumericKeyb
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-
     }
 
     @Override
@@ -69,17 +70,20 @@ public class SignupSMSFragment extends SignupBaseFragment implements NumericKeyb
             public void onClick(View view) {
                 if (codeTextfield.getText().length() == 4) {
                     parentActivity.userData.smsCode = codeTextfield.getText().toString();
+                    nextButton.setEnabled(false);
                     FloozRestClient.getInstance().showLoadView();
                     FloozRestClient.getInstance().signupPassStep("sms", parentActivity.userData.getParamsForStep(false), new FloozHttpResponseHandler() {
                         @Override
                         public void success(Object response) {
                             timer = null;
-                            parentActivity.gotToNextPage();
+                            JSONObject responseJSON = (JSONObject) response;
+
+                            parentActivity.gotToNextPage(responseJSON.optString("nextStep"), responseJSON.optJSONObject("nextStepData"));
                         }
 
                         @Override
                         public void failure(int statusCode, FLError error) {
-
+                            nextButton.setEnabled(true);
                         }
                     });
                 } else {

@@ -13,7 +13,6 @@ import java.util.Map;
 
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.Utils.JSONHelper;
-import me.flooz.app.Network.FloozRestClient;
 
 /**
  * Created by Flooz on 9/8/14.
@@ -65,7 +64,8 @@ public class FLUser
 
     public enum UserKind {
         FloozUser,
-        PhoneUser
+        PhoneUser,
+        CactusUser
     }
 
     public enum FLUserSelectedCanal {
@@ -173,7 +173,7 @@ public class FLUser
             }
 
             if (this.json.has("friendsRequest")) {
-                this.friendsRequest = new ArrayList<FLUser>(0);
+                this.friendsRequest = new ArrayList<>(0);
                 JSONArray arrayFriendsRequest = this.json.getJSONArray("friendsRequest");
 
                 for (int i = 0; i < arrayFriendsRequest.length(); i++) {
@@ -186,11 +186,7 @@ public class FLUser
             if (this.json.has("check"))
                 this.checkDocuments = JSONHelper.toMap(this.json.getJSONObject("check"));
 
-            this.isFriendWaiting = false;
-
-            if (this.json.has("state") && this.json.getInt("state") == 1) {
-                this.isFriendWaiting = true;
-            }
+            this.isFriendWaiting = this.json.has("state") && this.json.getInt("state") == 1;
 
             if (this.json.has("record"))
                 this.record = this.json.getInt("record");
@@ -204,8 +200,10 @@ public class FLUser
             if (this.json.has("cards") && this.json.getJSONArray("cards").length() > 0)
                 this.creditCard = new FLCreditCard(this.json.getJSONArray("cards").getJSONObject(0));
 
-            if (this.json.has("cactus"))
+            if (this.json.has("cactus") || (this.json.has("isCactus") && this.json.optBoolean("isCactus"))) {
                 this.username = null;
+                this.userKind = UserKind.CactusUser;
+            }
 
         } catch (JSONException e) {
             e.printStackTrace();
@@ -246,28 +244,31 @@ public class FLUser
     }
 
     public String getSelectedCanal() {
-        switch (this.selectedCanal) {
-            case RecentCanal:
-                return "recent";
-            case SuggestionCanal:
-                return "suggestion";
-            case FriendsCanal:
-                return "friends";
-            case SearchCanal:
-                return "search";
-            case TimelineCanal:
-                return "timeline";
-            case ContactCanal:
-                return "contact";
-            case PendingCanal:
-                return "pending";
-            default:
-                return "";
+        if (this.selectedCanal != null) {
+            switch (this.selectedCanal) {
+                case RecentCanal:
+                    return "recent";
+                case SuggestionCanal:
+                    return "suggestion";
+                case FriendsCanal:
+                    return "friends";
+                case SearchCanal:
+                    return "search";
+                case TimelineCanal:
+                    return "timeline";
+                case ContactCanal:
+                    return "contact";
+                case PendingCanal:
+                    return "pending";
+                default:
+                    return "";
+            }
         }
+        return "";
     }
 
     public Map<String, Object> getParamsForStep(Boolean last) {
-        Map<String, Object> res = new HashMap<String, Object>();
+        Map<String, Object> res = new HashMap<>();
 
         if (this.firstname != null)
             res.put("firstName", this.firstname);
@@ -314,7 +315,7 @@ public class FLUser
             res.put("secureCode", this.passCode);
 
         if (this.json != null && this.json.has("fb")) {
-            Map<String, Object> fbData = new HashMap<String, Object>();
+            Map<String, Object> fbData = new HashMap<>();
 
             fbData.put("email", this.json.optJSONObject("fb").optString("email"));
             fbData.put("id", this.json.optJSONObject("fb").optString("id"));
@@ -365,4 +366,17 @@ public class FLUser
         return res;
     }
 
+    @Override
+    public String toString() {
+        if (userKind == UserKind.FloozUser) {
+            if (fullname != null && !fullname.isEmpty()) {
+                return fullname;
+            } else {
+                return username;
+            }
+        } else if (userKind == UserKind.PhoneUser) {
+            return fullname;
+        } else
+            return phone;
+    }
 }

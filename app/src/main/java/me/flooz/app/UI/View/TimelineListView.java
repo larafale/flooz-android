@@ -72,39 +72,33 @@ public class TimelineListView extends ListView implements OnScrollListener {
         final int scrollBarPanelInAnimation = R.anim.scrollbar_panel_anim_in;
         final int scrollBarPanelOutAnimation = R.anim.scrollbar_panel_anim_out;
 
-        if (scrollBarPanelLayoutId != -1) {
-            setScrollBarPanel(scrollBarPanelLayoutId);
-        }
+        setScrollBarPanel(scrollBarPanelLayoutId);
 
         final int scrollBarPanelFadeDuration = ViewConfiguration.getScrollBarFadeDuration();
 
-        if (scrollBarPanelInAnimation > 0) {
-            inAnimation = AnimationUtils.loadAnimation(getContext(), scrollBarPanelInAnimation);
-        }
+        inAnimation = AnimationUtils.loadAnimation(getContext(), scrollBarPanelInAnimation);
 
-        if (scrollBarPanelOutAnimation > 0) {
-            outAnimation = AnimationUtils.loadAnimation(getContext(), scrollBarPanelOutAnimation);
-            outAnimation.setDuration(scrollBarPanelFadeDuration);
+        outAnimation = AnimationUtils.loadAnimation(getContext(), scrollBarPanelOutAnimation);
+        outAnimation.setDuration(scrollBarPanelFadeDuration);
 
-            outAnimation.setAnimationListener(new AnimationListener() {
+        outAnimation.setAnimationListener(new AnimationListener() {
 
-                @Override
-                public void onAnimationStart(Animation animation) {
+            @Override
+            public void onAnimationStart(Animation animation) {
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation) {
+
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation) {
+                if (scrollBarPanel != null) {
+                    scrollBarPanel.setVisibility(View.GONE);
                 }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    if (scrollBarPanel != null) {
-                        scrollBarPanel.setVisibility(View.GONE);
-                    }
-                }
-            });
-        }
+            }
+        });
     }
 
     @Override

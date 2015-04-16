@@ -16,38 +16,38 @@ import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.ViewServer;
 
 /**
  * Created by Flooz on 3/10/15.
  */
 public class PrivacySettingsActivity extends Activity {
 
-    private PrivacySettingsActivity instance;
     private FloozApplication floozApp;
     private Boolean modal;
 
     private ImageView headerBackButton;
-    private TextView headerTitle;
-    private TextView infosText;
-    private SegmentedGroup segmentedGroup;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.instance = this;
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).addWindow(this);
+
         this.floozApp = (FloozApplication) this.getApplicationContext();
         this.modal = getIntent().getBooleanExtra("modal", false);
 
         this.setContentView(R.layout.settings_privacy_fragment);
 
         this.headerBackButton = (ImageView) this.findViewById(R.id.settings_privacy_header_back);
-        this.headerTitle = (TextView) this.findViewById(R.id.settings_privacy_header_title);
-        this.infosText = (TextView) this.findViewById(R.id.settings_privacy_infos);
-        this.segmentedGroup = (SegmentedGroup) this.findViewById(R.id.settings_privacy_segment);
+        TextView headerTitle = (TextView) this.findViewById(R.id.settings_privacy_header_title);
+        TextView infosText = (TextView) this.findViewById(R.id.settings_privacy_infos);
+        SegmentedGroup segmentedGroup = (SegmentedGroup) this.findViewById(R.id.settings_privacy_segment);
 
-        this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
-        this.infosText.setTypeface(CustomFonts.customContentRegular(this));
+        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
+        infosText.setTypeface(CustomFonts.customContentRegular(this));
 
         this.headerBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,31 +60,31 @@ public class PrivacySettingsActivity extends Activity {
             }
         });
 
-        this.segmentedGroup.setTintColor(this.getResources().getColor(R.color.blue));
+        segmentedGroup.setTintColor(this.getResources().getColor(R.color.blue));
 
         String scopeString = (String)((Map<String, Object>) FloozRestClient.getInstance().currentUser.settings.get("def")).get("scope");
         FLTransaction.TransactionScope scope = FLTransaction.transactionScopeParamToEnum(scopeString);
 
         switch (scope) {
             case TransactionScopePublic:
-                this.segmentedGroup.check(R.id.settings_privacy_segment_public);
+                segmentedGroup.check(R.id.settings_privacy_segment_public);
                 break;
             case TransactionScopeFriend:
-                this.segmentedGroup.check(R.id.settings_privacy_segment_friend);
+                segmentedGroup.check(R.id.settings_privacy_segment_friend);
                 break;
             case TransactionScopePrivate:
-                this.segmentedGroup.check(R.id.settings_privacy_segment_private);
+                segmentedGroup.check(R.id.settings_privacy_segment_private);
                 break;
         }
 
-        this.segmentedGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+        segmentedGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(RadioGroup group, int checkedId) {
 
                 Map<String, Object> settings = new HashMap<>(FloozRestClient.getInstance().currentUser.settings);
-                Map<String, Object> def = (Map<String, Object>)settings.get("def");
+                Map<String, Object> def = (Map<String, Object>) settings.get("def");
 
-                switch(checkedId) {
+                switch (checkedId) {
                     case R.id.settings_privacy_segment_public:
                         def.put("scope", FLTransaction.transactionScopeToParams(FLTransaction.TransactionScope.TransactionScopePublic));
                         break;
@@ -110,6 +110,10 @@ public class PrivacySettingsActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).setFocusedWindow(this);
+
         floozApp.setCurrentActivity(this);
     }
 
@@ -122,6 +126,10 @@ public class PrivacySettingsActivity extends Activity {
     @Override
     protected void onDestroy() {
         clearReferences();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).removeWindow(this);
+
         super.onDestroy();
     }
 

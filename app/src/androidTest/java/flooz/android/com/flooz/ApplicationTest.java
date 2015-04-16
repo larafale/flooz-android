@@ -1,4 +1,4 @@
-package flooz.android.com.flooz;
+package me.flooz.app;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

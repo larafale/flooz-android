@@ -9,13 +9,16 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 
+import me.flooz.app.Model.FLError;
+import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
-import me.flooz.app.Network.FloozRestClient;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 /**
@@ -26,14 +29,35 @@ public class NotificationSettingsListAdapter extends BaseAdapter implements Stic
     private Context context;
     private LayoutInflater inflater;
     private Map<String, Object> notifications;
-    private Map<String, Object> notificationsText;
+    private JSONObject notificationsText;
 
     public NotificationSettingsListAdapter(Context ctx) {
         this.inflater = LayoutInflater.from(ctx);
         this.context = ctx;
 
         this.notifications = FloozRestClient.getInstance().currentUser.notifications;
-        this.notificationsText = FloozRestClient.getInstance().currentUser.notificationsText;
+
+        if (FloozRestClient.getInstance().currentTexts != null)
+            this.notificationsText = FloozRestClient.getInstance().currentTexts.notificationsText;
+        else {
+            FloozRestClient.getInstance().loadTextData();
+            if (FloozRestClient.getInstance().currentTexts != null) {
+                this.notificationsText = FloozRestClient.getInstance().currentTexts.notificationsText;
+            } else {
+                FloozRestClient.getInstance().textObjectFromApi(new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        notificationsText = FloozRestClient.getInstance().currentTexts.notificationsText;
+                        notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void failure(int statusCode, FLError error) {
+
+                    }
+                });
+            }
+        }
     }
 
     @Override
@@ -88,7 +112,6 @@ public class NotificationSettingsListAdapter extends BaseAdapter implements Stic
     }
 
     public String getItemTitle(int position) {
-
         String key;
 
         if (position < ((HashMap)this.notifications.get("push")).size())
@@ -96,11 +119,13 @@ public class NotificationSettingsListAdapter extends BaseAdapter implements Stic
         else
             key = (String)((HashMap)this.notifications.get("email")).keySet().toArray()[position - ((HashMap)this.notifications.get("push")).size()];
 
-        return (String)this.notificationsText.get(key);
+        if (this.notificationsText != null)
+            return this.notificationsText.optString(key);
+        else
+            return "";
     }
 
     public String getItemKey(int position) {
-
         String key;
 
         if (position < ((HashMap)this.notifications.get("push")).size())
@@ -125,7 +150,7 @@ public class NotificationSettingsListAdapter extends BaseAdapter implements Stic
         holder.settingName = (TextView) convertView.findViewById(R.id.settings_notification_row_text);
         holder.settingSwitch = (CheckBox) convertView.findViewById(R.id.settings_notification_row_toggle);
 
-        holder.settingName.setTypeface(CustomFonts.customTitleExtraLight(this.context));
+        holder.settingName.setTypeface(CustomFonts.customContentRegular(this.context));
 
         convertView.setTag(holder);
 

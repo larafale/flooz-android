@@ -3,7 +3,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true">
+    android:clickable="true"
+    android:background="@color/background_header">
 
     <ImageView
         android:layout_width="fill_parent"
@@ -45,7 +46,7 @@
             android:layout_height="wrap_content"
             android:text="@string/SECORE_CODE_TEXT_CURRENT"
             android:gravity="center"
-            android:textSize="20dp"
+            android:textSize="20sp"
             android:layout_marginTop="@dimen/dimen_large"/>
 
         <LinearLayout

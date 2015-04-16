@@ -19,6 +19,8 @@ import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
+import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.ViewServer;
 
 /**
  * Created by Flooz on 3/10/15.
@@ -31,9 +33,6 @@ public class PreferencesSettingsActivity extends Activity {
 
     private Boolean viewVisible = false;
     private ImageView headerBackButton;
-    private TextView headerTitle;
-    private TextView fbText;
-    private TextView notifText;
     private CheckBox fbSwitch;
 
     private BroadcastReceiver reloadCurrentUserDataReceiver = new BroadcastReceiver() {
@@ -47,6 +46,9 @@ public class PreferencesSettingsActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).addWindow(this);
+
         this.instance = this;
         this.floozApp = (FloozApplication) this.getApplicationContext();
         this.modal = getIntent().getBooleanExtra("modal", false);
@@ -54,14 +56,14 @@ public class PreferencesSettingsActivity extends Activity {
         this.setContentView(R.layout.settings_preferences_fragment);
 
         this.headerBackButton = (ImageView) this.findViewById(R.id.settings_preferences_header_back);
-        this.headerTitle = (TextView) this.findViewById(R.id.settings_preferences_header_title);
-        this.fbText = (TextView) this.findViewById(R.id.settings_preferences_fb_text);
-        this.notifText = (TextView) this.findViewById(R.id.settings_preferences_notif_text);
+        TextView headerTitle = (TextView) this.findViewById(R.id.settings_preferences_header_title);
+        TextView fbText = (TextView) this.findViewById(R.id.settings_preferences_fb_text);
+        TextView notifText = (TextView) this.findViewById(R.id.settings_preferences_notif_text);
         this.fbSwitch = (CheckBox) this.findViewById(R.id.settings_preferences_fb_toggle);
 
-        this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
-        this.notifText.setTypeface(CustomFonts.customTitleExtraLight(this));
-        this.fbText.setTypeface(CustomFonts.customTitleExtraLight(this));
+        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
+        notifText.setTypeface(CustomFonts.customTitleExtraLight(this));
+        fbText.setTypeface(CustomFonts.customTitleExtraLight(this));
 
         this.findViewById(R.id.settings_preferences_notif).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -105,6 +107,10 @@ public class PreferencesSettingsActivity extends Activity {
     public void onResume() {
         super.onResume();
         floozApp.setCurrentActivity(this);
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).setFocusedWindow(this);
+
         this.viewVisible = true;
         this.reloadView();
 
@@ -122,6 +128,10 @@ public class PreferencesSettingsActivity extends Activity {
     @Override
     protected void onDestroy() {
         clearReferences();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).removeWindow(this);
+
         super.onDestroy();
     }
 

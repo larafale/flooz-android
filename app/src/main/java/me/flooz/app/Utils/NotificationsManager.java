@@ -15,7 +15,7 @@ public class NotificationsManager {
     public String nextURL;
 
     public NotificationsManager() {
-        this.notifications = new ArrayList<FLNotification>(0);
+        this.notifications = new ArrayList<>(0);
     }
 
     public void setNotifications(List<FLNotification> notifs) {

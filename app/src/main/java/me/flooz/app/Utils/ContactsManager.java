@@ -2,7 +2,10 @@ package me.flooz.app.Utils;
 
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.net.Uri;
 import android.provider.ContactsContract;
+import android.provider.ContactsContract.CommonDataKinds;
+import android.provider.ContactsContract.Contacts;
 
 import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
@@ -21,52 +24,120 @@ public class ContactsManager {
 
     public static List<FLUser> allContacts;
 
-    public static List<FLUser> searchContacts(String searchString) {
+    public static List<FLUser> searchContacts(String searchString, int limit) {
 
         List<FLUser> resultList = new ArrayList<>(0);
 
+        final String sa1 = "%" + searchString.toLowerCase() + "%"; // contains searchString
+
+        String[] projection = new String[]{
+                Contacts._ID,
+                Contacts.PHOTO_URI,
+                Contacts.DISPLAY_NAME,
+                Contacts.IN_VISIBLE_GROUP,
+                CommonDataKinds.Phone.NUMBER,
+                CommonDataKinds.Phone.TYPE};
+
+        String selection = Contacts.HAS_PHONE_NUMBER + "=1 AND " + Contacts.IN_VISIBLE_GROUP + "=1 AND (lower(" + Contacts.DISPLAY_NAME + ") LIKE ? OR replace(replace(replace(replace(" + CommonDataKinds.Phone.NUMBER + ", ' ', ''), '+33', '0'), '(', ''), ')', '') LIKE ?)";
+
+        String[] selectionArgs = new String[]{sa1, sa1};
+
+        Uri contentURI = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+
+        String order = Contacts.DISPLAY_NAME + " ASC LIMIT " + limit;
+
         ContentResolver contentResolver = FloozApplication.getAppContext().getContentResolver();
-        Cursor contactCursor = contentResolver.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, ContactsContract.Contacts.DISPLAY_NAME + " ASC");
-        if (contactCursor.getCount() > 0) {
+        Cursor contactCursor = contentResolver.query(contentURI, projection, selection, selectionArgs, order);
+
+        if (contactCursor != null && contactCursor.getCount() > 0) {
             while (contactCursor.moveToNext()) {
-                if (Integer.parseInt(contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.Contacts.HAS_PHONE_NUMBER))) > 0) {
-                    Cursor phoneCursor = contentResolver.query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, ContactsContract.CommonDataKinds.Phone.CONTACT_ID + " = ?", new String[] { contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.Contacts._ID)) }, null);
+                FLUser user = new FLUser();
 
-                    while (phoneCursor.moveToNext()) {
-                        FLUser user = new FLUser();
+                user.userId = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.Contacts._ID));
+                user.fullname = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                user.avatarURL = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI));
+                String phoneNumber = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-                        user.userId = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.Contacts._ID));
-                        user.fullname = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
-                        user.avatarURL = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI));
+                user.username = ContactsManager.validatePhoneNumber(phoneNumber);
+                user.phone = user.username;
 
-                        String phoneNumber = phoneCursor.getString(phoneCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
-
-                        user.username = ContactsManager.validatePhoneNumber(phoneNumber);
-                        user.phone = user.username;
-
-                        if (user.username != null && !user.username.isEmpty() && user.fullname.toLowerCase().contains(searchString.toLowerCase())) {
-                            boolean alreadyExist = false;
-                            for (int i = 0; i < resultList.size(); i++) {
-                                FLUser tmpUser = resultList.get(i);
-                                if (tmpUser.fullname.contentEquals(user.fullname) && tmpUser.phone.contentEquals(user.phone)) {
-                                    alreadyExist = true;
-                                    break;
-                                }
-                            }
-                            if (!alreadyExist)
-                                resultList.add(user);
+                if (user.username != null && !user.username.isEmpty()) {
+                    boolean alreadyExist = false;
+                    for (int i = 0; i < resultList.size(); i++) {
+                        FLUser tmpUser = resultList.get(i);
+                        if (tmpUser.fullname.contentEquals(user.fullname) && tmpUser.phone.contentEquals(user.phone)) {
+                            alreadyExist = true;
+                            break;
                         }
                     }
-                    phoneCursor.close();
+                    if (!alreadyExist)
+                        resultList.add(user);
                 }
+
             }
         }
+
+        contactCursor.close();
+        return resultList;
+    }
+
+    public static List<FLUser> getAllContacts() {
+
+        List<FLUser> resultList = new ArrayList<>(0);
+
+        String[] projection = new String[]{
+                Contacts._ID,
+                Contacts.PHOTO_URI,
+                Contacts.DISPLAY_NAME,
+                Contacts.IN_VISIBLE_GROUP,
+                CommonDataKinds.Phone.NUMBER,
+                CommonDataKinds.Phone.TYPE};
+
+        String selection = Contacts.HAS_PHONE_NUMBER + "=1 AND " + Contacts.IN_VISIBLE_GROUP + "=1";
+
+        String[] selectionArgs = new String[]{};
+
+        Uri contentURI = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
+
+        String order = Contacts.DISPLAY_NAME + " ASC";
+
+        ContentResolver contentResolver = FloozApplication.getAppContext().getContentResolver();
+        Cursor contactCursor = contentResolver.query(contentURI, projection, selection, selectionArgs, order);
+
+        if (contactCursor != null && contactCursor.getCount() > 0) {
+            while (contactCursor.moveToNext()) {
+                FLUser user = new FLUser();
+
+                user.userId = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.Contacts._ID));
+                user.fullname = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME));
+                user.avatarURL = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI));
+                String phoneNumber = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
+
+                user.username = ContactsManager.validatePhoneNumber(phoneNumber);
+                user.phone = user.username;
+
+                if (user.username != null && !user.username.isEmpty()) {
+                    boolean alreadyExist = false;
+                    for (int i = 0; i < resultList.size(); i++) {
+                        FLUser tmpUser = resultList.get(i);
+                        if (tmpUser.fullname.contentEquals(user.fullname) && tmpUser.phone.contentEquals(user.phone)) {
+                            alreadyExist = true;
+                            break;
+                        }
+                    }
+                    if (!alreadyExist)
+                        resultList.add(user);
+                }
+
+            }
+        }
+
         contactCursor.close();
         return resultList;
     }
 
     private static String validatePhoneNumber(String number) {
-        String nb = new String(number);
+        String nb = number;
 
         PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
         try {
@@ -87,7 +158,7 @@ public class ContactsManager {
         if (allContacts != null)
             return allContacts;
 
-        allContacts = ContactsManager.searchContacts("");
+        allContacts = ContactsManager.getAllContacts();
 
         return allContacts;
     }

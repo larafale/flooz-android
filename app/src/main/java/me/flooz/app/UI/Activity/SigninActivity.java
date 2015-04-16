@@ -23,6 +23,8 @@ import me.flooz.app.UI.Fragment.Signin.SigninCodeFragment;
 import me.flooz.app.UI.Fragment.Signin.SigninHomeFragment;
 import me.flooz.app.UI.Fragment.Signin.SigninPassFragment;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.ViewServer;
 
 /**
  * Created by Flooz on 11/25/14.
@@ -38,7 +40,7 @@ public class SigninActivity extends FragmentActivity {
         SigninCode,
         SigninConfirmCode,
         SigninResetPass
-    };
+    }
 
     public RelativeLayout header;
     public TextView headerTitle;
@@ -53,6 +55,9 @@ public class SigninActivity extends FragmentActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).addWindow(this);
 
         floozApp = (FloozApplication)this.getApplicationContext();
 
@@ -87,6 +92,10 @@ public class SigninActivity extends FragmentActivity {
 
     protected void onResume() {
         super.onResume();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).setFocusedWindow(this);
+
         floozApp.setCurrentActivity(this);
     }
     protected void onPause() {
@@ -95,6 +104,10 @@ public class SigninActivity extends FragmentActivity {
     }
     protected void onDestroy() {
         clearReferences();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).removeWindow(this);
+
         super.onDestroy();
     }
 
@@ -143,7 +156,7 @@ public class SigninActivity extends FragmentActivity {
         String title = "";
 
         switch (this.currentPage) {
-            case SigninHome:;
+            case SigninHome:
                 break;
             case SigninCode:
                 break;

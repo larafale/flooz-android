@@ -13,7 +13,6 @@ import java.util.List;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.R;
 import me.flooz.app.Utils.MomentDate;
-import me.flooz.app.App.FloozApplication;
 
 /**
  * Created by Flooz on 9/9/14.
@@ -132,9 +131,7 @@ public class FLTransaction {
             this.isCancelable = false;
             this.isAcceptable = false;
 
-            this.haveAction = false;
-            if (this.isPrivate && this.status == TransactionStatus.TransactionStatusPending)
-                this.haveAction = true;
+            this.haveAction = this.isPrivate && this.status == TransactionStatus.TransactionStatusPending;
 
             if (this.status == TransactionStatus.TransactionStatusPending)
             {
@@ -166,9 +163,7 @@ public class FLTransaction {
                     this.text3d.add(array.get(i));
             }
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (JSONException | ParseException e) {
             e.printStackTrace();
         }
     }
@@ -205,7 +200,7 @@ public class FLTransaction {
 
     public String typeText()
     {
-        int stringId = 0;
+        int stringId;
 
         switch (this.type) {
             case TransactionTypePayment:
@@ -216,20 +211,19 @@ public class FLTransaction {
                 break;
         }
 
-        if (stringId != 0)
-            return (FloozApplication.getAppContext().getString(stringId));
-        else
-            return "";
+        return (FloozApplication.getAppContext().getString(stringId));
     }
 
     public static TransactionType transactionsTypeParamToEnum(String param)
     {
-        if (param.equals("pay"))
-            return TransactionType.TransactionTypePayment;
-        else if (param.equals("collect"))
-            return TransactionType.TransactionTypeCollect;
-        else
-            return TransactionType.TransactionTypeCharge;
+        switch (param) {
+            case "pay":
+                return TransactionType.TransactionTypePayment;
+            case "collect":
+                return TransactionType.TransactionTypeCollect;
+            default:
+                return TransactionType.TransactionTypeCharge;
+        }
     }
 
     public static TransactionStatus transactionStatusParamToEnum(String param)
@@ -279,10 +273,7 @@ public class FLTransaction {
                 break;
         }
 
-        if (stringId != 0)
-            return (FloozApplication.getAppContext().getString(stringId));
-        else
-            return "";
+        return (FloozApplication.getAppContext().getString(stringId));
     }
 
     public static Drawable transactionScopeToImage(TransactionScope scope)
@@ -303,10 +294,7 @@ public class FLTransaction {
                 break;
         }
 
-        if (imgId != 0)
-            return (FloozApplication.getAppContext().getResources().getDrawable(imgId));
-        else
-            return null;
+        return (FloozApplication.getAppContext().getResources().getDrawable(imgId));
     }
 
     public static String transactionStatusToParams(TransactionStatus status)
@@ -326,18 +314,20 @@ public class FLTransaction {
 
     public static String transactionScopeToParams(TransactionScope scope)
     {
-        switch (scope) {
-            case TransactionScopePublic:
-                return "public";
-            case TransactionScopeFriend:
-                return "friend";
-            case TransactionScopePrivate:
-                return "private";
-            default:
-                break;
+        if (scope != null) {
+            switch (scope) {
+                case TransactionScopePublic:
+                    return "public";
+                case TransactionScopeFriend:
+                    return "friend";
+                case TransactionScopePrivate:
+                    return "private";
+                default:
+                    break;
+            }
         }
 
-        return "";
+        return "public";
     }
 
 

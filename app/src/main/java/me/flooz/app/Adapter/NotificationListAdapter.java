@@ -22,9 +22,6 @@ import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
-import me.flooz.app.App.FloozApplication;
-import me.flooz.app.Model.FLNotification;
-import me.flooz.app.Network.FloozRestClient;
 
 /**
  * Created by Flooz on 10/15/14.
@@ -98,13 +95,13 @@ public class NotificationListAdapter extends BaseAdapter {
         else
             holder.isRead.setVisibility(View.VISIBLE);
 
-        holder.content.setText(notif.content);
+        holder.content.setText(notif.content.toCharArray(), 0, notif.content.length());
 
         holder.img.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
         if (notif.user.avatarURL != null && !notif.user.avatarURL.isEmpty())
             ImageLoader.getInstance().displayImage(notif.user.avatarURL, holder.img);
 
-        holder.date.setText(notif.dateText);
+        holder.date.setText(notif.dateText.toCharArray(), 0, notif.dateText.length());
 
         return convertView;
     }

@@ -25,7 +25,6 @@ import me.flooz.app.Utils.CustomFonts;
  * Created by Flooz on 12/12/14.
  */
 public class AuthenticationResetCodeFragment extends AuthenticationBaseFragment implements NumericKeyboard.NumericKeyboardDelegate {
-    private TextView hintText;
     private LinearLayout codeContainer;
     private ImageView codeChar1;
     private ImageView codeChar2;
@@ -46,7 +45,7 @@ public class AuthenticationResetCodeFragment extends AuthenticationBaseFragment 
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.authentication_reset_secure_code_fragment, null);
 
-        this.hintText = (TextView) view.findViewById(R.id.authentication_reset_secure_code_hint);
+        TextView hintText = (TextView) view.findViewById(R.id.authentication_reset_secure_code_hint);
         this.codeContainer = (LinearLayout) view.findViewById(R.id.authentication_reset_secure_code_container);
         this.codeChar1 = (ImageView) view.findViewById(R.id.authentication_reset_secure_code_char_1);
         this.codeChar2 = (ImageView) view.findViewById(R.id.authentication_reset_secure_code_char_2);
@@ -54,12 +53,12 @@ public class AuthenticationResetCodeFragment extends AuthenticationBaseFragment 
         this.codeChar4 = (ImageView) view.findViewById(R.id.authentication_reset_secure_code_char_4);
         this.keyboard = (NumericKeyboard) view.findViewById(R.id.authentication_reset_secure_code_keypad);
 
-        this.hintText.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+        hintText.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
 
         if (this.confirmMode)
-            this.hintText.setText(R.string.SECORE_CODE_CHOOSE_CONFIRM);
+            hintText.setText(R.string.SECORE_CODE_CHOOSE_CONFIRM);
         else
-            this.hintText.setText(R.string.SECORE_CODE_CHOOSE);
+            hintText.setText(R.string.SECORE_CODE_CHOOSE);
 
         this.keyboard.delegate = this;
         this.keyboard.maxLenght = 4;
@@ -102,7 +101,7 @@ public class AuthenticationResetCodeFragment extends AuthenticationBaseFragment 
             }
             else if (this.currentCode.contentEquals(this.lastCode)) {
 
-                Map<String, Object> data = new HashMap<String, Object>(1);
+                Map<String, Object> data = new HashMap<>(1);
                 data.put("secureCode", this.currentCode);
 
                 FloozRestClient.getInstance().showLoadView();

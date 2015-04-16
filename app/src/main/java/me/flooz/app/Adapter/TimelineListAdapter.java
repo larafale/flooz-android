@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.makeramen.RoundedImageView;
@@ -60,19 +61,12 @@ public class TimelineListAdapter extends BaseAdapter {
         public TextView transactionCommentsNumber;
         public TextView transactionCommentsButtonText;
 
-        public ImageView transactionLikesButtonPicto;
-        public ImageView transactionCommentsButtonPicto;
-
         public RoundedImageView userPic;
         public LoadingImageView transactionPic;
 
-        public LinearLayout transactionRowContent;
+        public RelativeLayout transactionRowContent;
         public LinearLayout transactionRowActionBar;
-        public LinearLayout transactionLikesContainer;
         public LinearLayout transactionSocialContainer;
-        public LinearLayout transactionCommentsContainer;
-        public LinearLayout transactionLikesButton;
-        public LinearLayout transactionCommentsButton;
     }
 
     @Override
@@ -101,7 +95,7 @@ public class TimelineListAdapter extends BaseAdapter {
 
             holder = new ViewHolder();
 
-            holder.transactionRowContent = (LinearLayout) rowView.findViewById(R.id.timeline_row_content);
+            holder.transactionRowContent = (RelativeLayout) rowView.findViewById(R.id.timeline_row_content);
             holder.transactionRowActionBar = (LinearLayout) rowView.findViewById(R.id.timeline_row_actionBar);
 
             holder.transactionText = (TextView) rowView.findViewById(R.id.timelineTransactionText);
@@ -112,17 +106,10 @@ public class TimelineListAdapter extends BaseAdapter {
             holder.transactionCommentsButtonText = (TextView) rowView.findViewById(R.id.timelineTransactionCommentsButtonText);
             holder.transactionCommentsNumber = (TextView) rowView.findViewById(R.id.timelineTransactionCommentsNumber);
 
-            holder.transactionCommentsButtonPicto = (ImageView) rowView.findViewById(R.id.timelineTransactionCommentsButtonPicto);
-            holder.transactionLikesButtonPicto = (ImageView) rowView.findViewById(R.id.timelineTransactionLikesButtonPicto);
-
             holder.userPic = (RoundedImageView) rowView.findViewById(R.id.userTimelineTransactionPic);
             holder.transactionPic = (LoadingImageView) rowView.findViewById(R.id.timelineTransactionPic);
 
-            holder.transactionCommentsContainer = (LinearLayout) rowView.findViewById(R.id.timelineTransactionCommentsLayout);
             holder.transactionSocialContainer = (LinearLayout) rowView.findViewById(R.id.timelineTransactionSocialLayout);
-            holder.transactionLikesContainer = (LinearLayout) rowView.findViewById(R.id.timelineTransactionLikesLayout);
-            holder.transactionCommentsButton = (LinearLayout) rowView.findViewById(R.id.timelineTransactionCommentsButton);
-            holder.transactionLikesButton = (LinearLayout) rowView.findViewById(R.id.timelineTransactionLikesButton);
 
             holder.transactionText.setTypeface(CustomFonts.customContentLight(context));
             holder.transactionValue.setTypeface(CustomFonts.customTitleExtraLight(context), Typeface.BOLD);
@@ -149,7 +136,7 @@ public class TimelineListAdapter extends BaseAdapter {
             }
         });
 
-        holder.transactionCommentsButton.setOnClickListener(new View.OnClickListener() {
+        holder.transactionCommentsButtonText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (delegate != null)
@@ -191,7 +178,7 @@ public class TimelineListAdapter extends BaseAdapter {
         }
 
         if (currentTransaction.content != null && !currentTransaction.content.isEmpty()) {
-            holder.transactionText.setText(currentTransaction.content);
+            holder.transactionText.setText(currentTransaction.content.toCharArray(), 0, currentTransaction.content.length());
             holder.transactionText.setVisibility(View.VISIBLE);
         }
         else {
@@ -222,35 +209,35 @@ public class TimelineListAdapter extends BaseAdapter {
                 if (currentTransaction.social.commentsCount.intValue() < 10)
                     holder.transactionCommentsNumber.setText("0" + currentTransaction.social.commentsCount.toString());
                 else
-                    holder.transactionCommentsNumber.setText(currentTransaction.social.commentsCount.toString());
-                holder.transactionCommentsContainer.setVisibility(View.VISIBLE);
+                    holder.transactionCommentsNumber.setText(currentTransaction.social.commentsCount.toString().toCharArray(), 0, currentTransaction.social.commentsCount.toString().length());
+                holder.transactionCommentsNumber.setVisibility(View.VISIBLE);
             } else {
-                holder.transactionCommentsContainer.setVisibility(View.GONE);
+                holder.transactionCommentsNumber.setVisibility(View.GONE);
             }
 
 
             if (!currentTransaction.social.likeText.isEmpty()) {
-                holder.transactionLikesText.setText(currentTransaction.social.likeText);
-                holder.transactionLikesContainer.setVisibility(View.VISIBLE);
+                holder.transactionLikesText.setText(currentTransaction.social.likeText.toCharArray(), 0, currentTransaction.social.likeText.length());
+                holder.transactionLikesText.setVisibility(View.VISIBLE);
             } else {
-                holder.transactionLikesContainer.setVisibility(View.GONE);
+                holder.transactionLikesText.setVisibility(View.GONE);
             }
         }
         else
             holder.transactionSocialContainer.setVisibility(View.GONE);
 
         if (currentTransaction.social != null && currentTransaction.social.isLiked) {
-            holder.transactionLikesButton.setBackground(this.context.getResources().getDrawable(R.drawable.timeline_row_action_button_background_selected));
+            holder.transactionLikesButtonText.setBackground(this.context.getResources().getDrawable(R.drawable.timeline_row_action_button_background_selected));
             holder.transactionLikesButtonText.setTextColor(this.context.getResources().getColor(android.R.color.white));
-            holder.transactionLikesButtonPicto.setImageDrawable(this.context.getResources().getDrawable(R.drawable.social_like_full));
+            holder.transactionLikesButtonText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.social_like_full, 0, 0, 0);
         }
         else {
-            holder.transactionLikesButton.setBackground(this.context.getResources().getDrawable(R.drawable.timeline_row_action_button_background));
+            holder.transactionLikesButtonText.setBackground(this.context.getResources().getDrawable(R.drawable.timeline_row_action_button_background));
             holder.transactionLikesButtonText.setTextColor(this.context.getResources().getColor(R.color.placeholder));
-            holder.transactionLikesButtonPicto.setImageDrawable(this.context.getResources().getDrawable(R.drawable.social_like));
+            holder.transactionLikesButtonText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.social_like, 0, 0, 0);
         }
 
-        holder.transactionLikesButton.setOnClickListener(new View.OnClickListener() {
+        holder.transactionLikesButtonText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (FloozRestClient.getInstance().currentUser != null) {
@@ -265,38 +252,37 @@ public class TimelineListAdapter extends BaseAdapter {
 
                                 if (currentTransaction.social.commentsCount.intValue() > 0) {
                                     holder.transactionCommentsNumber.setText(currentTransaction.social.commentsCount.toString());
-                                    holder.transactionCommentsContainer.setVisibility(View.VISIBLE);
+                                    holder.transactionCommentsNumber.setVisibility(View.VISIBLE);
                                 } else {
-                                    holder.transactionCommentsContainer.setVisibility(View.GONE);
+                                    holder.transactionCommentsNumber.setVisibility(View.GONE);
                                 }
 
 
                                 if (!currentTransaction.social.likeText.isEmpty()) {
                                     holder.transactionLikesText.setText(currentTransaction.social.likeText);
-                                    holder.transactionLikesContainer.setVisibility(View.VISIBLE);
+                                    holder.transactionLikesText.setVisibility(View.VISIBLE);
                                 } else {
-                                    holder.transactionLikesContainer.setVisibility(View.GONE);
+                                    holder.transactionLikesText.setVisibility(View.GONE);
                                 }
                             } else
                                 holder.transactionSocialContainer.setVisibility(View.GONE);
 
                             if (currentTransaction.social.isLiked) {
-                                holder.transactionLikesButton.setBackground(context.getResources().getDrawable(R.drawable.timeline_row_action_button_background_selected));
+                                holder.transactionLikesButtonText.setBackground(context.getResources().getDrawable(R.drawable.timeline_row_action_button_background_selected));
                                 holder.transactionLikesButtonText.setTextColor(context.getResources().getColor(android.R.color.white));
-                                holder.transactionLikesButtonPicto.setImageDrawable(context.getResources().getDrawable(R.drawable.social_like_full));
-                            } else {
-                                holder.transactionLikesButton.setBackground(context.getResources().getDrawable(R.drawable.timeline_row_action_button_background));
-                                holder.transactionLikesButtonText.setTextColor(context.getResources().getColor(R.color.placeholder));
-                                holder.transactionLikesButtonPicto.setImageDrawable(context.getResources().getDrawable(R.drawable.social_like));
+                                holder.transactionLikesButtonText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.social_like_full, 0, 0, 0);
                             }
-
+                            else {
+                                holder.transactionLikesButtonText.setBackground(context.getResources().getDrawable(R.drawable.timeline_row_action_button_background));
+                                holder.transactionLikesButtonText.setTextColor(context.getResources().getColor(R.color.placeholder));
+                                holder.transactionLikesButtonText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.social_like, 0, 0, 0);
+                            }
                         }
 
                         @Override
                         public void failure(int statusCode, FLError error) {
 
                         }
-
                     });
                 } else {
                     if (delegate != null)
@@ -305,7 +291,7 @@ public class TimelineListAdapter extends BaseAdapter {
             }
         });
 
-        holder.transactionValue.setText(currentTransaction.amountText);
+        holder.transactionValue.setText(currentTransaction.amountText.toCharArray(), 0, currentTransaction.amountText.length());
 
         return rowView;
     }

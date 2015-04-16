@@ -26,6 +26,9 @@ import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
+import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.ViewServer;
+import scanpay.it.CreditCard;
 import scanpay.it.ScanPay;
 import scanpay.it.ScanPayActivity;
 
@@ -34,17 +37,16 @@ import scanpay.it.ScanPayActivity;
  */
 public class CreditCardSettingsActivity extends Activity {
 
+    private static int RESULT_SCANPAY_ACTIVITY = 45;
+
     private CreditCardSettingsActivity instance;
     private FloozApplication floozApp;
     private Boolean modal;
 
     private ImageView headerBackButton;
-    private TextView headerTitle;
 
     private TextView creditCardOwner;
     private TextView creditCardNumber;
-    private LinearLayout removeCreditCardButton;
-    private TextView removeCreditCardText;
     private LinearLayout removeCardContainer;
     private LinearLayout createCardContainer;
 
@@ -52,8 +54,6 @@ public class CreditCardSettingsActivity extends Activity {
     private EditText cardNumber;
     private EditText cardExpires;
     private EditText cardCVV;
-
-    private ImageView scanpayButton;
 
     private Button addCardButton;
 
@@ -74,6 +74,9 @@ public class CreditCardSettingsActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).addWindow(this);
+
         this.instance = this;
         this.floozApp = (FloozApplication) this.getApplicationContext();
         this.modal = getIntent().getBooleanExtra("modal", false);
@@ -81,24 +84,24 @@ public class CreditCardSettingsActivity extends Activity {
         this.setContentView(R.layout.settings_credit_card_fragment);
 
         this.headerBackButton = (ImageView) this.findViewById(R.id.settings_credit_card_header_back);
-        this.headerTitle = (TextView) this.findViewById(R.id.settings_credit_card_header_title);
+        TextView headerTitle = (TextView) this.findViewById(R.id.settings_credit_card_header_title);
         this.cardOwner = (EditText) this.findViewById(R.id.settings_credit_card_create_owner);
         this.cardNumber = (EditText) this.findViewById(R.id.settings_credit_card_create_number);
         this.cardExpires = (EditText) this.findViewById(R.id.settings_credit_card_create_expires);
         this.cardCVV = (EditText) this.findViewById(R.id.settings_credit_card_create_cvv);
-        this.scanpayButton = (ImageView) this.findViewById(R.id.settings_credit_card_create_scanpay);
+        ImageView scanpayButton = (ImageView) this.findViewById(R.id.settings_credit_card_create_scanpay);
         this.addCardButton = (Button) this.findViewById(R.id.settings_credit_card_create_add);
         this.creditCardOwner = (TextView) this.findViewById(R.id.settings_credit_card_owner);
         this.creditCardNumber = (TextView) this.findViewById(R.id.settings_credit_card_number);
-        this.removeCreditCardButton = (LinearLayout) this.findViewById(R.id.settings_credit_card_remove_button);
-        this.removeCreditCardText = (TextView) this.findViewById(R.id.settings_credit_card_remove_text);
+        LinearLayout removeCreditCardButton = (LinearLayout) this.findViewById(R.id.settings_credit_card_remove_button);
+        TextView removeCreditCardText = (TextView) this.findViewById(R.id.settings_credit_card_remove_text);
         this.removeCardContainer = (LinearLayout) this.findViewById(R.id.settings_credit_card_remove_card_view);
         this.createCardContainer = (LinearLayout) this.findViewById(R.id.settings_credit_card_create_card_view);
 
-        this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
+        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
         this.creditCardOwner.setTypeface(CustomFonts.customContentRegular(this));
         this.creditCardNumber.setTypeface(CustomFonts.customTitleLight(this));
-        this.removeCreditCardText.setTypeface(CustomFonts.customTitleExtraLight(this));
+        removeCreditCardText.setTypeface(CustomFonts.customTitleExtraLight(this));
         this.cardOwner.setTypeface(CustomFonts.customContentLight(this));
         this.cardNumber.setTypeface(CustomFonts.customContentLight(this));
         this.cardExpires.setTypeface(CustomFonts.customContentLight(this));
@@ -118,7 +121,7 @@ public class CreditCardSettingsActivity extends Activity {
             }
         });
 
-        this.removeCreditCardButton.setOnClickListener(new View.OnClickListener() {
+        removeCreditCardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 FloozRestClient.getInstance().showLoadView();
@@ -237,7 +240,7 @@ public class CreditCardSettingsActivity extends Activity {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() > 4)
+                if (s.length() > 3)
                     s.delete(3, s.length() - 1);
 
                 if (s.length() == 3) {
@@ -260,7 +263,7 @@ public class CreditCardSettingsActivity extends Activity {
             }
         });
 
-        this.scanpayButton.setOnClickListener(new View.OnClickListener() {
+        scanpayButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent scanActivity = new Intent(instance, ScanPayActivity.class);
@@ -269,10 +272,9 @@ public class CreditCardSettingsActivity extends Activity {
                 scanActivity.putExtra(ScanPay.EXTRA_SHOULD_SHOW_CONFIRMATION_VIEW, false);
                 scanActivity.putExtra(ScanPay.EXTRA_SHOULD_SHOW_MANUAL_ENTRY_BUTTON, false);
 
-//                startActivityForResult(scanActivity, parentActivity.RESULT_SCANPAY_ACTIVITY);
+                instance.startActivityForResult(scanActivity, RESULT_SCANPAY_ACTIVITY);
             }
         });
-
 
         this.addCardButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -310,11 +312,27 @@ public class CreditCardSettingsActivity extends Activity {
         this.reloadCreditCard();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == RESULT_SCANPAY_ACTIVITY && resultCode == ScanPay.RESULT_SCAN_SUCCESS)
+        {
+            CreditCard creditCard = data.getParcelableExtra(ScanPay.EXTRA_CREDIT_CARD);
+            creditCardNumber.setText(creditCard.number);
+            cardExpires.setText(creditCard.month + "/" + creditCard.year);
+            cardCVV.setText(creditCard.cvv);
+        }
+    }
 
     @Override
     public void onResume() {
         super.onResume();
         floozApp.setCurrentActivity(this);
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).setFocusedWindow(this);
+
         this.reloadCreditCard();
 
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadCurrentUserDataReceiver,
@@ -330,6 +348,10 @@ public class CreditCardSettingsActivity extends Activity {
     @Override
     protected void onDestroy() {
         clearReferences();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).removeWindow(this);
+
         super.onDestroy();
 
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadCurrentUserDataReceiver);

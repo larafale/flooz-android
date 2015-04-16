@@ -6,7 +6,6 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.UI.Fragment.Home.TimelineFragment;
-import me.flooz.app.Model.FLTransaction;
 
 /**
  * Created by Flooz on 9/23/14.
@@ -20,13 +19,9 @@ public class TimelinePagerAdapter extends FragmentStatePagerAdapter {
     public TimelinePagerAdapter(FragmentManager fm) {
         super(fm);
 
-        this.homeTimeline = new TimelineFragment();
-        this.publicTimeline = new TimelineFragment();
-        this.privateTimeline = new TimelineFragment();
-
-        this.homeTimeline.currentScope = FLTransaction.TransactionScope.TransactionScopeFriend;
-        this.publicTimeline.currentScope = FLTransaction.TransactionScope.TransactionScopePublic;
-        this.privateTimeline.currentScope = FLTransaction.TransactionScope.TransactionScopePrivate;
+        this.homeTimeline = new TimelineFragment(FLTransaction.TransactionScope.TransactionScopeFriend);
+        this.publicTimeline = new TimelineFragment(FLTransaction.TransactionScope.TransactionScopePublic);
+        this.privateTimeline = new TimelineFragment(FLTransaction.TransactionScope.TransactionScopePrivate);
     }
 
     @Override

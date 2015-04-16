@@ -2,6 +2,8 @@ package me.flooz.app.Model;
 
 import org.json.JSONObject;
 
+import me.flooz.app.UI.Activity.HomeActivity;
+
 import static me.flooz.app.Model.FLTrigger.FLTriggerType.*;
 
 /**
@@ -42,6 +44,7 @@ public class FLTrigger {
     public FLTriggerType type;
     public JSONObject data;
     public Number delay;
+    public Class handlerClass;
 
     public FLTrigger(JSONObject json) {
         super();
@@ -51,15 +54,22 @@ public class FLTrigger {
 
     private void setJson(JSONObject json) {
         this.type = triggerTypeParamToEnum(json.optString("type"));
-        this.delay = json.optDouble("delay");
-
-        if (this.delay == null)
-            this.delay = 0;
-
-        json.remove("type");
-        json.remove("delay");
-
+        this.delay = json.optDouble("delay", 0);
+        this.handlerClass = this.getHandlerClass();
         this.data = json;
+    }
+
+    private Class getHandlerClass() {
+        switch (this.type) {
+            case TriggerShowLine:
+                return HomeActivity.class;
+            case TriggerShowAvatar:
+                return HomeActivity.class;
+            case TriggerShowFriend:
+                return HomeActivity.class;
+            default:
+                return null;
+        }
     }
 
     public static FLTriggerType triggerTypeParamToEnum(String param) {

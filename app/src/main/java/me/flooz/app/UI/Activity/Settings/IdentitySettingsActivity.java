@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,7 +38,9 @@ import me.flooz.app.UI.Tools.ActionSheet;
 import me.flooz.app.UI.Tools.ActionSheetItem;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
+import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.ImageHelper;
+import me.flooz.app.Utils.ViewServer;
 
 /**
  * Created by Flooz on 3/10/15.
@@ -54,14 +55,11 @@ public class IdentitySettingsActivity extends Activity {
     private Boolean modal;
 
     private ImageView headerBackButton;
-    private TextView headerTitle;
 
     private EditText firstnameTextfield;
     private EditText lastnameTextfield;
     private EditText usernameTextfield;
     private EditText birthdateTextfield;
-    private EditText cniRectoTextfield;
-    private EditText cniVersoTextfield;
 
     private TextView birthdateHint;
     private ImageView cniRectoButton;
@@ -83,6 +81,9 @@ public class IdentitySettingsActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).addWindow(this);
+
         this.instance = this;
         this.floozApp = (FloozApplication) this.getApplicationContext();
         this.modal = getIntent().getBooleanExtra("modal", false);
@@ -90,25 +91,25 @@ public class IdentitySettingsActivity extends Activity {
         this.setContentView(R.layout.settings_identity_fragment);
 
         this.headerBackButton = (ImageView) this.findViewById(R.id.settings_identity_header_back);
-        this.headerTitle = (TextView) this.findViewById(R.id.settings_identity_header_title);
+        TextView headerTitle = (TextView) this.findViewById(R.id.settings_identity_header_title);
         this.firstnameTextfield = (EditText) this.findViewById(R.id.settings_identity_firstname);
         this.lastnameTextfield = (EditText) this.findViewById(R.id.settings_identity_lastname);
         this.usernameTextfield = (EditText) this.findViewById(R.id.settings_identity_username);
         this.birthdateTextfield = (EditText) this.findViewById(R.id.settings_identity_birthdate);
-        this.cniRectoTextfield = (EditText) this.findViewById(R.id.settings_identity_cni_recto);
-        this.cniVersoTextfield = (EditText) this.findViewById(R.id.settings_identity_cni_verso);
+        EditText cniRectoTextfield = (EditText) this.findViewById(R.id.settings_identity_cni_recto);
+        EditText cniVersoTextfield = (EditText) this.findViewById(R.id.settings_identity_cni_verso);
         this.birthdateHint = (TextView) this.findViewById(R.id.settings_identity_birthdate_hint);
         this.cniRectoButton = (ImageView) this.findViewById(R.id.settings_identity_recto);
         this.cniVersoButton = (ImageView) this.findViewById(R.id.settings_identity_verso);
         this.saveButton = (Button) this.findViewById(R.id.settings_identity_save);
 
-        this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
+        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
         this.firstnameTextfield.setTypeface(CustomFonts.customContentRegular(this));
         this.lastnameTextfield.setTypeface(CustomFonts.customContentRegular(this));
         this.usernameTextfield.setTypeface(CustomFonts.customContentRegular(this), Typeface.BOLD);
         this.birthdateTextfield.setTypeface(CustomFonts.customContentRegular(this));
-        this.cniRectoTextfield.setTypeface(CustomFonts.customContentRegular(this));
-        this.cniVersoTextfield.setTypeface(CustomFonts.customContentRegular(this));
+        cniRectoTextfield.setTypeface(CustomFonts.customContentRegular(this));
+        cniVersoTextfield.setTypeface(CustomFonts.customContentRegular(this));
 
         this.reloadView();
 
@@ -142,6 +143,7 @@ public class IdentitySettingsActivity extends Activity {
             public void afterTextChanged(Editable editable) {
                 if (editable.length() == 3 && editable.charAt(2) != '/')
                     editable.insert(2, "/");
+
                 if (editable.length() == 6 && editable.charAt(5) != '/')
                     editable.insert(5, "/");
 
@@ -150,6 +152,30 @@ public class IdentitySettingsActivity extends Activity {
 
                 if (editable.length() == 4 && editable.charAt(3) > '1')
                     editable.insert(3, "0");
+
+                if (editable.length() == 1 && editable.charAt(0) == '/')
+                    editable.delete(0, 1);
+
+                if (editable.length() == 2 && editable.charAt(1) == '/')
+                    editable.delete(1, 2);
+
+                if (editable.length() == 4 && editable.charAt(3) == '/')
+                    editable.delete(3, 4);
+
+                if (editable.length() == 5 && editable.charAt(4) == '/')
+                    editable.delete(4, 5);
+
+                if (editable.length() == 7 && editable.charAt(6) == '/')
+                    editable.delete(6, 7);
+
+                if (editable.length() == 8 && editable.charAt(7) == '/')
+                    editable.delete(7, 8);
+
+                if (editable.length() == 9 && editable.charAt(8) == '/')
+                    editable.delete(8, 9);
+
+                if (editable.length() == 10 && editable.charAt(9) == '/')
+                    editable.delete(9, 10);
 
                 if (editable.length() == 2 && editable.charAt(0) == '3' && editable.charAt(1) > '1')
                     editable.delete(1, 2);
@@ -179,6 +205,18 @@ public class IdentitySettingsActivity extends Activity {
             }
         });
 
+        cniRectoTextfield.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+                if (currentUser.checkDocuments.get("cniRecto").equals(0) || currentUser.checkDocuments.get("cniRecto").equals(3)) {
+                    currentDoc = "cniRecto";
+                    showImageActionMenu();
+                }
+            }
+        });
+
         this.cniRectoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -186,6 +224,18 @@ public class IdentitySettingsActivity extends Activity {
 
                 if (currentUser.checkDocuments.get("cniRecto").equals(0) || currentUser.checkDocuments.get("cniRecto").equals(3)) {
                     currentDoc = "cniRecto";
+                    showImageActionMenu();
+                }
+            }
+        });
+
+        cniVersoTextfield.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+                if (currentUser.checkDocuments.get("cniVerso").equals(0) || currentUser.checkDocuments.get("cniVerso").equals(3)) {
+                    currentDoc = "cniVerso";
                     showImageActionMenu();
                 }
             }
@@ -227,7 +277,7 @@ public class IdentitySettingsActivity extends Activity {
                 FloozRestClient.getInstance().updateUser(param, new FloozHttpResponseHandler() {
                     @Override
                     public void success(Object response) {
-
+                        headerBackButton.performClick();
                     }
 
                     @Override
@@ -334,18 +384,30 @@ public class IdentitySettingsActivity extends Activity {
                         @Override
                         public void run() {
                             android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
-                            String imagePath = getPath(selectedImageUri);
-                            FloozRestClient.getInstance().uploadDocument(currentDoc, new File(imagePath), new FloozHttpResponseHandler() {
-                                @Override
-                                public void success(Object response) {
-                                    FloozRestClient.getInstance().updateCurrentUser(null);
-                                }
+                            String imagePath = ImageHelper.getPath(instance, selectedImageUri);
+                            if (imagePath != null) {
+                                FloozRestClient.getInstance().uploadDocument(currentDoc, new File(imagePath), new FloozHttpResponseHandler() {
+                                    @Override
+                                    public void success(Object response) {
+                                        reloadDocuments();
+                                    }
 
-                                @Override
-                                public void failure(int statusCode, FLError error) {
-                                    FloozRestClient.getInstance().updateCurrentUser(null);
-                                }
-                            });
+                                    @Override
+                                    public void failure(int statusCode, FLError error) {
+                                        FloozRestClient.getInstance().updateCurrentUser(new FloozHttpResponseHandler() {
+                                            @Override
+                                            public void success(Object response) {
+                                                reloadDocuments();
+                                            }
+
+                                            @Override
+                                            public void failure(int statusCode, FLError error) {
+
+                                            }
+                                        });
+                                    }
+                                });
+                            }
                         }
                     };
                     mainHandler.post(myRunnable);
@@ -354,27 +416,14 @@ public class IdentitySettingsActivity extends Activity {
         }
     }
 
-    public String getPath(Uri uri) {
-        if( uri == null ) {
-            return null;
-        }
-
-        String[] projection = { MediaStore.Images.Media.DATA };
-        Cursor cursor = managedQuery(uri, projection, null, null, null);
-        if( cursor != null ){
-            int column_index = cursor
-                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        }
-
-        return uri.getPath();
-    }
-
     @Override
     public void onResume() {
         super.onResume();
         floozApp.setCurrentActivity(this);
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).setFocusedWindow(this);
+
         this.reloadView();
 
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadCurrentUserDataReceiver,
@@ -391,6 +440,10 @@ public class IdentitySettingsActivity extends Activity {
     @Override
     protected void onDestroy() {
         clearReferences();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).removeWindow(this);
+
         super.onDestroy();
     }
 

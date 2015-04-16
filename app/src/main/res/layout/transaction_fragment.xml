@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:id="@+id/new_transac_base"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/background"
-    android:clickable="true">
+    android:clickable="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -55,7 +59,7 @@
     </RelativeLayout>
 
     <RelativeLayout
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="fill_parent">
 
         <LinearLayout
@@ -63,103 +67,73 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
 
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:gravity="center_vertical">
+
+            <me.flooz.app.UI.View.ContactPickerView
+                android:id="@+id/new_transac_to_container"
+                android:layout_width="0dp"
+                android:layout_height="fill_parent"
+                android:gravity="center_vertical"
+                android:layout_weight="4"
+                android:textColor="@android:color/white"
+                android:hint="@string/TRANSACTION_CONTACT_PICKER_HINT"
+                android:textColorHint="@color/placeholder"
+                android:background="@color/background"
+                android:textSize="16sp"
+                android:layout_marginLeft="@dimen/dimen_large"
+                android:layout_marginBottom="@dimen/dimen_medium"
+                android:layout_marginTop="@dimen/dimen_medium"/>
+
             <LinearLayout
+                android:id="@+id/new_transac_amount_container"
                 android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="60dp"
-                android:gravity="center_vertical">
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center_vertical|right"
+                android:layout_marginRight="@dimen/dimen_large">
 
-                <LinearLayout
-                    android:id="@+id/new_transac_to_container"
-                    android:orientation="horizontal"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="2"
-                    android:gravity="center_vertical">
+                <EditText
+                    android:id="@+id/new_transac_amount_textfield"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/new_flooz_price"
+                    android:inputType="numberDecimal"
+                    android:maxLength="7"
+                    android:singleLine="true"
+                    android:hint="0"
+                    android:textColorHint="@color/placeholder"
+                    android:textColor="@android:color/white"
+                    android:background="@android:color/transparent"
+                    android:ellipsize="start"
+                    android:textCursorDrawable="@drawable/cursor_white"
+                    android:gravity="right"/>
 
-                    <com.makeramen.RoundedImageView
-                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/new_transac_to_pic"
-                        android:scaleType="centerCrop"
-                        android:layout_width="@dimen/new_flooz_to_img"
-                        android:layout_height="@dimen/new_flooz_to_img"
-                        android:layout_marginLeft="@dimen/dimen_large"
-                        android:layout_marginRight="@dimen/dimen_large"
-                        app:corner_radius="30dip"
-                        app:mutate_background="true"
-                        android:src="@drawable/avatar_default"
-                        app:oval="true"/>
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:gravity="center_vertical">
-
-                        <TextView
-                            android:id="@+id/new_transac_to_fullname"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAllCaps="true"
-                            android:textColor="@android:color/white"
-                            android:textSize="@dimen/new_flooz_to_fullname"
-                            android:visibility="gone"/>
-
-                        <TextView
-                            android:id="@+id/new_transac_to_username"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/blue"
-                            android:textSize="@dimen/new_flooz_to_username"
-                            android:visibility="gone"/>
-
-                        <TextView
-                            android:id="@+id/new_transac_to_who"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/placeholder"
-                            android:textSize="@dimen/new_flooz_to_fullname"
-                            android:text="@string/FIELD_TRANSACTION_SELECT_FRIEND"/>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/new_transac_amount_container"
-                    android:orientation="horizontal"
-                    android:layout_width="0dp"
-                    android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical|right"
-                    android:layout_marginRight="@dimen/dimen_large">
-
-                    <EditText
-                        android:id="@+id/new_transac_amount_textfield"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textSize="@dimen/new_flooz_price"
-                        android:inputType="numberDecimal"
-                        android:maxLength="7"
-                        android:singleLine="true"
-                        android:hint="0"
-                        android:textColorHint="@color/placeholder"
-                        android:textColor="@android:color/white"
-                        android:background="@android:color/transparent"
-                        android:textAlignment="textEnd"/>
-
-                    <TextView
-                        android:id="@+id/new_transac_currency_symbol"
-                        android:layout_marginLeft="@dimen/dimen_medium"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@android:color/white"
-                        android:textSize="@dimen/new_flooz_price"
-                        android:text="€"/>
-
-                </LinearLayout>
+                <TextView
+                    android:id="@+id/new_transac_currency_symbol"
+                    android:layout_marginLeft="@dimen/dimen_medium"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@android:color/white"
+                    android:textSize="@dimen/new_flooz_price"
+                    android:text="@string/GLOBAL_EURO"/>
 
             </LinearLayout>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="1dp"
+            android:background="@color/blue_middle"/>
+
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
 
             <LinearLayout
                 android:orientation="horizontal"
@@ -176,8 +150,11 @@
                     android:hint="@string/FIELD_TRANSACTION_CONTENT_PLACEHOLDER"
                     android:textColorHint="@color/placeholder"
                     android:textColor="@android:color/white"
-                    android:maxLength="140"
-                    android:layout_marginBottom="80dp"
+                    android:maxLength="150"
+                    android:text=""
+                    android:cursorVisible="true"
+                    android:textCursorDrawable="@null"
+                    android:layout_marginBottom="40dp"
                     android:gravity="top"/>
 
                 <RelativeLayout
@@ -205,120 +182,123 @@
                 </RelativeLayout>
 
             </LinearLayout>
-        </LinearLayout>
-
-        <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true">
-
-            <RelativeLayout
-                android:layout_width="fill_parent"
-                android:layout_height="@dimen/new_flooz_main_social_zone"
-                android:layout_marginRight="@dimen/dimen_large"
-                android:layout_marginLeft="@dimen/dimen_large"
-                android:layout_marginBottom="@dimen/dimen_medium"
-                android:gravity="center_vertical">
-
-                <LinearLayout
-                    android:id="@+id/new_transac_scope_container"
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:id="@+id/new_transac_scope_pic"
-                        android:layout_width="@dimen/new_flooz_main_social_icn"
-                        android:layout_height="@dimen/new_flooz_main_social_icn"
-                        android:src="@drawable/scope_public"
-                        android:layout_marginRight="@dimen/dimen_medium"/>
-
-                    <TextView
-                        android:id="@+id/new_transac_scope_text"
-                        android:layout_width="wrap_content"
-                        android:layout_height="fill_parent"
-                        android:paddingTop="@dimen/dimen_medium"
-                        android:textSize="@dimen/new_flooz_main_social_scope"
-                        android:textColor="@android:color/white"
-                        android:text="Public"/>
-
-                    <ImageView
-                        android:id="@+id/new_transac_scope_arrow"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:src="@drawable/swipe_arrow"
-                        android:layout_marginLeft="@dimen/dimen_small"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_alignParentRight="true"
-                    android:orientation="horizontal"
-                    android:layout_width="wrap_content"
-                    android:layout_height="fill_parent"
-                    android:gravity="center_vertical">
-
-                    <ImageView
-                        android:id="@+id/new_transac_album_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/new_flooz_main_social_icn"
-                        android:src="@drawable/photo_album"
-                        android:paddingTop="@dimen/dimen_small"
-                        android:paddingBottom="@dimen/dimen_small"
-                        android:layout_marginRight="@dimen/dimen_xlarge"/>
-
-                    <ImageView
-                        android:id="@+id/new_transac_pic_button"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/new_flooz_main_social_icn"
-                        android:src="@drawable/camera_grey"
-                        android:layout_marginRight="@dimen/dimen_xlarge"/>
-
-                    <CheckBox
-                        android:visibility="gone"
-                        android:id="@+id/new_transac_fb_checkbox"
-                        android:layout_width="wrap_content"
-                        android:layout_height="@dimen/new_flooz_main_social_icn"
-                        android:button="@drawable/fb_checkbox"
-                        android:layout_marginRight="@dimen/dimen_medium"/>
-
-                </LinearLayout>
-
-            </RelativeLayout>
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/new_flooz_main_action_zone"
-                android:gravity="center_vertical">
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:background="@color/blue_middle"
+                android:baselineAligned="false">
 
-                <TextView
-                    android:id="@+id/new_transac_collect"
+                <LinearLayout
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:text="@string/MENU_COLLECT"
-                    android:layout_margin="@dimen/dimen_medium"
-                    android:textColor="@android:color/white"
-                    android:background="@drawable/background_action_button"
-                    android:gravity="center"/>
+                    android:layout_height="fill_parent"
+                    android:baselineAligned="false">
 
-                <TextView
-                    android:id="@+id/new_transac_paid"
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:layout_centerInParent="true"
+                            android:id="@+id/new_transac_scope_pic"
+                            android:layout_width="@dimen/new_flooz_main_social_icn"
+                            android:layout_height="@dimen/new_flooz_main_social_icn"
+                            android:src="@drawable/scope_public"/>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:layout_centerInParent="true"
+                            android:id="@+id/new_transac_album_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/new_flooz_main_social_icn"
+                            android:src="@drawable/photo_album"
+                            android:paddingTop="@dimen/dimen_small"
+                            android:paddingBottom="@dimen/dimen_small"/>
+
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="0dp"
+                        android:layout_height="fill_parent"
+                        android:layout_weight="1">
+
+                        <ImageView
+                            android:layout_centerInParent="true"
+                            android:id="@+id/new_transac_pic_button"
+                            android:layout_width="wrap_content"
+                            android:layout_height="@dimen/new_flooz_main_social_icn"
+                            android:src="@drawable/camera_grey"/>
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:orientation="horizontal"
                     android:layout_width="0dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="@dimen/new_flooz_main_action_zone"
                     android:layout_weight="1"
-                    android:text="@string/MENU_PAYMENT"
-                    android:layout_margin="@dimen/dimen_medium"
-                    android:textColor="@android:color/white"
-                    android:background="@drawable/background_action_button"
-                    android:gravity="center"/>
+                    android:gravity="center_vertical"
+                    android:paddingTop="@dimen/dimen_small"
+                    android:paddingBottom="@dimen/dimen_small">
 
+                    <TextView
+                        android:id="@+id/new_transac_collect"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/MENU_COLLECT"
+                        android:layout_margin="@dimen/dimen_medium"
+                        android:textColor="@android:color/white"
+                        android:background="@drawable/background_action_button"
+                        android:gravity="center"
+                        android:enabled="false"/>
+
+                    <TextView
+                        android:id="@+id/new_transac_paid"
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="1"
+                        android:text="@string/MENU_PAYMENT"
+                        android:layout_margin="@dimen/dimen_medium"
+                        android:textColor="@android:color/white"
+                        android:background="@drawable/background_action_button"
+                        android:gravity="center"
+                        android:enabled="false"/>
+
+                </LinearLayout>
             </LinearLayout>
 
+            <ListView
+                android:id="@+id/new_transac_contact_list"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="@color/background"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+
         </LinearLayout>
+
+        <com.ryanharter.android.tooltips.ToolTipLayout
+            android:id="@+id/new_transac_tooltip_container"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent" />
+
+        <com.ryanharter.android.tooltips.ToolTipLayout
+            android:id="@+id/new_transac_demo_container"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:clickable="true"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 

@@ -15,15 +15,12 @@ import me.flooz.app.R;
  */
 public class SignupCGUFragment extends SignupBaseFragment {
 
-    private WebView webView;
     private ProgressBar progressBar;
-
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-
+        setRetainInstance(false);
     }
 
     @Override
@@ -32,7 +29,7 @@ public class SignupCGUFragment extends SignupBaseFragment {
 
         progressBar = (ProgressBar) view.findViewById(R.id.signup_cgu_progress_bar);
 
-        webView = (WebView) view.findViewById(R.id.signup_cgu_webview);
+        WebView webView = (WebView) view.findViewById(R.id.signup_cgu_webview);
         webView.setBackgroundColor(0x00000000);
         webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
 

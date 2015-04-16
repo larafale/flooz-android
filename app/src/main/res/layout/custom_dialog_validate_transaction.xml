@@ -4,21 +4,15 @@
     android:orientation="vertical"
     android:layout_width="@dimen/dialog_validate_flooz_width"
     android:layout_height="wrap_content"
-    android:background="@color/blue"
+    android:background="@drawable/tooltip_scope_view"
     android:gravity="center_horizontal">
-
-    <ImageView
-        android:layout_width="fill_parent"
-        android:layout_height="@dimen/dialog_validate_flooz_pic_height"
-        android:src="@drawable/flooz_icon_white"
-        android:layout_marginTop="@dimen/dimen_large"/>
 
     <TextView
         android:id="@+id/dialog_validate_flooz_text"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/dimen_xlarge"
-        android:textColor="@android:color/white"
+        android:textColor="@color/placeholder"
         android:textSize="@dimen/dialog_validate_flooz_text_size"
         android:textAlignment="center"
         android:gravity="center"/>
@@ -26,27 +20,32 @@
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_large"
+        android:layout_marginBottom="@dimen/dimen_large">
 
         <Button
             android:id="@+id/dialog_validate_flooz_decline"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/signup_button_height"
             android:layout_weight="1"
-            android:background="@android:color/white"
-            android:textColor="@color/blue"
+            android:background="@drawable/background_action_button"
+            android:textColor="@android:color/white"
             android:text="@string/GLOBAL_NO"
-            android:layout_marginRight="@dimen/dimen_xsmall"/>
+            android:layout_marginLeft="@dimen/dimen_large"
+            android:layout_marginRight="@dimen/dimen_medium"/>
 
         <Button
             android:id="@+id/dialog_validate_flooz_accept"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="@dimen/signup_button_height"
             android:layout_weight="1"
-            android:background="@android:color/white"
-            android:textColor="@color/blue"
+            android:background="@drawable/background_action_button"
+            android:textColor="@android:color/white"
             android:text="@string/GLOBAL_YES"
-            android:textStyle="bold"/>
+            android:textStyle="bold"
+            android:layout_marginRight="@dimen/dimen_large"
+            android:layout_marginLeft="@dimen/dimen_medium"/>
 
     </LinearLayout>
 

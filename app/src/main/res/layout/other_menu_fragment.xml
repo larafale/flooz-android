@@ -3,8 +3,8 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_header"
-    android:clickable="true">
+    android:clickable="true"
+    android:background="@color/background_header">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -31,18 +31,28 @@
 
     </RelativeLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="fill_parent"
-        android:gravity="center">
+        android:layout_height="fill_parent">
 
         <ListView
             android:id="@+id/other_menu_list"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:divider="@android:color/transparent"
-            android:dividerHeight="0dp"/>
+            android:dividerHeight="0dp"
+            android:layout_centerInParent="true"/>
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/other_menu_about"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:layout_alignParentBottom="true"
+            android:layout_margin="@dimen/dimen_xlarge"
+            android:textColor="@color/placeholder"
+            android:textSize="14sp"/>
+
+    </RelativeLayout>
 
 </LinearLayout>

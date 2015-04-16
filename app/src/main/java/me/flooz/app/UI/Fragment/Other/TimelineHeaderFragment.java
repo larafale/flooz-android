@@ -16,7 +16,6 @@ import me.flooz.app.Utils.CustomFonts;
 public class TimelineHeaderFragment extends Fragment {
 
     public String text;
-    private TextView textView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -27,7 +26,7 @@ public class TimelineHeaderFragment extends Fragment {
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.timeline_header_fragment, null);
 
-        textView = (TextView) view.findViewById(R.id.timeline_header_text);
+        TextView textView = (TextView) view.findViewById(R.id.timeline_header_text);
         textView.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
         textView.setText(this.text);
 

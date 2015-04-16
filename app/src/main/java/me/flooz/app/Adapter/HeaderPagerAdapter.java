@@ -11,7 +11,6 @@ import android.support.v13.app.FragmentStatePagerAdapter;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.R;
 import me.flooz.app.UI.Fragment.Other.TimelineHeaderFragment;
-import me.flooz.app.App.FloozApplication;
 
 public class HeaderPagerAdapter  extends FragmentStatePagerAdapter
 {

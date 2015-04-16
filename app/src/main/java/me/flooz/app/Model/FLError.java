@@ -58,12 +58,14 @@ public class FLError {
     }
 
     public static ErrorType errorTypeParamToEnum(String param) {
-        if (param.equals("red"))
-            return ErrorType.ErrorTypeError;
-        else if (param.equals("blue"))
-            return ErrorType.ErrorTypeWarning;
-        else if (param.equals("green"))
-            return ErrorType.ErrorTypeSuccess;
+        switch (param) {
+            case "red":
+                return ErrorType.ErrorTypeError;
+            case "blue":
+                return ErrorType.ErrorTypeWarning;
+            case "green":
+                return ErrorType.ErrorTypeSuccess;
+        }
 
         return null;
     }

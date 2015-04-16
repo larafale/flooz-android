@@ -10,7 +10,6 @@ import java.util.List;
 
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Utils.MomentDate;
-import me.flooz.app.App.FloozApplication;
 
 /**
  * Created by Flooz on 10/15/14.
@@ -29,6 +28,7 @@ public class FLNotification {
     public Date date;
     public String dateText;
     public List<FLTrigger> triggers;
+    public JSONObject data;
 
     public FLNotification (JSONObject json) {
         this.setJson(json);
@@ -62,12 +62,14 @@ public class FLNotification {
 
         this.triggers = new ArrayList<>();
 
-        if (json != null && json.has("triggers")) {
+        if (json.has("triggers")) {
             JSONArray t = json.optJSONArray("triggers");
             for (int i = 0; i < t.length(); i++) {
                 FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
                 this.triggers.add(trigger);
             }
         }
+
+        this.data = json;
     }
 }

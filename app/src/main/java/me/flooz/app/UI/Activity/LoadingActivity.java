@@ -15,6 +15,8 @@ import me.flooz.app.BuildConfig;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.ViewServer;
 
 /**
  * Created by Flooz on 11/6/14.
@@ -27,6 +29,9 @@ public class LoadingActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Crashlytics.start(this);
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).addWindow(this);
 
         floozApp = (FloozApplication)this.getApplicationContext();
 
@@ -44,6 +49,7 @@ public class LoadingActivity extends Activity {
             AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
             alert.setTitle("Local Ip Address");
+            alert.setCancelable(false);
 
             final EditText input = new EditText(this);
             input.setText("192.168.1.");
@@ -51,8 +57,7 @@ public class LoadingActivity extends Activity {
 
             alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                 public void onClick(DialogInterface dialog, int whichButton) {
-                    String value = "http://" + input.getText().toString();
-                    FloozRestClient.customIpAdress = value;
+                    FloozRestClient.customIpAdress = "http://" + input.getText().toString();
                     if (!FloozRestClient.getInstance().autologin()) {
                         FloozApplication.getInstance().displayStartView();
                         finish();
@@ -81,6 +86,10 @@ public class LoadingActivity extends Activity {
 
     protected void onResume() {
         super.onResume();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).setFocusedWindow(this);
+
         floozApp.setCurrentActivity(this);
         AppEventsLogger.activateApp(this);
     }
@@ -93,6 +102,10 @@ public class LoadingActivity extends Activity {
 
     protected void onDestroy() {
         clearReferences();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).removeWindow(this);
+
         super.onDestroy();
     }
 

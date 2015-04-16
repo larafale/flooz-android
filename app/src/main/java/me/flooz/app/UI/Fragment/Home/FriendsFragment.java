@@ -5,6 +5,7 @@ package me.flooz.app.UI.Fragment.Home;
  */
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -31,6 +32,7 @@ import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.ShareAppActivity;
 import me.flooz.app.Utils.CustomFonts;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
@@ -43,9 +45,6 @@ public class FriendsFragment extends HomeBaseFragment implements FriendsListAdap
     public PullRefreshLayout refreshContainer;
 
     private LinearLayout backgroundView;
-    private Button inviteFriends;
-
-    private StickyListHeadersListView resultList;
 
     private FriendsListAdapter listAdapter;
 
@@ -65,12 +64,14 @@ public class FriendsFragment extends HomeBaseFragment implements FriendsListAdap
         this.searchTextfield = (TextView) view.findViewById(R.id.friends_search_textfield);
         this.clearSearchTextfieldButton = (ImageView) view.findViewById(R.id.friends_search_clear);
         this.backgroundView = (LinearLayout) view.findViewById(R.id.friends_empty_background);
-        this.inviteFriends = (Button) view.findViewById(R.id.friends_invite_button);
+        Button inviteFriends = (Button) view.findViewById(R.id.friends_invite_button);
 
-        this.inviteFriends.setOnClickListener(new View.OnClickListener() {
+        inviteFriends.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                parentActivity.pushMainFragment("invite", R.animator.slide_up, android.R.animator.fade_out);
+                Intent intentShare = new Intent(parentActivity, ShareAppActivity.class);
+                parentActivity.startActivity(intentShare);
+                parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
             }
         });
 
@@ -162,16 +163,16 @@ public class FriendsFragment extends HomeBaseFragment implements FriendsListAdap
             }
         });
 
-        this.resultList = (StickyListHeadersListView) view.findViewById(R.id.friends_result_list);
+        StickyListHeadersListView resultList = (StickyListHeadersListView) view.findViewById(R.id.friends_result_list);
         this.listAdapter = new FriendsListAdapter(inflater.getContext());
         this.listAdapter.delegate = this;
-        this.resultList.setAdapter(this.listAdapter);
+        resultList.setAdapter(this.listAdapter);
 
-        this.resultList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        resultList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
                 FLUser user = listAdapter.getItem(position);
-                user.selectedCanal = FLUser.FLUserSelectedCanal.values()[(int)listAdapter.getHeaderId(position)];
+                user.selectedCanal = FLUser.FLUserSelectedCanal.values()[(int) listAdapter.getHeaderId(position)];
                 FloozApplication.getInstance().showUserActionMenu(user);
             }
         });

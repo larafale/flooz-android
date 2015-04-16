@@ -18,6 +18,8 @@ import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.ViewServer;
 
 /**
  * Created by Flooz on 3/9/15.
@@ -25,8 +27,6 @@ import me.flooz.app.Utils.CustomFonts;
 public class NotificationActivity extends Activity {
 
     private ImageView headerBackButton;
-    private TextView headerTitle;
-    private ListView contentList;
     private PullRefreshLayout contentContainer;
     private NotificationListAdapter listAdapter;
     private FloozApplication floozApp;
@@ -35,16 +35,19 @@ public class NotificationActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).addWindow(this);
+
         floozApp = (FloozApplication)this.getApplicationContext();
 
         this.setContentView(R.layout.notification_fragment);
 
         this.headerBackButton = (ImageView) this.findViewById(R.id.notification_header_back);
-        this.headerTitle = (TextView) this.findViewById(R.id.notification_header_title);
-        this.contentList = (ListView) this.findViewById(R.id.notification_list);
+        TextView headerTitle = (TextView) this.findViewById(R.id.notification_header_title);
+        ListView contentList = (ListView) this.findViewById(R.id.notification_list);
         this.contentContainer = (PullRefreshLayout) this.findViewById(R.id.notification_container);
 
-        this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
+        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
 
         this.headerBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -56,7 +59,7 @@ public class NotificationActivity extends Activity {
         });
 
         this.listAdapter = new NotificationListAdapter(this);
-        this.contentList.setAdapter(this.listAdapter);
+        contentList.setAdapter(this.listAdapter);
 
         this.contentContainer.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
@@ -75,14 +78,13 @@ public class NotificationActivity extends Activity {
             }
         });
 
-        this.contentList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        contentList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                FLNotification notif = (FLNotification)listAdapter.getItem(position);
+                FLNotification notif = (FLNotification) listAdapter.getItem(position);
                 notif.isRead = true;
-                for (int i = 0; i < notif.triggers.size(); i++) {
-                    FloozRestClient.getInstance().handleTrigger(notif.triggers.get(i));
-                }
+                if (notif.triggers.size() > 0)
+                    FloozRestClient.getInstance().handleRequestTriggers(notif.data);
                 listAdapter.notifyDataSetChanged();
             }
         });
@@ -92,6 +94,10 @@ public class NotificationActivity extends Activity {
     public void onResume() {
         super.onResume();
         floozApp.setCurrentActivity(this);
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).setFocusedWindow(this);
+
         if (this.listAdapter != null)
             this.listAdapter.loadBroadcastReceivers();
         FloozRestClient.getInstance().updateNotificationFeed(null);
@@ -108,6 +114,10 @@ public class NotificationActivity extends Activity {
     @Override
     protected void onDestroy() {
         clearReferences();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).removeWindow(this);
+
         super.onDestroy();
     }
 

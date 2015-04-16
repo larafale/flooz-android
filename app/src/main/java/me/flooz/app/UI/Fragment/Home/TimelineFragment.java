@@ -1,5 +1,6 @@
 package me.flooz.app.UI.Fragment.Home;
 
+import android.annotation.SuppressLint;
 import android.app.Fragment;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -59,6 +60,15 @@ public class TimelineFragment extends Fragment implements TimelineListAdapter.Ti
         }
     };
 
+    public TimelineFragment() {
+        this.currentScope = FLTransaction.TransactionScope.TransactionScopePublic;
+    }
+
+    @SuppressLint("ValidFragment")
+    public TimelineFragment(FLTransaction.TransactionScope scope) {
+        this.currentScope = scope;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -105,8 +115,22 @@ public class TimelineFragment extends Fragment implements TimelineListAdapter.Ti
 
         this.timelineListView.setAdapter(this.timelineAdapter);
 
+        if (currentScope == FLTransaction.TransactionScope.TransactionScopeFriend) {
+            backgroundImage.setImageResource(R.drawable.empty_tl_friend);
+            backgroundImage.setVisibility(View.VISIBLE);
+        } else if (currentScope == FLTransaction.TransactionScope.TransactionScopePrivate) {
+            backgroundImage.setImageResource(R.drawable.empty_tl_private);
+            backgroundImage.setVisibility(View.VISIBLE);
+        }
+
         return view;
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
 
     @Override
     public void onResume() {
@@ -149,12 +173,13 @@ public class TimelineFragment extends Fragment implements TimelineListAdapter.Ti
     }
 
     private void loadNextPage() {
-        if (nextPageUrl.isEmpty())
+        if (nextPageUrl == null || nextPageUrl.isEmpty())
             return;
 
         FloozRestClient.getInstance().timelineNextPage(this.nextPageUrl, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
+                @SuppressWarnings("unchecked")
                 Map<String, Object> responseMap = (Map<String, Object>) response;
 
                 transactions.addAll((List<FLTransaction>) responseMap.get("transactions"));
@@ -173,36 +198,40 @@ public class TimelineFragment extends Fragment implements TimelineListAdapter.Ti
         FloozRestClient.getInstance().timeline(this.currentScope, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
+                @SuppressWarnings("unchecked")
                 Map<String, Object> responseMap = (Map<String, Object>) response;
 
-                transactions.clear();
-                transactions.addAll((List<FLTransaction>) responseMap.get("transactions"));
-                nextPageUrl = (String) responseMap.get("nextUrl");
+                if (responseMap.containsKey("transactions") && responseMap.get("transactions") != null && responseMap.get("transactions") instanceof List) {
+                    transactions.clear();
+                    transactions.addAll((List<FLTransaction>) responseMap.get("transactions"));
+                    nextPageUrl = (String) responseMap.get("nextUrl");
 
-                timelineAdapter.notifyDataSetChanged();
-                refreshContainer.setRefreshing(false);
+                    timelineAdapter.notifyDataSetChanged();
+                    refreshContainer.setRefreshing(false);
 
-                if (transactions.size() == 0) {
-                    Handler _timer = new Handler();
-                    _timer.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (transactions.size() == 0) {
-                                if (currentScope == FLTransaction.TransactionScope.TransactionScopeFriend) {
-                                    backgroundImage.setImageResource(R.drawable.empty_tl_friend);
-                                    backgroundImage.setVisibility(View.VISIBLE);
-                                } else if (currentScope == FLTransaction.TransactionScope.TransactionScopePrivate) {
-                                    backgroundImage.setImageResource(R.drawable.empty_tl_private);
-                                    backgroundImage.setVisibility(View.VISIBLE);
+                    if (transactions.size() == 0) {
+                        Handler _timer = new Handler();
+                        _timer.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (transactions.size() == 0) {
+                                    if (currentScope == FLTransaction.TransactionScope.TransactionScopeFriend) {
+                                        backgroundImage.setImageResource(R.drawable.empty_tl_friend);
+                                        backgroundImage.setVisibility(View.VISIBLE);
+                                    } else if (currentScope == FLTransaction.TransactionScope.TransactionScopePrivate) {
+                                        backgroundImage.setImageResource(R.drawable.empty_tl_private);
+                                        backgroundImage.setVisibility(View.VISIBLE);
+                                    }
+                                } else {
+                                    backgroundImage.setVisibility(View.GONE);
                                 }
-                            } else {
-                                backgroundImage.setVisibility(View.GONE);
                             }
-                        }
-                    }, 500);
-                } else {
-                    backgroundImage.setVisibility(View.GONE);
-                }
+                        }, 500);
+                    } else {
+                        backgroundImage.setVisibility(View.GONE);
+                    }
+                } else
+                    refreshContainer.setRefreshing(false);
             }
 
             @Override

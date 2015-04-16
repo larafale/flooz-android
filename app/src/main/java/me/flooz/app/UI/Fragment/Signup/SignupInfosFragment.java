@@ -3,6 +3,7 @@ package me.flooz.app.UI.Fragment.Signup;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
+import android.text.Spannable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -12,6 +13,12 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import com.mixpanel.android.util.StringUtils;
+
+import org.json.JSONObject;
+
+import java.util.Calendar;
 
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLUser;
@@ -113,23 +120,24 @@ public class SignupInfosFragment extends SignupBaseFragment {
 
         this.birthdateTextfield.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
 
             }
 
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
+            public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
                 if (charSequence.length() > 0 && bithdateHint.getVisibility() != View.GONE)
                     bithdateHint.setVisibility(View.GONE);
                 if (charSequence.length() == 0 && bithdateHint.getVisibility() != View.VISIBLE)
                     bithdateHint.setVisibility(View.VISIBLE);
-
             }
 
             @Override
             public void afterTextChanged(Editable editable) {
+
                 if (editable.length() == 3 && editable.charAt(2) != '/')
                     editable.insert(2, "/");
+
                 if (editable.length() == 6 && editable.charAt(5) != '/')
                     editable.insert(5, "/");
 
@@ -138,6 +146,30 @@ public class SignupInfosFragment extends SignupBaseFragment {
 
                 if (editable.length() == 4 && editable.charAt(3) > '1')
                     editable.insert(3, "0");
+
+                if (editable.length() == 1 && editable.charAt(0) == '/')
+                    editable.delete(0, 1);
+
+                if (editable.length() == 2 && editable.charAt(1) == '/')
+                    editable.delete(1, 2);
+
+                if (editable.length() == 4 && editable.charAt(3) == '/')
+                    editable.delete(3, 4);
+
+                if (editable.length() == 5 && editable.charAt(4) == '/')
+                    editable.delete(4, 5);
+
+                if (editable.length() == 7 && editable.charAt(6) == '/')
+                    editable.delete(6, 7);
+
+                if (editable.length() == 8 && editable.charAt(7) == '/')
+                    editable.delete(7, 8);
+
+                if (editable.length() == 9 && editable.charAt(8) == '/')
+                    editable.delete(8, 9);
+
+                if (editable.length() == 10 && editable.charAt(9) == '/')
+                    editable.delete(9, 10);
 
                 if (editable.length() == 2 && editable.charAt(0) == '3' && editable.charAt(1) > '1')
                     editable.delete(1, 2);
@@ -186,8 +218,45 @@ public class SignupInfosFragment extends SignupBaseFragment {
 
         this.passwordTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    nextButton.performClick();
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
+                    if (nextButton.isEnabled())
+                        nextButton.performClick();
+                }
+                return false;
+            }
+        });
+
+        this.lastnameTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
+                    firtnameTextfield.requestFocus();
+                }
+                return false;
+            }
+        });
+
+        this.firtnameTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
+                    emailTextfield.requestFocus();
+                }
+                return false;
+            }
+        });
+
+        this.emailTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
+                    birthdateTextfield.requestFocus();
+                }
+                return false;
+            }
+        });
+
+        this.birthdateTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
+                    passwordTextfield.requestFocus();
                 }
                 return false;
             }
@@ -196,15 +265,20 @@ public class SignupInfosFragment extends SignupBaseFragment {
         this.nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                nextButton.setEnabled(false);
                 FloozRestClient.getInstance().showLoadView();
                 FloozRestClient.getInstance().signupPassStep("infos", parentActivity.userData.getParamsForStep(false), new FloozHttpResponseHandler() {
                     @Override
                     public void success(Object response) {
-                        parentActivity.gotToNextPage();
+                        JSONObject responseJSON = (JSONObject) response;
+
+                        parentActivity.gotToNextPage(responseJSON.optString("nextStep"), responseJSON.optJSONObject("nextStepData"));
                     }
 
                     @Override
-                    public void failure(int statusCode, FLError error) { }
+                    public void failure(int statusCode, FLError error) {
+                        nextButton.setEnabled(true);
+                    }
                 });
             }
         });
@@ -212,7 +286,7 @@ public class SignupInfosFragment extends SignupBaseFragment {
         this.cguLabel.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                parentActivity.changeCurrentPage(SignupActivity.SignupPageIdentifier.SignupCGU, R.animator.slide_in_left, R.animator.slide_out_right);
+                parentActivity.changeCurrentPage(SignupActivity.SignupPageIdentifier.SignupCGU, R.animator.slide_in_left, R.animator.slide_out_right, null);
             }
         });
 
@@ -250,6 +324,32 @@ public class SignupInfosFragment extends SignupBaseFragment {
         return view;
     }
 
+    public String getModifiedDay(String string, String textDay) {
+        if (textDay.length() == 1) {
+            if (textDay.contentEquals("3") && Integer.parseInt(string) > 1)
+                return "-1";
+            return string;
+        }
+
+        if (Integer.parseInt(string) > 3)
+            return "0" + string;
+
+        return string;
+    }
+
+    public String getModifiedMonth(String string, String textMonth) {
+        if (textMonth.length() == 1) {
+            if (textMonth.contentEquals("1") && Integer.parseInt(string) > 2)
+                return "-1";
+            return string;
+        }
+
+        if (Integer.parseInt(string) > 1)
+            return "0" + string;
+
+        return string;
+    }
+
     private boolean validateForm() {
         if (this.allInstanciated) {
             FLUser user = parentActivity.userData;
@@ -262,5 +362,12 @@ public class SignupInfosFragment extends SignupBaseFragment {
         }
 
         return true;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        nextButton.setEnabled(true);
     }
 }

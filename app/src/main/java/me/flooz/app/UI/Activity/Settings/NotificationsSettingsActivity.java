@@ -10,6 +10,8 @@ import me.flooz.app.Adapter.NotificationSettingsListAdapter;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.ViewServer;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 /**
@@ -17,30 +19,28 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
  */
 public class NotificationsSettingsActivity extends Activity {
 
-    private NotificationsSettingsActivity instance;
     private FloozApplication floozApp;
     private Boolean modal;
 
     private ImageView headerBackButton;
-    private TextView headerTitle;
-    private StickyListHeadersListView contentList;
-    private NotificationSettingsListAdapter listAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.instance = this;
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).addWindow(this);
+
         this.floozApp = (FloozApplication) this.getApplicationContext();
         this.modal = getIntent().getBooleanExtra("modal", false);
 
         this.setContentView(R.layout.settings_notifications_fragment);
 
         this.headerBackButton = (ImageView) this.findViewById(R.id.settings_notifications_header_back);
-        this.headerTitle = (TextView) this.findViewById(R.id.settings_notifications_header_title);
-        this.contentList = (StickyListHeadersListView) this.findViewById(R.id.settings_notifications_list);
+        TextView headerTitle = (TextView) this.findViewById(R.id.settings_notifications_header_title);
+        StickyListHeadersListView contentList = (StickyListHeadersListView) this.findViewById(R.id.settings_notifications_list);
 
-        this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
+        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
 
         this.headerBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -53,15 +53,19 @@ public class NotificationsSettingsActivity extends Activity {
             }
         });
 
-        this.listAdapter = new NotificationSettingsListAdapter(this);
+        NotificationSettingsListAdapter listAdapter = new NotificationSettingsListAdapter(this);
 
-        this.contentList.setAdapter(this.listAdapter);
+        contentList.setAdapter(listAdapter);
     }
 
 
     @Override
     public void onResume() {
         super.onResume();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).setFocusedWindow(this);
+
         floozApp.setCurrentActivity(this);
     }
 
@@ -74,6 +78,10 @@ public class NotificationsSettingsActivity extends Activity {
     @Override
     protected void onDestroy() {
         clearReferences();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).removeWindow(this);
+
         super.onDestroy();
     }
 

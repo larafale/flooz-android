@@ -96,7 +96,8 @@ public class SigninPassFragment extends SigninBaseFragment {
         this.confirmTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    nextButton.performClick();
+                    if (nextButton.isEnabled())
+                        nextButton.performClick();
                 }
                 return false;
             }
@@ -106,7 +107,7 @@ public class SigninPassFragment extends SigninBaseFragment {
             @Override
             public void onClick(View v) {
 
-                Map<String, Object> data = new HashMap<String, Object>(3);
+                Map<String, Object> data = new HashMap<>(3);
 
                 data.put("phone", parentActivity.userData.phone);
                 data.put("newPassword", passwordTextfield.getText().toString());

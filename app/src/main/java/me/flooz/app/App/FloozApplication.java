@@ -27,21 +27,18 @@ import java.util.List;
 import me.flooz.app.BuildConfig;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLReport;
+import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.HomeActivity;
+import me.flooz.app.UI.Activity.NewTransactionActivity;
 import me.flooz.app.UI.Activity.StartActivity;
-import me.flooz.app.UI.Fragment.Home.NewFloozFragment;
 import me.flooz.app.UI.Tools.ActionSheet;
 import me.flooz.app.UI.Tools.ActionSheetItem;
+import me.flooz.app.Utils.ContactsManager;
 import me.flooz.app.Utils.FLHelper;
-import me.flooz.app.Model.FLError;
-import me.flooz.app.Model.FLReport;
-import me.flooz.app.Model.FLUser;
-import me.flooz.app.Network.FloozHttpResponseHandler;
-import me.flooz.app.Network.FloozRestClient;
 
 /**
  * Created by Flooz on 9/8/14.
@@ -180,6 +177,10 @@ public class FloozApplication extends Application
     }
 
     public void didConnected() {
+
+        FloozRestClient.getInstance().textObjectFromApi(null);
+        FloozRestClient.getInstance().updateNotificationFeed(null);
+
         mixpanelAPI.identify(FloozRestClient.getInstance().currentUser.userId);
         mixpanelAPI.getPeople().identify(FloozRestClient.getInstance().currentUser.userId);
         mixpanelAPI.getPeople().initPushHandling("202597897110");
@@ -191,11 +192,14 @@ public class FloozApplication extends Application
 
             Intent intent = new Intent();
             intent.setClass(context, HomeActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-            if (this.getCurrentActivity() != null) {
-                this.getCurrentActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                this.getCurrentActivity().finish();
+            if (currentActivity == null) {
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            } else {
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                tmp.startActivity(intent);
+                tmp.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                tmp.finish();
             }
         }
     }
@@ -208,9 +212,12 @@ public class FloozApplication extends Application
     public void displayStartView() {
         Intent intent = new Intent();
         intent.setClass(context, StartActivity.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        if (this.getCurrentActivity() != null) {
+        if (currentActivity == null) {
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            startActivity(intent);
+        } else {
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            this.getCurrentActivity().startActivity(intent);
             this.getCurrentActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             this.getCurrentActivity().finish();
         }
@@ -237,10 +244,10 @@ public class FloozApplication extends Application
     private ActionSheetItem.ActionSheetItemClickListener createTransaction = new ActionSheetItem.ActionSheetItemClickListener() {
         @Override
         public void onClick() {
-            if (getCurrentActivity() instanceof HomeActivity) {
-                ((NewFloozFragment) ((HomeActivity) getCurrentActivity()).contentFragments.get("create")).initWithUser(userActionMenu);
-                ((HomeActivity) getCurrentActivity()).pushMainFragment("create", R.animator.slide_up, android.R.animator.fade_out);
-            }
+            Intent intent = new Intent(getAppContext(), NewTransactionActivity.class);
+            intent.putExtra("user", userActionMenu.json.toString());
+            currentActivity.startActivity(intent);
+            currentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
         }
     };
 

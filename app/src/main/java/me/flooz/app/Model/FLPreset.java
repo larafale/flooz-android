@@ -1,5 +1,6 @@
 package me.flooz.app.Model;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -15,6 +16,7 @@ public class FLPreset {
     public FLUser to;
     public Number amount;
     public String why;
+    public String whyPlaceholder;
     public String title;
     public Map payload;
     public boolean blockAmount = false;
@@ -23,7 +25,11 @@ public class FLPreset {
     public boolean blockWhy = false;
     public boolean focusAmount = false;
     public boolean focusWhy = false;
+    public boolean blockBalance = false;
     public FLTransaction.TransactionType type = FLTransaction.TransactionType.TransactionTypeNone;
+    public boolean isDemo = false;
+    public JSONArray demoSteps;
+    public JSONObject demoIntro;
 
     public FLPreset(JSONObject json) {
         super();
@@ -38,11 +44,29 @@ public class FLPreset {
         if (json.has("amount"))
             this.amount = json.optDouble("amount");
 
+        if (json.has("whyPlaceholder"))
+            this.whyPlaceholder = json.optString("whyPlaceholder");
+
         if (json.has("why"))
             this.why = json.optString("why");
 
         if (json.has("title"))
             this.title = json.optString("title");
+
+        if (json.has("demo"))
+            this.isDemo = json.optBoolean("demo");
+
+        if (this.isDemo) {
+            if (json.has("demoIntro"))
+                this.demoIntro = json.optJSONObject("demoIntro");
+            else
+                this.demoIntro = null;
+
+            if (json.has("demoSteps"))
+                this.demoSteps = json.optJSONArray("demoSteps");
+            else
+                this.demoSteps = null;
+        }
 
         if (json.has("payload"))
             try {
@@ -56,6 +80,9 @@ public class FLPreset {
 
             if (block.has("amount"))
                 this.blockAmount = block.optBoolean("amount");
+
+            if (block.has("balance"))
+                this.blockBalance = block.optBoolean("balance");
 
             if (block.has("to"))
                 this.blockTo = block.optBoolean("to");

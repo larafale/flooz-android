@@ -14,7 +14,6 @@
         android:gravity="bottom"
         android:inputType="textPassword"
         android:hint="@string/FIELD_NEW_PASSWORD"
-        android:editable="false"
         android:singleLine="true"/>
 
     <EditText
@@ -25,7 +24,6 @@
         android:gravity="bottom"
         android:inputType="textPassword"
         android:hint="@string/FIELD_PASSWORD_CONFIRMATION"
-        android:editable="false"
         android:singleLine="true"/>
 
     <Button

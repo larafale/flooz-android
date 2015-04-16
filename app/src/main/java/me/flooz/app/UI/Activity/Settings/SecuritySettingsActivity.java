@@ -1,6 +1,7 @@
 package me.flooz.app.UI.Activity.Settings;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -15,8 +16,10 @@ import me.flooz.app.Adapter.SettingsListAdapter;
 import me.flooz.app.Adapter.SettingsListItem;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.R;
-import me.flooz.app.UI.Fragment.Home.Authentication.AuthenticationFragment;
+import me.flooz.app.UI.Activity.AuthenticationActivity;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.ViewServer;
 
 /**
  * Created by Flooz on 3/10/15.
@@ -35,6 +38,9 @@ public class SecuritySettingsActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).addWindow(this);
 
         this.instance = this;
         this.floozApp = (FloozApplication) this.getApplicationContext();
@@ -64,15 +70,19 @@ public class SecuritySettingsActivity extends Activity {
         itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_CODE), new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                ((AuthenticationFragment)parentActivity.contentFragments.get("authentication")).changeSecureCode = true;
-//                parentActivity.pushMainFragment("authentication", R.animator.slide_in_left, R.animator.slide_out_right);
+                Intent intent = new Intent(instance, AuthenticationActivity.class);
+                intent.putExtra("changeSecureCode", true);
+                instance.startActivity(intent);
+                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
             }
         }));
 
         itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_PASSWORD), new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                parentActivity.pushMainFragment("settings_password", R.animator.slide_in_left, R.animator.slide_out_right);
+                Intent intent = new Intent(instance, PasswordSettingsActivity.class);
+                instance.startActivity(intent);
+                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
             }
         }));
 
@@ -83,6 +93,10 @@ public class SecuritySettingsActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).setFocusedWindow(this);
+
         floozApp.setCurrentActivity(this);
     }
 
@@ -95,6 +109,10 @@ public class SecuritySettingsActivity extends Activity {
     @Override
     protected void onDestroy() {
         clearReferences();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).removeWindow(this);
+
         super.onDestroy();
     }
 

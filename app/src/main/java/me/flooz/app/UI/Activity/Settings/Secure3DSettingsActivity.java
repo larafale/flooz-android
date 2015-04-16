@@ -5,24 +5,22 @@ import android.os.Bundle;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.ViewServer;
 
 /**
  * Created by Flooz on 3/10/15.
  */
 public class Secure3DSettingsActivity extends Activity {
 
-    private Secure3DSettingsActivity instance;
     private FloozApplication floozApp;
     private Boolean modal;
-
-    private WebView webView;
 
     public String data = "";
 
@@ -30,7 +28,9 @@ public class Secure3DSettingsActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.instance = this;
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).addWindow(this);
+
         this.floozApp = (FloozApplication) this.getApplicationContext();
         this.modal = getIntent().getBooleanExtra("modal", true);
 
@@ -46,7 +46,7 @@ public class Secure3DSettingsActivity extends Activity {
             }
         });
 
-        webView = (WebView) this.findViewById(R.id.settings_3ds_webview);
+        WebView webView = (WebView) this.findViewById(R.id.settings_3ds_webview);
         webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
         webView.setWebViewClient(new Callback());
 
@@ -64,6 +64,10 @@ public class Secure3DSettingsActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).setFocusedWindow(this);
+
         floozApp.setCurrentActivity(this);
     }
 
@@ -76,6 +80,10 @@ public class Secure3DSettingsActivity extends Activity {
     @Override
     protected void onDestroy() {
         clearReferences();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).removeWindow(this);
+
         super.onDestroy();
     }
 

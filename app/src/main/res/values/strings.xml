@@ -5,7 +5,7 @@
     <string name="facebook_app_id">152779318256915</string>
 
     <string name="GLOBAL_OR">ou</string>
-    <string name="GLOBAL_OK">Ok</string>
+    <string name="GLOBAL_OK">OK</string>
     <string name="GLOBAL_BY">par</string>
     <string name="GLOBAL_ERROR">Erreur</string>
     <string name="GLOBAL_CANCEL">Annuler</string>
@@ -30,15 +30,15 @@
 
     <string name="LOGOUT_INFO">Êtes-vous sûr de vouloir vous déconnecter ?</string>
 
-    <string name="START_SIGNUP">Je suis nouveau</string>
-    <string name="START_LOGIN">J\'ai déjà un compte Flooz</string>
+    <string name="START_SIGNUP">Créer un compte</string>
+    <string name="START_LOGIN"><u>J\'ai déjà un compte</u></string>
 
     <string name="MSG_UPDATE">Bonne nouvelle ! Une nouvelle version de Flooz est disponible.</string>
     <string name="BTN_UPDATE">Mettre à jour</string>
 
     <string name="LEARN_MORE">En savoir plus</string>
 
-    <string name="SEND_COMMENT">Écrire un commentaire…</string>
+    <string name="SEND_COMMENT">Ajouter un commentaire…</string>
 
     <string name="NAV_HOME">Fil d\'actualité</string>
     <string name="NAV_PUBLIC">Explorer</string>
@@ -78,7 +78,7 @@
     <string name="CASHOUT_INFO">Virer la totalité ou une partie de votre porte-monnaie sur votre compte bancaire.</string>
     <string name="CASHOUT_BUTTON">Virer %s</string>
 
-    <string name="NEW_TRANSACTION">Nouveau Flooz</string>
+    <string name="NEW_TRANSACTION">Flooz</string>
 
     <string name="INFORMATIONS_WHY">Sécurité</string>
     <string name="INFORMATIONS_TERMS">Conditions d\'utilisation</string>
@@ -207,7 +207,10 @@
 
     <string name="FRIEND_INVITE">Inviter ses amis</string>
 
-    <string name="TRANSACTION_FIELD_GOAL">Montant / pers. (facultatif)</string>
+    <string name="TRANSACTION_CONTACT_PICKER_PREFIX">À :&#160;</string>
+    <string name="TRANSACTION_CONTACT_PICKER_HINT">saisir nom, pseudo ou 06</string>
+    <string name="TRANSACTION_CONTACT_LIST_EMPTY_1">Sélectionnez un contact</string>
+    <string name="TRANSACTION_CONTACT_LIST_EMPTY_2">même s\'il n\'est pas encore sur Flooz</string>
 
     <string name="TRANSACTION_ACTION_ACCEPT">ACCEPTER</string>
     <string name="TRANSACTION_ACTION_REFUSE">REFUSER</string>
@@ -238,7 +241,7 @@
     <string name="SEARCH_FRIENDS">Rechercher des amis</string>
     <string name="FRIENDS_SEARCH_FRIENDS">Recherche des amis sur Flooz</string>
     <string name="FRIENDS_FRIENDS_REQUEST">Demande d’amis</string>
-    <string name="FRIENDS_FRIENDS_SUGGESTION">Vous connaissez peut-être...</string>
+    <string name="FRIENDS_FRIENDS_SUGGESTION">Vous connaissez peut-être…</string>
     <string name="FRIENDS_FRIENDS">Mes amis</string>
 
     <string name="FRIEND_PIKER_PLACEHOLDER">Chercher un contact / Entrer un 06</string>
@@ -259,6 +262,7 @@
     <string name="DOCUMENTS_CARD_ID_RECTO">Carte d’identité (Recto)</string>
     <string name="DOCUMENTS_CARD_ID_VERSO">Carte d’identité (Verso)</string>
     <string name="DOCUMENTS_HOME">Justificatif de domicile (&lt; 3 mois)</string>
+    <string name="DOCUMENTS_HOME2">Complément justificatif (optionnel)</string>
 
     <string name="INVITE_CODE_TEXT">Offrez à vos amis la possibilité\nd\'accéder à l\'application !</string>
     <string name="INVITE_CODE_CODE">Votre code</string>
@@ -277,24 +281,6 @@
 
     <string name="SIGNUP_PHONE_PLACEHOLDER">Entrez votre n° de mobile</string>
     <string name="SIGNUP_PHONE_HINT_SMS">Un lien de confirmation vous sera\nenvoyé par SMS</string>
-
-    <string name="SIGNUP_HEAD_TITLE">Bienvenue sur Flooz</string>
-    <string name="SIGNUP_VIEW_1_TITLE_1">PAYEZ VOS AMIS</string>
-    <string name="SIGNUP_VIEW_1_SUBTITLE_1">Choisissez un contact, entrez un montant et un bref message, c’est envoyé !</string>
-    <string name="SIGNUP_VIEW_1_TITLE_2">EN TOUTE SÉCURITÉ</string>
-    <string name="SIGNUP_VIEW_1_SUBTITLE_2">Un code secret à 4 chiffres sécurise chaque paiement.</string>
-    <string name="SIGNUP_VIEW_1_TITLE_3">100% GRATUIT</string>
-    <string name="SIGNUP_VIEW_1_SUBTITLE_3">Aucun frais à aucun moment, simplement gratuit… que du bonheur!</string>
-    <string name="SIGNUP_VIEW_1_BUTTON">Commencez</string>
-
-    <string name="SIGNUP_HEAD_TITLE_2">Créer votre compte</string>
-    <string name="SIGNUP_VIEW_2_TITLE_1">INSCRIPTION RAPIDE</string>
-    <string name="SIGNUP_VIEW_2_SUBTITLE_1">Vous êtes à quelques secondes de votre 1er Flooz !</string>
-    <string name="SIGNUP_VIEW_2_TITLE_2">PRÉPAREZ VOTRE CARTE</string>
-    <string name="SIGNUP_VIEW_2_SUBTITLE_2">Liez votre carte bancaire une fois seuelement.</string>
-    <string name="SIGNUP_VIEW_2_TITLE_3">AJOUTER DES AMIS</string>
-    <string name="SIGNUP_VIEW_2_SUBTITLE_3">Retrouvez vos amis déjà présents sur Flooz ou invitez-les.</string>
-    <string name="SIGNUP_VIEW_2_BUTTON">Démarrez l\'expérience Flooz</string>
 
     <string name="SIGNUP_VIEW_IGNORE_BUTTON">Plus tard</string>
     <string name="SIGNUP_VIEW_IGNORE_BUTTON_2">Ajouter</string>
@@ -319,7 +305,7 @@
     <string name="SIGNUP_PAGE_TITLE_Ask_Contact">Accès à vos contacts</string>
     <string name="SIGNUP_PAGE_TITLE_Friends">Ajouter des amis</string>
 
-    <string name="SIGNUP_PSEUDO_EXPLICATION">Votre pseudo, c\'est votre identité. C\'est comme ça que les autres vous verront sur l\'app. Soyez créatifs ;)</string>
+    <string name="SIGNUP_PSEUDO_EXPLICATION">Donnez votre pseudo pour recevoir de l\'argent. C\'est votre identité, il est unique et non modifiable.</string>
     <string name="SIGNUP_PASSWORD_EXPLICATION">6 caractères min</string>
     <string name="SIGNUP_IMAGE_EXPLICATION">Une bonne photo est indispensable pour être reconnaissable ! Utilisez votre photo facebook ou ajoutez-en une !</string>
 

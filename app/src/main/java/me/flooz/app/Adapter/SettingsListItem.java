@@ -1,6 +1,5 @@
 package me.flooz.app.Adapter;
 
-import android.content.Context;
 import android.widget.AdapterView;
 
 /**

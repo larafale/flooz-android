@@ -21,18 +21,18 @@ import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.ViewServer;
 
 /**
  * Created by Flooz on 3/10/15.
  */
 public class BankSettingsActivity extends Activity {
 
-    private BankSettingsActivity instance;
     private FloozApplication floozApp;
     private Boolean modal;
 
     private ImageView headerBackButton;
-    private TextView headerTitle;
     private EditText ibanTextfield;
     private Button saveButton;
 
@@ -40,18 +40,20 @@ public class BankSettingsActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.instance = this;
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).addWindow(this);
+
         this.floozApp = (FloozApplication) this.getApplicationContext();
         this.modal = getIntent().getBooleanExtra("modal", false);
 
         this.setContentView(R.layout.settings_bank_fragment);
 
         this.headerBackButton = (ImageView) this.findViewById(R.id.settings_bank_header_back);
-        this.headerTitle = (TextView) this.findViewById(R.id.settings_bank_header_title);
+        TextView headerTitle = (TextView) this.findViewById(R.id.settings_bank_header_title);
         this.ibanTextfield = (EditText) this.findViewById(R.id.settings_bank_iban);
         this.saveButton = (Button) this.findViewById(R.id.settings_bank_save);
 
-        this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
+        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
         this.ibanTextfield.setTypeface(CustomFonts.customContentRegular(this));
 
         this.headerBackButton.setOnClickListener(new View.OnClickListener() {
@@ -143,6 +145,10 @@ public class BankSettingsActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).setFocusedWindow(this);
+
         floozApp.setCurrentActivity(this);
     }
 
@@ -155,6 +161,10 @@ public class BankSettingsActivity extends Activity {
     @Override
     protected void onDestroy() {
         clearReferences();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).removeWindow(this);
+
         super.onDestroy();
     }
 

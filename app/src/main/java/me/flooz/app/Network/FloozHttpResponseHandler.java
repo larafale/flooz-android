@@ -1,7 +1,6 @@
 package me.flooz.app.Network;
 
 import me.flooz.app.Model.FLError;
-import me.flooz.app.Model.FLError;
 
 /**
  * Created by Flooz on 9/9/14.

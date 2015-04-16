@@ -7,7 +7,6 @@ import java.text.ParseException;
 
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Utils.MomentDate;
-import me.flooz.app.App.FloozApplication;
 
 /**
  * Created by Flooz on 9/9/14.
@@ -33,9 +32,7 @@ public class FLComment {
 
             this.date = new MomentDate(FloozApplication.getAppContext(), json.getString("cAt"));
 
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
+        } catch (JSONException | ParseException e) {
             e.printStackTrace();
         }
     }

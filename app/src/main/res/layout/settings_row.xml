@@ -7,8 +7,7 @@
     android:paddingLeft="@dimen/dimen_xxlarge"
     android:paddingRight="@dimen/dimen_xlarge"
     android:paddingTop="@dimen/dimen_large"
-    android:paddingBottom="@dimen/dimen_large"
-    android:background="@color/background_header">
+    android:paddingBottom="@dimen/dimen_large">
 
     <TextView
         android:id="@+id/settings_row_text"

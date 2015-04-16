@@ -2,8 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background_header"
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    android:clickable="true"
+    android:background="@color/background_header">
 
     <EditText
         android:id="@+id/signup_username_textfield"
@@ -13,7 +14,6 @@
         android:gravity="bottom"
         android:hint="ex: batman"
         android:focusable="true"
-        android:editable="true"
         android:singleLine="true"/>
 
     <Button
@@ -40,6 +40,6 @@
         android:gravity="center"
         android:lineSpacingExtra="@dimen/dimen_small"
         android:textColor="@color/placeholder"
-        android:textSize="15dp"/>
+        android:textSize="15sp"/>
 
 </LinearLayout>

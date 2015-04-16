@@ -3,8 +3,9 @@
     android:orientation="vertical"
     android:layout_height="fill_parent"
     android:layout_width="fill_parent"
-    android:background="@color/background_header"
-    android:padding="@dimen/dimen_large">
+    android:padding="@dimen/dimen_large"
+    android:clickable="true"
+    android:background="@color/background_header">
 
     <LinearLayout
         android:orientation="vertical"
@@ -16,7 +17,6 @@
             android:id="@+id/signup_infos_lastname"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:nextFocusForward="@+id/signup_infos_firstname"
             android:singleLine="true"
             android:hint="@string/FIELD_LASTNAME"
@@ -26,7 +26,6 @@
             android:id="@id/signup_infos_firstname"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:singleLine="true"
             android:layout_marginRight="@dimen/dimen_small"
             android:nextFocusForward="@+id/signup_infos_email"
@@ -56,6 +55,7 @@
                 android:singleLine="true"
                 android:textColorHint="@color/placeholder"
                 android:inputType="date"
+                android:digits="1234567890/"
                 android:textColor="@android:color/white"
                 android:nextFocusForward="@+id/signup_infos_password"
                 android:hint="@string/FIELD_BIRTHDATE"/>

@@ -21,16 +21,15 @@ public class SettingsListAdapter extends BaseAdapter {
     private Context context;
 
     private List<SettingsListItem> items;
-    private ListView listView;
 
     public SettingsListAdapter(Context ctx, List<SettingsListItem> data, ListView list) {
         this.inflater = LayoutInflater.from(ctx);
         this.context = ctx;
         this.items = data;
-        this.listView = list;
+        ListView listView = list;
 
-        this.listView.setAdapter(this);
-        this.listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        listView.setAdapter(this);
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 getItem(position).getItemClickListener().onItemClick(parent, view, position, id);

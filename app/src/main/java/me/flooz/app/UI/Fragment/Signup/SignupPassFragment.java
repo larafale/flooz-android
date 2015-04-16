@@ -25,7 +25,6 @@ import me.flooz.app.Utils.ImageHelper;
  */
 public class SignupPassFragment extends SignupBaseFragment implements NumericKeyboard.NumericKeyboardDelegate {
 
-    private TextView hintText;
     private LinearLayout codeContainer;
     private ImageView codeChar1;
     private ImageView codeChar2;
@@ -48,7 +47,7 @@ public class SignupPassFragment extends SignupBaseFragment implements NumericKey
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.signup_pass_fragment, null);
 
-        this.hintText = (TextView) view.findViewById(R.id.signup_pass_hint);
+        TextView hintText = (TextView) view.findViewById(R.id.signup_pass_hint);
         this.codeContainer = (LinearLayout) view.findViewById(R.id.signup_pass_container);
         this.codeChar1 = (ImageView) view.findViewById(R.id.signup_pass_char_1);
         this.codeChar2 = (ImageView) view.findViewById(R.id.signup_pass_char_2);
@@ -56,12 +55,12 @@ public class SignupPassFragment extends SignupBaseFragment implements NumericKey
         this.codeChar4 = (ImageView) view.findViewById(R.id.signup_pass_char_4);
         this.keyboard = (NumericKeyboard) view.findViewById(R.id.signup_pass_keypad);
 
-        this.hintText.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+        hintText.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
 
         if (this.confirmMode)
-            this.hintText.setText(R.string.SECORE_CODE_CHOOSE_CONFIRM);
+            hintText.setText(R.string.SECORE_CODE_CHOOSE_CONFIRM);
         else
-            this.hintText.setText(R.string.SECORE_CODE_CHOOSE);
+            hintText.setText(R.string.SECORE_CODE_CHOOSE);
 
         this.keyboard.delegate = this;
         this.keyboard.maxLenght = 4;
@@ -94,7 +93,7 @@ public class SignupPassFragment extends SignupBaseFragment implements NumericKey
 
             if (!this.confirmMode) {
                 this.parentActivity.userData.passCode = this.currentCode;
-                this.parentActivity.gotToNextPage();
+                this.parentActivity.gotToNextPage(null, null);
             }
             else if (this.currentCode.equals(this.parentActivity.userData.passCode)) {
                 FloozRestClient.getInstance().showLoadView();

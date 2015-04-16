@@ -23,18 +23,18 @@ import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.ViewServer;
 
 /**
  * Created by Flooz on 3/10/15.
  */
 public class PasswordSettingsActivity extends Activity {
 
-    private PasswordSettingsActivity instance;
     private FloozApplication floozApp;
     private Boolean modal;
 
     private ImageView headerBackButton;
-    private TextView headerTitle;
 
     private EditText oldPassword;
     private EditText newPassword;
@@ -45,20 +45,22 @@ public class PasswordSettingsActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.instance = this;
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).addWindow(this);
+
         this.floozApp = (FloozApplication) this.getApplicationContext();
         this.modal = getIntent().getBooleanExtra("modal", false);
 
         this.setContentView(R.layout.settings_password_fragment);
 
         this.headerBackButton = (ImageView) this.findViewById(R.id.settings_password_header_back);
-        this.headerTitle = (TextView) this.findViewById(R.id.settings_password_header_title);
+        TextView headerTitle = (TextView) this.findViewById(R.id.settings_password_header_title);
         this.oldPassword = (EditText) this.findViewById(R.id.settings_password_old_pass);
         this.newPassword = (EditText) this.findViewById(R.id.settings_password_new_pass);
         this.confirmPassword = (EditText) this.findViewById(R.id.settings_password_new_pass_confirm);
         this.saveButton = (Button) this.findViewById(R.id.settings_password_save);
 
-        this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
+        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
         this.oldPassword.setTypeface(CustomFonts.customContentRegular(this));
         this.newPassword.setTypeface(CustomFonts.customContentRegular(this));
         this.confirmPassword.setTypeface(CustomFonts.customContentRegular(this));
@@ -165,6 +167,10 @@ public class PasswordSettingsActivity extends Activity {
     public void onResume() {
         super.onResume();
         floozApp.setCurrentActivity(this);
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).setFocusedWindow(this);
+
         this.oldPassword.setText("");
         this.newPassword.setText("");
         this.confirmPassword.setText("");
@@ -197,6 +203,10 @@ public class PasswordSettingsActivity extends Activity {
     @Override
     protected void onDestroy() {
         clearReferences();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).removeWindow(this);
+
         super.onDestroy();
     }
 

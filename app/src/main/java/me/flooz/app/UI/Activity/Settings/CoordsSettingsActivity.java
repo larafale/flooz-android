@@ -2,7 +2,6 @@ package me.flooz.app.UI.Activity.Settings;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -15,6 +14,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,7 +33,9 @@ import me.flooz.app.R;
 import me.flooz.app.UI.Tools.ActionSheet;
 import me.flooz.app.UI.Tools.ActionSheetItem;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.ImageHelper;
+import me.flooz.app.Utils.ViewServer;
 
 /**
  * Created by Flooz on 3/10/15.
@@ -48,18 +50,17 @@ public class CoordsSettingsActivity extends Activity {
     private Boolean modal;
 
     private ImageView headerBackButton;
-    private TextView headerTitle;
 
     private EditText phoneTextfield;
     private EditText emailTextfield;
     private EditText addressTextfield;
     private EditText zipCodeTextfield;
     private EditText cityTextfield;
-    private EditText justificatoryTextfield;
 
     private TextView sendVerifyPhone;
     private TextView sendVerifyMail;
     private ImageView justificatoryButton;
+    private ImageView justificatory2Button;
 
     private Button saveButton;
 
@@ -71,6 +72,9 @@ public class CoordsSettingsActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).addWindow(this);
+
         this.instance = this;
         this.floozApp = (FloozApplication) this.getApplicationContext();
         this.modal = getIntent().getBooleanExtra("modal", false);
@@ -78,19 +82,21 @@ public class CoordsSettingsActivity extends Activity {
         this.setContentView(R.layout.settings_coords_fragment);
 
         this.headerBackButton = (ImageView) this.findViewById(R.id.settings_coord_header_back);
-        this.headerTitle = (TextView) this.findViewById(R.id.settings_coord_header_title);
+        TextView headerTitle = (TextView) this.findViewById(R.id.settings_coord_header_title);
         this.phoneTextfield = (EditText) this.findViewById(R.id.settings_coord_phone);
         this.emailTextfield = (EditText) this.findViewById(R.id.settings_coord_email);
         this.addressTextfield = (EditText) this.findViewById(R.id.settings_coord_address);
         this.zipCodeTextfield = (EditText) this.findViewById(R.id.settings_coord_zip);
         this.cityTextfield = (EditText) this.findViewById(R.id.settings_coord_city);
-        this.justificatoryTextfield = (EditText) this.findViewById(R.id.settings_coord_justificatory);
+        EditText justificatoryTextfield = (EditText) this.findViewById(R.id.settings_coord_justificatory);
+        EditText justificatory2Textfield = (EditText) this.findViewById(R.id.settings_coord_justificatory2);
         this.sendVerifyPhone = (TextView) this.findViewById(R.id.settings_coord_verify_phone);
         this.sendVerifyMail = (TextView) this.findViewById(R.id.settings_coord_verify_email);
+        this.justificatory2Button = (ImageView) this.findViewById(R.id.settings_coord_justificatory2_button);
         this.justificatoryButton = (ImageView) this.findViewById(R.id.settings_coord_justificatory_button);
         this.saveButton = (Button) this.findViewById(R.id.settings_coord_save);
 
-        this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
+        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
         this.phoneTextfield.setTypeface(CustomFonts.customContentRegular(this));
         this.emailTextfield.setTypeface(CustomFonts.customContentRegular(this));
         this.addressTextfield.setTypeface(CustomFonts.customContentRegular(this));
@@ -98,7 +104,8 @@ public class CoordsSettingsActivity extends Activity {
         this.cityTextfield.setTypeface(CustomFonts.customContentRegular(this));
         this.sendVerifyPhone.setTypeface(CustomFonts.customContentRegular(this));
         this.sendVerifyMail.setTypeface(CustomFonts.customContentRegular(this));
-        this.justificatoryTextfield.setTypeface(CustomFonts.customContentRegular(this));
+        justificatoryTextfield.setTypeface(CustomFonts.customContentRegular(this));
+        justificatory2Textfield.setTypeface(CustomFonts.customContentRegular(this));
 
         this.reloadView();
 
@@ -129,6 +136,18 @@ public class CoordsSettingsActivity extends Activity {
             }
         });
 
+        justificatoryTextfield.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+                if (currentUser.checkDocuments.get("justificatory").equals(0) || currentUser.checkDocuments.get("justificatory").equals(3)) {
+                    currentDoc = "justificatory";
+                    showImageActionMenu();
+                }
+            }
+        });
+
         this.justificatoryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -136,6 +155,30 @@ public class CoordsSettingsActivity extends Activity {
 
                 if (currentUser.checkDocuments.get("justificatory").equals(0) || currentUser.checkDocuments.get("justificatory").equals(3)) {
                     currentDoc = "justificatory";
+                    showImageActionMenu();
+                }
+            }
+        });
+
+        justificatory2Textfield.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+                if (currentUser.checkDocuments.get("justificatory2").equals(0) || currentUser.checkDocuments.get("justificatory2").equals(3)) {
+                    currentDoc = "justificatory2";
+                    showImageActionMenu();
+                }
+            }
+        });
+
+        this.justificatory2Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+                if (currentUser.checkDocuments.get("justificatory2").equals(0) || currentUser.checkDocuments.get("justificatory2").equals(3)) {
+                    currentDoc = "justificatory2";
                     showImageActionMenu();
                 }
             }
@@ -156,6 +199,24 @@ public class CoordsSettingsActivity extends Activity {
             public void afterTextChanged(Editable s) {
                 if (s.length() > 10)
                     s.delete(10, s.length());
+            }
+        });
+
+        this.zipCodeTextfield.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 5)
+                    s.delete(5, s.length());
             }
         });
 
@@ -206,7 +267,7 @@ public class CoordsSettingsActivity extends Activity {
                 FloozRestClient.getInstance().updateUser(param, new FloozHttpResponseHandler() {
                     @Override
                     public void success(Object response) {
-
+                        headerBackButton.performClick();
                     }
 
                     @Override
@@ -278,6 +339,13 @@ public class CoordsSettingsActivity extends Activity {
             this.justificatoryButton.setImageResource(R.drawable.friends_add);
         else
             this.justificatoryButton.setImageResource(R.drawable.friends_accepted);
+
+        if (currentUser.checkDocuments.get("justificatory2").equals(0))
+            this.justificatory2Button.setImageResource(R.drawable.document_refused);
+        else if (currentUser.checkDocuments.get("justificatory2").equals(3))
+            this.justificatory2Button.setImageResource(R.drawable.friends_add);
+        else
+            this.justificatory2Button.setImageResource(R.drawable.friends_accepted);
     }
 
     private ActionSheetItem.ActionSheetItemClickListener showCamera = new ActionSheetItem.ActionSheetItemClickListener() {
@@ -331,18 +399,29 @@ public class CoordsSettingsActivity extends Activity {
                         @Override
                         public void run() {
                             android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
-                            String imagePath = getPath(selectedImageUri);
-                            FloozRestClient.getInstance().uploadDocument(currentDoc, new File(imagePath), new FloozHttpResponseHandler() {
-                                @Override
-                                public void success(Object response) {
-                                    FloozRestClient.getInstance().updateCurrentUser(null);
-                                }
+                            String imagePath = ImageHelper.getPath(instance, selectedImageUri);
+                            if (imagePath != null) {
+                                FloozRestClient.getInstance().uploadDocument(currentDoc, new File(imagePath), new FloozHttpResponseHandler() {
+                                    @Override
+                                    public void success(Object response) {
+                                        reloadDocuments();
+                                    }
+                                    @Override
+                                    public void failure(int statusCode, FLError error) {
+                                        FloozRestClient.getInstance().updateCurrentUser(new FloozHttpResponseHandler() {
+                                            @Override
+                                            public void success(Object response) {
+                                                reloadDocuments();
+                                            }
 
-                                @Override
-                                public void failure(int statusCode, FLError error) {
-                                    FloozRestClient.getInstance().updateCurrentUser(null);
-                                }
-                            });
+                                            @Override
+                                            public void failure(int statusCode, FLError error) {
+
+                                            }
+                                        });
+                                    }
+                                });
+                            }
                         }
                     };
                     mainHandler.post(myRunnable);
@@ -351,27 +430,14 @@ public class CoordsSettingsActivity extends Activity {
         }
     }
 
-    public String getPath(Uri uri) {
-        if( uri == null ) {
-            return null;
-        }
-
-        String[] projection = { MediaStore.Images.Media.DATA };
-        Cursor cursor = managedQuery(uri, projection, null, null, null);
-        if( cursor != null ){
-            int column_index = cursor
-                    .getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
-            cursor.moveToFirst();
-            return cursor.getString(column_index);
-        }
-
-        return uri.getPath();
-    }
-
     @Override
     public void onResume() {
         super.onResume();
         floozApp.setCurrentActivity(this);
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).setFocusedWindow(this);
+
         this.reloadView();
     }
 
@@ -384,6 +450,10 @@ public class CoordsSettingsActivity extends Activity {
     @Override
     protected void onDestroy() {
         clearReferences();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).removeWindow(this);
+
         super.onDestroy();
     }
 

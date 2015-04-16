@@ -8,6 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.makeramen.RoundedImageView;
+
 import java.util.List;
 
 import me.flooz.app.R;
@@ -30,29 +32,39 @@ public class MenuListAdapter extends ArrayAdapter<MenuItem>
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        LayoutInflater inflater = (LayoutInflater) context
-                .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        final ViewHolder holder;
 
-        View rowView = inflater.inflate(R.layout.account_menu_row, parent, false);
+        if (convertView == null) {
+            holder = new ViewHolder();
+            convertView = LayoutInflater.from(this.context).inflate(R.layout.account_menu_row, parent, false);
+            holder.img = (ImageView)convertView.findViewById(R.id.menu_row_img);
+            holder.text = (TextView)convertView.findViewById(R.id.menu_row_label);
+            holder.notifsLabel = (TextView)convertView.findViewById(R.id.menu_row_notification);
 
-        ImageView img = (ImageView)rowView.findViewById(R.id.menu_row_img);
-        TextView text = (TextView)rowView.findViewById(R.id.menu_row_label);
-        TextView notifsLabel = (TextView)rowView.findViewById(R.id.menu_row_notification);
+            holder.text.setTypeface(CustomFonts.customTitleLight(this.context));
+            holder.notifsLabel.setTypeface(CustomFonts.customTitleLight(this.context));
 
-        text.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
-        notifsLabel.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
 
         MenuItem item = this.items.get(position);
 
-        img.setImageDrawable(item.image);
-        text.setText(item.name);
+        holder.img.setImageDrawable(item.image);
+        holder.text.setText(item.name);
         if (item.nbNotification > 0)
-            notifsLabel.setText("" + item.nbNotification);
+            holder.notifsLabel.setText(String.format("%d", item.nbNotification));
         else {
-            notifsLabel.setVisibility(View.INVISIBLE);
+            holder.notifsLabel.setVisibility(View.INVISIBLE);
         }
 
-        return rowView;
+        return convertView;
     }
 
+    class ViewHolder {
+        ImageView img;
+        TextView text;
+        TextView notifsLabel;
+    }
 }

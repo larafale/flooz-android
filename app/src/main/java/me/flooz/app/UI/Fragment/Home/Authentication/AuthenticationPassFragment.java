@@ -30,7 +30,6 @@ public class AuthenticationPassFragment extends AuthenticationBaseFragment {
     private Button nextButton;
     private EditText phoneTextfield;
     private EditText passwordTextfield;
-    private TextView forgetButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,11 +45,11 @@ public class AuthenticationPassFragment extends AuthenticationBaseFragment {
         this.phoneTextfield = (EditText) view.findViewById(R.id.authentication_pass_phone);
         this.passwordTextfield = (EditText) view.findViewById(R.id.authentication_pass_password);
         this.nextButton = (Button) view.findViewById(R.id.authentication_pass_next);
-        this.forgetButton = (TextView) view.findViewById(R.id.authentication_pass_pass_forget);
+        TextView forgetButton = (TextView) view.findViewById(R.id.authentication_pass_pass_forget);
 
         this.phoneTextfield.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
         this.passwordTextfield.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
-        this.forgetButton.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
+        forgetButton.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
 
         this.phoneTextfield.setText(FloozRestClient.getInstance().currentUser.phone.replace("+33", "0"));
 
@@ -101,7 +100,8 @@ public class AuthenticationPassFragment extends AuthenticationBaseFragment {
         this.passwordTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    nextButton.performClick();
+                    if (nextButton.isEnabled())
+                        nextButton.performClick();
                 }
                 return false;
             }
@@ -126,7 +126,7 @@ public class AuthenticationPassFragment extends AuthenticationBaseFragment {
             }
         });
 
-        this.forgetButton.setOnClickListener(new View.OnClickListener() {
+        forgetButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String[] TO = {"support@flooz.me"};

@@ -1,82 +1,75 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:clickable="true">
+    android:orientation="vertical"
+    android:background="@color/background_header">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:background="@color/background_header">
+        android:gravity="center"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/authentication_reset_secure_code_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/SECORE_CODE_CHOOSE"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"/>
 
         <LinearLayout
+            android:id="@+id/authentication_reset_secure_code_container"
+            android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:gravity="center"
-            android:layout_weight="1">
+            android:layout_marginTop="@dimen/dimen_xlarge"
+            android:gravity="center">
 
-            <TextView
-                android:id="@+id/authentication_reset_secure_code_hint"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/SECORE_CODE_CHOOSE"
-                android:textColor="@android:color/white"
-                android:textSize="18sp"/>
+            <ImageView
+                android:id="@+id/authentication_reset_secure_code_char_1"
+                android:layout_width="@dimen/secure_code_indicator"
+                android:layout_height="@dimen/secure_code_indicator"
+                android:background="@drawable/secure_code_indicator_background"
+                android:layout_margin="@dimen/dimen_large"
+                />
 
-            <LinearLayout
-                android:id="@+id/authentication_reset_secure_code_container"
-                android:orientation="horizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/dimen_xlarge"
-                android:gravity="center">
+            <ImageView
+                android:id="@+id/authentication_reset_secure_code_char_2"
+                android:layout_width="@dimen/secure_code_indicator"
+                android:layout_height="@dimen/secure_code_indicator"
+                android:background="@drawable/secure_code_indicator_background"
+                android:layout_margin="@dimen/dimen_large"
+                />
 
-                <ImageView
-                    android:id="@+id/authentication_reset_secure_code_char_1"
-                    android:layout_width="@dimen/secure_code_indicator"
-                    android:layout_height="@dimen/secure_code_indicator"
-                    android:background="@drawable/secure_code_indicator_background"
-                    android:layout_margin="@dimen/dimen_large"
-                    />
+            <ImageView
+                android:id="@+id/authentication_reset_secure_code_char_3"
+                android:layout_width="@dimen/secure_code_indicator"
+                android:layout_height="@dimen/secure_code_indicator"
+                android:background="@drawable/secure_code_indicator_background"
+                android:layout_margin="@dimen/dimen_large"
+                />
 
-                <ImageView
-                    android:id="@+id/authentication_reset_secure_code_char_2"
-                    android:layout_width="@dimen/secure_code_indicator"
-                    android:layout_height="@dimen/secure_code_indicator"
-                    android:background="@drawable/secure_code_indicator_background"
-                    android:layout_margin="@dimen/dimen_large"
-                    />
+            <ImageView
+                android:id="@+id/authentication_reset_secure_code_char_4"
+                android:layout_width="@dimen/secure_code_indicator"
+                android:layout_height="@dimen/secure_code_indicator"
+                android:background="@drawable/secure_code_indicator_background"
+                android:layout_margin="@dimen/dimen_large"
+                />
 
-                <ImageView
-                    android:id="@+id/authentication_reset_secure_code_char_3"
-                    android:layout_width="@dimen/secure_code_indicator"
-                    android:layout_height="@dimen/secure_code_indicator"
-                    android:background="@drawable/secure_code_indicator_background"
-                    android:layout_margin="@dimen/dimen_large"
-                    />
-
-                <ImageView
-                    android:id="@+id/authentication_reset_secure_code_char_4"
-                    android:layout_width="@dimen/secure_code_indicator"
-                    android:layout_height="@dimen/secure_code_indicator"
-                    android:background="@drawable/secure_code_indicator_background"
-                    android:layout_margin="@dimen/dimen_large"
-                    />
-
-            </LinearLayout>
         </LinearLayout>
-
-        <me.flooz.app.UI.View.NumericKeyboard
-            android:id="@+id/authentication_reset_secure_code_keypad"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:layout_weight="0.2"
-            android:gravity="bottom"/>
-
     </LinearLayout>
 
+    <me.flooz.app.UI.View.NumericKeyboard
+        android:id="@+id/authentication_reset_secure_code_keypad"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="0.2"
+        android:gravity="bottom"/>
+
 </LinearLayout>
+

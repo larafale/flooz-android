@@ -22,7 +22,6 @@ import me.flooz.app.UI.Activity.HomeActivity;
 public class GcmIntentService extends IntentService {
 
     public static final int NOTIFICATION_ID = 1;
-    private NotificationManager notificationManager;
 
     public GcmIntentService() {
         super("GcmIntentService");
@@ -47,12 +46,14 @@ public class GcmIntentService extends IntentService {
         String userId = appSettings.getString("userId", null);
 
         if (!FloozApplication.appInForeground && userId != null && (extras.getCharSequence("userId") == null || userId.contentEquals(extras.getCharSequence("userId")))) {
-            this.notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
+            NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
-            String array = extras.getCharSequence("triggers").toString();
+            String array = extras.getCharSequence("triggers", "").toString();
 
             Intent pendingIntentContent = new Intent(this, HomeActivity.class);
-            pendingIntentContent.putExtra("triggers", array);
+
+            if (!array.isEmpty())
+                pendingIntentContent.putExtra("triggers", array);
 
             PendingIntent contentIntent = PendingIntent.getActivity(this, 0, pendingIntentContent, PendingIntent.FLAG_UPDATE_CURRENT);
 
@@ -70,7 +71,7 @@ public class GcmIntentService extends IntentService {
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setCategory(NotificationCompat.CATEGORY_SOCIAL);
 
-            this.notificationManager.notify(NOTIFICATION_ID, builder.build());
+            notificationManager.notify(NOTIFICATION_ID, builder.build());
         }
     }
 }

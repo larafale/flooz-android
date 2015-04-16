@@ -72,7 +72,9 @@ public class SignupPhoneFragment extends SignupBaseFragment implements NumericKe
         nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                FloozRestClient.getInstance().loginWithPhone(keyboard.value);
+                nextButton.setEnabled(false);
+                FloozRestClient.getInstance().showLoadView();
+                FloozRestClient.getInstance().loginWithPhone(keyboard.value, parentActivity.userData.coupon);
             }
         });
 
@@ -92,5 +94,15 @@ public class SignupPhoneFragment extends SignupBaseFragment implements NumericKe
             keyboard.maxLenght = 13;
         else
             keyboard.maxLenght = 10;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (keyboard.value.length() >= 10)
+            nextButton.setEnabled(true);
+        else
+            nextButton.setEnabled(false);
     }
 }

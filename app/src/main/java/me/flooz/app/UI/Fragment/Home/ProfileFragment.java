@@ -8,11 +8,10 @@ import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
+import android.provider.MediaStore;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,39 +38,28 @@ import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.AboutActivity;
 import me.flooz.app.UI.Activity.CashoutActivity;
+import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.NotificationActivity;
 import me.flooz.app.UI.Activity.Settings.ProfileSettingsActivity;
 import me.flooz.app.UI.Activity.ShareAppActivity;
-import me.flooz.app.UI.Activity.StartActivity;
-import me.flooz.app.UI.Fragment.Home.Camera.CameraFullscreenFragment;
-import me.flooz.app.UI.Fragment.Home.Camera.ImageGalleryFragment;
 import me.flooz.app.UI.Tools.ActionSheet;
 import me.flooz.app.UI.Tools.ActionSheetItem;
-import me.flooz.app.Utils.CustomCameraHost;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.ImageHelper;
 import me.flooz.app.Utils.MenuItem;
 
-public class ProfileFragment extends HomeBaseFragment implements CustomCameraHost.CustomCameraHostDelegate
+public class ProfileFragment extends HomeBaseFragment
 {
-    private ProfileFragment instance;
-    private LinearLayout accountUserView;
-    private RoundedImageView userView;
+    public RoundedImageView userView;
     private TextView fullname;
     private TextView username;
     private TextView balanceValue;
-    private TextView floozNb;
-    private TextView floozLabel;
-    private TextView friendsNb;
-    private TextView friendsLabel;
-    private TextView completeNb;
-    private TextView completeLabel;
 
-    private ListView menuActionList;
     private List<MenuItem> menuItems;
     private MenuListAdapter listAdapter;
+    public Uri tmpUriImage;
 
     private BroadcastReceiver reloadCurrentUserDataReceiver = new BroadcastReceiver() {
         @Override
@@ -97,31 +85,30 @@ public class ProfileFragment extends HomeBaseFragment implements CustomCameraHos
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.profile_fragment, null);
 
-        this.instance = this;
-        this.accountUserView = (LinearLayout) view.findViewById(R.id.accountUserView);
+        LinearLayout accountUserView = (LinearLayout) view.findViewById(R.id.accountUserView);
         this.userView = (RoundedImageView) view.findViewById(R.id.userView);
         this.fullname = (TextView) view.findViewById(R.id.fullname);
         this.username = (TextView) view.findViewById(R.id.username);
         this.balanceValue = (TextView) view.findViewById(R.id.balanceValue);
 
-        this.floozNb = (TextView) view.findViewById(R.id.account_nb_flooz);
-        this.floozLabel = (TextView) view.findViewById(R.id.account_flooz_label);
-        this.friendsNb = (TextView) view.findViewById(R.id.account_nb_friends);
-        this.friendsLabel = (TextView) view.findViewById(R.id.account_friends_label);
-        this.completeNb = (TextView) view.findViewById(R.id.account_nb_complete);
-        this.completeLabel = (TextView) view.findViewById(R.id.account_complete_label);
+        TextView floozNb = (TextView) view.findViewById(R.id.account_nb_flooz);
+        TextView floozLabel = (TextView) view.findViewById(R.id.account_flooz_label);
+        TextView friendsNb = (TextView) view.findViewById(R.id.account_nb_friends);
+        TextView friendsLabel = (TextView) view.findViewById(R.id.account_friends_label);
+        TextView completeNb = (TextView) view.findViewById(R.id.account_nb_complete);
+        TextView completeLabel = (TextView) view.findViewById(R.id.account_complete_label);
 
         this.fullname.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
         this.username.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
         this.balanceValue.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
-        this.floozNb.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
-        this.floozLabel.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
-        this.friendsNb.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
-        this.friendsLabel.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
-        this.completeNb.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
-        this.completeLabel.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
+        floozNb.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
+        floozLabel.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
+        friendsNb.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
+        friendsLabel.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
+        completeNb.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
+        completeLabel.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
 
-        this.menuActionList = (ListView)view.findViewById(R.id.account_menu_list);
+        ListView menuActionList = (ListView) view.findViewById(R.id.account_menu_list);
 
         this.menuItems = new ArrayList<>();
 
@@ -132,7 +119,7 @@ public class ProfileFragment extends HomeBaseFragment implements CustomCameraHos
         this.menuItems.add(new MenuItem(inflater.getContext(), R.string.ACCOUNT_MENU_OTHER, R.drawable.account_other_button));
 
         this.listAdapter = new MenuListAdapter(inflater.getContext(), this.menuItems);
-        this.menuActionList.setAdapter(this.listAdapter);
+        menuActionList.setAdapter(this.listAdapter);
 
         this.balanceValue.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -170,17 +157,22 @@ public class ProfileFragment extends HomeBaseFragment implements CustomCameraHos
                 items.add(new ActionSheetItem(inflater.getContext(), R.string.SIGNUP_IMAGE_BUTTON_TAKE, new ActionSheetItem.ActionSheetItemClickListener() {
                     @Override
                     public void onClick() {
-                        ((CameraFullscreenFragment)parentActivity.contentFragments.get("camera_fullscreen")).cameraHostDelegate = instance;
-                        ((CameraFullscreenFragment)parentActivity.contentFragments.get("camera_fullscreen")).canAccessAlbum = false;
-                        parentActivity.pushMainFragment("camera_fullscreen", R.animator.slide_up, android.R.animator.fade_out);
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                        Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
+                        tmpUriImage = fileUri;
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+
+                        parentActivity.startActivityForResult(intent, HomeActivity.TAKE_PICTURE);
                     }
                 }));
 
                 items.add(new ActionSheetItem(inflater.getContext(), R.string.SIGNUP_IMAGE_BUTTON_CHOOSE, new ActionSheetItem.ActionSheetItemClickListener() {
                     @Override
                     public void onClick() {
-                        ((ImageGalleryFragment)parentActivity.contentFragments.get("photo_gallery")).cameraHostDelegate = instance;
-                        parentActivity.pushMainFragment("photo_gallery", R.animator.slide_up, android.R.animator.fade_out);
+                        Intent intent = new Intent(Intent.ACTION_PICK);
+                        intent.setType("image/*");
+                        parentActivity.startActivityForResult(intent, HomeActivity.SELECT_PICTURE);
                     }
                 }));
 
@@ -188,7 +180,7 @@ public class ProfileFragment extends HomeBaseFragment implements CustomCameraHos
             }
         });
 
-        this.menuActionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        menuActionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if (parentActivity != null) {
@@ -270,40 +262,10 @@ public class ProfileFragment extends HomeBaseFragment implements CustomCameraHos
             this.balanceValue.setText(FLHelper.trimTrailingZeros(String.format("%.2f", user.amount.floatValue()).replace(',', '.')) + " €");
             this.username.setText("@" + user.username);
 
-            if (user.avatarURL != null)
+            if (user.avatarURL != null && !user.avatarURL.isEmpty())
                 ImageLoader.getInstance().displayImage(user.avatarURL, this.userView);
             else
                 this.userView.setImageDrawable(getResources().getDrawable(R.drawable.avatar_default));
         }
-    }
-
-    @Override
-    public void photoTaken(final Bitmap photo) {
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                int nh = (int) ( photo.getHeight() * (512.0 / photo.getWidth()) );
-                Bitmap scaled = Bitmap.createScaledBitmap(photo, 512, nh, true);
-                userView.setImageBitmap(scaled);
-                FloozRestClient.getInstance().uploadDocument("picId", ImageHelper.convertBitmapInFile(photo), new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
-                        FloozRestClient.getInstance().updateCurrentUser(null);
-                    }
-
-                    @Override
-                    public void failure(int statusCode, FLError error) {
-                        FLUser user = FloozRestClient.getInstance().currentUser;
-
-                        if (user.avatarURL != null)
-                            ImageLoader.getInstance().displayImage(user.avatarURL, userView);
-                        else
-                            userView.setImageDrawable(getResources().getDrawable(R.drawable.avatar_default));
-                    }
-                });
-                parentActivity.popMainFragment(R.animator.slide_down, android.R.animator.fade_in);
-            }
-        });
     }
 }

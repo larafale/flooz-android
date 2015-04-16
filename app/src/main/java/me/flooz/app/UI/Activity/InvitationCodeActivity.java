@@ -15,11 +15,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import me.flooz.app.App.FloozApplication;
-import me.flooz.app.Model.FLError;
-import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.ViewServer;
 
 /**
  * Created by Flooz on 12/5/14.
@@ -31,15 +31,15 @@ public class InvitationCodeActivity extends Activity {
     private String phoneNumber;
 
     private ImageView backButton;
-    private TextView headerTitle;
-    private TextView text;
-    private TextView learn;
     private EditText codeTextfield;
     private Button joinButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).addWindow(this);
 
         setContentView(R.layout.invitation_code_activity);
         floozApp = (FloozApplication)this.getApplicationContext();
@@ -49,17 +49,17 @@ public class InvitationCodeActivity extends Activity {
             this.phoneNumber = this.phoneNumber.replace("+33", "0");
 
         this.backButton = (ImageView) this.findViewById(R.id.invitation_code_header_back);
-        this.headerTitle = (TextView) this.findViewById(R.id.invitation_code_header_title);
-        this.text = (TextView) this.findViewById(R.id.invitation_code_text);
+        TextView headerTitle = (TextView) this.findViewById(R.id.invitation_code_header_title);
+        TextView text = (TextView) this.findViewById(R.id.invitation_code_text);
         this.codeTextfield = (EditText) this.findViewById(R.id.invitation_code_textfield);
         this.joinButton = (Button) this.findViewById(R.id.invitation_code_join);
-        this.learn = (TextView) this.findViewById(R.id.invitation_code_learn);
+        TextView learn = (TextView) this.findViewById(R.id.invitation_code_learn);
 
-        this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
-        this.text.setTypeface(CustomFonts.customTitleExtraLight(this));
-        this.learn.setTypeface(CustomFonts.customTitleExtraLight(this));
+        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
+        text.setTypeface(CustomFonts.customTitleExtraLight(this));
+        learn.setTypeface(CustomFonts.customTitleExtraLight(this));
 
-        this.learn.setOnClickListener(new View.OnClickListener() {
+        learn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("http://www.flooz.me/about/invitation"));
@@ -127,6 +127,10 @@ public class InvitationCodeActivity extends Activity {
 
     protected void onResume() {
         super.onResume();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).setFocusedWindow(this);
+
         floozApp.setCurrentActivity(this);
     }
 
@@ -136,6 +140,10 @@ public class InvitationCodeActivity extends Activity {
     }
     protected void onDestroy() {
         clearReferences();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).removeWindow(this);
+
         super.onDestroy();
     }
 

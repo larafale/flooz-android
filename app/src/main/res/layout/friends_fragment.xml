@@ -15,8 +15,7 @@
 
         <FrameLayout
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:padding="@dimen/dimen_large">
+            android:layout_height="fill_parent">
 
             <EditText
                 android:id="@+id/friends_search_textfield"
@@ -26,6 +25,7 @@
                 android:drawablePadding="8dp"
                 android:paddingLeft="40dp"
                 android:paddingRight="10dp"
+                android:layout_margin="@dimen/dimen_large"
                 android:singleLine="true"
                 android:textColorHint="@color/placeholder"
                 android:textColor="@android:color/white"
@@ -43,11 +43,10 @@
 
             <ImageView
                 android:id="@+id/friends_search_clear"
-                android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
+                android:layout_width="@dimen/dimen_xlarge"
+                android:layout_height="@dimen/dimen_xlarge"
                 android:layout_gravity="right|center_vertical"
-                android:padding="@dimen/dimen_medium"
-                android:paddingRight="@dimen/dimen_small"
+                android:layout_marginRight="@dimen/dimen_xlarge"
                 android:src="@drawable/nav_close"
                 android:visibility="gone"/>
 

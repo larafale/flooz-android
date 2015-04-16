@@ -15,6 +15,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Network.FloozHttpResponseHandler;
@@ -27,7 +29,6 @@ import me.flooz.app.Utils.CustomFonts;
  */
 public class SignupUsernameFragment extends SignupBaseFragment {
 
-    private TextView infoLabel;
     private Button nextButton;
     private EditText usernameTextfield;
 
@@ -44,7 +45,7 @@ public class SignupUsernameFragment extends SignupBaseFragment {
 
         usernameTextfield = (EditText) view.findViewById(R.id.signup_username_textfield);
         nextButton = (Button) view.findViewById(R.id.signup_username_next);
-        infoLabel = (TextView) view.findViewById(R.id.signup_username_info_label);
+        TextView infoLabel = (TextView) view.findViewById(R.id.signup_username_info_label);
 
         infoLabel.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
 
@@ -61,30 +62,37 @@ public class SignupUsernameFragment extends SignupBaseFragment {
 
         this.usernameTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    nextButton.performClick();
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || actionId == EditorInfo.IME_ACTION_DONE || actionId == EditorInfo.IME_ACTION_NEXT) {
+                    if (nextButton.isEnabled())
+                        nextButton.performClick();
                 }
                 return false;
             }
         });
 
-        nextButton.setOnClickListener(new View.OnClickListener() {
+        this.nextButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                nextButton.setEnabled(false);
                 parentActivity.userData.username = usernameTextfield.getText().toString();
+                FloozRestClient.getInstance().showLoadView();
                 FloozRestClient.getInstance().signupPassStep("nick", parentActivity.userData.getParamsForStep(false), new FloozHttpResponseHandler() {
                     @Override
                     public void success(Object response) {
-                        parentActivity.gotToNextPage();
+                        JSONObject responseJSON = (JSONObject) response;
+
+                        parentActivity.gotToNextPage(responseJSON.optString("nextStep"), responseJSON.optJSONObject("nextStepData"));
                     }
 
                     @Override
-                    public void failure(int statusCode, FLError error) {}
+                    public void failure(int statusCode, FLError error) {
+                        nextButton.setEnabled(true);
+                    }
                 });
             }
         });
 
-        usernameTextfield.addTextChangedListener(new TextWatcher() {
+        this.usernameTextfield.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
 
@@ -106,14 +114,24 @@ public class SignupUsernameFragment extends SignupBaseFragment {
 
         usernameTextfield.requestFocus();
 
+        if (this.initData != null) {
+            if (this.initData.has("info"))
+                infoLabel.setText(this.initData.optString("info"));
+        }
+
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(FloozApplication.getAppContext().INPUT_METHOD_SERVICE);
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(usernameTextfield, InputMethodManager.SHOW_IMPLICIT);
+
+        if (usernameTextfield.getText().length() >= 3)
+            nextButton.setEnabled(true);
+        else
+            nextButton.setEnabled(false);
     }
 
     @Override

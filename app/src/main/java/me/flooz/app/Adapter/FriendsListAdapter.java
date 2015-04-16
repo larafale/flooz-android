@@ -4,6 +4,8 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -24,13 +26,9 @@ import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.Utils.ContactsManager;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
-import me.flooz.app.App.FloozApplication;
-import me.flooz.app.Model.FLError;
-import me.flooz.app.Model.FLUser;
-import me.flooz.app.Network.FloozHttpResponseHandler;
-import me.flooz.app.Network.FloozRestClient;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 public class FriendsListAdapter extends BaseAdapter implements StickyListHeadersAdapter {
@@ -47,6 +45,9 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
     public List<FLUser> pendingList = new ArrayList<>(0);
 
     public List<FLUser> searchFloozUsers = new ArrayList<>(0);
+    private Handler searchHandler;
+
+    private String searchData;
 
     private BroadcastReceiver reloadFriendsReceiver = new BroadcastReceiver() {
         @Override
@@ -81,11 +82,36 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
         }
     };
 
+    private Runnable searchRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (!searchData.isEmpty()) {
+                isSearchActive = true;
+
+                FloozRestClient.getInstance().searchUser(searchData, false, new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        searchFloozUsers = new ArrayList<>((List<FLUser>)response);
+                        if (isSearchActive)
+                            notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void failure(int statusCode, FLError error) {
+                        searchFloozUsers.clear();
+                        notifyDataSetChanged();
+                    }
+                });
+            }
+        }
+    };
+
     public FriendsListAdapter(Context ctx) {
         this.inflater = LayoutInflater.from(ctx);
         this.context = ctx;
 
         this.reloadSuggestions();
+        this.searchHandler = new Handler(Looper.getMainLooper());
     }
 
     public void loadBroadcastReceivers() {
@@ -233,14 +259,14 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
             holder.button = (ImageView) convertView.findViewById(R.id.user_list_row_button);
 
             holder.username.setTypeface(CustomFonts.customTitleExtraLight(this.context), Typeface.BOLD);
-            holder.fullname.setTypeface(CustomFonts.customTitleExtraLight(this.context));
+            holder.fullname.setTypeface(CustomFonts.customContentBold(this.context));
 
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        final FLUser user = (FLUser)this.getItem(position);
+        final FLUser user = this.getItem(position);
 
         holder.fullname.setText(user.fullname);
         holder.username.setText("@" + user.username);
@@ -323,34 +349,18 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
     }
 
     public void searchUser(String searchString) {
-
-        if (searchString != null && searchString.length() > 0) {
-            this.isSearchActive = true;
-
-            this.searchFloozUsers.clear();
-
-            this.notifyDataSetChanged();
-
-            FloozRestClient.getInstance().searchUser(searchString, false, new FloozHttpResponseHandler() {
-                @Override
-                public void success(Object response) {
-                    searchFloozUsers = new ArrayList<FLUser>((List<FLUser>)response);
-                    if (isSearchActive)
-                        notifyDataSetChanged();
-                }
-
-                @Override
-                public void failure(int statusCode, FLError error) {
-
-                }
-            });
-        }
-        else
+        this.searchHandler.removeCallbacks(searchRunnable);
+        this.searchData = searchString;
+        if (searchString.isEmpty()) {
             this.stopSearch();
+        } else {
+            this.searchHandler.postDelayed(searchRunnable, 500);
+        }
     }
 
     public void stopSearch() {
-//        this.reloadSuggestions();
+        this.searchData = "";
+        this.searchHandler.removeCallbacks(searchRunnable);
         this.isSearchActive = false;
         this.notifyDataSetChanged();
     }

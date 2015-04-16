@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:gravity="left"
+    android:paddingLeft="@dimen/dimen_medium">
+
+    <LinearLayout
+        android:orientation="vertical" android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dimen_large"
+        android:background="@drawable/tooltip_scope_view">
+
+        <RelativeLayout
+            android:id="@+id/tooltip_scope_public"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/tooltip_scope_public_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/public_filter_scope"
+                android:layout_centerVertical="true"/>
+
+            <TextView
+                android:id="@+id/tooltip_scope_public_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/TRANSACTION_SCOPE_PUBLIC"
+                android:layout_toRightOf="@id/tooltip_scope_public_img"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dimen_medium"
+                android:textColor="@android:color/black"
+                android:textSize="15sp"/>
+
+            <ImageView
+                android:id="@+id/tooltip_scope_public_check"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/nav_check"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/tooltip_scope_friends"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/tooltip_scope_friends_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/friend_filter_scope"
+                android:layout_centerVertical="true"/>
+
+            <TextView
+                android:id="@+id/tooltip_scope_friends_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/TRANSACTION_SCOPE_FRIEND"
+                android:layout_toRightOf="@id/tooltip_scope_friends_img"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dimen_medium"
+                android:textColor="@android:color/black"
+                android:textSize="15sp"/>
+
+            <ImageView
+                android:id="@+id/tooltip_scope_friends_check"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/nav_check"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/tooltip_scope_private"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/tooltip_scope_private_img"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/private_filter_scope"
+                android:layout_centerVertical="true"/>
+
+            <TextView
+                android:id="@+id/tooltip_scope_private_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/TRANSACTION_SCOPE_PRIVATE"
+                android:layout_toRightOf="@id/tooltip_scope_private_img"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="@dimen/dimen_medium"
+                android:textColor="@android:color/black"
+                android:textSize="15sp"/>
+
+            <ImageView
+                android:id="@+id/tooltip_scope_private_check"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/nav_check"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:visibility="gone"/>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+</LinearLayout>

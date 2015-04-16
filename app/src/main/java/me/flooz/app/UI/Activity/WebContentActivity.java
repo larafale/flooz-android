@@ -15,6 +15,8 @@ import android.widget.TextView;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.ViewServer;
 
 /**
  * Created by Flooz on 3/10/15.
@@ -25,8 +27,6 @@ public class WebContentActivity extends Activity {
     private Boolean modal;
 
     private ImageView headerBackButton;
-    private TextView headerTitle;
-    private WebView webView;
     private ProgressBar progressBar;
 
     public String title;
@@ -35,6 +35,9 @@ public class WebContentActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).addWindow(this);
 
         this.floozApp = (FloozApplication) this.getApplicationContext();
 
@@ -45,10 +48,10 @@ public class WebContentActivity extends Activity {
 
         this.setContentView(R.layout.custom_webview_fragment);
         this.headerBackButton = (ImageView) this.findViewById(R.id.custom_webview_header_back);
-        this.headerTitle = (TextView) this.findViewById(R.id.custom_webview_header_title);
+        TextView headerTitle = (TextView) this.findViewById(R.id.custom_webview_header_title);
 
-        this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
-        this.headerTitle.setText(this.title);
+        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
+        headerTitle.setText(this.title);
 
         this.headerBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -63,9 +66,9 @@ public class WebContentActivity extends Activity {
 
         this.progressBar = (ProgressBar) this.findViewById(R.id.custom_webview_progress_bar);
 
-        this.webView = (WebView) this.findViewById(R.id.custom_webview_webview);
-        this.webView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
-        this.webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
+        WebView webView = (WebView) this.findViewById(R.id.custom_webview_webview);
+        webView.setBackgroundColor(getResources().getColor(android.R.color.transparent));
+        webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
 
         WebViewClient client = new WebViewClient() {
             @Override
@@ -92,15 +95,19 @@ public class WebContentActivity extends Activity {
 
         };
 
-        this.webView.setWebViewClient(client);
-        this.webView.getSettings().setJavaScriptEnabled(true);
-        this.webView.loadUrl(this.url);
+        webView.setWebViewClient(client);
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadUrl(this.url);
 
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).setFocusedWindow(this);
+
         floozApp.setCurrentActivity(this);
     }
 
@@ -113,6 +120,10 @@ public class WebContentActivity extends Activity {
     @Override
     protected void onDestroy() {
         clearReferences();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).removeWindow(this);
+
         super.onDestroy();
     }
 

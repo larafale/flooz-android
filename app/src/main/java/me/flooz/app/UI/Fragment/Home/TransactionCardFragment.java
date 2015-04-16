@@ -2,6 +2,7 @@ package me.flooz.app.UI.Fragment.Home;
 
 import android.app.Dialog;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.Spannable;
@@ -39,14 +40,14 @@ import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
-import me.flooz.app.UI.Fragment.Home.Authentication.AuthenticationFragment;
+import me.flooz.app.UI.Activity.AuthenticationActivity;
 import me.flooz.app.UI.View.LoadingImageView;
 import me.flooz.app.Utils.CustomFonts;
 
 /**
  * Created by Flooz on 9/25/14.
  */
-public class TransactionCardFragment extends HomeBaseFragment implements AuthenticationFragment.AuthenticationDelegate {
+public class TransactionCardFragment extends HomeBaseFragment {
 
     private TransactionCardFragment instance;
     private Boolean viewCreated = false;
@@ -55,7 +56,7 @@ public class TransactionCardFragment extends HomeBaseFragment implements Authent
 
     private FLTransaction transaction = null;
 
-    private ScrollView cardScroll;
+    public ScrollView cardScroll;
     private RelativeLayout cardHeader;
     private ImageView cardHeaderScope;
     private TextView cardHeaderDate;
@@ -91,6 +92,9 @@ public class TransactionCardFragment extends HomeBaseFragment implements Authent
 
     private Context context;
     private LayoutInflater inflater;
+
+    private Boolean transactionPending = false;
+    private Boolean dialogIsShowing = false;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -245,7 +249,10 @@ public class TransactionCardFragment extends HomeBaseFragment implements Authent
                             cardSocialContainer.setVisibility(View.VISIBLE);
 
                             if (transaction.social.commentsCount.intValue() > 0) {
-                                cardCommentsNumber.setText(transaction.social.commentsCount.toString());
+                                if (transaction.social.commentsCount.intValue() < 10)
+                                    cardCommentsNumber.setText("0" + transaction.social.commentsCount.toString());
+                                else
+                                    cardCommentsNumber.setText(transaction.social.commentsCount.toString());
                                 cardCommentsNumberContainer.setVisibility(View.VISIBLE);
                             } else {
                                 cardCommentsNumberContainer.setVisibility(View.GONE);
@@ -316,6 +323,9 @@ public class TransactionCardFragment extends HomeBaseFragment implements Authent
             InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(cardCommentsTextfield, InputMethodManager.SHOW_IMPLICIT);
         }
+
+        if (this.transactionPending)
+            FloozRestClient.getInstance().showLoadView();
     }
 
     private void reloadView() {
@@ -348,7 +358,7 @@ public class TransactionCardFragment extends HomeBaseFragment implements Authent
 
         this.cardFromFullname.setText(this.transaction.from.fullname);
 
-        if (this.transaction.from.username != null) {
+        if (this.transaction.to.username != null) {
             this.cardToUsername.setVisibility(View.VISIBLE);
             this.cardToUsername.setText("@" + this.transaction.to.username);
         }
@@ -369,7 +379,6 @@ public class TransactionCardFragment extends HomeBaseFragment implements Authent
 
         if (this.transaction.isAcceptable || this.transaction.isCancelable) {
             this.cardActionBar.setVisibility(View.VISIBLE);
-            this.cardActionBarAccept.setText(this.context.getResources().getString(R.string.GLOBAL_PAY) + " " + Math.abs(this.transaction.amount.floatValue()) + this.context.getResources().getString(R.string.GLOBAL_EURO));
         }
         else {
             this.cardActionBar.setVisibility(View.GONE);
@@ -574,54 +583,60 @@ public class TransactionCardFragment extends HomeBaseFragment implements Authent
     }
 
     private void showValidationDialog(String content) {
-        final Dialog dialog = new Dialog(this.context);
+        if (!dialogIsShowing) {
+            dialogIsShowing = true;
+            final Dialog dialog = new Dialog(this.context);
 
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.custom_dialog_validate_transaction);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.custom_dialog_validate_transaction);
 
-        TextView text = (TextView) dialog.findViewById(R.id.dialog_validate_flooz_text);
-        text.setText(content);
-        text.setTypeface(CustomFonts.customContentRegular(this.context));
+            TextView text = (TextView) dialog.findViewById(R.id.dialog_validate_flooz_text);
+            text.setText(content);
+            text.setTypeface(CustomFonts.customContentRegular(this.context));
 
-        Button decline = (Button) dialog.findViewById(R.id.dialog_validate_flooz_decline);
-        Button accept = (Button) dialog.findViewById(R.id.dialog_validate_flooz_accept);
+            Button decline = (Button) dialog.findViewById(R.id.dialog_validate_flooz_decline);
+            Button accept = (Button) dialog.findViewById(R.id.dialog_validate_flooz_accept);
 
-        decline.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+            decline.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    dialogIsShowing = false;
+                }
+            });
 
-        accept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-                parentActivity.hideTransactionCard();
-                ((AuthenticationFragment)parentActivity.contentFragments.get("authentication")).delegate = instance;
-                parentActivity.pushMainFragment("authentication", R.animator.slide_up, android.R.animator.fade_out);
-            }
-        });
+            accept.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialogIsShowing = false;
+                    dialog.dismiss();
+                    Intent intentNotifs = new Intent(parentActivity, AuthenticationActivity.class);
+                    parentActivity.startActivityForResult(intentNotifs, AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY);
+                    parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                }
+            });
 
-        dialog.show();
+            dialog.show();
+        }
     }
 
-    @Override
     public void authenticationValidated() {
+        this.transactionPending = true;
         FloozRestClient.getInstance().updateTransaction(transaction, FLTransaction.TransactionStatus.TransactionStatusAccepted, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
                 setTransaction(new FLTransaction(((JSONObject)response).optJSONObject("item")));
-                parentActivity.showTransactionCard(transaction);
+                transactionPending = false;
             }
 
             @Override
-            public void failure(int statusCode, FLError error) { }
+            public void failure(int statusCode, FLError error) {
+                transactionPending = false;
+            }
         });
     }
 
-    @Override
     public void authenticationFailed() {
-        parentActivity.showTransactionCard(transaction);
+
     }
 }

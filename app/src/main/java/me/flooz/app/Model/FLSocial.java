@@ -5,7 +5,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import me.flooz.app.Network.FloozRestClient;
-import me.flooz.app.Network.FloozRestClient;
 
 /**
  * Created by Flooz on 9/9/14.

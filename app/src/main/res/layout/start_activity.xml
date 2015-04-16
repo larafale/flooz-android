@@ -1,60 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/background">
+    android:background="@drawable/launch_background">
 
-    <!--<ImageView-->
-        <!--android:layout_width="fill_parent"-->
-        <!--android:layout_height="55dp"-->
-        <!--android:src="@drawable/flooz_full"-->
-        <!--android:paddingBottom="@dimen/dimen_medium"-->
-        <!--android:paddingTop="@dimen/dimen_medium"-->
-        <!--android:background="@color/background_header"/>-->
 
-    <ListView
-        android:id="@+id/start_timeline_list"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight="7"
-        android:divider="@drawable/timeline_dividers"
-        android:dividerHeight="1px"
-        android:listSelector="@android:color/transparent"
-        android:layout_marginBottom="@dimen/dimen_small"
-        android:overScrollMode="never"/>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
+    <ImageView
+        android:id="@+id/start_logo"
+        android:layout_width="170dp"
         android:layout_height="wrap_content"
+        android:src="@drawable/flooz_full"
+        android:layout_centerHorizontal="true"/>
+
+    <Button
+        android:id="@+id/start_login_button"
+        android:layout_width="fill_parent"
+        android:layout_height="50dp"
+        android:background="@android:color/transparent"
         android:gravity="center"
-        android:layout_alignParentBottom="true"
-        android:background="#55000000"
-        android:orientation="vertical">
+        android:text="@string/START_LOGIN"
+        android:textSize="16sp"
+        android:textAllCaps="false"
+        android:textColor="@color/placeholder"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/dimen_medium"
+        android:layout_alignParentBottom="true"/>
 
-        <Button
-            android:id="@+id/start_signup_button"
-            android:layout_width="fill_parent"
-            android:layout_height="60dp"
-            android:gravity="center"
-            android:background="@color/blue"
-            android:text="@string/START_SIGNUP"
-            android:textSize="20sp"
-            android:textAllCaps="true"
-            android:textColor="@drawable/text_color_action_button"/>
+    <Button
+        android:id="@+id/start_signup_button"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:background="@drawable/signup_button_background"
+        android:text="@string/START_SIGNUP"
+        android:textSize="18sp"
+        android:textAllCaps="false"
+        android:textColor="@drawable/text_color_action_button"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/dimen_xlarge"
+        android:layout_above="@id/start_login_button"/>
 
-        <Button
-            android:id="@+id/start_login_button"
-            android:layout_width="fill_parent"
-            android:layout_height="40dp"
-            android:background="#0A79B3"
-            android:gravity="center"
-            android:text="@string/START_LOGIN"
-            android:textSize="18sp"
-            android:textAllCaps="false"
-            android:textColor="@drawable/text_color_action_button"/>
+    <Button
+        android:id="@+id/start_coupon_button"
+        android:layout_width="200dp"
+        android:layout_height="50dp"
+        android:gravity="center"
+        android:background="@drawable/signup_button_background"
+        android:textSize="18sp"
+        android:textAllCaps="false"
+        android:textColor="@drawable/text_color_action_button"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="@dimen/dimen_xlarge"
+        android:layout_above="@id/start_signup_button"
+        android:visibility="gone"/>
 
-    </LinearLayout>
-
-</LinearLayout>
+</RelativeLayout>

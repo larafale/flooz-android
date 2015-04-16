@@ -19,13 +19,14 @@ import me.flooz.app.UI.Fragment.Home.Authentication.AuthenticationPassFragment;
 import me.flooz.app.UI.Fragment.Home.Authentication.AuthenticationResetCodeFragment;
 import me.flooz.app.UI.Fragment.Home.Authentication.AuthenticationSecureCodeFragment;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.ViewServer;
 
 /**
  * Created by Flooz on 3/9/15.
  */
 public class AuthenticationActivity extends Activity {
 
-    private AuthenticationActivity instance;
     private FloozApplication floozApp;
 
     public static int RESULT_AUTHENTICATION_ACTIVITY = 12;
@@ -38,13 +39,18 @@ public class AuthenticationActivity extends Activity {
         AuthenticationChangePass
     }
 
-    public RelativeLayout header;
-    public TextView headerTitle;
-    public ImageView headerBackButton;
-    public ImageView headerTitleImg;
+    public interface AuthenticationDelegate {
+        void authenticationValidated();
+        void authenticationFailed();
+    }
 
-    public AuthenticationPageIdentifier currentPage;
-    public AuthenticationBaseFragment currentFragment;
+    private RelativeLayout header;
+    private TextView headerTitle;
+    private ImageView headerBackButton;
+    private ImageView headerTitleImg;
+
+    private AuthenticationPageIdentifier currentPage;
+    private AuthenticationBaseFragment currentFragment;
 
     public Boolean changeSecureCode = false;
 
@@ -52,7 +58,9 @@ public class AuthenticationActivity extends Activity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        instance = this;
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).addWindow(this);
+
         floozApp = (FloozApplication)this.getApplicationContext();
 
         changeSecureCode = getIntent().getBooleanExtra("changeSecureCode", false);
@@ -230,9 +238,9 @@ public class AuthenticationActivity extends Activity {
 
     public void backToPreviousPage() {
         switch (this.currentPage) {
-
             case AuthenticationSecureCode:
-                break;
+                this.dismissView(false);
+                return;
             case AuthenticationPass:
                 if (this.changeSecureCode) {
                     this.dismissView(false);
@@ -289,6 +297,10 @@ public class AuthenticationActivity extends Activity {
     @Override
     public void onResume() {
         super.onResume();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).setFocusedWindow(this);
+
         floozApp.setCurrentActivity(this);
     }
 
@@ -301,9 +313,17 @@ public class AuthenticationActivity extends Activity {
     @Override
     protected void onDestroy() {
         clearReferences();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).removeWindow(this);
+
         super.onDestroy();
     }
 
+    @Override
+    public void onBackPressed(){
+        backToPreviousPage();
+    }
 
     private void clearReferences(){
         Activity currActivity = floozApp.getCurrentActivity();

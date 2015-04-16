@@ -4,7 +4,6 @@
     android:id="@+id/numeric_keyboard_grid"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/background_header"
     android:divider="@android:color/darker_gray"
     android:orientation="vertical"
     android:showDividers="middle|beginning|end" >

@@ -15,18 +15,6 @@ import me.flooz.app.Utils.CustomFonts;
  */
 public class NumericKeyboard extends TableLayout {
 
-    private Button key1;
-    private Button key2;
-    private Button key3;
-    private Button key4;
-    private Button key5;
-    private Button key6;
-    private Button key7;
-    private Button key8;
-    private Button key9;
-    private Button key0;
-    private ImageButton keyClear;
-
     public String value = "";
 
     public NumericKeyboardDelegate delegate = null;
@@ -50,17 +38,17 @@ public class NumericKeyboard extends TableLayout {
     private void init(Context context) {
         View view = View.inflate(context, R.layout.numeric_keyboard, this);
 
-        key1 = (Button) view.findViewById(R.id.numeric_keyboard_key_1);
-        key2 = (Button) view.findViewById(R.id.numeric_keyboard_key_2);
-        key3 = (Button) view.findViewById(R.id.numeric_keyboard_key_3);
-        key4 = (Button) view.findViewById(R.id.numeric_keyboard_key_4);
-        key5 = (Button) view.findViewById(R.id.numeric_keyboard_key_5);
-        key6 = (Button) view.findViewById(R.id.numeric_keyboard_key_6);
-        key7 = (Button) view.findViewById(R.id.numeric_keyboard_key_7);
-        key8 = (Button) view.findViewById(R.id.numeric_keyboard_key_8);
-        key9 = (Button) view.findViewById(R.id.numeric_keyboard_key_9);
-        key0 = (Button) view.findViewById(R.id.numeric_keyboard_key_0);
-        keyClear = (ImageButton) view.findViewById(R.id.numeric_keyboard_key_backspace);
+        Button key1 = (Button) view.findViewById(R.id.numeric_keyboard_key_1);
+        Button key2 = (Button) view.findViewById(R.id.numeric_keyboard_key_2);
+        Button key3 = (Button) view.findViewById(R.id.numeric_keyboard_key_3);
+        Button key4 = (Button) view.findViewById(R.id.numeric_keyboard_key_4);
+        Button key5 = (Button) view.findViewById(R.id.numeric_keyboard_key_5);
+        Button key6 = (Button) view.findViewById(R.id.numeric_keyboard_key_6);
+        Button key7 = (Button) view.findViewById(R.id.numeric_keyboard_key_7);
+        Button key8 = (Button) view.findViewById(R.id.numeric_keyboard_key_8);
+        Button key9 = (Button) view.findViewById(R.id.numeric_keyboard_key_9);
+        Button key0 = (Button) view.findViewById(R.id.numeric_keyboard_key_0);
+        ImageButton keyClear = (ImageButton) view.findViewById(R.id.numeric_keyboard_key_backspace);
 
         key1.setTypeface(CustomFonts.customContentLight(context));
         key2.setTypeface(CustomFonts.customContentLight(context));
@@ -97,7 +85,7 @@ public class NumericKeyboard extends TableLayout {
 
         key3.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 if (maxLenght == 0 || value.length() < maxLenght) {
                     value += "3";
                     if (delegate != null)
@@ -119,7 +107,7 @@ public class NumericKeyboard extends TableLayout {
 
         key5.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 if (maxLenght == 0 || value.length() < maxLenght) {
                     value += "5";
                     if (delegate != null)
@@ -141,7 +129,7 @@ public class NumericKeyboard extends TableLayout {
 
         key7.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 if (maxLenght == 0 || value.length() < maxLenght) {
                     value += "7";
                     if (delegate != null)
@@ -163,7 +151,7 @@ public class NumericKeyboard extends TableLayout {
 
         key9.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View view){
+            public void onClick(View view) {
                 if (maxLenght == 0 || value.length() < maxLenght) {
                     value += "9";
                     if (delegate != null)

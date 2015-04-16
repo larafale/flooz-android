@@ -5,12 +5,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
@@ -54,7 +52,7 @@ public class CustomToast {
 
                     view.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
 
-                    final PopupWindow popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.FILL_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, false);
+                    final PopupWindow popupWindow = new PopupWindow(view, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, false);
                     popupWindow.setContentView(view);
 
                     view.findViewById(R.id.layout).setOnTouchListener(new OnSwipeTouchListener(ctx) {

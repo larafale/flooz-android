@@ -21,6 +21,8 @@ import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.ViewServer;
 
 /**
  * Created by Flooz on 3/9/15.
@@ -31,13 +33,13 @@ public class AboutActivity extends Activity {
     private FloozApplication floozApp;
 
     private ImageView headerBackButton;
-    private TextView headerTitle;
-    private ListView contentList;
-    private SettingsListAdapter listAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).addWindow(this);
 
         instance = this;
         floozApp = (FloozApplication) this.getApplicationContext();
@@ -45,10 +47,14 @@ public class AboutActivity extends Activity {
         this.setContentView(R.layout.other_menu_fragment);
 
         this.headerBackButton = (ImageView) this.findViewById(R.id.other_menu_header_back);
-        this.headerTitle = (TextView) this.findViewById(R.id.other_menu_header_title);
-        this.contentList = (ListView) this.findViewById(R.id.other_menu_list);
+        TextView headerTitle = (TextView) this.findViewById(R.id.other_menu_header_title);
+        ListView contentList = (ListView) this.findViewById(R.id.other_menu_list);
+        TextView aboutText = (TextView) this.findViewById(R.id.other_menu_about);
 
-        this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
+        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
+        aboutText.setTypeface(CustomFonts.customTitleLight(this));
+
+        aboutText.setText("Flooz v" + FloozApplication.getAppVersionName(this));
 
         this.headerBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -134,12 +140,16 @@ public class AboutActivity extends Activity {
             }
         }));
 
-        this.listAdapter = new SettingsListAdapter(this, list, this.contentList);
+        new SettingsListAdapter(this, list, contentList);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).setFocusedWindow(this);
+
         floozApp.setCurrentActivity(this);
     }
 
@@ -152,6 +162,10 @@ public class AboutActivity extends Activity {
     @Override
     protected void onDestroy() {
         clearReferences();
+
+        if (FLHelper.isDebuggable())
+            ViewServer.get(this).removeWindow(this);
+
         super.onDestroy();
     }
 

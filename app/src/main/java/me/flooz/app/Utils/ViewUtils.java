@@ -17,7 +17,7 @@ public class ViewUtils
                 && event.getY() < v.getHeight());
     }
 
-    public static final void removeGlobalLayoutListener(View view, ViewTreeObserver.OnGlobalLayoutListener listener) {
+    public static void removeGlobalLayoutListener(View view, ViewTreeObserver.OnGlobalLayoutListener listener) {
         if (Build.VERSION.SDK_INT >= 16)
             view.getViewTreeObserver().removeOnGlobalLayoutListener(listener);
         else
