@@ -65,100 +65,41 @@ public class PasswordSettingsActivity extends Activity {
         this.newPassword.setTypeface(CustomFonts.customContentRegular(this));
         this.confirmPassword.setTypeface(CustomFonts.customContentRegular(this));
 
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-                if (modal)
-                    overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                else
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-            }
+        this.headerBackButton.setOnClickListener(view -> {
+            finish();
+            if (modal)
+                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+            else
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
         });
 
-        this.oldPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
+        this.confirmPassword.setOnEditorActionListener((v, actionId, event) -> {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                saveButton.performClick();
             }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                canValidate();
-            }
+            return false;
         });
 
-        this.newPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+        this.saveButton.setOnClickListener(v -> {
+            FloozRestClient.getInstance().showLoadView();
 
-            }
+            Map<String, Object> params = new HashMap<>();
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            params.put("password", oldPassword.getText().toString());
+            params.put("newPassword", newPassword.getText().toString());
+            params.put("confirm", confirmPassword.getText().toString());
 
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                canValidate();
-            }
-        });
-
-        this.confirmPassword.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                canValidate();
-            }
-        });
-
-        this.confirmPassword.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    saveButton.performClick();
+            FloozRestClient.getInstance().updateUserPassword(params, new FloozHttpResponseHandler() {
+                @Override
+                public void success(Object response) {
+                    headerBackButton.performClick();
                 }
-                return false;
-            }
-        });
 
-        this.saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FloozRestClient.getInstance().showLoadView();
+                @Override
+                public void failure(int statusCode, FLError error) {
 
-                Map<String, Object> params = new HashMap<>();
-
-                params.put("password", oldPassword.getText().toString());
-                params.put("newPassword", newPassword.getText().toString());
-                params.put("confirm", confirmPassword.getText().toString());
-
-                FloozRestClient.getInstance().updateUserPassword(params, new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
-                        headerBackButton.performClick();
-                    }
-
-                    @Override
-                    public void failure(int statusCode, FLError error) {
-
-                    }
-                });
-            }
+                }
+            });
         });
     }
 
@@ -177,21 +118,6 @@ public class PasswordSettingsActivity extends Activity {
         this.oldPassword.requestFocus();
         InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.showSoftInput(this.oldPassword, InputMethodManager.SHOW_IMPLICIT);
-    }
-
-    public boolean canValidate() {
-        boolean valid = false;
-
-        if (this.oldPassword.getText().length() >= 1
-                && this.newPassword.getText().length() >= 6
-                && this.confirmPassword.getText().length() >= 6
-                && this.newPassword.getText().toString().contentEquals(this.confirmPassword.getText().toString())) {
-            valid = true;
-        }
-
-        this.saveButton.setEnabled(valid);
-
-        return valid;
     }
 
     @Override

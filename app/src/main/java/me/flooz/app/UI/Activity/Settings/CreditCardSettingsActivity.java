@@ -110,51 +110,28 @@ public class CreditCardSettingsActivity extends Activity {
 
         ((TextView)this.findViewById(R.id.settings_credit_card_infos)).setTypeface(CustomFonts.customContentLight(this));
 
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-                if (modal)
-                    overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                else
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-            }
+        this.headerBackButton.setOnClickListener(view -> {
+            finish();
+            if (modal)
+                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+            else
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
         });
 
-        removeCreditCardButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FloozRestClient.getInstance().showLoadView();
-                FloozRestClient.getInstance().removeCreditCard(creditCard.cardId, new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
-                        FloozRestClient.getInstance().currentUser.creditCard = null;
-                        reloadCreditCard();
-                    }
+        removeCreditCardButton.setOnClickListener(v -> {
+            FloozRestClient.getInstance().showLoadView();
+            FloozRestClient.getInstance().removeCreditCard(creditCard.cardId, new FloozHttpResponseHandler() {
+                @Override
+                public void success(Object response) {
+                    FloozRestClient.getInstance().currentUser.creditCard = null;
+                    reloadCreditCard();
+                }
 
-                    @Override
-                    public void failure(int statusCode, FLError error) {
+                @Override
+                public void failure(int statusCode, FLError error) {
 
-                    }
-                });
-            }
-        });
-
-        this.cardOwner.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                valid();
-            }
+                }
+            });
         });
 
         this.cardNumber.addTextChangedListener(new TextWatcher() {
@@ -190,8 +167,6 @@ public class CreditCardSettingsActivity extends Activity {
 
                 if (s.length() == 19)
                     cardExpires.requestFocus();
-
-                valid();
             }
         });
 
@@ -222,8 +197,6 @@ public class CreditCardSettingsActivity extends Activity {
 
                 if (s.length() == 5)
                     cardCVV.requestFocus();
-
-                valid();
             }
         });
 
@@ -249,64 +222,53 @@ public class CreditCardSettingsActivity extends Activity {
                     InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(getWindow().getDecorView().getRootView().getWindowToken(), 0);
                 }
-
-                valid();
             }
         });
 
-        this.cardCVV.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    addCardButton.performClick();
-                }
-                return false;
+        this.cardCVV.setOnEditorActionListener((v, actionId, event) -> {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                addCardButton.performClick();
             }
+            return false;
         });
 
-        scanpayButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent scanActivity = new Intent(instance, ScanPayActivity.class);
-                scanActivity.putExtra(ScanPay.EXTRA_TOKEN, "be38035037ed6ca3cba7089b");
+        scanpayButton.setOnClickListener(v -> {
+            Intent scanActivity = new Intent(instance, ScanPayActivity.class);
+            scanActivity.putExtra(ScanPay.EXTRA_TOKEN, "be38035037ed6ca3cba7089b");
 
-                scanActivity.putExtra(ScanPay.EXTRA_SHOULD_SHOW_CONFIRMATION_VIEW, false);
-                scanActivity.putExtra(ScanPay.EXTRA_SHOULD_SHOW_MANUAL_ENTRY_BUTTON, false);
+            scanActivity.putExtra(ScanPay.EXTRA_SHOULD_SHOW_CONFIRMATION_VIEW, false);
+            scanActivity.putExtra(ScanPay.EXTRA_SHOULD_SHOW_MANUAL_ENTRY_BUTTON, false);
 
-                instance.startActivityForResult(scanActivity, RESULT_SCANPAY_ACTIVITY);
-            }
+            instance.startActivityForResult(scanActivity, RESULT_SCANPAY_ACTIVITY);
         });
 
-        this.addCardButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        this.addCardButton.setOnClickListener(v -> {
+            FloozRestClient.getInstance().showLoadView();
+            FloozRestClient.getInstance().createCreditCard(cardOwner.getText().toString(), cardNumber.getText().toString(), cardExpires.getText().toString(), cardCVV.getText().toString(), false, new FloozHttpResponseHandler() {
+                @Override
+                public void success(Object response) {
+                    creditCard = new FLCreditCard();
+                    creditCard.owner = cardOwner.getText().toString();
+                    creditCard.number = cardNumber.getText().toString();
+                    creditCard.expires = cardExpires.getText().toString();
+                    creditCard.cvv = cardCVV.getText().toString();
 
-                creditCard = new FLCreditCard();
-                creditCard.owner = cardOwner.getText().toString();
-                creditCard.number = cardNumber.getText().toString();
-                creditCard.expires = cardExpires.getText().toString();
-                creditCard.cvv = cardCVV.getText().toString();
+                    FloozRestClient.getInstance().currentUser.creditCard = creditCard;
 
-                FloozRestClient.getInstance().currentUser.creditCard = creditCard;
-
-                FloozRestClient.getInstance().showLoadView();
-                FloozRestClient.getInstance().createCreditCard(cardOwner.getText().toString(), cardNumber.getText().toString(), cardExpires.getText().toString(), cardCVV.getText().toString(), false, new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
-                        if (next3DSecure) {
+                    if (next3DSecure) {
 //                            ((Secure3DFragment)parentActivity.contentFragments.get("settings_3ds")).data = secureData;
 //                            parentActivity.pushMainFragment("settings_3ds", R.animator.slide_up, android.R.animator.fade_out);
-                        }
-                        else {
-                            FloozRestClient.getInstance().updateCurrentUser(null);
-                        }
                     }
+                    else {
+                        FloozRestClient.getInstance().updateCurrentUser(null);
+                    }
+                }
 
-                    @Override
-                    public void failure(int statusCode, FLError error) {
-                        FloozRestClient.getInstance().currentUser.creditCard = null;
-                    }
-                });
-            }
+                @Override
+                public void failure(int statusCode, FLError error) {
+                    FloozRestClient.getInstance().currentUser.creditCard = null;
+                }
+            });
         });
 
         this.reloadCreditCard();
@@ -380,8 +342,6 @@ public class CreditCardSettingsActivity extends Activity {
                 this.cardNumber.setText(this.creditCard.number);
                 this.cardExpires.setText(this.creditCard.expires);
                 this.cardCVV.setText(this.creditCard.cvv);
-
-                this.valid();
             } else {
                 this.cardOwner.setText(FloozRestClient.getInstance().currentUser.fullname);
                 this.cardNumber.setText("");
@@ -389,24 +349,6 @@ public class CreditCardSettingsActivity extends Activity {
                 this.cardExpires.setText("");
             }
         }
-    }
-
-    private void valid() {
-        boolean validate = true;
-
-        if (this.cardOwner.getText().toString().isEmpty())
-            validate = false;
-
-        if (this.cardNumber.getText().toString().length() != 19)
-            validate = false;
-
-        if (this.cardExpires.getText().toString().length() != 5)
-            validate = false;
-
-        if (this.cardCVV.getText().toString().length() != 3)
-            validate = false;
-
-        this.addCardButton.setEnabled(validate);
     }
 
     @Override

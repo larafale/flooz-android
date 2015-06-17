@@ -91,11 +91,6 @@ public class BankSettingsActivity extends Activity {
 
                 if (s.length() > 27)
                     s.delete(27, s.length());
-
-                if (s.length() == 27)
-                    saveButton.setEnabled(true);
-                else
-                    saveButton.setEnabled(false);
             }
         });
 

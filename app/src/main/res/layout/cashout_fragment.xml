@@ -94,7 +94,6 @@
                 android:layout_marginTop="@dimen/dimen_xlarge"
                 android:text="@string/GLOBAL_CONFIRM"
                 android:background="@drawable/background_action_button"
-                android:enabled="false"
                 android:textColor="@drawable/text_color_action_button"
                 android:gravity="center"
                 android:padding="@dimen/dimen_large"

@@ -69,12 +69,9 @@ public class CashoutActivity extends Activity {
 
         this.balance.setText(amountValue);
 
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-            }
+        this.headerBackButton.setOnClickListener(view -> {
+            finish();
+            overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
         });
 
         this.amountTextfield.setText("");
@@ -97,23 +94,19 @@ public class CashoutActivity extends Activity {
 
                 if (s.length() > 0) {
                     cashoutButton.setText(String.format(instance.getResources().getString(R.string.CASHOUT_BUTTON), FLHelper.trimTrailingZeros(s.toString()) + " €"));
-                    cashoutButton.setEnabled(true);
                 }
                 else {
-                    cashoutButton.setEnabled(false);
                     cashoutButton.setText(String.format(instance.getResources().getString(R.string.CASHOUT_BUTTON), ""));
                 }
             }
         });
 
-        this.amountTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    if (cashoutButton.isEnabled())
-                        cashoutButton.performClick();
-                }
-                return false;
+        this.amountTextfield.setOnEditorActionListener((v, actionId, event) -> {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                if (cashoutButton.isEnabled())
+                    cashoutButton.performClick();
             }
+            return false;
         });
 
         this.cashoutButton.setOnClickListener(new View.OnClickListener() {
@@ -127,7 +120,12 @@ public class CashoutActivity extends Activity {
     }
 
     public void authenticationValidated() {
-        FloozRestClient.getInstance().cashout(Float.parseFloat(amountTextfield.getText().toString()), new FloozHttpResponseHandler() {
+        String amount = amountTextfield.getText().toString();
+
+        if (amount.isEmpty())
+            amount = "0";
+
+        FloozRestClient.getInstance().cashout(Float.parseFloat(amount), new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
                 String amountValue = FLHelper.trimTrailingZeros(FloozRestClient.getInstance().currentUser.amount.toString());

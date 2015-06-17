@@ -581,13 +581,6 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
     public void validateView() {
         Boolean valid = true;
 
-        if (this.currentReceiver == null)
-            valid = false;
-        if (this.amountTextfield.getText().length() == 0)
-            valid = false;
-        if (this.contentTextfield.getText().length() == 0)
-            valid = false;
-
         if (this.currentReceiver != null) {
             if (this.currentReceiver.blockObject != null) {
                 if (this.currentReceiver.blockObject.has("pay") && this.currentReceiver.blockObject.optBoolean("pay")) {
@@ -956,26 +949,20 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         Button decline = (Button) this.validationDialog.findViewById(R.id.dialog_validate_flooz_decline);
         Button accept = (Button) this.validationDialog.findViewById(R.id.dialog_validate_flooz_accept);
 
-        decline.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (validationDialog != null)
-                    validationDialog.dismiss();
-                validationDialog = null;
-            }
+        decline.setOnClickListener(v -> {
+            if (validationDialog != null)
+                validationDialog.dismiss();
+            validationDialog = null;
         });
 
-        accept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveData();
-                if (validationDialog != null)
-                    validationDialog.dismiss();
-                validationDialog = null;
-                Intent intentNotifs = new Intent(instance, AuthenticationActivity.class);
-                instance.startActivityForResult(intentNotifs, AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY);
-                instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-            }
+        accept.setOnClickListener(v -> {
+            saveData();
+            if (validationDialog != null)
+                validationDialog.dismiss();
+            validationDialog = null;
+            Intent intentNotifs = new Intent(instance, AuthenticationActivity.class);
+            instance.startActivityForResult(intentNotifs, AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY);
+            instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
         });
 
         this.validationDialog.setCanceledOnTouchOutside(false);
@@ -983,19 +970,9 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         this.validationDialog.show();
     }
 
-    private View.OnClickListener payTransaction = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            performTransaction(FLTransaction.TransactionType.TransactionTypePayment);
-        }
-    };
+    private View.OnClickListener payTransaction = view -> performTransaction(FLTransaction.TransactionType.TransactionTypePayment);
 
-    private View.OnClickListener chargeTransaction = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            performTransaction(FLTransaction.TransactionType.TransactionTypeCharge);
-        }
-    };
+    private View.OnClickListener chargeTransaction = view -> performTransaction(FLTransaction.TransactionType.TransactionTypeCharge);
 
     private View.OnClickListener showCamera = new View.OnClickListener() {
         @Override
@@ -1011,14 +988,11 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         }
     };
 
-    private View.OnClickListener showAlbum = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            saveData();
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setType("image/*");
-            startActivityForResult(intent, SELECT_PICTURE);
-        }
+    private View.OnClickListener showAlbum = view -> {
+        saveData();
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, SELECT_PICTURE);
     };
 
     public void changeUser(FLUser user) {
@@ -1040,21 +1014,18 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
 
     public void photoTaken(final Bitmap photo) {
         Handler mainHandler = new Handler(this.getMainLooper());
-        Runnable myRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (currentPicture != null)
-                    currentPicture.recycle();
-                havePicture = true;
-                picContainer.setVisibility(View.VISIBLE);
+        Runnable myRunnable = () -> {
+            if (currentPicture != null)
+                currentPicture.recycle();
+            havePicture = true;
+            picContainer.setVisibility(View.VISIBLE);
 
-                int nh = (int) ( photo.getHeight() * (256.0 / photo.getWidth()) );
-                Bitmap scaled = Bitmap.createScaledBitmap(photo, 256, nh, true);
-                pic.setImageBitmap(scaled);
+            int nh = (int) ( photo.getHeight() * (256.0 / photo.getWidth()) );
+            Bitmap scaled = Bitmap.createScaledBitmap(photo, 256, nh, true);
+            pic.setImageBitmap(scaled);
 
-                currentPicture = photo;
+            currentPicture = photo;
 
-            }
         };
         mainHandler.post(myRunnable);
     }
@@ -1067,22 +1038,19 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
                 final JSONObject jsonObject = (JSONObject) response;
                 if (havePicture) {
                     Handler handler = new Handler();
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            String transacId = jsonObject.optJSONObject("item").optString("_id");
-                            FloozRestClient.getInstance().uploadTransactionPic(transacId, ImageHelper.convertBitmapInFile(currentPicture), new FloozHttpResponseHandler() {
-                                @Override
-                                public void success(Object response) {
-                                    FloozApplication.performLocalNotification(CustomNotificationIntents.reloadTimeline());
-                                }
+                    handler.post(() -> {
+                        String transacId = jsonObject.optJSONObject("item").optString("_id");
+                        FloozRestClient.getInstance().uploadTransactionPic(transacId, ImageHelper.convertBitmapInFile(currentPicture), new FloozHttpResponseHandler() {
+                            @Override
+                            public void success(Object response) {
+                                FloozApplication.performLocalNotification(CustomNotificationIntents.reloadTimeline());
+                            }
 
-                                @Override
-                                public void failure(int statusCode, FLError error) {
+                            @Override
+                            public void failure(int statusCode, FLError error) {
 
-                                }
-                            });
-                        }
+                            }
+                        });
                     });
                 }
                 if (jsonObject.has("sms")) {

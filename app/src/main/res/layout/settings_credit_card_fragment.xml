@@ -193,7 +193,6 @@
             android:layout_height="@dimen/signup_button_height"
             android:gravity="center"
             android:background="@drawable/background_action_button"
-            android:enabled="false"
             android:text="@string/SIGNUP_VIEW_IGNORE_BUTTON_2"
             android:layout_marginBottom="@dimen/dimen_xlarge"
             android:textSize="20sp"

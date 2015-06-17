@@ -49,15 +49,12 @@ public class PrivacySettingsActivity extends Activity {
         headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
         infosText.setTypeface(CustomFonts.customContentRegular(this));
 
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-                if (modal)
-                    overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                else
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-            }
+        this.headerBackButton.setOnClickListener(view -> {
+            finish();
+            if (modal)
+                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+            else
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
         });
 
         segmentedGroup.setTintColor(this.getResources().getColor(R.color.blue));
@@ -77,32 +74,29 @@ public class PrivacySettingsActivity extends Activity {
                 break;
         }
 
-        segmentedGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(RadioGroup group, int checkedId) {
+        segmentedGroup.setOnCheckedChangeListener((group, checkedId) -> {
 
-                Map<String, Object> settings = new HashMap<>(FloozRestClient.getInstance().currentUser.settings);
-                Map<String, Object> def = (Map<String, Object>) settings.get("def");
+            Map<String, Object> settings = new HashMap<>(FloozRestClient.getInstance().currentUser.settings);
+            Map<String, Object> def = (Map<String, Object>) settings.get("def");
 
-                switch (checkedId) {
-                    case R.id.settings_privacy_segment_public:
-                        def.put("scope", FLTransaction.transactionScopeToParams(FLTransaction.TransactionScope.TransactionScopePublic));
-                        break;
-                    case R.id.settings_privacy_segment_friend:
-                        def.put("scope", FLTransaction.transactionScopeToParams(FLTransaction.TransactionScope.TransactionScopeFriend));
-                        break;
-                    case R.id.settings_privacy_segment_private:
-                        def.put("scope", FLTransaction.transactionScopeToParams(FLTransaction.TransactionScope.TransactionScopePrivate));
-                        break;
-                    default:
-                        break;
-                }
-
-                Map<String, Object> params = new HashMap<>();
-                params.put("settings", settings);
-
-                FloozRestClient.getInstance().updateUser(params, null);
+            switch (checkedId) {
+                case R.id.settings_privacy_segment_public:
+                    def.put("scope", FLTransaction.transactionScopeToParams(FLTransaction.TransactionScope.TransactionScopePublic));
+                    break;
+                case R.id.settings_privacy_segment_friend:
+                    def.put("scope", FLTransaction.transactionScopeToParams(FLTransaction.TransactionScope.TransactionScopeFriend));
+                    break;
+                case R.id.settings_privacy_segment_private:
+                    def.put("scope", FLTransaction.transactionScopeToParams(FLTransaction.TransactionScope.TransactionScopePrivate));
+                    break;
+                default:
+                    break;
             }
+
+            Map<String, Object> params = new HashMap<>();
+            params.put("settings", settings);
+
+            FloozRestClient.getInstance().updateUser(params, null);
         });
     }
 

@@ -136,7 +136,6 @@ public class IdentitySettingsActivity extends Activity {
                     birthdateHint.setVisibility(View.GONE);
                 if (charSequence.length() == 0 && birthdateHint.getVisibility() != View.VISIBLE)
                     birthdateHint.setVisibility(View.VISIBLE);
-
             }
 
             @Override
