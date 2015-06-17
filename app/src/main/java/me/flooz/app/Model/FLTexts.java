@@ -13,6 +13,7 @@ public class FLTexts {
     public String shareHeader;
     public String shareSms;
     public String shareTwitter;
+    public String cardInfos;
     public JSONObject shareMail;
     public JSONObject shareFb;
     public JSONArray shareText;
@@ -20,6 +21,7 @@ public class FLTexts {
     public JSONObject json;
     public FLSlider slider;
     public JSONObject couponButton;
+    public JSONArray secretQuestions;
 
     public FLTexts(JSONObject json) {
         this.setJson(json);
@@ -39,5 +41,7 @@ public class FLTexts {
         this.notificationsText = json.optJSONObject("notificationsText");
         this.slider = new FLSlider(json.optJSONObject("slider"));
         this.couponButton = json.optJSONObject("couponButton");
+        this.secretQuestions = json.optJSONArray("secretQuestions");
+        this.cardInfos = json.optString("card");
     }
 }

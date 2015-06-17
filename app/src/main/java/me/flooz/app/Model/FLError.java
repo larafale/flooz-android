@@ -30,6 +30,15 @@ public class FLError {
         this.triggers = new ArrayList<>();
     }
 
+    public FLError(String title, String content, Number time, ErrorType type) {
+        super();
+        this.triggers = new ArrayList<>();
+        this.title = title;
+        this.text = content;
+        this.time = time;
+        this.type = type;
+    }
+
     public FLError(JSONObject json) {
         super();
         if (json != null)

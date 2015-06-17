@@ -71,12 +71,9 @@ public class ProfileSettingsActivity extends Activity {
         infosText.setTypeface(CustomFonts.customTitleLight(this));
         infosNotifsText.setTypeface(CustomFonts.customContentBold(this));
 
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                instance.finish();
-                instance.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-            }
+        this.headerBackButton.setOnClickListener(view -> {
+            instance.finish();
+            instance.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
         });
 
         this.updateList();
@@ -87,6 +84,7 @@ public class ProfileSettingsActivity extends Activity {
         int bankNotif = 0;
         int indentityNotif = 0;
         int coordsNotif = 0;
+        int securityNotif = 0;
 
         if (FloozRestClient.getInstance().currentUser.creditCard == null || FloozRestClient.getInstance().currentUser.creditCard.cardId == null || FloozRestClient.getInstance().currentUser.creditCard.cardId.isEmpty())
             ++cardNotif;
@@ -98,6 +96,8 @@ public class ProfileSettingsActivity extends Activity {
 
             if (missingFields.contains("sepa"))
                 ++bankNotif;
+            if (missingFields.contains("secret"))
+                ++securityNotif;
             if (missingFields.contains("cniRecto"))
                 ++indentityNotif;
             if (missingFields.contains("cniVerso"))
@@ -110,72 +110,51 @@ public class ProfileSettingsActivity extends Activity {
             e.printStackTrace();
         }
 
-        if (bankNotif + indentityNotif + coordsNotif + bankNotif > 0)
+        if (bankNotif + indentityNotif + coordsNotif + bankNotif + securityNotif > 0)
             this.infosContainer.setVisibility(View.VISIBLE);
         else
             this.infosContainer.setVisibility(View.GONE);
 
-        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_CARD), cardNotif, new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(instance, CreditCardSettingsActivity.class);
-                instance.startActivity(intent);
-                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
-            }
+        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_CARD), cardNotif, (parent, view, position, id) -> {
+            Intent intent = new Intent(instance, CreditCardSettingsActivity.class);
+            instance.startActivity(intent);
+            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
         }));
 
-        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_RIB), bankNotif, new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(instance, BankSettingsActivity.class);
-                instance.startActivity(intent);
-                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
-            }
+        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_RIB), bankNotif, (parent, view, position, id) -> {
+            Intent intent = new Intent(instance, BankSettingsActivity.class);
+            instance.startActivity(intent);
+            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
         }));
 
-        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_IDENTITY), indentityNotif, new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(instance, IdentitySettingsActivity.class);
-                instance.startActivity(intent);
-                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
-            }
+        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_IDENTITY), indentityNotif, (parent, view, position, id) -> {
+            Intent intent = new Intent(instance, IdentitySettingsActivity.class);
+            instance.startActivity(intent);
+            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
         }));
 
-        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_COORD), coordsNotif, new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(instance, CoordsSettingsActivity.class);
-                instance.startActivity(intent);
-                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
-            }
+        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_COORD), coordsNotif, (parent, view, position, id) -> {
+            Intent intent = new Intent(instance, CoordsSettingsActivity.class);
+            instance.startActivity(intent);
+            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
         }));
 
-        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_SECURITY), new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(instance, SecuritySettingsActivity.class);
-                instance.startActivity(intent);
-                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
-            }
+        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_SECURITY), securityNotif, (parent, view, position, id) -> {
+            Intent intent = new Intent(instance, SecuritySettingsActivity.class);
+            instance.startActivity(intent);
+            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
         }));
 
-        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_PREFERENCES), new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(instance, PreferencesSettingsActivity.class);
-                instance.startActivity(intent);
-                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
-            }
+        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_PREFERENCES), (parent, view, position, id) -> {
+            Intent intent = new Intent(instance, PreferencesSettingsActivity.class);
+            instance.startActivity(intent);
+            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
         }));
 
-        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_PRIVACY), new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(instance, PrivacySettingsActivity.class);
-                instance.startActivity(intent);
-                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
-            }
+        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_PRIVACY), (parent, view, position, id) -> {
+            Intent intent = new Intent(instance, PrivacySettingsActivity.class);
+            instance.startActivity(intent);
+            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
         }));
 
         new SettingsListAdapter(this, itemList, this.contentList);

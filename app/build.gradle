@@ -1,21 +1,28 @@
 apply plugin: 'com.android.application'
-apply plugin: 'crashlytics'
+apply plugin: 'io.fabric'
+apply plugin: 'me.tatarka.retrolambda'
 
 buildscript {
     repositories {
         mavenCentral()
-        maven { url 'http://download.crashlytics.com/maven' }
+        maven { url 'https://maven.fabric.io/public' }
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:1.0.1'
-        classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.14.7'
+        classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'me.tatarka:gradle-retrolambda:2.5.0'
+        classpath 'io.fabric.tools:gradle:1.+'
     }
 }
 
 android {
-    compileSdkVersion 21
-    buildToolsVersion "21.1.2"
+    compileSdkVersion 22
+    buildToolsVersion "22.0.1"
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 
     signingConfigs {
         debug {
@@ -40,10 +47,10 @@ android {
 
     defaultConfig {
         applicationId "me.flooz.app"
-        minSdkVersion 17
-        targetSdkVersion 21
-        versionCode 4
-        versionName "1.0.3"
+        minSdkVersion 16
+        targetSdkVersion 22
+        versionCode 13
+        versionName "1.2.1"
         signingConfig signingConfigs.release
     }
 
@@ -75,20 +82,20 @@ android {
         local {
             buildConfigField "boolean", "LOCAL_API", "true"
             buildConfigField "boolean", "DEBUG_API", "true"
-            signingConfig signingConfigs.local
             applicationIdSuffix 'local'
+            debuggable true
+            jniDebuggable true
+            renderscriptDebuggable true
         }
         debug {
             buildConfigField "boolean", "LOCAL_API", "false"
             buildConfigField "boolean", "DEBUG_API", "true"
-            signingConfig signingConfigs.debug
             applicationIdSuffix 'dev'
         }
         release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField "boolean", "LOCAL_API", "false"
             buildConfigField "boolean", "DEBUG_API", "false"
+            signingConfig signingConfigs.release
         }
     }
 
@@ -105,13 +112,16 @@ repositories {
 
     jcenter()
     mavenCentral()
-    maven { url 'http://download.crashlytics.com/maven' }
+    maven { url 'https://github.com/tvbarthel/maven/raw/master/' }
+    maven { url "https://raw.github.com/embarkmobile/zxing-android-minimal/mvn-repo/maven-repository/" }
+    maven { url "https://jitpack.io" }
+    maven { url 'https://maven.fabric.io/public' }
 }
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:21.0.2'
-    compile 'com.android.support:support-v4:21.0.2'
+    compile 'com.android.support:appcompat-v7:22.0.0'
+    compile 'com.android.support:support-v4:22.0.0'
     compile 'com.android.support:support-v13:21.0.2'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
@@ -122,16 +132,25 @@ dependencies {
     compile 'com.googlecode.libphonenumber:libphonenumber:7.0.2'
     compile 'com.commonsware.cwac:camera:0.6.+'
     compile 'org.apache.james:apache-mime4j:0.7.2'
-    compile 'com.github.nkzawa:socket.io-client:0.4.1'
+    compile 'com.github.nkzawa:socket.io-client:0.4.2'
     compile 'com.mixpanel.android:mixpanel-android:4.5.3@aar'
     compile 'com.google.android.gms:play-services:6.+'
     compile 'info.hoang8f:android-segmented:1.0.4'
     compile 'com.github.chrisbanes.photoview:library:1.2.3'
     compile 'com.github.navasmdc:MaterialDesign:1.+@aar'
+    compile 'fr.tvbarthel.lib.blurdialogfragment:lib:1.1.0@aar'
+    compile 'com.github.amlcurran.showcaseview:library:5.0.0'
+    compile 'me.dm7.barcodescanner:zxing:1.7'
+    compile 'com.embarkmobile:zxing-android-minimal:1.2.1@aar'
+    compile 'org.apache.commons:commons-lang3:3.0'
+    compile 'com.google.zxing:core:2.2'
+    compile 'com.github.inaka:tinytask:v1'
     compile project(':tooltips')
     compile project(':slidingMenu')
     compile project(':facebook')
     compile project(':pullRefreshLayout')
     compile files('libs/libScanpay.jar')
-    compile 'com.crashlytics.android:crashlytics:1.1.13'
+    compile('com.crashlytics.sdk.android:crashlytics:2.2.4@aar') {
+        transitive = true;
+    }
 }

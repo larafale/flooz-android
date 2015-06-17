@@ -14,7 +14,6 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -109,78 +108,57 @@ public class CoordsSettingsActivity extends Activity {
 
         this.reloadView();
 
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-                if (modal)
-                    overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                else
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+        this.headerBackButton.setOnClickListener(view -> {
+            finish();
+            if (modal)
+                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+            else
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
+        });
+
+        this.sendVerifyPhone.setOnClickListener(v -> {
+            FloozRestClient.getInstance().sendSMSValidation();
+            v.setVisibility(View.GONE);
+        });
+
+        this.sendVerifyMail.setOnClickListener(v -> {
+            FloozRestClient.getInstance().sendEmailValidation();
+            v.setVisibility(View.GONE);
+        });
+
+        justificatoryTextfield.setOnClickListener(v -> {
+            FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+            if (currentUser.checkDocuments.get("justificatory").equals(0) || currentUser.checkDocuments.get("justificatory").equals(3)) {
+                currentDoc = "justificatory";
+                showImageActionMenu();
             }
         });
 
-        this.sendVerifyPhone.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FloozRestClient.getInstance().sendSMSValidation();
-                v.setVisibility(View.GONE);
+        this.justificatoryButton.setOnClickListener(v -> {
+            FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+            if (currentUser.checkDocuments.get("justificatory").equals(0) || currentUser.checkDocuments.get("justificatory").equals(3)) {
+                currentDoc = "justificatory";
+                showImageActionMenu();
             }
         });
 
-        this.sendVerifyMail.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FloozRestClient.getInstance().sendEmailValidation();
-                v.setVisibility(View.GONE);
+        justificatory2Textfield.setOnClickListener(v -> {
+            FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+            if (currentUser.checkDocuments.get("justificatory2").equals(0) || currentUser.checkDocuments.get("justificatory2").equals(3)) {
+                currentDoc = "justificatory2";
+                showImageActionMenu();
             }
         });
 
-        justificatoryTextfield.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FLUser currentUser = FloozRestClient.getInstance().currentUser;
+        this.justificatory2Button.setOnClickListener(v -> {
+            FLUser currentUser = FloozRestClient.getInstance().currentUser;
 
-                if (currentUser.checkDocuments.get("justificatory").equals(0) || currentUser.checkDocuments.get("justificatory").equals(3)) {
-                    currentDoc = "justificatory";
-                    showImageActionMenu();
-                }
-            }
-        });
-
-        this.justificatoryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FLUser currentUser = FloozRestClient.getInstance().currentUser;
-
-                if (currentUser.checkDocuments.get("justificatory").equals(0) || currentUser.checkDocuments.get("justificatory").equals(3)) {
-                    currentDoc = "justificatory";
-                    showImageActionMenu();
-                }
-            }
-        });
-
-        justificatory2Textfield.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FLUser currentUser = FloozRestClient.getInstance().currentUser;
-
-                if (currentUser.checkDocuments.get("justificatory2").equals(0) || currentUser.checkDocuments.get("justificatory2").equals(3)) {
-                    currentDoc = "justificatory2";
-                    showImageActionMenu();
-                }
-            }
-        });
-
-        this.justificatory2Button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FLUser currentUser = FloozRestClient.getInstance().currentUser;
-
-                if (currentUser.checkDocuments.get("justificatory2").equals(0) || currentUser.checkDocuments.get("justificatory2").equals(3)) {
-                    currentDoc = "justificatory2";
-                    showImageActionMenu();
-                }
+            if (currentUser.checkDocuments.get("justificatory2").equals(0) || currentUser.checkDocuments.get("justificatory2").equals(3)) {
+                currentDoc = "justificatory2";
+                showImageActionMenu();
             }
         });
 
@@ -220,62 +198,57 @@ public class CoordsSettingsActivity extends Activity {
             }
         });
 
-        this.cityTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    saveButton.performClick();
-                }
-                return false;
+        this.cityTextfield.setOnEditorActionListener((v, actionId, event) -> {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                saveButton.performClick();
             }
+            return false;
         });
 
-        this.saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FLUser currentUser = FloozRestClient.getInstance().currentUser;
+        this.saveButton.setOnClickListener(v -> {
+            FLUser currentUser = FloozRestClient.getInstance().currentUser;
 
-                Map<String, Object> param = new HashMap<>();
-                Map<String, Object> settings = new HashMap<>();
-                Map<String, Object> address = new HashMap<>();
+            Map<String, Object> param = new HashMap<>();
+            Map<String, Object> settings = new HashMap<>();
+            Map<String, Object> address = new HashMap<>();
 
-                if (!phoneTextfield.getText().toString().contentEquals(currentUser.phone.replace("+33", "0")))
-                    param.put("phone", phoneTextfield.getText().toString());
+            if (!phoneTextfield.getText().toString().contentEquals(currentUser.phone.replace("+33", "0")))
+                param.put("phone", phoneTextfield.getText().toString());
 
-                if (!emailTextfield.getText().toString().contentEquals(currentUser.email))
-                    param.put("email", emailTextfield.getText().toString());
+            if (!emailTextfield.getText().toString().contentEquals(currentUser.email))
+                param.put("email", emailTextfield.getText().toString());
 
-                if (((currentUser.address.get("address") == null || (currentUser.address.get("address") != null && currentUser.address.get("address").isEmpty())) && addressTextfield.getText().length() > 0)
-                        || (currentUser.address.get("address") != null && !currentUser.address.get("address").isEmpty() && !addressTextfield.getText().toString().contentEquals(currentUser.address.get("address"))))
-                    address.put("address", addressTextfield.getText().toString());
+            if (((currentUser.address.get("address") == null || (currentUser.address.get("address") != null && currentUser.address.get("address").isEmpty())) && addressTextfield.getText().length() > 0)
+                    || (currentUser.address.get("address") != null && !currentUser.address.get("address").isEmpty() && !addressTextfield.getText().toString().contentEquals(currentUser.address.get("address"))))
+                address.put("address", addressTextfield.getText().toString());
 
-                if (((currentUser.address.get("zipCode") == null || (currentUser.address.get("zipCode") != null && currentUser.address.get("zipCode").isEmpty())) && zipCodeTextfield.getText().length() > 0)
-                        || (currentUser.address.get("zipCode") != null && !currentUser.address.get("zipCode").isEmpty() && !zipCodeTextfield.getText().toString().contentEquals(currentUser.address.get("zipCode")))) {
-                    address.put("zipCode", zipCodeTextfield.getText().toString());
-                }
-
-                if (((currentUser.address.get("city") == null || (currentUser.address.get("city") != null && currentUser.address.get("city").isEmpty())) && cityTextfield.getText().length() > 0)
-                        || (currentUser.address.get("city") != null && !currentUser.address.get("city").isEmpty() && !cityTextfield.getText().toString().contentEquals(currentUser.address.get("city")))) {
-                    address.put("city", cityTextfield.getText().toString());
-                }
-
-                if (address.size() > 0) {
-                    settings.put("address", address);
-                    param.put("settings", settings);
-                }
-
-                FloozRestClient.getInstance().showLoadView();
-                FloozRestClient.getInstance().updateUser(param, new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
-                        headerBackButton.performClick();
-                    }
-
-                    @Override
-                    public void failure(int statusCode, FLError error) {
-
-                    }
-                });
+            if (((currentUser.address.get("zipCode") == null || (currentUser.address.get("zipCode") != null && currentUser.address.get("zipCode").isEmpty())) && zipCodeTextfield.getText().length() > 0)
+                    || (currentUser.address.get("zipCode") != null && !currentUser.address.get("zipCode").isEmpty() && !zipCodeTextfield.getText().toString().contentEquals(currentUser.address.get("zipCode")))) {
+                address.put("zipCode", zipCodeTextfield.getText().toString());
             }
+
+            if (((currentUser.address.get("city") == null || (currentUser.address.get("city") != null && currentUser.address.get("city").isEmpty())) && cityTextfield.getText().length() > 0)
+                    || (currentUser.address.get("city") != null && !currentUser.address.get("city").isEmpty() && !cityTextfield.getText().toString().contentEquals(currentUser.address.get("city")))) {
+                address.put("city", cityTextfield.getText().toString());
+            }
+
+            if (address.size() > 0) {
+                settings.put("address", address);
+                param.put("settings", settings);
+            }
+
+            FloozRestClient.getInstance().showLoadView();
+            FloozRestClient.getInstance().updateUser(param, new FloozHttpResponseHandler() {
+                @Override
+                public void success(Object response) {
+                    headerBackButton.performClick();
+                }
+
+                @Override
+                public void failure(int statusCode, FLError error) {
+
+                }
+            });
         });
     }
 
@@ -361,13 +334,10 @@ public class CoordsSettingsActivity extends Activity {
         }
     };
 
-    private ActionSheetItem.ActionSheetItemClickListener showGallery = new ActionSheetItem.ActionSheetItemClickListener() {
-        @Override
-        public void onClick() {
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setType("image/*");
-            startActivityForResult(intent, SELECT_PICTURE);
-        }
+    private ActionSheetItem.ActionSheetItemClickListener showGallery = () -> {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, SELECT_PICTURE);
     };
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -387,41 +357,33 @@ public class CoordsSettingsActivity extends Activity {
                     FLUser currentUser = FloozRestClient.getInstance().currentUser;
                     currentUser.checkDocuments.put(currentDoc, 1);
                     Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            reloadDocuments();
-                        }
-                    });
+                    handler.post(this::reloadDocuments);
 
                     Handler mainHandler = new Handler(Looper.getMainLooper());
-                    Runnable myRunnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
-                            String imagePath = ImageHelper.getPath(instance, selectedImageUri);
-                            if (imagePath != null) {
-                                FloozRestClient.getInstance().uploadDocument(currentDoc, new File(imagePath), new FloozHttpResponseHandler() {
-                                    @Override
-                                    public void success(Object response) {
-                                        reloadDocuments();
-                                    }
-                                    @Override
-                                    public void failure(int statusCode, FLError error) {
-                                        FloozRestClient.getInstance().updateCurrentUser(new FloozHttpResponseHandler() {
-                                            @Override
-                                            public void success(Object response) {
-                                                reloadDocuments();
-                                            }
+                    Runnable myRunnable = () -> {
+                        android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
+                        String imagePath = ImageHelper.getPath(instance, selectedImageUri);
+                        if (imagePath != null) {
+                            FloozRestClient.getInstance().uploadDocument(currentDoc, new File(imagePath), new FloozHttpResponseHandler() {
+                                @Override
+                                public void success(Object response) {
+                                    reloadDocuments();
+                                }
+                                @Override
+                                public void failure(int statusCode, FLError error) {
+                                    FloozRestClient.getInstance().updateCurrentUser(new FloozHttpResponseHandler() {
+                                        @Override
+                                        public void success(Object response) {
+                                            reloadDocuments();
+                                        }
 
-                                            @Override
-                                            public void failure(int statusCode, FLError error) {
+                                        @Override
+                                        public void failure(int statusCode, FLError error) {
 
-                                            }
-                                        });
-                                    }
-                                });
-                            }
+                                        }
+                                    });
+                                }
+                            });
                         }
                     };
                     mainHandler.post(myRunnable);

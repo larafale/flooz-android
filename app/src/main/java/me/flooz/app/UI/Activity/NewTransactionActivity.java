@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +16,8 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -29,10 +32,9 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
-import com.github.amlcurran.showcaseview.targets.PointTarget;
-import com.github.amlcurran.showcaseview.targets.ViewTarget;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.ryanharter.android.tooltips.ToolTip;
 import com.ryanharter.android.tooltips.ToolTipLayout;
 
@@ -80,11 +82,10 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
     private String savedAmount;
     private String savedWhy;
     private Boolean isDemo = false;
+    private int demoCurrentStep = 0;
 
     private Boolean havePicture = false;
     private Bitmap currentPicture;
-
-    private Boolean clearFocus;
 
     FLTransaction.TransactionType currentType;
     private FLTransaction.TransactionScope currentScope = FLTransaction.TransactionScope.TransactionScopePublic;
@@ -105,12 +106,16 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
     private ImageView scopePic;
     private TextView chargeButton;
     private TextView payButton;
+    private ImageView capturePicButton;
+    private ImageView captureAlbumButton;
 
     private ToolTip toolTipScope;
     private ToolTipScopeView tooltipScopeView;
 
     private ToolTipLayout tipContainer;
     private ToolTipLayout demoContainer;
+    private View demoPassthroughView = null;
+    private ToolTip demoToolTip;
 
     private Boolean transactionPending = false;
 
@@ -123,7 +128,6 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
 
         this.savedAmount = "";
         this.savedWhy = "";
-        this.clearFocus = false;
         this.currentScope = FLTransaction.transactionScopeParamToEnum((String) ((Map) FloozRestClient.getInstance().currentUser.settings.get("def")).get("scope"));
     }
 
@@ -133,7 +137,6 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         this.preset = data;
         this.currentPicture = null;
         this.havePicture = false;
-        this.clearFocus = false;
 
         if (this.preset.to != null)
             this.currentReceiver = this.preset.to;
@@ -148,7 +151,31 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         else
             this.savedWhy = "";
 
-        this.isDemo = preset.isDemo;
+        if (this.preset.image != null) {
+            ImageLoader.getInstance().loadImage(this.preset.image, new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+
+                }
+
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                }
+
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    instance.photoTaken(loadedImage);
+                }
+
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
+
+                }
+            });
+        }
+
+        this.isDemo = preset.popup != null || preset.steps != null;
 
         this.currentScope = FLTransaction.transactionScopeParamToEnum((String)((Map)FloozRestClient.getInstance().currentUser.settings.get("def")).get("scope"));
     }
@@ -189,23 +216,21 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         this.pic = (ImageView) this.findViewById(R.id.new_transac_pic);
         ImageView picDeleteButton = (ImageView) this.findViewById(R.id.new_transac_pic_delete);
         this.scopePic = (ImageView) this.findViewById(R.id.new_transac_scope_pic);
-        ImageView capturePicButton = (ImageView) this.findViewById(R.id.new_transac_pic_button);
-        ImageView captureAlbumButton = (ImageView) this.findViewById(R.id.new_transac_album_button);
+        this.capturePicButton = (ImageView) this.findViewById(R.id.new_transac_pic_button);
+        this.captureAlbumButton = (ImageView) this.findViewById(R.id.new_transac_album_button);
         this.chargeButton = (TextView) this.findViewById(R.id.new_transac_collect);
         this.payButton = (TextView) this.findViewById(R.id.new_transac_paid);
         this.tipContainer = (ToolTipLayout) this.findViewById(R.id.new_transac_tooltip_container);
         this.demoContainer = (ToolTipLayout) this.findViewById(R.id.new_transac_demo_container);
+        RelativeLayout contentContainer = (RelativeLayout) this.findViewById(R.id.new_transac_content);
 
         if (this.preset == null || !this.preset.blockBack) {
             this.closeButton.setVisibility(View.VISIBLE);
-            this.closeButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    transactionPending = false;
-                    currentReceiver = null;
-                    finish();
-                    overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                }
+            this.closeButton.setOnClickListener(v -> {
+                transactionPending = false;
+                currentReceiver = null;
+                finish();
+                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
             });
         } else {
             this.closeButton.setVisibility(View.GONE);
@@ -223,19 +248,9 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         this.headerCB.setColorFilter(this.getResources().getColor(R.color.blue));
         capturePicButton.setColorFilter(this.getResources().getColor(android.R.color.white));
 
-        this.headerCB.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showBalanceDialog();
-            }
-        });
+        this.headerCB.setOnClickListener(v -> showBalanceDialog());
 
-        this.headerBalance.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showBalanceDialog();
-            }
-        });
+        this.headerBalance.setOnClickListener(v -> showBalanceDialog());
 
         this.toPicker.setPrefix(this.getResources().getString(R.string.TRANSACTION_CONTACT_PICKER_PREFIX));
         this.toPicker.setTokenClickStyle(TokenCompleteTextView.TokenClickStyle.Select);
@@ -290,6 +305,19 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
                         contactListAdapter.searchUser("");
                     }
                     contactList.setVisibility(View.GONE);
+
+                    if (isDemo && demoCurrentStep < preset.steps.length()) {
+                        NewTransactionActivity.this.showDemoStepPopover(NewTransactionActivity.this.preset.steps.optJSONObject(demoCurrentStep));
+                    }
+                }
+            }
+        });
+
+        this.amountTextfield.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus && isDemo && demoCurrentStep < preset.steps.length()) {
+                    NewTransactionActivity.this.showDemoStepPopover(NewTransactionActivity.this.preset.steps.optJSONObject(demoCurrentStep));
                 }
             }
         });
@@ -365,8 +393,7 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
             @Override
             public void onClick(View v) {
                 if (toolTipScope != null) {
-                    tipContainer.dismiss(true);
-                    toolTipScope = null;
+                    scopeChanged(currentScope);
                 } else {
                     if (tooltipScopeView.view.getParent() != null)
                         ((ViewGroup)tooltipScopeView.view.getParent()).removeView(tooltipScopeView.view);
@@ -380,8 +407,16 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
                             .dismissOnTouch(false)
                             .build();
 
+                    tipContainer.setVisibility(View.VISIBLE);
                     tipContainer.addTooltip(toolTipScope, true);
                 }
+            }
+        });
+
+        this.tipContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scopeChanged(currentScope);
             }
         });
 
@@ -431,6 +466,12 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
             }
         });
 
+        contentContainer.setOnClickListener(v -> {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            contentTextfield.requestFocus();
+            imm.showSoftInput(contentTextfield, 0);
+        });
+
         if (this.preset != null) {
             if (this.preset.title != null)
                 headerTitle.setText(this.preset.title);
@@ -450,6 +491,47 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
                 this.chargeButton.setVisibility(View.GONE);
             }
         }
+
+        this.demoContainer.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN){
+                    if (demoPassthroughView != null) {
+                        Rect viewRect = new Rect();
+                        Rect containerRect = new Rect();
+                        if (demoPassthroughView.getGlobalVisibleRect(viewRect) && demoContainer.getGlobalVisibleRect(containerRect)) {
+                            int eventX = (int)event.getX() + containerRect.left;
+                            int eventY = (int)event.getY() + containerRect.top;
+                            if (viewRect.contains(eventX, eventY)) {
+                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                String focus = preset.steps.optJSONObject(demoCurrentStep - 1).optString("focus");
+                                NewTransactionActivity.this.demoContainer.dismiss(true);
+                                NewTransactionActivity.this.demoContainer.setVisibility(View.GONE);
+
+                                if (focus.contentEquals("why") && !preset.blockWhy) {
+                                    contentTextfield.requestFocus();
+                                    imm.showSoftInput(contentTextfield, 0);
+                                }
+                                else if (focus.contentEquals("to") && !preset.blockTo) {
+                                    toPicker.requestFocus();
+                                    imm.showSoftInput(toPicker, 0);
+                                }
+                                else if (focus.contentEquals("amount") && !preset.blockAmount) {
+                                    amountTextfield.requestFocus();
+                                    imm.showSoftInput(amountTextfield, 0);
+                                }
+                                else if (focus.contentEquals("scope")) {
+                                    scopePic.performClick();
+                                }
+                            }
+                        }
+                    }
+                }
+                return true;
+            }
+        });
+
+
         this.validateView();
     }
 
@@ -506,16 +588,54 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         if (this.contentTextfield.getText().length() == 0)
             valid = false;
 
+        if (this.currentReceiver != null) {
+            if (this.currentReceiver.blockObject != null) {
+                if (this.currentReceiver.blockObject.has("pay") && this.currentReceiver.blockObject.optBoolean("pay")) {
+                    this.hideChargeButton(false);
+                    this.hidePayButton(true);
+                } else if (this.currentReceiver.blockObject.has("charge") && this.currentReceiver.blockObject.optBoolean("charge")) {
+                    this.hideChargeButton(true);
+                    this.hidePayButton(false);
+                } else
+                    this.resetPaymentButton();
+            } else
+                this.resetPaymentButton();
+        } else
+            this.resetPaymentButton();
+
         this.payButton.setEnabled(valid);
         this.chargeButton.setEnabled(valid);
+    }
+
+    public void hideChargeButton(Boolean hidden) {
+        this.chargeButton.setVisibility((hidden ? View.GONE : View.VISIBLE));
+    }
+
+    public void hidePayButton(Boolean hidden) {
+        this.payButton.setVisibility((hidden ? View.GONE : View.VISIBLE));
+    }
+
+    public void resetPaymentButton() {
+        if (this.preset != null) {
+            if (this.preset.type == FLTransaction.TransactionType.TransactionTypePayment) {
+                this.hideChargeButton(true);
+                this.hidePayButton(false);
+            } else if (this.preset.type == FLTransaction.TransactionType.TransactionTypeCharge) {
+                this.hideChargeButton(false);
+                this.hidePayButton(true);
+            } else {
+                this.hideChargeButton(false);
+                this.hidePayButton(false);
+            }
+        } else {
+            this.hideChargeButton(false);
+            this.hidePayButton(false);
+        }
     }
 
     @Override
     public void onStart() {
         super.onStart();
-
-        InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(this.amountTextfield, 0);
     }
 
     @Override
@@ -531,17 +651,211 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         this.amountTextfield.setText(this.savedAmount);
         this.contentTextfield.setText(this.savedWhy);
 
-        if (this.amountTextfield.getText().length() == 0)
-            this.amountTextfield.requestFocus();
-        else if (this.contentTextfield.getText().length() == 0)
-            this.contentTextfield.requestFocus();
-        else
-            this.baseLayout.requestFocus();
+        if (!this.isDemo) {
+            final InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+
+            if (this.amountTextfield.getText().length() == 0) {
+                this.amountTextfield.requestFocus();
+                imm.showSoftInput(amountTextfield, 0);
+            } else if (this.contentTextfield.getText().length() == 0) {
+                this.contentTextfield.requestFocus();
+                imm.showSoftInput(contentTextfield, 0);
+            } else
+                this.baseLayout.requestFocus();
+        } else {
+            if (this.preset.popup != null) {
+                final Dialog dialog = new Dialog(this);
+
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.custom_dialog_balance);
+
+                TextView title = (TextView) dialog.findViewById(R.id.dialog_wallet_title);
+                title.setTypeface(CustomFonts.customContentRegular(this), Typeface.BOLD);
+
+                title.setText(this.preset.popup.optString("title"));
+
+                TextView text = (TextView) dialog.findViewById(R.id.dialog_wallet_msg);
+                text.setTypeface(CustomFonts.customContentRegular(this));
+
+                text.setText(this.preset.popup.optString("content"));
+
+                Button close = (Button) dialog.findViewById(R.id.dialog_wallet_btn);
+
+                if (this.preset.popup.has("button") && !this.preset.popup.optString("button").isEmpty())
+                    close.setText(this.preset.popup.optString("button"));
+
+                close.setOnClickListener(v -> {
+                    dialog.dismiss();
+                    preset.popup = null;
+                    if (preset.steps != null)
+                        showDemoStepPopover(preset.steps.optJSONObject(demoCurrentStep));
+                });
+
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
+            } else if (this.preset.steps != null)
+                this.showDemoStepPopover(this.preset.steps.optJSONObject(demoCurrentStep));
+        }
 
         this.updateBalanceIndicator();
 
         if (this.transactionPending)
             FloozRestClient.getInstance().showLoadView();
+    }
+
+    private void showDemoStepPopover(final JSONObject stepData) {
+        if (stepData.optString("focus").contentEquals("fb")) {
+            this.demoCurrentStep++;
+            if (this.demoCurrentStep < preset.steps.length()) {
+                this.showDemoStepPopover(this.preset.steps.optJSONObject(demoCurrentStep));
+            }
+            return;
+        }
+        final InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getWindow().getDecorView().getRootView().getWindowToken(), 0);
+
+        View popoverView = LayoutInflater.from(this).inflate(R.layout.demo_tooltip, null);
+
+        LinearLayout container = (LinearLayout) popoverView.findViewById(R.id.demo_tooltip_container);
+        final TextView step = (TextView) popoverView.findViewById(R.id.demo_tooltip_step);
+        TextView title = (TextView) popoverView.findViewById(R.id.demo_tooltip_title);
+        TextView content = (TextView) popoverView.findViewById(R.id.demo_tooltip_content);
+        Button button = (Button) popoverView.findViewById(R.id.demo_tooltip_btn);
+
+        step.setTypeface(CustomFonts.customContentBold(this));
+        title.setTypeface(CustomFonts.customContentBold(this));
+        content.setTypeface(CustomFonts.customContentRegular(this));
+        button.setTypeface(CustomFonts.customContentBold(this));
+
+        container.setGravity(this.getDemoStepPopoverGravity(stepData.optString("focus")));
+        step.setText("" + (demoCurrentStep + 1));
+        title.setText(stepData.optString("title"));
+        content.setText(stepData.optString("desc"));
+        button.setText(stepData.optString("btn"));
+
+        button.setOnClickListener(v -> {
+            NewTransactionActivity.this.demoContainer.dismiss(true);
+            NewTransactionActivity.this.demoContainer.setVisibility(View.GONE);
+
+            if (stepData.optString("focus").contentEquals("why") && !preset.blockWhy) {
+                contentTextfield.requestFocus();
+                imm.showSoftInput(contentTextfield, 0);
+            }
+            else if (stepData.optString("focus").contentEquals("to") && !preset.blockTo) {
+                toPicker.requestFocus();
+                imm.showSoftInput(toPicker, 0);
+            }
+            else if (stepData.optString("focus").contentEquals("amount") && !preset.blockAmount) {
+                amountTextfield.requestFocus();
+                imm.showSoftInput(amountTextfield, 0);
+            }
+            else if (stepData.optString("focus").contentEquals("scope")) {
+                scopePic.performClick();
+            }
+            else if (demoCurrentStep < preset.steps.length()) {
+                NewTransactionActivity.this.showDemoStepPopover(NewTransactionActivity.this.preset.steps.optJSONObject(demoCurrentStep));
+            }
+        });
+
+        this.setDemoStepPopoverPassthroughView(stepData.optString("focus"));
+
+        this.demoToolTip = new ToolTip.Builder(this)
+                .anchor(this.getDemoStepPopoverView(stepData.optString("focus")))
+                .gravity(this.getDemoStepPopoverArrow(stepData.optString("focus")))
+                .color(this.getResources().getColor(R.color.blue))
+                .pointerSize(25)
+                .contentView(popoverView)
+                .build();
+
+        this.demoContainer.setVisibility(View.VISIBLE);
+        this.demoContainer.addTooltip(this.demoToolTip);
+
+        this.demoCurrentStep++;
+
+        if (demoCurrentStep == preset.steps.length())
+            isDemo = false;
+    }
+
+    private View getDemoStepPopoverView(String focus) {
+        if (focus.contentEquals("amount")) {
+            return amountTextfield;
+        }
+        if (focus.contentEquals("to")) {
+            return toPicker;
+        }
+        if (focus.contentEquals("image")) {
+            return capturePicButton;
+        }
+        if (focus.contentEquals("scope")) {
+            return scopePic;
+        }
+        if (focus.contentEquals("why")) {
+            return contentTextfield;
+        }
+        if (focus.contentEquals("pay")) {
+            return payButton;
+        }
+        return null;
+    }
+
+    private int getDemoStepPopoverArrow(String focus) {
+        if (focus.contentEquals("amount")) {
+            return Gravity.BOTTOM;
+        }
+        if (focus.contentEquals("to")) {
+            return Gravity.BOTTOM;
+        }
+        if (focus.contentEquals("image")) {
+            return Gravity.TOP;
+        }
+        if (focus.contentEquals("scope")) {
+            return Gravity.TOP;
+        }
+        if (focus.contentEquals("why")) {
+            return Gravity.BOTTOM;
+        }
+        if (focus.contentEquals("pay")) {
+            return Gravity.TOP;
+        }
+        return 0;
+    }
+
+    private int getDemoStepPopoverGravity(String focus) {
+        if (focus.contentEquals("amount")) {
+            return Gravity.RIGHT;
+        }
+        if (focus.contentEquals("to")) {
+            return Gravity.LEFT;
+        }
+        if (focus.contentEquals("image")) {
+            return Gravity.LEFT;
+        }
+        if (focus.contentEquals("scope")) {
+            return Gravity.LEFT;
+        }
+        if (focus.contentEquals("why")) {
+            return Gravity.LEFT;
+        }
+        if (focus.contentEquals("pay")) {
+            return Gravity.RIGHT;
+        }
+        return 0;
+    }
+
+    private void setDemoStepPopoverPassthroughView(String focus) {
+        if (focus.contentEquals("to") && !this.preset.blockTo) {
+            this.demoPassthroughView = this.toPicker;
+        }
+        else if (focus.contentEquals("scope")) {
+            this.demoPassthroughView = this.scopePic;
+        }
+        else if (focus.contentEquals("why") && !this.preset.blockWhy) {
+            this.demoPassthroughView = this.contentTextfield;
+        } else if (focus.contentEquals("amount") && !this.preset.blockAmount) {
+            this.demoPassthroughView = this.amountTextfield;
+        }
+        else
+            this.demoPassthroughView = null;
     }
 
     private void updateBalanceIndicator() {
@@ -591,12 +905,7 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
 
         Button close = (Button) dialog.findViewById(R.id.dialog_wallet_btn);
 
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
+        close.setOnClickListener(v -> dialog.dismiss());
 
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
@@ -629,7 +938,7 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
     }
 
     private void showValidationDialog(String content) {
-        if (this.validationDialog != null || !FloozApplication.appInForeground)
+        if (this.validationDialog != null || !FloozApplication.appInForeground || !(FloozApplication.getInstance().getCurrentActivity() instanceof NewTransactionActivity))
             return;
 
         InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -873,8 +1182,15 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
     @Override
     public void scopeChanged(FLTransaction.TransactionScope scope) {
         this.tipContainer.dismiss(true);
+        this.tipContainer.setVisibility(View.GONE);
         this.toolTipScope = null;
         this.currentScope = scope;
         this.updateScopeField();
+
+        if (isDemo && demoCurrentStep < preset.steps.length()) {
+            NewTransactionActivity.this.showDemoStepPopover(NewTransactionActivity.this.preset.steps.optJSONObject(demoCurrentStep));
+        }
+
+        this.validateView();
     }
 }

@@ -2,7 +2,6 @@ package me.flooz.app.UI.Activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -10,6 +9,7 @@ import android.widget.TextView;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.AppEventsLogger;
 
+import io.fabric.sdk.android.Fabric;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.BuildConfig;
 import me.flooz.app.Network.FloozRestClient;
@@ -28,7 +28,7 @@ public class LoadingActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Crashlytics.start(this);
+        Fabric.with(this, new Crashlytics());
 
         if (FLHelper.isDebuggable())
             ViewServer.get(this).addWindow(this);
@@ -55,22 +55,18 @@ public class LoadingActivity extends Activity {
             input.setText("192.168.1.");
             alert.setView(input);
 
-            alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    FloozRestClient.customIpAdress = "http://" + input.getText().toString();
-                    if (!FloozRestClient.getInstance().autologin()) {
-                        FloozApplication.getInstance().displayStartView();
-                        finish();
-                    }
+            alert.setPositiveButton(android.R.string.ok, (dialog, whichButton) -> {
+                FloozRestClient.customIpAdress = "http://" + input.getText().toString();
+                if (!FloozRestClient.getInstance().autologin()) {
+                    FloozApplication.getInstance().displayStartView();
+                    finish();
                 }
             });
 
-            alert.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
-                public void onClick(DialogInterface dialog, int whichButton) {
-                    if (!FloozRestClient.getInstance().autologin()) {
-                        FloozApplication.getInstance().displayStartView();
-                        finish();
-                    }
+            alert.setNegativeButton(android.R.string.cancel, (dialog, whichButton) -> {
+                if (!FloozRestClient.getInstance().autologin()) {
+                    FloozApplication.getInstance().displayStartView();
+                    finish();
                 }
             });
 

@@ -38,7 +38,11 @@ public class FLTrigger {
         TriggerPresetLine,
         TriggerFeedRead,
         TriggerShowInvitation,
-        TriggerFeedReload
+        TriggerFeedReload,
+        TriggerShowPopup,
+        TriggerHttpCall,
+        TriggerShowHome,
+        TriggerShowIban,
     }
 
     public FLTriggerType type;
@@ -128,6 +132,14 @@ public class FLTrigger {
             return TriggerShowInvitation;
         else if (param.contentEquals("feed:reload"))
             return TriggerFeedReload;
+        else if (param.contentEquals("popup:show"))
+            return TriggerShowPopup;
+        else if (param.contentEquals("home:show"))
+            return TriggerShowHome;
+        else if (param.contentEquals("iban:show"))
+            return TriggerShowIban;
+        else if (param.contentEquals("http:call"))
+            return TriggerHttpCall;
         else
             return TriggerNone;
     }

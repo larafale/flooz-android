@@ -179,7 +179,7 @@ public class TransactionCardFragment extends HomeBaseFragment {
         this.cardHeaderReportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FloozApplication.getInstance().showReportActionMenu(transaction.transactionId);
+                FloozApplication.getInstance().showReportActionMenu(transaction);
             }
         });
 

@@ -16,10 +16,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.AuthenticationActivity;
 import me.flooz.app.Utils.CustomFonts;
 
 /**
@@ -97,49 +100,44 @@ public class AuthenticationPassFragment extends AuthenticationBaseFragment {
             }
         });
 
-        this.passwordTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    if (nextButton.isEnabled())
-                        nextButton.performClick();
-                }
-                return false;
+        this.passwordTextfield.setOnEditorActionListener((v, actionId, event) -> {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                if (nextButton.isEnabled())
+                    nextButton.performClick();
             }
+            return false;
         });
 
-        this.nextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FloozRestClient.getInstance().showLoadView();
-                FloozRestClient.getInstance().loginForSecureCode(phoneTextfield.getText().toString(), passwordTextfield.getText().toString(), new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
-                        parentActivity.gotToNextPage();
-                        FloozRestClient.getInstance().clearSecureCode();
-                    }
+        this.nextButton.setOnClickListener(v -> {
+            FloozRestClient.getInstance().showLoadView();
+            FloozRestClient.getInstance().loginForSecureCode(phoneTextfield.getText().toString(), passwordTextfield.getText().toString(), new FloozHttpResponseHandler() {
+                @Override
+                public void success(Object response) {
+                    parentActivity.gotToNextPage();
+                    FloozRestClient.getInstance().clearSecureCode();
+                }
 
-                    @Override
-                    public void failure(int statusCode, FLError error) {
+                @Override
+                public void failure(int statusCode, FLError error) {
 
-                    }
-                });
-            }
+                }
+            });
         });
 
-        forgetButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String[] TO = {"support@flooz.me"};
+        forgetButton.setOnClickListener(v -> {
 
-                Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
-                sendIntent.setData(Uri.parse("mailto:"));
-                sendIntent.putExtra(Intent.EXTRA_EMAIL, TO);
-                sendIntent.putExtra(Intent.EXTRA_TEXT, "J'ai oublié mon mot de passe. Je souhaite être contacté au " + phoneTextfield.getText().toString() + ".");
-                sendIntent.putExtra(Intent.EXTRA_SUBJECT, "Mot de passe oublié");
-                if (sendIntent.resolveActivity(parentActivity.getPackageManager()) != null) {
-                    parentActivity.startActivity(Intent.createChooser(sendIntent, "Envoyer un mail..."));
+            FloozRestClient.getInstance().showLoadView();
+            FloozRestClient.getInstance().passwordForget(FloozRestClient.getInstance().currentUser.email, new FloozHttpResponseHandler() {
+                @Override
+                public void success(Object response) {
+
                 }
-            }
+
+                @Override
+                public void failure(int statusCode, FLError error) {
+
+                }
+            });
         });
 
         return view;

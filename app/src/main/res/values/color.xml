@@ -16,6 +16,7 @@
     <color name="blue">#3AA9E3</color>
     <color name="blue_alpha">#7F3AA9E3</color>
     <color name="blue_fb">#3B579D</color>
+    <color name="blue_fb_alpha">#AA3B579D</color>
     <color name="blue_light">#6092AC</color>
     <color name="blue_hover">#263B4B</color>
     <color name="placeholder">#87939D</color>

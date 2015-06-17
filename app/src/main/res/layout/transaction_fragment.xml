@@ -67,231 +67,241 @@
             android:layout_width="fill_parent"
             android:layout_height="fill_parent">
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="50dp"
-            android:gravity="center_vertical">
-
-            <me.flooz.app.UI.View.ContactPickerView
-                android:id="@+id/new_transac_to_container"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:gravity="center_vertical"
-                android:layout_weight="4"
-                android:textColor="@android:color/white"
-                android:hint="@string/TRANSACTION_CONTACT_PICKER_HINT"
-                android:textColorHint="@color/placeholder"
-                android:background="@color/background"
-                android:textSize="16sp"
-                android:layout_marginLeft="@dimen/dimen_large"
-                android:layout_marginBottom="@dimen/dimen_medium"
-                android:layout_marginTop="@dimen/dimen_medium"/>
-
-            <LinearLayout
-                android:id="@+id/new_transac_amount_container"
-                android:orientation="horizontal"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="center_vertical|right"
-                android:layout_marginRight="@dimen/dimen_large">
-
-                <EditText
-                    android:id="@+id/new_transac_amount_textfield"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textSize="@dimen/new_flooz_price"
-                    android:inputType="numberDecimal"
-                    android:maxLength="7"
-                    android:singleLine="true"
-                    android:hint="0"
-                    android:textColorHint="@color/placeholder"
-                    android:textColor="@android:color/white"
-                    android:background="@android:color/transparent"
-                    android:ellipsize="start"
-                    android:textCursorDrawable="@drawable/cursor_white"
-                    android:gravity="right"/>
-
-                <TextView
-                    android:id="@+id/new_transac_currency_symbol"
-                    android:layout_marginLeft="@dimen/dimen_medium"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@android:color/white"
-                    android:textSize="@dimen/new_flooz_price"
-                    android:text="@string/GLOBAL_EURO"/>
-
-            </LinearLayout>
-
-        </LinearLayout>
-
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="1dp"
-            android:background="@color/blue_middle"/>
-
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
-                android:padding="@dimen/dimen_large"
-                android:layout_height="fill_parent">
+                android:layout_height="50dp"
+                android:gravity="center_vertical">
 
-                <EditText
-                    android:id="@+id/new_transac_content_textfield"
+                <me.flooz.app.UI.View.ContactPickerView
+                    android:id="@+id/new_transac_to_container"
                     android:layout_width="0dp"
                     android:layout_height="fill_parent"
-                    android:layout_weight="1"
-                    android:background="@android:color/transparent"
-                    android:hint="@string/FIELD_TRANSACTION_CONTENT_PLACEHOLDER"
-                    android:textColorHint="@color/placeholder"
+                    android:gravity="center_vertical"
+                    android:layout_weight="4"
                     android:textColor="@android:color/white"
-                    android:maxLength="150"
-                    android:text=""
-                    android:cursorVisible="true"
-                    android:textCursorDrawable="@null"
-                    android:layout_marginBottom="40dp"
-                    android:gravity="top"/>
-
-                <RelativeLayout
-                    android:id="@+id/new_transac_pic_container"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:hint="@string/TRANSACTION_CONTACT_PICKER_HINT"
+                    android:textColorHint="@color/placeholder"
+                    android:background="@color/background"
+                    android:textSize="16sp"
                     android:layout_marginLeft="@dimen/dimen_large"
-                    android:visibility="gone">
+                    android:layout_marginBottom="@dimen/dimen_medium"
+                    android:layout_marginTop="@dimen/dimen_medium"/>
 
-                    <ImageView
-                        android:id="@+id/new_transac_pic"
-                        android:layout_width="@dimen/new_flooz_pic_width"
-                        android:layout_height="@dimen/new_flooz_pic_height"
-                        android:scaleType="centerCrop"/>
+                <LinearLayout
+                    android:id="@+id/new_transac_amount_container"
+                    android:orientation="horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:gravity="center_vertical|right"
+                    android:layout_marginRight="@dimen/dimen_large">
 
-                    <ImageView
-                        android:id="@+id/new_transac_pic_delete"
-                        android:layout_width="30dp"
-                        android:layout_height="30dp"
-                        android:gravity="center"
-                        android:padding="@dimen/dimen_small"
-                        android:src="@drawable/image_close"
-                        android:layout_alignRight="@id/new_transac_pic"/>
+                    <EditText
+                        android:id="@+id/new_transac_amount_textfield"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textSize="@dimen/new_flooz_price"
+                        android:inputType="numberDecimal"
+                        android:maxLength="7"
+                        android:singleLine="true"
+                        android:hint="0"
+                        android:textColorHint="@color/placeholder"
+                        android:textColor="@android:color/white"
+                        android:background="@android:color/transparent"
+                        android:ellipsize="start"
+                        android:textCursorDrawable="@drawable/cursor_white"
+                        android:gravity="right"/>
 
-                </RelativeLayout>
+                    <TextView
+                        android:id="@+id/new_transac_currency_symbol"
+                        android:layout_marginLeft="@dimen/dimen_medium"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@android:color/white"
+                        android:textSize="@dimen/new_flooz_price"
+                        android:text="@string/GLOBAL_EURO"/>
+
+                </LinearLayout>
 
             </LinearLayout>
 
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:background="@color/blue_middle"
-                android:baselineAligned="false">
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="1dp"
+                android:background="@color/blue_middle"/>
+
+            <RelativeLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
 
                 <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:layout_height="fill_parent"
-                    android:baselineAligned="false">
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:padding="@dimen/dimen_large"
+                    android:layout_height="fill_parent">
 
                     <RelativeLayout
+                        android:id="@+id/new_transac_content"
                         android:layout_width="0dp"
                         android:layout_height="fill_parent"
-                        android:layout_weight="1">
+                        android:layout_weight="1"
+                        android:clickable="true">
 
-                        <ImageView
-                            android:layout_centerInParent="true"
-                            android:id="@+id/new_transac_scope_pic"
-                            android:layout_width="@dimen/new_flooz_main_social_icn"
-                            android:layout_height="@dimen/new_flooz_main_social_icn"
-                            android:src="@drawable/scope_public"/>
+                        <EditText
+                            android:id="@+id/new_transac_content_textfield"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:background="@android:color/transparent"
+                            android:hint="@string/FIELD_TRANSACTION_CONTENT_PLACEHOLDER"
+                            android:textColorHint="@color/placeholder"
+                            android:textColor="@android:color/white"
+                            android:maxLength="150"
+                            android:text=""
+                            android:cursorVisible="true"
+                            android:textCursorDrawable="@null"
+                            android:layout_marginBottom="40dp"
+                            android:gravity="top"/>
 
                     </RelativeLayout>
 
                     <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_height="fill_parent"
-                        android:layout_weight="1">
+                        android:id="@+id/new_transac_pic_container"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/dimen_large"
+                        android:visibility="gone">
 
                         <ImageView
-                            android:layout_centerInParent="true"
-                            android:id="@+id/new_transac_album_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="@dimen/new_flooz_main_social_icn"
-                            android:src="@drawable/photo_album"
-                            android:paddingTop="@dimen/dimen_small"
-                            android:paddingBottom="@dimen/dimen_small"/>
+                            android:id="@+id/new_transac_pic"
+                            android:layout_width="@dimen/new_flooz_pic_width"
+                            android:layout_height="@dimen/new_flooz_pic_height"
+                            android:scaleType="centerCrop"/>
+
+                        <ImageView
+                            android:id="@+id/new_transac_pic_delete"
+                            android:layout_width="30dp"
+                            android:layout_height="30dp"
+                            android:gravity="center"
+                            android:padding="@dimen/dimen_small"
+                            android:src="@drawable/image_close"
+                            android:layout_alignRight="@id/new_transac_pic"/>
 
                     </RelativeLayout>
 
-                    <RelativeLayout
-                        android:layout_width="0dp"
-                        android:layout_height="fill_parent"
-                        android:layout_weight="1">
-
-                        <ImageView
-                            android:layout_centerInParent="true"
-                            android:id="@+id/new_transac_pic_button"
-                            android:layout_width="wrap_content"
-                            android:layout_height="@dimen/new_flooz_main_social_icn"
-                            android:src="@drawable/camera_grey"/>
-                    </RelativeLayout>
                 </LinearLayout>
 
                 <LinearLayout
                     android:orientation="horizontal"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/new_flooz_main_action_zone"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
-                    android:paddingTop="@dimen/dimen_small"
-                    android:paddingBottom="@dimen/dimen_small">
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:background="@color/blue_middle"
+                    android:baselineAligned="false">
 
-                    <TextView
-                        android:id="@+id/new_transac_collect"
+                    <LinearLayout
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
                         android:layout_weight="1"
-                        android:text="@string/MENU_COLLECT"
-                        android:layout_margin="@dimen/dimen_medium"
-                        android:textColor="@android:color/white"
-                        android:background="@drawable/background_action_button"
-                        android:gravity="center"
-                        android:enabled="false"/>
+                        android:layout_height="fill_parent"
+                        android:baselineAligned="false">
 
-                    <TextView
-                        android:id="@+id/new_transac_paid"
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_centerInParent="true"
+                                android:id="@+id/new_transac_scope_pic"
+                                android:layout_width="@dimen/new_flooz_main_social_icn"
+                                android:layout_height="@dimen/new_flooz_main_social_icn"
+                                android:src="@drawable/scope_public"/>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_centerInParent="true"
+                                android:id="@+id/new_transac_album_button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/new_flooz_main_social_icn"
+                                android:src="@drawable/photo_album"
+                                android:paddingTop="@dimen/dimen_small"
+                                android:paddingBottom="@dimen/dimen_small"/>
+
+                        </RelativeLayout>
+
+                        <RelativeLayout
+                            android:layout_width="0dp"
+                            android:layout_height="fill_parent"
+                            android:layout_weight="1">
+
+                            <ImageView
+                                android:layout_centerInParent="true"
+                                android:id="@+id/new_transac_pic_button"
+                                android:layout_width="wrap_content"
+                                android:layout_height="@dimen/new_flooz_main_social_icn"
+                                android:src="@drawable/camera_grey"/>
+                        </RelativeLayout>
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:orientation="horizontal"
                         android:layout_width="0dp"
-                        android:layout_height="match_parent"
+                        android:layout_height="@dimen/new_flooz_main_action_zone"
                         android:layout_weight="1"
-                        android:text="@string/MENU_PAYMENT"
-                        android:layout_margin="@dimen/dimen_medium"
-                        android:textColor="@android:color/white"
-                        android:background="@drawable/background_action_button"
-                        android:gravity="center"
-                        android:enabled="false"/>
+                        android:gravity="center_vertical"
+                        android:paddingTop="@dimen/dimen_small"
+                        android:paddingBottom="@dimen/dimen_small">
 
+                        <TextView
+                            android:id="@+id/new_transac_collect"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/MENU_COLLECT"
+                            android:layout_margin="@dimen/dimen_medium"
+                            android:textColor="@android:color/white"
+                            android:background="@drawable/background_action_button"
+                            android:gravity="center"
+                            android:enabled="false"/>
+
+                        <TextView
+                            android:id="@+id/new_transac_paid"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="@string/MENU_PAYMENT"
+                            android:layout_margin="@dimen/dimen_medium"
+                            android:textColor="@android:color/white"
+                            android:background="@drawable/background_action_button"
+                            android:gravity="center"
+                            android:enabled="false"/>
+
+                    </LinearLayout>
                 </LinearLayout>
-            </LinearLayout>
 
-            <ListView
-                android:id="@+id/new_transac_contact_list"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:background="@color/background"
-                android:visibility="gone"/>
+                <ListView
+                    android:id="@+id/new_transac_contact_list"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:background="@color/background"
+                    android:visibility="gone"/>
 
-        </RelativeLayout>
+            </RelativeLayout>
 
         </LinearLayout>
 
         <com.ryanharter.android.tooltips.ToolTipLayout
             android:id="@+id/new_transac_tooltip_container"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent" />
+            android:layout_height="fill_parent"
+            android:clickable="true"
+            android:visibility="gone"/>
 
         <com.ryanharter.android.tooltips.ToolTipLayout
             android:id="@+id/new_transac_demo_container"

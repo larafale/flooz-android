@@ -26,10 +26,13 @@ import android.widget.TextView;
 import com.makeramen.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import me.flooz.app.Adapter.MenuListAdapter;
+import me.flooz.app.Adapter.SettingsListItem;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLUser;
@@ -40,6 +43,7 @@ import me.flooz.app.UI.Activity.AboutActivity;
 import me.flooz.app.UI.Activity.CashoutActivity;
 import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.NotificationActivity;
+import me.flooz.app.UI.Activity.ScannerActivity;
 import me.flooz.app.UI.Activity.Settings.ProfileSettingsActivity;
 import me.flooz.app.UI.Activity.ShareAppActivity;
 import me.flooz.app.UI.Tools.ActionSheet;
@@ -48,14 +52,18 @@ import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.ImageHelper;
+import me.flooz.app.Utils.JSONHelper;
 import me.flooz.app.Utils.MenuItem;
 
 public class ProfileFragment extends HomeBaseFragment
 {
+    Context context;
+
     public RoundedImageView userView;
     private TextView fullname;
     private TextView username;
     private TextView balanceValue;
+    private ListView menuActionList;
 
     private List<MenuItem> menuItems;
     private MenuListAdapter listAdapter;
@@ -85,6 +93,8 @@ public class ProfileFragment extends HomeBaseFragment
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.profile_fragment, null);
 
+        this.context = inflater.getContext();
+
         LinearLayout accountUserView = (LinearLayout) view.findViewById(R.id.accountUserView);
         this.userView = (RoundedImageView) view.findViewById(R.id.userView);
         this.fullname = (TextView) view.findViewById(R.id.fullname);
@@ -108,18 +118,7 @@ public class ProfileFragment extends HomeBaseFragment
         completeNb.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
         completeLabel.setTypeface(CustomFonts.customTitleExtraLight(inflater.getContext()));
 
-        ListView menuActionList = (ListView) view.findViewById(R.id.account_menu_list);
-
-        this.menuItems = new ArrayList<>();
-
-        this.menuItems.add(new MenuItem(inflater.getContext(), R.string.ACCOUNT_MENU_PROFILE, R.drawable.account_profile_button));
-        this.menuItems.add(new MenuItem(inflater.getContext(), R.string.ACCOUNT_MENU_NOTIFICATION, R.drawable.account_notification_button, FloozRestClient.getInstance().notificationsManager.nbUnreadNotifications));
-        this.menuItems.add(new MenuItem(inflater.getContext(), R.string.ACCOUNT_MENU_SHARE, R.drawable.account_share_button));
-        this.menuItems.add(new MenuItem(inflater.getContext(), R.string.ACCOUNT_MENU_CASHOUT, R.drawable.account_bank_button));
-        this.menuItems.add(new MenuItem(inflater.getContext(), R.string.ACCOUNT_MENU_OTHER, R.drawable.account_other_button));
-
-        this.listAdapter = new MenuListAdapter(inflater.getContext(), this.menuItems);
-        menuActionList.setAdapter(this.listAdapter);
+        this.menuActionList = (ListView) view.findViewById(R.id.account_menu_list);
 
         this.balanceValue.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -201,6 +200,11 @@ public class ProfileFragment extends HomeBaseFragment
                             parentActivity.startActivity(intentShare);
                             parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
                             break;
+//                        case 3:
+//                            Intent intentScan = new Intent(parentActivity, ScannerActivity.class);
+//                            parentActivity.startActivity(intentScan);
+//                            parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+//                            break;
                         case 3:
                             FloozRestClient.getInstance().showLoadView();
                             FloozRestClient.getInstance().cashoutValidate(new FloozHttpResponseHandler() {
@@ -248,6 +252,7 @@ public class ProfileFragment extends HomeBaseFragment
     @Override
     public void onPause() {
         super.onPause();
+
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadCurrentUserDataReceiver);
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadNotificationsReceiver);
     }
@@ -266,6 +271,43 @@ public class ProfileFragment extends HomeBaseFragment
                 ImageLoader.getInstance().displayImage(user.avatarURL, this.userView);
             else
                 this.userView.setImageDrawable(getResources().getDrawable(R.drawable.avatar_default));
+
+            int nbNotif = 0;
+
+            if (user.creditCard == null || user.creditCard.cardId == null || user.creditCard.cardId.isEmpty())
+                ++nbNotif;
+
+            List missingFields;
+            try {
+                missingFields = JSONHelper.toList(user.json.optJSONArray("missingFields"));
+
+                if (missingFields.contains("sepa"))
+                    ++nbNotif;
+                if (missingFields.contains("secret"))
+                    ++nbNotif;
+                if (missingFields.contains("cniRecto"))
+                    ++nbNotif;
+                if (missingFields.contains("cniVerso"))
+                    ++nbNotif;
+                if (missingFields.contains("justificatory"))
+                    ++nbNotif;
+                if (missingFields.contains("address"))
+                    ++nbNotif;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+            this.menuItems = new ArrayList<>();
+
+            this.menuItems.add(new MenuItem(this.context, R.string.ACCOUNT_MENU_PROFILE, R.drawable.account_profile_button, nbNotif));
+            this.menuItems.add(new MenuItem(this.context, R.string.ACCOUNT_MENU_NOTIFICATION, R.drawable.account_notification_button, FloozRestClient.getInstance().notificationsManager.nbUnreadNotifications));
+            this.menuItems.add(new MenuItem(this.context, R.string.ACCOUNT_MENU_SHARE, R.drawable.account_share_button));
+//        this.menuItems.add(new MenuItem(inflater.getContext(), R.string.ACCOUNT_MENU_SCANNER, R.drawable.qrcode));
+            this.menuItems.add(new MenuItem(this.context, R.string.ACCOUNT_MENU_CASHOUT, R.drawable.account_bank_button));
+            this.menuItems.add(new MenuItem(this.context, R.string.ACCOUNT_MENU_OTHER, R.drawable.account_other_button));
+
+            this.listAdapter = new MenuListAdapter(this.context, this.menuItems);
+            menuActionList.setAdapter(this.listAdapter);
         }
     }
 }

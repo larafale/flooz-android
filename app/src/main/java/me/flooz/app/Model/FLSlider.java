@@ -6,7 +6,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-import me.flooz.app.UI.Fragment.Sliders.SlideFragment;
+import me.flooz.app.UI.Fragment.Start.SlideFragment;
 
 /**
  * Created by Flooz on 4/7/15.

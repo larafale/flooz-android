@@ -20,3 +20,5 @@
 -keepclassmembers class scanpay.it.** {
 *;
 }
+-keep class org.apache.http.** { *; }
+-dontwarn org.apache.http.*

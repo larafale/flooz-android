@@ -52,10 +52,12 @@ public class MenuListAdapter extends ArrayAdapter<MenuItem>
         MenuItem item = this.items.get(position);
 
         holder.img.setImageDrawable(item.image);
+        holder.img.setColorFilter(this.context.getResources().getColor(android.R.color.white));
         holder.text.setText(item.name);
-        if (item.nbNotification > 0)
+        if (item.nbNotification > 0) {
+            holder.notifsLabel.setVisibility(View.VISIBLE);
             holder.notifsLabel.setText(String.format("%d", item.nbNotification));
-        else {
+        } else {
             holder.notifsLabel.setVisibility(View.INVISIBLE);
         }
 

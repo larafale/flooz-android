@@ -2,6 +2,7 @@ package me.flooz.app.UI.Activity;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.content.BroadcastReceiver;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -26,7 +28,11 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.List;
 
 import me.flooz.app.Adapter.HeaderPagerAdapter;
 import me.flooz.app.Adapter.TimelinePagerAdapter;
@@ -38,6 +44,9 @@ import me.flooz.app.R;
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.UI.Fragment.Home.TimelineFragment;
+import me.flooz.app.UI.Tools.ActionSheet;
+import me.flooz.app.UI.Tools.ActionSheetItem;
+import me.flooz.app.UI.Tools.CustomToast;
 import me.flooz.app.Utils.ContactsManager;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.Utils.CustomFonts;
@@ -60,6 +69,7 @@ import com.viewpagerindicator.CirclePageIndicator;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 public class HomeActivity extends SlidingFragmentActivity implements TimelineFragment.TimelineFragmentDelegate
 {
@@ -164,14 +174,12 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
         if (intent != null && intent.getAction() != null && intent.getAction().contentEquals(Intent.ACTION_VIEW)) {
             if (!FloozRestClient.getInstance().autologin()) {
                 FloozApplication.getInstance().displayStartView();
-                this.finish();
             }
         }
         if (intent != null && intent.getExtras() != null) {
             if (!intent.getBooleanExtra("inApp", false)) {
                 if (!FloozRestClient.getInstance().autologin()) {
                     FloozApplication.getInstance().displayStartView();
-                    this.finish();
                 }
             }
         }
@@ -194,16 +202,13 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
 
         this.pageIndicator = (CirclePageIndicator) this.findViewById(R.id.pagerindicator);
 
-        this.findViewById(R.id.timeline_header).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (timelineViewPager.getCurrentItem() == 0)
-                    timelineViewPagerAdapter.homeTimeline.timelineListView.smoothScrollToPosition(0);
-                else if (timelineViewPager.getCurrentItem() == 1)
-                    timelineViewPagerAdapter.publicTimeline.timelineListView.smoothScrollToPosition(0);
-                else
-                    timelineViewPagerAdapter.privateTimeline.timelineListView.smoothScrollToPosition(0);
-            }
+        this.findViewById(R.id.timeline_header).setOnClickListener(v -> {
+            if (timelineViewPager.getCurrentItem() == 0)
+                timelineViewPagerAdapter.homeTimeline.timelineListView.smoothScrollToPosition(0);
+            else if (timelineViewPager.getCurrentItem() == 1)
+                timelineViewPagerAdapter.publicTimeline.timelineListView.smoothScrollToPosition(0);
+            else
+                timelineViewPagerAdapter.privateTimeline.timelineListView.smoothScrollToPosition(0);
         });
 
         if (this.timelineViewPagerAdapter == null) {
@@ -249,31 +254,23 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
         this.headerProfileButton = (ImageView) this.findViewById(R.id.profile_header_button);
 
         final int[] doubleClickChecker = {0};
-        this.headerProfileButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                doubleClickChecker[0]++;
-                Handler handler = new Handler();
-                Runnable r = new Runnable() {
-
-                    @Override
-                    public void run() {
-                        if (doubleClickChecker[0] == 1) {
-                            showLeftMenu();
-                        }
-                        doubleClickChecker[0] = 0;
-                    }
-                };
-
+        this.headerProfileButton.setOnClickListener(v -> {
+            doubleClickChecker[0]++;
+            Handler handler = new Handler();
+            Runnable r = () -> {
                 if (doubleClickChecker[0] == 1) {
-                    handler.postDelayed(r, 250);
-                } else if (doubleClickChecker[0] == 2) {
-                    Intent intent = new Intent(instance, NotificationActivity.class);
-                    instance.startActivity(intent);
-                    instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-                    doubleClickChecker[0] = 0;
+                    showLeftMenu();
                 }
+                doubleClickChecker[0] = 0;
+            };
+
+            if (doubleClickChecker[0] == 1) {
+                handler.postDelayed(r, 250);
+            } else if (doubleClickChecker[0] == 2) {
+                Intent intent1 = new Intent(instance, NotificationActivity.class);
+                instance.startActivity(intent1);
+                instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                doubleClickChecker[0] = 0;
             }
         });
 
@@ -289,19 +286,28 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
 
         ImageView friendsButton = (ImageView)this.findViewById(R.id.friends_header_button);
 
-        friendsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showRightMenu();
-            }
-        });
+        friendsButton.setOnClickListener(v -> showRightMenu());
 
         this.newTransactionButton = (ImageView) this.findViewById(R.id.new_transac_button);
-        this.newTransactionButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(instance, NewTransactionActivity.class);
-                instance.startActivity(intent);
+        this.newTransactionButton.setOnClickListener(v -> {
+            if (FloozRestClient.getInstance().currentUser.ux != null
+                    && FloozRestClient.getInstance().currentUser.ux.has("homeButton")
+                    && FloozRestClient.getInstance().currentUser.ux.optJSONArray("homeButton").length() > 0) {
+
+                JSONArray t = FloozRestClient.getInstance().currentUser.ux.optJSONArray("homeButton");
+
+                for (int i = 0; i < t.length(); i++) {
+                    final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
+                    if (trigger.delay.intValue() > 0) {
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.postDelayed(() -> FloozRestClient.getInstance().handleTrigger(trigger), (int) (trigger.delay.doubleValue() * 1000));
+                    } else {
+                        FloozRestClient.getInstance().handleTrigger(trigger);
+                    }
+                }
+            } else {
+                Intent intent1 = new Intent(instance, NewTransactionActivity.class);
+                instance.startActivity(intent1);
                 instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
             }
         });
@@ -317,28 +323,38 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
 
         this.imageViewer.setClickable(true);
 
-        this.imageViewerClose.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), android.R.anim.fade_out);
-                anim.setAnimationListener(new Animation.AnimationListener() {
-                    @Override
-                    public void onAnimationStart(Animation animation) {
+        this.imageViewerAttacher.setOnLongClickListener(v -> {
+            List<ActionSheetItem> items = new ArrayList<>();
+            items.add(new ActionSheetItem(instance, R.string.MENU_SAVE_PICTURE, new ActionSheetItem.ActionSheetItemClickListener() {
+                @Override
+                public void onClick() {
+                    ImageHelper.saveImageOnPhone(instance, ((BitmapDrawable)imageViewerAttacher.getImageView().getDrawable()).getBitmap());
+                }
+            }));
+            ActionSheet.showWithItems(instance, items);
 
-                    }
+            return false;
+        });
 
-                    @Override
-                    public void onAnimationEnd(Animation animation) {
-                        imageViewer.setVisibility(View.GONE);
-                    }
+        this.imageViewerClose.setOnClickListener(v -> {
+            Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), android.R.anim.fade_out);
+            anim.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
 
-                    @Override
-                    public void onAnimationRepeat(Animation animation) {
+                }
 
-                    }
-                });
-                imageViewer.startAnimation(anim);
-            }
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    imageViewer.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            imageViewer.startAnimation(anim);
         });
 
         this.transactionCardFragment = new TransactionCardFragment();
@@ -362,13 +378,10 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
         sm.setSecondaryMenu(R.layout.right_sidemenu);
         sm.setSlidingEnabled(false);
 
-        sm.setOnCloseListener(new SlidingMenu.OnCloseListener() {
-            @Override
-            public void onClose() {
-                getSlidingMenu().setSlidingEnabled(false);
-                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(getWindow().getDecorView().getRootView().getWindowToken(), 0);
-            }
+        sm.setOnCloseListener(() -> {
+            getSlidingMenu().setSlidingEnabled(false);
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getWindow().getDecorView().getRootView().getWindowToken(), 0);
         });
 
         this.changeLeftMenuFragment(this.leftMenu, false);
@@ -378,7 +391,7 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == RESULT_OK) {
             if (requestCode == AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY) {
-                    transactionCardFragment.authenticationValidated();
+                transactionCardFragment.authenticationValidated();
             }
 
             if (requestCode == SELECT_PICTURE || requestCode == TAKE_PICTURE) {
@@ -393,15 +406,14 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
                 final Uri selectedImageUri = imageUri;
                 if (selectedImageUri != null) {
                     Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            String path = ImageHelper.getPath(instance, selectedImageUri);
-                            if (path != null) {
-                                File image = new File(path);
-                                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                                Bitmap photo = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
+                    handler.post(() -> {
+                        String path = ImageHelper.getPath(instance, selectedImageUri);
+                        if (path != null) {
+                            File image = new File(path);
+                            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                            Bitmap photo = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
 
+                            if (photo != null) {
                                 int rotation = ImageHelper.getRotation(instance, selectedImageUri);
                                 if (rotation != 0) {
                                     photo = ImageHelper.rotateBitmap(photo, rotation);
@@ -442,12 +454,7 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
 
         floozApp.setCurrentActivity(this);
         Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                FloozApplication.mixpanelAPI.getPeople().showSurveyIfAvailable(instance);
-            }
-        }, 1500);
+        handler.postDelayed(() -> FloozApplication.mixpanelAPI.getPeople().showSurveyIfAvailable(instance), 1500);
 
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(showLeftMenu,
                 CustomNotificationIntents.filterShowSlidingLeftMenu());
@@ -464,37 +471,74 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadNotificationsReceiver,
                 CustomNotificationIntents.filterReloadNotifications());
 
-        final Intent intent = getIntent();
-        JSONArray triggersArray = null;
-        if (intent != null && intent.getExtras() != null) {
-            String message = intent.getStringExtra("triggers");
-            try {
-                triggersArray = new JSONArray(message);
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+        Handler handlerIntent = new Handler(Looper.getMainLooper());
+        handlerIntent.postDelayed(() -> {
+            final Intent intent = getIntent();
+            JSONArray triggersArray = null;
+            if (intent != null && intent.getExtras() != null) {
+                String message = intent.getStringExtra("triggers");
+                if (message != null && !message.isEmpty()) {
+                    try {
+                        triggersArray = new JSONArray(message);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
-            if (triggersArray != null) {
-                final JSONArray finalJsonObject = triggersArray;
-                if (floozApp.getCurrentActivity() instanceof HomeActivity) {
-                    for (int i = 0; i < finalJsonObject.length(); i++) {
-                        final FLTrigger trigger = new FLTrigger(finalJsonObject.optJSONObject(i));
-                        if (trigger.delay.intValue() > 0) {
-                            Handler handlerTrigger = new Handler(Looper.getMainLooper());
-                            handlerTrigger.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
+                    if (triggersArray != null) {
+                        final JSONArray finalJsonObject = triggersArray;
+                        if (floozApp.getCurrentActivity() instanceof HomeActivity) {
+                            for (int i = 0; i < finalJsonObject.length(); i++) {
+                                final FLTrigger trigger = new FLTrigger(finalJsonObject.optJSONObject(i));
+                                if (trigger.delay.intValue() > 0) {
+                                    Handler handlerTrigger = new Handler(Looper.getMainLooper());
+                                    handlerTrigger.postDelayed(() -> FloozRestClient.getInstance().handleTrigger(trigger), (int) (trigger.delay.doubleValue() * 1000));
+                                } else {
                                     FloozRestClient.getInstance().handleTrigger(trigger);
                                 }
-                            }, (int) (trigger.delay.doubleValue() * 1000));
-                        } else {
-                            FloozRestClient.getInstance().handleTrigger(trigger);
+                            }
+                        }
+                    }
+                } else if (intent.getData() != null) {
+                    String path = null;
+                    try {
+                        path = URLDecoder.decode(intent.getData().toString(), "UTF-8");
+                        path = path.replace("flooz://", "");
+                    } catch (UnsupportedEncodingException e) {
+                        e.printStackTrace();
+                    }
+
+                    if (path != null) {
+                        try {
+                            JSONObject obj = new JSONObject(path);
+
+                            JSONObject data = obj.optJSONObject("data");
+
+                            JSONArray t = data.optJSONArray("triggers");
+
+                            for (int i = 0; i < t.length(); i++) {
+                                final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
+                                if (trigger.delay.intValue() > 0) {
+                                    Handler thandler = new Handler(Looper.getMainLooper());
+                                    thandler.postDelayed(() -> FloozRestClient.getInstance().handleTrigger(trigger), (int) (trigger.delay.doubleValue() * 1000));
+                                } else {
+                                    Handler thandler = new Handler(Looper.getMainLooper());
+                                    thandler.post(() -> FloozRestClient.getInstance().handleTrigger(trigger));
+                                }
+                            }
+
+                            if (data.has("popup")) {
+                                FLError errorContent = new FLError(data.optJSONObject("popup"));
+                                CustomToast.show(FloozApplication.getAppContext(), errorContent);
+                            }
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
                     }
                 }
+                setIntent(new Intent());
             }
-            setIntent(new Intent());
-        }
+        }, 1000);
     }
 
     protected void onPause() {
@@ -654,7 +698,7 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
         }
     }
 
-    public void showImageViewer(final String url) {
+    public void showImageViewer(final Bitmap image) {
         this.getSlidingMenu().showContent(false);
         this.getSlidingMenu().setSlidingEnabled(false);
 
@@ -671,42 +715,10 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                imageViewerProgress.setVisibility(View.VISIBLE);
-
-                ImageLoader.getInstance().displayImage(url, imageViewerImage, null, new ImageLoadingListener() {
-                    @Override
-                    public void onLoadingStarted(String imageUri, View view) {
-                        imageViewerImage.setVisibility(View.GONE);
-                        imageViewerProgress.setVisibility(View.VISIBLE);
-                        imageViewerProgress.setProgress(0);
-                    }
-
-                    @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-                    }
-
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        imageViewerImage.setVisibility(View.VISIBLE);
-                        imageViewerProgress.setVisibility(View.GONE);
-                        imageViewerAttacher.update();
-                    }
-
-                    @Override
-                    public void onLoadingCancelled(String imageUri, View view) {
-
-                    }
-                }, new ImageLoadingProgressListener() {
-                    @Override
-                    public void onProgressUpdate(String imageUri, View view, int current, int total) {
-                        float tmp = current;
-                        tmp /= total;
-                        tmp *= 100;
-
-                        imageViewerProgress.setProgress((int)tmp);
-                    }
-                });
+                imageViewerImage.setImageBitmap(image);
+                imageViewerImage.setVisibility(View.VISIBLE);
+                imageViewerProgress.setVisibility(View.GONE);
+                imageViewerAttacher.update();
             }
 
             @Override
@@ -715,6 +727,71 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
             }
         });
         this.imageViewer.startAnimation(anim);
+    }
+
+    public void showImageViewer(final String url) {
+        if (!url.contentEquals("/img/fake")) {
+            this.getSlidingMenu().showContent(false);
+            this.getSlidingMenu().setSlidingEnabled(false);
+
+            Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), android.R.anim.fade_in);
+            anim.setAnimationListener(new Animation.AnimationListener() {
+                @Override
+                public void onAnimationStart(Animation animation) {
+                    imageViewer.setVisibility(View.VISIBLE);
+                    imageViewerProgress.setMax(100);
+                    imageViewerProgress.setProgress(0);
+                    imageViewerImage.setVisibility(View.GONE);
+                    imageViewerProgress.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationEnd(Animation animation) {
+                    imageViewerProgress.setVisibility(View.VISIBLE);
+
+                    ImageLoader.getInstance().displayImage(url, imageViewerImage, null, new ImageLoadingListener() {
+                        @Override
+                        public void onLoadingStarted(String imageUri, View view) {
+                            imageViewerImage.setVisibility(View.GONE);
+                            imageViewerProgress.setVisibility(View.VISIBLE);
+                            imageViewerProgress.setProgress(0);
+                        }
+
+                        @Override
+                        public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                        }
+
+                        @Override
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            imageViewerImage.setVisibility(View.VISIBLE);
+                            imageViewerProgress.setVisibility(View.GONE);
+                            imageViewerAttacher.update();
+                        }
+
+                        @Override
+                        public void onLoadingCancelled(String imageUri, View view) {
+
+                        }
+                    }, new ImageLoadingProgressListener() {
+                        @Override
+                        public void onProgressUpdate(String imageUri, View view, int current, int total) {
+                            float tmp = current;
+                            tmp /= total;
+                            tmp *= 100;
+
+                            imageViewerProgress.setProgress((int) tmp);
+                        }
+                    });
+                }
+
+                @Override
+                public void onAnimationRepeat(Animation animation) {
+
+                }
+            });
+            this.imageViewer.startAnimation(anim);
+        }
     }
 
     public void hideImageViewer() {

@@ -1,20 +1,28 @@
 package me.flooz.app.Utils;
 
+import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
+import android.widget.Toast;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Random;
 
 import me.flooz.app.App.FloozApplication;
 
@@ -94,6 +102,61 @@ public class ImageHelper {
         return uploadImage;
     }
 
+    public static void saveImageOnPhone(final Context context, final Bitmap finalBitmap) {
+        class SaveImage extends AsyncTask<String, Void, String> {
+            @Override
+            protected String doInBackground(String... params) {
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+
+                finalBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+
+                File file = ImageHelper.getOutputMediaFile(MEDIA_TYPE_IMAGE);
+
+                try {
+                    file.createNewFile();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                FileOutputStream fos;
+
+                try {
+                    fos = new FileOutputStream(file);
+                    fos.write(bytes.toByteArray());
+                    fos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+
+                ContentValues values = new ContentValues(4);
+                long current = System.currentTimeMillis();
+                values.put(MediaStore.Images.Media.TITLE, file.getName());
+                values.put(MediaStore.Images.Media.DATE_ADDED, (int) (current / 1000));
+                values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpg");
+                values.put(MediaStore.Images.Media.DATA, file.getAbsolutePath());
+                ContentResolver contentResolver = context.getContentResolver();
+
+                Uri base = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
+                contentResolver.insert(base, values);
+
+                return "";
+            }
+
+            @Override
+            protected void onPostExecute(String result) {
+
+            }
+
+            @Override
+            protected void onPreExecute() {}
+
+            @Override
+            protected void onProgressUpdate(Void... values) {}
+        }
+
+        new SaveImage().execute(null, null, null);
+    }
+
     public static final int MEDIA_TYPE_IMAGE = 1;
     public static final int MEDIA_TYPE_VIDEO = 2;
 
@@ -104,9 +167,6 @@ public class ImageHelper {
 
     /** Create a File for saving an image or video */
     public static File getOutputMediaFile(int type){
-        // To be safe, you should check that the SDCard is mounted
-        // using Environment.getExternalStorageState() before doing this.
-
         File mediaStorageDir;
         if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
@@ -121,7 +181,6 @@ public class ImageHelper {
             }
         }
 
-        // Create a media file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
         File mediaFile;
         if (type == MEDIA_TYPE_IMAGE){

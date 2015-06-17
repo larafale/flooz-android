@@ -19,6 +19,7 @@ public class FLPreset {
     public String whyPlaceholder;
     public String title;
     public Map payload;
+    public String image;
     public boolean blockAmount = false;
     public boolean blockTo = false;
     public boolean blockBack = false;
@@ -27,9 +28,8 @@ public class FLPreset {
     public boolean focusWhy = false;
     public boolean blockBalance = false;
     public FLTransaction.TransactionType type = FLTransaction.TransactionType.TransactionTypeNone;
-    public boolean isDemo = false;
-    public JSONArray demoSteps;
-    public JSONObject demoIntro;
+    public JSONArray steps;
+    public JSONObject popup;
 
     public FLPreset(JSONObject json) {
         super();
@@ -53,20 +53,18 @@ public class FLPreset {
         if (json.has("title"))
             this.title = json.optString("title");
 
-        if (json.has("demo"))
-            this.isDemo = json.optBoolean("demo");
+        if (json.has("image"))
+            this.image = json.optString("image");
 
-        if (this.isDemo) {
-            if (json.has("demoIntro"))
-                this.demoIntro = json.optJSONObject("demoIntro");
-            else
-                this.demoIntro = null;
+        if (json.has("popup"))
+            this.popup = json.optJSONObject("popup");
+        else
+            this.popup = null;
 
-            if (json.has("demoSteps"))
-                this.demoSteps = json.optJSONArray("demoSteps");
-            else
-                this.demoSteps = null;
-        }
+        if (json.has("steps"))
+            this.steps = json.optJSONArray("steps");
+        else
+            this.steps = null;
 
         if (json.has("payload"))
             try {

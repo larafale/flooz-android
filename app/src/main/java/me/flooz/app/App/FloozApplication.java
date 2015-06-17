@@ -9,11 +9,17 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.inputmethod.InputMethodManager;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
+import com.google.zxing.BarcodeFormat;
+import com.google.zxing.WriterException;
+import com.google.zxing.common.BitMatrix;
+import com.google.zxing.qrcode.QRCodeWriter;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -192,7 +198,7 @@ public class FloozApplication extends Application
 
             Intent intent = new Intent();
             intent.setClass(context, HomeActivity.class);
-            if (currentActivity == null) {
+            if (tmp == null) {
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             } else {
@@ -210,16 +216,20 @@ public class FloozApplication extends Application
     }
 
     public void displayStartView() {
-        Intent intent = new Intent();
-        intent.setClass(context, StartActivity.class);
-        if (currentActivity == null) {
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        } else {
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            this.getCurrentActivity().startActivity(intent);
-            this.getCurrentActivity().overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            this.getCurrentActivity().finish();
+        if (!(this.getCurrentActivity() instanceof StartActivity)) {
+            Activity tmp = this.getCurrentActivity();
+
+            Intent intent = new Intent();
+            intent.setClass(context, StartActivity.class);
+            if (tmp == null) {
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            } else {
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                tmp.startActivity(intent);
+                tmp.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                tmp.finish();
+            }
         }
     }
 
@@ -393,8 +403,30 @@ public class FloozApplication extends Application
         ActionSheet.showWithItems(getCurrentActivity(), items);
     }
 
-    public void showReportActionMenu(final String transacId) {
+    public void showReportActionMenu(final FLTransaction transac) {
         List<ActionSheetItem> items = new ArrayList<>();
+
+//        items.add(new ActionSheetItem(this, R.string.MENU_QR_CODE, new ActionSheetItem.ActionSheetItemClickListener() {
+//            @Override
+//            public void onClick() {
+//                QRCodeWriter writer = new QRCodeWriter();
+//                BitMatrix bitMatrix;
+//                try {
+//                    bitMatrix = writer.encode("flooz://" + transac.transactionId, BarcodeFormat.QR_CODE, 300, 300);
+//                    int height = bitMatrix.getHeight();
+//                    int width = bitMatrix.getWidth();
+//                    Bitmap bmp = Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565);
+//                    for (int x = 0; x < width; x++){
+//                        for (int y = 0; y < height; y++){
+//                            bmp.setPixel(x, y, bitMatrix.get(x,y) ? Color.BLACK : Color.WHITE);
+//                        }
+//                    }
+//                    ((HomeActivity)getCurrentActivity()).showImageViewer(bmp);
+//                } catch (WriterException e){
+//                    e.printStackTrace();
+//                }
+//            }
+//        }));
 
         items.add(new ActionSheetItem(this, R.string.MENU_REPORT_LINE, new ActionSheetItem.ActionSheetItemClickListener() {
             @Override
@@ -405,7 +437,7 @@ public class FloozApplication extends Application
                         .setPositiveButton(R.string.GLOBAL_YES, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                FloozRestClient.getInstance().reportContent(new FLReport(FLReport.ReportType.Transaction, transacId), null);
+                                FloozRestClient.getInstance().reportContent(new FLReport(FLReport.ReportType.Transaction, transac.transactionId), null);
                             }
                         })
                         .setNegativeButton(R.string.GLOBAL_NO, null)

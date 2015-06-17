@@ -4,36 +4,17 @@
     android:layout_height="match_parent"
     android:background="@android:color/transparent">
 
-    <ImageView
-        android:id="@+id/slide_image"
-        android:layout_width="fill_parent"
-        android:layout_height="300dp"
-        android:layout_marginLeft="@dimen/dimen_large"
-        android:layout_marginRight="@dimen/dimen_large"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="80dp"/>
-
     <TextView
         android:id="@+id/slide_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/slide_image"
-        android:layout_margin="@dimen/dimen_xxlarge"
+        android:layout_marginLeft="@dimen/dimen_xlarge"
+        android:layout_marginRight="@dimen/dimen_xlarge"
+        android:layout_marginBottom="@dimen/dimen_medium"
         android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
         android:textColor="@android:color/white"
         android:textSize="17sp"
         android:gravity="center"/>
-    
-    <Button
-        android:id="@+id/slide_btn"
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:textColor="@android:color/white"
-        android:textSize="18sp"
-        android:background="@drawable/slide_last_button_background"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentBottom="true"
-        android:layout_margin="@dimen/dimen_xxlarge"
-        android:visibility="gone"/>
 
 </RelativeLayout>

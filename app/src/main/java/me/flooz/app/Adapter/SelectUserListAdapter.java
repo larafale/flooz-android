@@ -39,6 +39,7 @@ public class SelectUserListAdapter extends BaseAdapter {
 
     private List<FLUser> recentFriendList;
     private List<FLUser> phoneContactList;
+    private List<FLUser> fullPhoneContactList;
 
     private Handler searchHandler;
 
@@ -90,8 +91,8 @@ public class SelectUserListAdapter extends BaseAdapter {
                             clearList.clear();
                         }
 
-                        contactList.addAll(searchList);
                         contactList.addAll(contactsFiltered);
+                        contactList.addAll(searchList);
 
                         notifyDataSetChanged();
                     }
@@ -112,6 +113,11 @@ public class SelectUserListAdapter extends BaseAdapter {
 
         this.recentFriendList = FloozRestClient.getInstance().currentUser.friendsRecent;
         this.contactList = this.recentFriendList;
+        this.fullPhoneContactList = new ArrayList<>();
+        this.fullPhoneContactList = ContactsManager.getAllContacts();
+
+        if (this.contactList.isEmpty())
+            this.contactList = this.fullPhoneContactList;
     }
 
     @Override
@@ -180,6 +186,8 @@ public class SelectUserListAdapter extends BaseAdapter {
         this.searchData = searchString;
         if (searchString.length() == 0) {
             this.contactList = this.recentFriendList;
+            if (this.contactList.isEmpty())
+                this.contactList = this.fullPhoneContactList;
             this.notifyDataSetChanged();
         } else {
             this.searchHandler.postDelayed(searchRunnable, 500);

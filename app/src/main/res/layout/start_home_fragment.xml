@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true">
+
+    <TextView
+        android:id="@+id/start_home_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pay, Like,"
+        android:textColor="@android:color/white"
+        android:textSize="25sp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dimen_xxlarge"/>
+
+    <ImageView
+        android:id="@+id/start_home_logo"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/dimen_xxxlarge"
+        android:src="@drawable/flooz_full"
+        android:layout_below="@id/start_home_title"
+        android:layout_marginTop="@dimen/dimen_large"
+        android:layout_marginLeft="@dimen/dimen_xxxlarge"
+        android:layout_marginRight="@dimen/dimen_xxxlarge"/>
+
+
+    <LinearLayout
+        android:id="@+id/start_home_actionBar"
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dimen_large"
+        android:paddingRight="@dimen/dimen_large">
+
+        <Button
+            android:id="@+id/start_home_login"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/signup_button_height"
+            android:layout_weight="1"
+            android:background="@drawable/background_action_button"
+            android:layout_margin="@dimen/dimen_large"
+            android:text="@string/START_LOGIN"/>
+
+        <Button
+            android:id="@+id/start_home_signup"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/signup_button_height"
+            android:layout_weight="1"
+            android:background="@drawable/background_action_button"
+            android:layout_margin="@dimen/dimen_large"
+            android:text="@string/START_SIGNUP"/>
+
+    </LinearLayout>
+    
+    <com.viewpagerindicator.CirclePageIndicator
+        android:id="@+id/start_home_page_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dimen_small"
+        android:layout_marginBottom="@dimen/dimen_xlarge"
+        android:layout_above="@id/start_home_actionBar"/>
+
+    <me.flooz.app.UI.View.LoopPager.LoopViewPager
+        android:id="@+id/start_home_pager"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_marginBottom="@dimen/dimen_xlarge"
+        android:layout_above="@id/start_home_page_indicator"/>
+
+</RelativeLayout>

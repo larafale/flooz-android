@@ -23,6 +23,7 @@ public class LoadingImageView extends RelativeLayout {
     private RoundedImageView imageView;
     private ProgressBar progressBar;
     private RelativeLayout progressBackground;
+    private Context context;
 
     public LoadingImageView(Context context)
     {
@@ -44,6 +45,7 @@ public class LoadingImageView extends RelativeLayout {
     private void init(Context context) {
         View view = View.inflate(context, R.layout.loading_image_view, this);
 
+        this.context = context;
         this.imageView = (RoundedImageView) view.findViewById(R.id.loading_image_view_img);
         this.progressBar = (ProgressBar) view.findViewById(R.id.loading_image_view_progress);
         this.progressBar.setMax(100);
@@ -52,42 +54,48 @@ public class LoadingImageView extends RelativeLayout {
     }
 
     public void setImageFromUrl(String imgUrl) {
-        imageView.setVisibility(GONE);
-        progressBackground.setVisibility(VISIBLE);
-        progressBar.setProgress(0);
+        if (imgUrl.contentEquals("/img/fake.png")) {
+            imageView.setVisibility(VISIBLE);
+            progressBackground.setVisibility(GONE);
+            imageView.setImageDrawable(this.context.getResources().getDrawable(R.drawable.fake));
+        } else {
+            imageView.setVisibility(GONE);
+            progressBackground.setVisibility(VISIBLE);
+            progressBar.setProgress(0);
 
-        ImageLoader.getInstance().displayImage(imgUrl, this.imageView, null, new ImageLoadingListener() {
-            @Override
-            public void onLoadingStarted(String imageUri, View view) {
-                imageView.setVisibility(GONE);
-                progressBackground.setVisibility(VISIBLE);
-                progressBar.setProgress(0);
-            }
+            ImageLoader.getInstance().displayImage(imgUrl, this.imageView, null, new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+                    imageView.setVisibility(GONE);
+                    progressBackground.setVisibility(VISIBLE);
+                    progressBar.setProgress(0);
+                }
 
-            @Override
-            public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
 
-            }
+                }
 
-            @Override
-            public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                imageView.setVisibility(VISIBLE);
-                progressBackground.setVisibility(GONE);
-            }
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    imageView.setVisibility(VISIBLE);
+                    progressBackground.setVisibility(GONE);
+                }
 
-            @Override
-            public void onLoadingCancelled(String imageUri, View view) {
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
 
-            }
-        }, new ImageLoadingProgressListener() {
-            @Override
-            public void onProgressUpdate(String imageUri, View view, int current, int total) {
-                float tmp = current;
-                tmp /= total;
-                tmp *= 100;
+                }
+            }, new ImageLoadingProgressListener() {
+                @Override
+                public void onProgressUpdate(String imageUri, View view, int current, int total) {
+                    float tmp = current;
+                    tmp /= total;
+                    tmp *= 100;
 
-                progressBar.setProgress((int)tmp);
-            }
-        });
+                    progressBar.setProgress((int) tmp);
+                }
+            });
+        }
     }
 }

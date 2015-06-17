@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:gravity="center_horizontal"
     android:orientation="vertical"
+    android:clickable="true"
     android:paddingRight="@dimen/dimen_large"
     android:paddingLeft="@dimen/dimen_large">
 

@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="fill_parent" android:layout_height="wrap_content">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/demo_tooltip_container"
+    android:layout_width="fill_parent" android:layout_height="wrap_content"
+    android:orientation="horizontal">
 
     <RelativeLayout
-        android:id="@+id/demo_tooltip_container"
-        android:layout_width="wrap_content"
+        android:layout_width="250dp"
         android:layout_height="wrap_content"
         android:background="@drawable/demo_tooltip_background"
-        android:padding="@dimen/dimen_large">
+        android:padding="@dimen/dimen_large"
+        android:layout_marginLeft="@dimen/dimen_medium"
+        android:layout_marginRight="@dimen/dimen_medium">
 
         <TextView
             android:id="@+id/demo_tooltip_step"
@@ -19,22 +22,45 @@
             android:background="@drawable/demo_tooltip_step_background"
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
-            android:layout_marginRight="@dimen/dimen_large"/>
+            android:layout_marginRight="@dimen/dimen_medium"/>
 
         <TextView
             android:id="@+id/demo_tooltip_title"
-            android:layout_width="wrap_content"
+            android:layout_width="fill_parent"
             android:layout_height="@dimen/dimen_xlarge"
             android:gravity="center_vertical"
             android:layout_toRightOf="@id/demo_tooltip_step"
             android:text="owfiheroighoerighiorehio"
+            android:textColor="@android:color/white"
+            android:background="@drawable/demo_tooltip_title_background"
+            android:paddingLeft="@dimen/dimen_medium"
+            android:paddingRight="@dimen/dimen_medium"
+            android:singleLine="true"
             />
 
-        <ImageView
-            android:layout_width="match_parent"
-            android:layout_height="@dimen/dimen_xsmall"
-            android:layout_below="@id/demo_tooltip_title"/>
+        <TextView
+            android:id="@+id/demo_tooltip_content"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/demo_tooltip_title"
+            android:layout_marginTop="@dimen/dimen_medium"
+            android:textColor="@android:color/white"
+            android:layout_alignParentLeft="true"/>
+
+        <Button
+            android:id="@+id/demo_tooltip_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/dimen_xlarge"
+            android:background="@drawable/demo_tooltip_btn_background"
+            android:layout_below="@id/demo_tooltip_content"
+            android:layout_alignParentRight="true"
+            android:textColor="@android:color/white"
+            android:text="@string/GLOBAL_NEXT"
+            android:padding="@dimen/dimen_small"
+            android:textSize="14sp"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/dimen_medium"/>
 
     </RelativeLayout>
 
-</RelativeLayout>
+</LinearLayout>

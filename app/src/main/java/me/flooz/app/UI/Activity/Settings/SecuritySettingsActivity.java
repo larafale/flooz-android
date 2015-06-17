@@ -9,16 +9,20 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import org.json.JSONException;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import me.flooz.app.Adapter.SettingsListAdapter;
 import me.flooz.app.Adapter.SettingsListItem;
 import me.flooz.app.App.FloozApplication;
+import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.AuthenticationActivity;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.JSONHelper;
 import me.flooz.app.Utils.ViewServer;
 
 /**
@@ -64,30 +68,7 @@ public class SecuritySettingsActivity extends Activity {
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
             }
         });
-
-        List<SettingsListItem> itemList = new ArrayList<>();
-
-        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_CODE), new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(instance, AuthenticationActivity.class);
-                intent.putExtra("changeSecureCode", true);
-                instance.startActivity(intent);
-                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
-            }
-        }));
-
-        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_PASSWORD), new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(instance, PasswordSettingsActivity.class);
-                instance.startActivity(intent);
-                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
-            }
-        }));
-
-        this.listAdapter = new SettingsListAdapter(this, itemList, this.contentList);
-    }
+   }
 
 
     @Override
@@ -98,6 +79,41 @@ public class SecuritySettingsActivity extends Activity {
             ViewServer.get(this).setFocusedWindow(this);
 
         floozApp.setCurrentActivity(this);
+
+        int securityNotif = 0;
+
+        List missingFields;
+        try {
+            missingFields = JSONHelper.toList(FloozRestClient.getInstance().currentUser.json.optJSONArray("missingFields"));
+
+            if (missingFields.contains("secret"))
+                ++securityNotif;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        List<SettingsListItem> itemList = new ArrayList<>();
+
+        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_CODE), (parent, view, position, id) -> {
+            Intent intent = new Intent(instance, AuthenticationActivity.class);
+            intent.putExtra("changeSecureCode", true);
+            instance.startActivity(intent);
+            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+        }));
+
+        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_PASSWORD), (parent, view, position, id) -> {
+            Intent intent = new Intent(instance, PasswordSettingsActivity.class);
+            instance.startActivity(intent);
+            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+        }));
+
+        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_SECRET), securityNotif, (parent, view, position, id) -> {
+            Intent intent = new Intent(instance, SecretSettingsActivity.class);
+            instance.startActivity(intent);
+            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+        }));
+
+        this.listAdapter = new SettingsListAdapter(this, itemList, this.contentList);
     }
 
     @Override

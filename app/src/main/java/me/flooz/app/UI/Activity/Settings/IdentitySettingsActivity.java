@@ -241,59 +241,62 @@ public class IdentitySettingsActivity extends Activity {
             }
         });
 
-        this.cniVersoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FLUser currentUser = FloozRestClient.getInstance().currentUser;
+        this.cniVersoButton.setOnClickListener(v -> {
+            FLUser currentUser = FloozRestClient.getInstance().currentUser;
 
-                if (currentUser.checkDocuments.get("cniVerso").equals(0) || currentUser.checkDocuments.get("cniVerso").equals(3)) {
-                    currentDoc = "cniVerso";
-                    showImageActionMenu();
-                }
+            if (currentUser.checkDocuments.get("cniVerso").equals(0) || currentUser.checkDocuments.get("cniVerso").equals(3)) {
+                currentDoc = "cniVerso";
+                showImageActionMenu();
             }
         });
 
-        this.saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FLUser currentUser = FloozRestClient.getInstance().currentUser;
+        this.saveButton.setOnClickListener(v -> {
+            FLUser currentUser = FloozRestClient.getInstance().currentUser;
 
-                Map<String, Object> param = new HashMap<>();
+            Map<String, Object> param = new HashMap<>();
 
-                if (!firstnameTextfield.getText().toString().contentEquals(currentUser.firstname.substring(0,1).toUpperCase() + currentUser.firstname.substring(1)))
-                    param.put("firstName", firstnameTextfield.getText().toString());
+            if (!firstnameTextfield.getText().toString().contentEquals(currentUser.firstname.substring(0,1).toUpperCase() + currentUser.firstname.substring(1)))
+                param.put("firstName", firstnameTextfield.getText().toString());
 
-                if (!lastnameTextfield.getText().toString().contentEquals(currentUser.lastname.substring(0,1).toUpperCase() + currentUser.lastname.substring(1)))
-                    param.put("lastName", lastnameTextfield.getText().toString());
+            if (!lastnameTextfield.getText().toString().contentEquals(currentUser.lastname.substring(0,1).toUpperCase() + currentUser.lastname.substring(1)))
+                param.put("lastName", lastnameTextfield.getText().toString());
 
-                if (!usernameTextfield.getText().toString().contentEquals(currentUser.username))
-                    param.put("nick", usernameTextfield.getText().toString());
+            if (!usernameTextfield.getText().toString().contentEquals(currentUser.username))
+                param.put("nick", usernameTextfield.getText().toString());
 
-                if (!birthdateTextfield.getText().toString().contentEquals(currentUser.birthdate)) {
-                    param.put("birthdate", birthdateTextfield.getText().toString());
+            if (!birthdateTextfield.getText().toString().contentEquals(currentUser.birthdate)) {
+                param.put("birthdate", birthdateTextfield.getText().toString());
+            }
+
+            FloozRestClient.getInstance().showLoadView();
+            FloozRestClient.getInstance().updateUser(param, new FloozHttpResponseHandler() {
+                @Override
+                public void success(Object response) {
+                    headerBackButton.performClick();
                 }
 
-                FloozRestClient.getInstance().showLoadView();
-                FloozRestClient.getInstance().updateUser(param, new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
-                        headerBackButton.performClick();
-                    }
+                @Override
+                public void failure(int statusCode, FLError error) {
 
-                    @Override
-                    public void failure(int statusCode, FLError error) {
-
-                    }
-                });
-            }
+                }
+            });
         });
     }
 
     private void reloadView() {
         FLUser currentUser = FloozRestClient.getInstance().currentUser;
 
-        this.firstnameTextfield.setText(currentUser.firstname.substring(0,1).toUpperCase() + currentUser.firstname.substring(1));
-        this.lastnameTextfield.setText(currentUser.lastname.substring(0,1).toUpperCase() + currentUser.lastname.substring(1));
+        String lastname = "";
+        String firstname = "";
+
+        if (currentUser.lastname != null && !currentUser.lastname.isEmpty())
+            lastname = currentUser.lastname.substring(0,1).toUpperCase() + currentUser.lastname.substring(1);
+
+        if (currentUser.firstname != null && !currentUser.firstname.isEmpty())
+            firstname = currentUser.firstname.substring(0,1).toUpperCase() + currentUser.firstname.substring(1);
+
+        this.firstnameTextfield.setText(firstname);
+        this.lastnameTextfield.setText(lastname);
         this.usernameTextfield.setText(currentUser.username);
         this.birthdateTextfield.setText(currentUser.birthdate);
 

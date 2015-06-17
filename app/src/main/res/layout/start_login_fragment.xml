@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/start_login_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ravis de vous revoir !"
+                android:textColor="@android:color/white"
+                android:textSize="25sp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dimen_xlarge"/>
+
+            <RelativeLayout
+                android:id="@+id/start_login_fb_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/start_login_title"
+                android:padding="@dimen/dimen_xlarge"
+                android:layout_marginTop="@dimen/dimen_xlarge">
+
+                <LinearLayout
+                    android:id="@+id/start_login_facebook"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/signup_button_height"
+                    android:background="@drawable/signup_image_fb_background"
+                    android:layout_centerHorizontal="true"
+                    android:gravity="center">
+
+                    <ImageView
+                        android:id="@+id/start_login_facebook_picto"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/fb_grey"/>
+
+                    <TextView
+                        android:id="@+id/settings_credit_card_remove_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Facebook"
+                        android:textSize="15sp"
+                        android:textColor="@android:color/white"
+                        android:layout_marginLeft="@dimen/dimen_large"/>
+
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/start_login_or"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerHorizontal="true"
+                    android:text="@string/GLOBAL_OR"
+                    android:textAllCaps="true"
+                    android:textSize="11sp"
+                    android:layout_below="@id/start_login_facebook"
+                    android:textColor="@color/placeholder"
+                    android:paddingRight="@dimen/dimen_large"
+                    android:paddingLeft="@dimen/dimen_large"
+                    android:layout_marginTop="@dimen/dimen_xlarge"/>
+
+                <View android:id="@+id/leftLine"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="@color/placeholder"
+                    android:layout_alignLeft="@id/start_login_facebook"
+                    android:layout_toLeftOf="@id/start_login_or"
+                    android:layout_alignTop="@id/start_login_or"
+                    android:layout_marginTop="7dp"/>
+
+                <View android:id="@+id/rightLine"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:background="@color/placeholder"
+                    android:layout_toRightOf="@id/start_login_or"
+                    android:layout_alignRight="@id/start_login_facebook"
+                    android:layout_alignTop="@id/start_login_or"
+                    android:layout_marginTop="7dp"/>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/dimen_xlarge"
+                android:layout_below="@id/start_login_fb_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/dimen_xlarge"
+                android:paddingRight="@dimen/dimen_xlarge">
+
+                <EditText
+                    android:id="@+id/start_login_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/SIGNUP_PHONE_PLACEHOLDER"
+                    android:inputType="phone"
+                    android:singleLine="true"/>
+
+                <EditText
+                    android:id="@+id/start_login_password"
+                    android:layout_marginTop="@dimen/dimen_large"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textPassword"
+                    android:hint="@string/SIGNUP_PAGE_TITLE_Password"
+                    android:singleLine="true"/>
+
+                <Button
+                    android:id="@+id/start_login_next"
+                    android:layout_marginTop="@dimen/dimen_xlarge"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/signup_button_height"
+                    android:gravity="center"
+                    android:background="@drawable/background_action_button"
+                    android:text="@string/START_LOGIN"
+                    android:textSize="20sp"
+                    android:textAllCaps="false"
+                    android:textColor="@drawable/text_color_action_button"/>
+
+                <Button
+                    android:id="@+id/start_login_forget"
+                    android:layout_marginTop="@dimen/dimen_medium"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/FIELD_PASSWORD_FORGET"
+                    android:background="@color/transparent"
+                    android:textColor="@color/placeholder"
+                    android:textSize="13sp"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

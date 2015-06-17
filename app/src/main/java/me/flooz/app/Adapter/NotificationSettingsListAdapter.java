@@ -94,7 +94,9 @@ public class NotificationSettingsListAdapter extends BaseAdapter implements Stic
 
     @Override
     public int getCount() {
-        return ((HashMap)this.notifications.get("email")).size() + ((HashMap)this.notifications.get("push")).size();
+        if (this.notifications != null && this.notifications.get("email") != null && this.notifications.get("push") != null)
+            return ((HashMap)this.notifications.get("email")).size() + ((HashMap)this.notifications.get("push")).size();
+        return 0;
     }
 
     @Override

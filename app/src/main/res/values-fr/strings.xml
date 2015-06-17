@@ -30,8 +30,8 @@
 
     <string name="LOGOUT_INFO">Êtes-vous sûr de vouloir vous déconnecter ?</string>
 
-    <string name="START_SIGNUP">Créer un compte</string>
-    <string name="START_LOGIN"><u>J\'ai déjà un compte</u></string>
+    <string name="START_SIGNUP">Inscription</string>
+    <string name="START_LOGIN">Connexion</string>
 
     <string name="MSG_UPDATE">Bonne nouvelle ! Une nouvelle version de Flooz est disponible.</string>
     <string name="BTN_UPDATE">Mettre à jour</string>
@@ -65,6 +65,7 @@
     <string name="NAV_3D_SECURE">3D Secure</string>
     <string name="NAV_INVITATION">Inviter mes amis</string>
     <string name="NAV_FRIEND_PICKER">Choisir un destinataire</string>
+    <string name="NAV_SCANNER">Scanner un code</string>
 
     <string name="HOME_LOGIN">Connexion</string>
     <string name="HOME_SIGNUP">S\'inscrire</string>
@@ -112,6 +113,9 @@
     <string name="FIELD_ZIP_CODE">Code postal</string>
     <string name="FIELD_CITY">Ville</string>
     <string name="FIELD_FULLNAME">Nom et Prénom</string>
+    <string name="FIELD_SECRET_QUESTION">Choisissez une question secrète</string>
+    <string name="FIELD_SECRET_QUESTION_OTHER">Votre question ?</string>
+    <string name="FIELD_SECRET_ANSWER">Réponse</string>
 
     <string name="FIELD_IBAN">Code IBAN</string>
     <string name="FIELD_IBAN_PLACEHOLDER">FR</string>
@@ -128,6 +132,7 @@
     <string name="FIELD_PASSWORD_CONFIRMATION">Confirmation</string>
 
     <string name="FIELD_PASSWORD_FORGET">Oups, mot de passe oublié ?</string>
+    <string name="FIELD_SECRET_FORGET">Oups, réponse secrète oublié ?</string>
 
     <string name="FIELD_TRANSACTION_DATE">Se termine le :</string>
     <string name="FIELD_TRANSACTION_TITLE">Pour :</string>
@@ -140,6 +145,7 @@
     <string name="FIELD_TRANSACTION_HIDE">Masquer ma participation</string>
 
     <string name="SIGNUP_FACEBOOK">Avec Facebook</string>
+    <string name="CUSTOM_SECRET_QUESTION">Question personnalisée...</string>
 
     <string name="LOGIN_FACEBOOK">Utiliser mes infos Facebook</string>
     <string name="LOGIN_OR">ou</string>
@@ -159,6 +165,8 @@
     <string name="MENU_BLOCK_USER">Bloquer</string>
     <string name="MENU_REPORT_USER">Signaler</string>
     <string name="MENU_REPORT_LINE">Signaler ce contenu</string>
+    <string name="MENU_SAVE_PICTURE">Enregister l\'image</string>
+    <string name="MENU_QR_CODE">Afficher le QR Code</string>
 
     <string name="BLOCK_USER_ALERT_MESSAGE">Êtes-vous sûr de vouloir bloquer cet utilisateur ?</string>
     <string name="REPORT_USER_ALERT_MESSAGE">Êtes-vous sûr de vouloir signaler cet utilisateur ?</string>
@@ -175,6 +183,7 @@
     <string name="ACCOUNT_MENU_IDEAS">Idées / Critiques</string>
     <string name="ACCOUNT_MENU_PROFILE">Mon profil</string>
     <string name="ACCOUNT_MENU_OTHER">À propos</string>
+    <string name="ACCOUNT_MENU_SCANNER">Scanner un code</string>
 
     <string name="SETTINGS_NOTIFICATIONS">Notifications</string>
     <string name="SETTINGS_CODE">Code de sécurité</string>
@@ -188,8 +197,12 @@
     <string name="SETTINGS_PREFERENCES">Préférences</string>
     <string name="SETTINGS_LOGOUT">Déconnexion</string>
     <string name="SETTINGS_PRIVACY">Partage &amp; vie privée</string>
+    <string name="SETTINGS_SECRET">Question Secrète</string>
 
     <string name="SETTINGS_PRIVACY_INFOS">Pratique ! Choisissez la visibilité par défaut de vos flooz. Vous avez toutefois la possibilité de la changer lors de chacun de vos paiements</string>
+
+    <string name="SETTINGS_SECRET_INFOS">Votre question actuelle est :</string>
+    <string name="SETTINGS_SECRET_DESC">Définir une question secrète vous permet de réinitialiser votre mot de passe en cas d\'oubli.</string>
 
     <string name="EDIT_ACCOUNT_SEND_SMS">Renvoyer SMS</string>
     <string name="EDIT_ACCOUNT_SEND_MAIL">Renvoyer email</string>
@@ -230,9 +243,9 @@
     <string name="TRANSACTION_SCOPE_FRIEND">Amis</string>
     <string name="TRANSACTION_SCOPE_PRIVATE">Privé</string>
 
-    <string name="FILTER_SCOPE_PUBLIC">Public</string>
+    <string name="FILTER_SCOPE_PUBLIC">Fil Public</string>
     <string name="FILTER_SCOPE_FRIEND">Fil d\'actualité</string>
-    <string name="FILTER_SCOPE_PRIVATE">Moi</string>
+    <string name="FILTER_SCOPE_PRIVATE">Fil Privé</string>
 
     <string name="EVENT_SCOPE_FRIEND">Ouverte aux amis</string>
     <string name="EVENT_SCOPE_PRIVATE">Sur invitation</string>
@@ -304,6 +317,7 @@
     <string name="SIGNUP_PAGE_TITLE_CGU">C.G.U.</string>
     <string name="SIGNUP_PAGE_TITLE_Ask_Contact">Accès à vos contacts</string>
     <string name="SIGNUP_PAGE_TITLE_Friends">Ajouter des amis</string>
+    <string name="SIGNUP_PAGE_TITLE_Secure">100% Sécurisée</string>
 
     <string name="SIGNUP_PSEUDO_EXPLICATION">Donnez votre pseudo pour recevoir de l\'argent. C\'est votre identité, il est unique et non modifiable.</string>
     <string name="SIGNUP_PASSWORD_EXPLICATION">6 caractères min</string>
@@ -313,7 +327,7 @@
     <string name="SIGNUP_IMAGE_BUTTON_TAKE">Prendre une photo</string>
     <string name="SIGNUP_IMAGE_BUTTON_CHOOSE">Album photo</string>
 
-    <string name="SIGNUP_READ_CGU">En passant à l\'étape suivante, vous déclarez accepter les <u>conditions générales d\'utilisation</u> de Flooz.</string>
+    <string name="SIGNUP_READ_CGU">En cliquant sur \"inscription\" vous déclarez accepter les CGU Flooz.</string>
 
     <string name="SIGNUP_FIELD_CARD_OWNER_PLACEHOLDER">Titulaire de la carte</string>
     <string name="SIGNUP_FIELD_CARD_NUMBER_PLACEHOLDER">Numéro de carte</string>

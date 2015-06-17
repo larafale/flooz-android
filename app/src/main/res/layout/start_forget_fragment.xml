@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:fillViewport="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/start_forget_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Mot de passe oublié !"
+                android:textColor="@android:color/white"
+                android:textSize="25sp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dimen_xlarge"/>
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/dimen_xxlarge"
+                android:layout_below="@id/start_forget_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/dimen_xlarge"
+                android:paddingRight="@dimen/dimen_xlarge">
+
+                <EditText
+                    android:id="@+id/start_forget_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/FIELD_EMAIL"
+                    android:inputType="textEmailAddress"
+                    android:singleLine="true"/>
+
+                <Button
+                    android:id="@+id/start_forget_next"
+                    android:layout_marginTop="@dimen/dimen_xlarge"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/signup_button_height"
+                    android:gravity="center"
+                    android:background="@drawable/background_action_button"
+                    android:text="@string/GLOBAL_NEXT"
+                    android:textSize="20sp"
+                    android:textAllCaps="false"
+                    android:textColor="@drawable/text_color_action_button"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

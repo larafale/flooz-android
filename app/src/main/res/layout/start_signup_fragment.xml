@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/start_signup_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Bienvenue !"
+                android:textColor="@android:color/white"
+                android:textSize="25sp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="@dimen/dimen_xlarge"/>
+
+            <RelativeLayout
+                android:id="@+id/start_signup_fb_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/start_signup_title"
+                android:padding="@dimen/dimen_large"
+                android:layout_marginTop="@dimen/dimen_xlarge">
+
+                <RelativeLayout
+                    android:id="@+id/start_signup_fb_button_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="visible"
+                    android:padding="@dimen/dimen_large">
+
+                    <LinearLayout
+                        android:id="@+id/start_signup_facebook"
+                        android:orientation="horizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/signup_button_height"
+                        android:background="@drawable/signup_image_fb_background"
+                        android:layout_centerHorizontal="true"
+                        android:gravity="center">
+
+                        <ImageView
+                            android:id="@+id/start_signup_facebook_picto"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/fb_grey"/>
+
+                        <TextView
+                            android:id="@+id/settings_credit_card_remove_text"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Facebook"
+                            android:textSize="15sp"
+                            android:textColor="@android:color/white"
+                            android:layout_marginLeft="@dimen/dimen_large"/>
+
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/start_signup_or"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerHorizontal="true"
+                        android:text="@string/GLOBAL_OR"
+                        android:textAllCaps="true"
+                        android:textSize="11sp"
+                        android:layout_below="@id/start_signup_facebook"
+                        android:textColor="@color/placeholder"
+                        android:paddingRight="@dimen/dimen_large"
+                        android:paddingLeft="@dimen/dimen_large"
+                        android:layout_marginTop="@dimen/dimen_xlarge"/>
+
+                    <View android:id="@+id/leftLine"
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/placeholder"
+                        android:layout_alignLeft="@id/start_signup_facebook"
+                        android:layout_toLeftOf="@id/start_signup_or"
+                        android:layout_alignTop="@id/start_signup_or"
+                        android:layout_marginTop="7dp"/>
+
+                    <View android:id="@+id/rightLine"
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:background="@color/placeholder"
+                        android:layout_toRightOf="@id/start_signup_or"
+                        android:layout_alignRight="@id/start_signup_facebook"
+                        android:layout_alignTop="@id/start_signup_or"
+                        android:layout_marginTop="7dp"/>
+
+                </RelativeLayout>
+
+                <RelativeLayout
+                    android:id="@+id/start_signup_fb_pic_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone">
+
+                    <com.makeramen.RoundedImageView
+                        xmlns:app="http://schemas.android.com/apk/res-auto"
+                        android:id="@+id/start_signup_fb_pic"
+                        android:scaleType="centerCrop"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:layout_centerHorizontal="true"
+                        app:corner_radius="30dip"
+                        android:src="@drawable/avatar_default"
+                        app:oval="true"/>
+
+                </RelativeLayout>
+
+            </RelativeLayout>
+
+            <LinearLayout
+                android:layout_marginTop="@dimen/dimen_xlarge"
+                android:layout_below="@id/start_signup_fb_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:paddingLeft="@dimen/dimen_xlarge"
+                android:paddingRight="@dimen/dimen_xlarge">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/start_signup_lastname"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="bottom"
+                        android:clickable="false"
+                        android:hint="@string/FIELD_LASTNAME"
+                        android:inputType="textCapWords"
+                        android:singleLine="true"/>
+
+                    <EditText
+                        android:id="@+id/start_signup_firstname"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="bottom"
+                        android:clickable="false"
+                        android:hint="@string/FIELD_FIRSTNAME"
+                        android:inputType="textCapWords"
+                        android:singleLine="true"/>
+
+                </LinearLayout>
+
+                <EditText
+                    android:id="@+id/start_signup_nick"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/FIELD_USERNAME"
+                    android:inputType="text"
+                    android:layout_marginTop="@dimen/dimen_large"
+                    android:singleLine="true"/>
+
+                <EditText
+                    android:id="@+id/start_signup_phone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/FIELD_PHONE"
+                    android:inputType="phone"
+                    android:layout_marginTop="@dimen/dimen_large"
+                    android:singleLine="true"/>
+
+                <EditText
+                    android:id="@+id/start_signup_email"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/FIELD_EMAIL"
+                    android:inputType="textEmailAddress"
+                    android:layout_marginTop="@dimen/dimen_large"
+                    android:singleLine="true"/>
+
+                <EditText
+                    android:id="@+id/start_signup_password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/FIELD_PASSWORD"
+                    android:inputType="textPassword"
+                    android:layout_marginTop="@dimen/dimen_large"
+                    android:singleLine="true"/>
+
+                <Button
+                    android:id="@+id/start_signup_next"
+                    android:layout_marginTop="@dimen/dimen_xlarge"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/signup_button_height"
+                    android:gravity="center"
+                    android:background="@drawable/background_action_button"
+                    android:text="@string/START_SIGNUP"
+                    android:textSize="20sp"
+                    android:textAllCaps="false"
+                    android:textColor="@drawable/text_color_action_button"/>
+
+                <Button
+                    android:id="@+id/start_signup_cgu"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/SIGNUP_READ_CGU"
+                    android:background="@color/transparent"
+                    android:textColor="@color/placeholder"
+                    android:textSize="12sp"
+                    android:layout_marginTop="@dimen/dimen_medium"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </ScrollView>
+
+</RelativeLayout>

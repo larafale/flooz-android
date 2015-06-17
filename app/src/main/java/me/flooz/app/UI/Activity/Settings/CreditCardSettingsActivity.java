@@ -357,7 +357,6 @@ public class CreditCardSettingsActivity extends Activity {
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadCurrentUserDataReceiver);
     }
 
-
     private void clearReferences(){
         Activity currActivity = floozApp.getCurrentActivity();
         if (currActivity != null && currActivity.equals(this))

@@ -1,29 +1,42 @@
 package me.flooz.app.UI.Activity;
 
 import android.app.Activity;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.GradientDrawable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.facebook.Session;
+
+import org.json.JSONObject;
+
+import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import me.flooz.app.Adapter.TimelineListAdapter;
 import me.flooz.app.App.FloozApplication;
-import me.flooz.app.Model.FLError;
-import me.flooz.app.Model.FLTransaction;
-import me.flooz.app.Network.FloozHttpResponseHandler;
-import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
-import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.UI.Fragment.Start.StartBaseFragment;
+import me.flooz.app.UI.Fragment.Start.StartHomeFragment;
+import me.flooz.app.UI.Fragment.Start.StartSignupFragment;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.ViewServer;
 
@@ -35,7 +48,10 @@ public class StartActivity extends Activity {
     public FloozApplication floozApp;
     private StartActivity instance;
 
-    private Button couponButton;
+    private StartBaseFragment currentFragment;
+    public List<StartBaseFragment> fragmentHistory;
+
+    public Map<String, Object> signupData;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,48 +64,19 @@ public class StartActivity extends Activity {
         floozApp = (FloozApplication)this.getApplicationContext();
         instance = this;
 
-        Button loginButton = (Button) this.findViewById(R.id.start_login_button);
-        Button signupButton = (Button) this.findViewById(R.id.start_signup_button);
-        this.couponButton = (Button) this.findViewById(R.id.start_coupon_button);
+        this.fragmentHistory = new ArrayList<>();
 
-        loginButton.setTypeface(CustomFonts.customTitleLight(this));
-        signupButton.setTypeface(CustomFonts.customTitleLight(this), Typeface.BOLD);
-        this.couponButton.setTypeface(CustomFonts.customTitleLight(this), Typeface.BOLD);
+        getWindow().setBackgroundDrawableResource(R.drawable.launch_background) ;
 
-        loginButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launchLogin(null);
-            }
-        });
-        signupButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launchLogin(null);
-            }
-        });
+        this.signupData = new HashMap<>();
 
-        this.couponButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                launchLogin(FloozRestClient.getInstance().currentTexts.couponButton.optString("coupon"));
-            }
-        });
-
-        this.findViewById(R.id.start_logo).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(instance, SliderActivity.class);
-                instance.startActivity(intent);
-                instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-            }
-        });
+        StartHomeFragment homeFragment = new StartHomeFragment();
+        this.changeCurrentPage(homeFragment, false);
     }
 
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-
     }
 
     protected void onResume() {
@@ -100,31 +87,6 @@ public class StartActivity extends Activity {
 
         floozApp.setCurrentActivity(this);
 
-        FloozRestClient.getInstance().textObjectFromApi(new FloozHttpResponseHandler() {
-            @Override
-            public void success(Object response) {
-                if (FloozRestClient.getInstance().currentTexts != null) {
-                    if (!FloozRestClient.getInstance().appSettings.getBoolean("IntroSliders", false)) {
-                        Intent intent = new Intent(instance, SliderActivity.class);
-                        instance.startActivity(intent);
-                        instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-                    }
-
-                    if (FloozRestClient.getInstance().currentTexts.couponButton != null) {
-                        couponButton.setText(FloozRestClient.getInstance().currentTexts.couponButton.optString("text"));
-                        couponButton.getBackground().setColorFilter(Color.parseColor(FloozRestClient.getInstance().currentTexts.couponButton.optString("bgcolor")), PorterDuff.Mode.ADD);
-                        couponButton.setVisibility(View.VISIBLE);
-                    } else {
-                        couponButton.setVisibility(View.GONE);
-                    }
-                }
-            }
-
-            @Override
-            public void failure(int statusCode, FLError error) {
-
-            }
-        });
     }
 
     protected void onPause() {
@@ -147,21 +109,122 @@ public class StartActivity extends Activity {
             floozApp.setCurrentActivity(null);
     }
 
-    private void launchLogin(String coupon) {
-        Intent intent = new Intent(this, SignupActivity.class);
+    public void changeCurrentPage(StartBaseFragment fragment, Boolean addToBackStack) {
+        this.hideKeyboard();
 
-        if (coupon != null)
-            intent.putExtra("coupon", coupon);
+        fragment.parentActivity = this;
 
-        intent.putExtra("page", SignupActivity.SignupPageIdentifier.SignupPhone.ordinal());
+        FragmentTransaction ft = this.getFragmentManager().beginTransaction();
 
-        this.startActivity(intent);
-        this.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-        this.finish();
+        ft.replace(R.id.fragment_container, fragment);
+
+        if (addToBackStack)
+            ft.addToBackStack(null);
+
+        ft.commit();
+
+        this.fragmentHistory.add(fragment);
+        this.currentFragment = fragment;
+    }
+
+    public void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), 0);
+    }
+
+    public void changeCurrentPage(StartBaseFragment fragment, int animEnter, int animExit, int animPopEnter, int animPopExit, Boolean addToBackStack) {
+        this.hideKeyboard();
+
+        fragment.parentActivity = this;
+
+        FragmentTransaction ft = this.getFragmentManager().beginTransaction();
+
+        ft.setCustomAnimations(animEnter, animExit, animPopEnter, animPopExit);
+
+        ft.replace(R.id.fragment_container, fragment);
+
+        if (addToBackStack)
+            ft.addToBackStack(null);
+
+        ft.commit();
+
+        this.fragmentHistory.add(fragment);
+        this.currentFragment = fragment;
+    }
+
+    public void changeCurrentPage(StartBaseFragment fragment, int animIn, int animOut, Boolean addToBackStack) {
+        this.hideKeyboard();
+
+        fragment.parentActivity = this;
+
+        FragmentTransaction ft = this.getFragmentManager().beginTransaction();
+
+        ft.setCustomAnimations(animIn, animOut, animIn, animOut);
+
+        ft.replace(R.id.fragment_container, fragment);
+
+        if (addToBackStack)
+            ft.addToBackStack(null);
+
+        ft.commit();
+
+        this.fragmentHistory.add(fragment);
+        this.currentFragment = fragment;
+    }
+
+    public void backToPreviousPage() {
+        if (this.fragmentHistory.size() > 1) {
+            InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), 0);
+
+            StartBaseFragment fragment = this.fragmentHistory.get(this.fragmentHistory.size() - 1);
+
+            FragmentTransaction ft = this.getFragmentManager().beginTransaction();
+
+            ft.setCustomAnimations(R.animator.slide_in_right, R.animator.slide_out_left);
+
+            ft.remove(fragment);
+            ft.addToBackStack(null).commit();
+
+            this.fragmentHistory.remove(this.fragmentHistory.size() - 1);
+
+            this.currentFragment = this.fragmentHistory.get(this.fragmentHistory.size() - 1);
+            this.currentFragment.onResume();
+        }
+    }
+
+    public void updateUserData(Map<String, Object> data) {
+
+        this.signupData.putAll(data);
+
+        if (fragmentHistory.get(fragmentHistory.size() - 1) instanceof StartSignupFragment) {
+            fragmentHistory.get(fragmentHistory.size() - 1).refreshView();
+        } else {
+            FragmentManager fm = getFragmentManager();
+            for(int i = 0; i < fm.getBackStackEntryCount(); ++i) {
+                fm.popBackStack();
+                fragmentHistory.remove(fragmentHistory.size() - 1);
+            }
+
+            this.changeCurrentPage(new StartSignupFragment(), android.R.animator.fade_in, android.R.animator.fade_out, true);
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (Session.getActiveSession() != null)
+            Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
     }
 
     @Override
     public void onBackPressed() {
-        this.finish();
+        if (this.fragmentHistory.size() > 1) {
+            super.onBackPressed();
+            this.fragmentHistory.remove(this.fragmentHistory.size() - 1);
+        } else {
+            this.finish();
+        }
     }
 }

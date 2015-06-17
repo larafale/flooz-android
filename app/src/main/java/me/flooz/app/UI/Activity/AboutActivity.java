@@ -54,14 +54,11 @@ public class AboutActivity extends Activity {
         headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
         aboutText.setTypeface(CustomFonts.customTitleLight(this));
 
-        aboutText.setText("Flooz v" + FloozApplication.getAppVersionName(this));
+        aboutText.setText("Flooz " + FloozApplication.getAppVersionName(this));
 
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-            }
+        this.headerBackButton.setOnClickListener(view -> {
+            finish();
+            overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
         });
 
         final List<SettingsListItem> list = new ArrayList<>();

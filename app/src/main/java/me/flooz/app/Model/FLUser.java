@@ -39,11 +39,13 @@ public class FLUser
     public String smsCode;
     public String distinctId;
 
+    public JSONObject blockObject;
     public Map<String, String> address;
     public Map<String, Object> sepa;
     public Map<String, Object> notifications;
     public Map<String, Object> notificationsText;
     public Map<String, Object> checkDocuments;
+    public JSONObject ux;
     public FLCreditCard creditCard;
 
     public List<FLUser> friends = new ArrayList<>(0);
@@ -116,6 +118,9 @@ public class FLUser
             this.profileCompletion = this.json.optString("profileCompletion");
             this.hasSecureCode = this.json.optString("secureCode");
 
+            if (this.json.has("block"))
+                this.blockObject = this.json.optJSONObject("block");
+
             if (this.json.has("birthdate")) {
                 String array[]  = this.json.optString("birthdate").split("-");
                 this.birthdate = String.format("%s/%s/%s", array[2].substring(0, 2), array[1], array[0]);
@@ -142,6 +147,10 @@ public class FLUser
                 if (this.json.has("settings") && this.json.getJSONObject("settings").has("sepa")) {
                     this.sepa = JSONHelper.toMap(this.json.getJSONObject("settings").getJSONObject("sepa"));
                 }
+            }
+
+            if (this.json.has("ux")) {
+                this.ux = this.json.getJSONObject("ux");
             }
 
             this.notifications = new HashMap<>();

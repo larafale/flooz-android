@@ -17,6 +17,7 @@ import me.flooz.app.UI.Fragment.Home.Authentication.AuthenticationBaseFragment;
 import me.flooz.app.UI.Fragment.Home.Authentication.AuthenticationChangePassFragment;
 import me.flooz.app.UI.Fragment.Home.Authentication.AuthenticationPassFragment;
 import me.flooz.app.UI.Fragment.Home.Authentication.AuthenticationResetCodeFragment;
+import me.flooz.app.UI.Fragment.Home.Authentication.AuthenticationSecretFragment;
 import me.flooz.app.UI.Fragment.Home.Authentication.AuthenticationSecureCodeFragment;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.FLHelper;
@@ -36,7 +37,8 @@ public class AuthenticationActivity extends Activity {
         AuthenticationPass,
         AuthenticationResetCode,
         AuthenticationResetCodeConfirm,
-        AuthenticationChangePass
+        AuthenticationChangePass,
+        AuthenticationSecret
     }
 
     public interface AuthenticationDelegate {
@@ -173,6 +175,8 @@ public class AuthenticationActivity extends Activity {
             case AuthenticationChangePass:
                 fragment = new AuthenticationChangePassFragment();
                 break;
+            case AuthenticationSecret:
+                fragment = new AuthenticationSecretFragment();
             default:
                 break;
         }
@@ -219,6 +223,8 @@ public class AuthenticationActivity extends Activity {
                 break;
             case AuthenticationChangePass:
                 break;
+            case AuthenticationSecret:
+                this.currentPage = AuthenticationPageIdentifier.AuthenticationResetCode;
         }
 
         InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -257,6 +263,8 @@ public class AuthenticationActivity extends Activity {
                 break;
             case AuthenticationChangePass:
                 break;
+            case AuthenticationSecret:
+                this.currentPage = AuthenticationPageIdentifier.AuthenticationPass;
         }
 
         InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
