@@ -53,7 +53,7 @@ public class MenuListAdapter extends ArrayAdapter<MenuItem>
 
         holder.img.setImageDrawable(item.image);
         holder.img.setColorFilter(this.context.getResources().getColor(android.R.color.white));
-        holder.text.setText(item.name);
+        holder.text.setText(item.name.toUpperCase());
         if (item.nbNotification > 0) {
             holder.notifsLabel.setVisibility(View.VISIBLE);
             holder.notifsLabel.setText(String.format("%d", item.nbNotification));
