@@ -2150,59 +2150,37 @@ public class FloozRestClient
                         url = "http://api.flooz.me";
 
                     this.socket = IO.socket(url, options);
-                    this.socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
-                        @Override
-                        public void call(Object... args) {
-                            try {
-                                JSONObject obj = new JSONObject();
-                                obj.put("nick", currentUser.username);
-                                obj.put("token", accessToken);
-                                socket.emit("session start", obj);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                    this.socket.on(Socket.EVENT_CONNECT, args -> {
+                        try {
+                            JSONObject obj = new JSONObject();
+                            obj.put("nick", currentUser.username);
+                            obj.put("token", accessToken);
+                            socket.emit("session start", obj);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
                         }
-                    }).on("event", new Emitter.Listener() {
-                        @Override
-                        public void call(Object... args) {
-                            JSONObject data = (JSONObject) args[0];
-                            if (data.has("popup")) {
-                                FLError errorContent = new FLError(data.optJSONObject("popup"));
-                                CustomToast.show(FloozApplication.getAppContext(), errorContent);
-                            }
-                            handleRequestTriggers(data);
+                    }).on("event", args -> {
+                        JSONObject data = (JSONObject) args[0];
+                        if (data.has("popup")) {
+                            FLError errorContent = new FLError(data.optJSONObject("popup"));
+                            CustomToast.show(FloozApplication.getAppContext(), errorContent);
                         }
-                    }).on("session end", new Emitter.Listener() {
-                        @Override
-                        public void call(Object... args) {
-                            socket.disconnect();
-                        }
-                    }).on("feed", new Emitter.Listener() {
-                        @Override
-                        public void call(Object... args) {
-                            JSONObject data = (JSONObject) args[0];
+                        handleRequestTriggers(data);
+                    }).on("session end", args -> socket.disconnect()).on("feed", args -> {
+                        JSONObject data = (JSONObject) args[0];
 
-                            Integer badgeNb = data.optInt("total");
-                            FloozRestClient.getInstance().notificationsManager.nbUnreadNotifications = badgeNb;
-                            FloozApplication.performLocalNotification(CustomNotificationIntents.reloadNotifications());
-                        }
-                    }).on(Socket.EVENT_DISCONNECT, new Emitter.Listener() {
-                        @Override
-                        public void call(Object... args) {
-                            Log.d("SocketIO", "Socket Disconnected");
-                        }
-                    }).on(Socket.EVENT_CONNECT_ERROR, new Emitter.Listener() {
+                        Integer badgeNb = data.optInt("total");
+                        FloozRestClient.getInstance().notificationsManager.nbUnreadNotifications = badgeNb;
+                        FloozApplication.performLocalNotification(CustomNotificationIntents.reloadNotifications());
+                    }).on(Socket.EVENT_DISCONNECT, args -> Log.d("SocketIO", "Socket Disconnected")).on(Socket.EVENT_CONNECT_ERROR, new Emitter.Listener() {
                         @Override
                         public void call(Object... args) {
                             Log.d("SocketIO", "error: " + args[0].toString());
                         }
-                    }).on(Socket.EVENT_CONNECT_TIMEOUT, new Emitter.Listener() {
-                        @Override
-                        public void call(Object... args) {
-                            Log.d("SocketIO", "Socket Timeout");
-                            socket.off();
-                            socket = null;
-                        }
+                    }).on(Socket.EVENT_CONNECT_TIMEOUT, args -> {
+                        Log.d("SocketIO", "Socket Timeout");
+                        socket.off();
+                        socket = null;
                     });
                 }
                 if (!this.socket.connected())

@@ -1,13 +1,16 @@
 package me.flooz.app.UI.Activity.Settings;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -151,10 +154,28 @@ public class ProfileSettingsActivity extends Activity {
             instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
         }));
 
-        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_PRIVACY), (parent, view, position, id) -> {
-            Intent intent = new Intent(instance, PrivacySettingsActivity.class);
-            instance.startActivity(intent);
-            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_LOGOUT), (parent, view, position, id) -> {
+            final Dialog validationDialog = new Dialog(instance);
+
+            validationDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            validationDialog.setContentView(R.layout.custom_dialog_validate_transaction);
+
+            TextView text = (TextView) validationDialog.findViewById(R.id.dialog_validate_flooz_text);
+            text.setText(instance.getResources().getString(R.string.LOGOUT_INFO));
+            text.setTypeface(CustomFonts.customContentRegular(instance));
+
+            Button decline = (Button) validationDialog.findViewById(R.id.dialog_validate_flooz_decline);
+            Button accept = (Button) validationDialog.findViewById(R.id.dialog_validate_flooz_accept);
+
+            decline.setOnClickListener(v -> validationDialog.dismiss());
+
+            accept.setOnClickListener(v -> {
+                validationDialog.dismiss();
+                FloozRestClient.getInstance().logout();
+            });
+
+            validationDialog.setCanceledOnTouchOutside(false);
+            validationDialog.show();
         }));
 
         new SettingsListAdapter(this, itemList, this.contentList);

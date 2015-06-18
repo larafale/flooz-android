@@ -95,7 +95,6 @@ public class ProfileFragment extends HomeBaseFragment
 
         this.context = inflater.getContext();
 
-        LinearLayout accountUserView = (LinearLayout) view.findViewById(R.id.accountUserView);
         this.userView = (RoundedImageView) view.findViewById(R.id.userView);
         this.fullname = (TextView) view.findViewById(R.id.fullname);
         this.username = (TextView) view.findViewById(R.id.username);
@@ -120,115 +119,106 @@ public class ProfileFragment extends HomeBaseFragment
 
         this.menuActionList = (ListView) view.findViewById(R.id.account_menu_list);
 
-        this.balanceValue.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Dialog dialog = new Dialog(inflater.getContext());
+        this.balanceValue.setOnClickListener(v -> {
+            final Dialog dialog = new Dialog(inflater.getContext());
 
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setContentView(R.layout.custom_dialog_balance);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.custom_dialog_balance);
 
-                TextView title = (TextView) dialog.findViewById(R.id.dialog_wallet_title);
-                title.setTypeface(CustomFonts.customContentRegular(inflater.getContext()), Typeface.BOLD);
+            TextView title = (TextView) dialog.findViewById(R.id.dialog_wallet_title);
+            title.setTypeface(CustomFonts.customContentRegular(inflater.getContext()), Typeface.BOLD);
 
-                TextView text = (TextView) dialog.findViewById(R.id.dialog_wallet_msg);
-                text.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+            TextView text = (TextView) dialog.findViewById(R.id.dialog_wallet_msg);
+            text.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
 
-                Button close = (Button) dialog.findViewById(R.id.dialog_wallet_btn);
+            Button close = (Button) dialog.findViewById(R.id.dialog_wallet_btn);
 
-                close.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                    }
-                });
+            close.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                }
+            });
 
-                dialog.setCanceledOnTouchOutside(true);
-                dialog.show();
-            }
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.show();
         });
 
-        this.userView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                List<ActionSheetItem> items = new ArrayList<>();
+        this.userView.setOnClickListener(v -> {
+            List<ActionSheetItem> items = new ArrayList<>();
 
-                items.add(new ActionSheetItem(inflater.getContext(), R.string.SIGNUP_IMAGE_BUTTON_TAKE, new ActionSheetItem.ActionSheetItemClickListener() {
-                    @Override
-                    public void onClick() {
-                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            items.add(new ActionSheetItem(inflater.getContext(), R.string.SIGNUP_IMAGE_BUTTON_TAKE, new ActionSheetItem.ActionSheetItemClickListener() {
+                @Override
+                public void onClick() {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                        Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
-                        tmpUriImage = fileUri;
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                    Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
+                    tmpUriImage = fileUri;
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
 
-                        parentActivity.startActivityForResult(intent, HomeActivity.TAKE_PICTURE);
-                    }
-                }));
+                    parentActivity.startActivityForResult(intent, HomeActivity.TAKE_PICTURE);
+                }
+            }));
 
-                items.add(new ActionSheetItem(inflater.getContext(), R.string.SIGNUP_IMAGE_BUTTON_CHOOSE, new ActionSheetItem.ActionSheetItemClickListener() {
-                    @Override
-                    public void onClick() {
-                        Intent intent = new Intent(Intent.ACTION_PICK);
-                        intent.setType("image/*");
-                        parentActivity.startActivityForResult(intent, HomeActivity.SELECT_PICTURE);
-                    }
-                }));
+            items.add(new ActionSheetItem(inflater.getContext(), R.string.SIGNUP_IMAGE_BUTTON_CHOOSE, new ActionSheetItem.ActionSheetItemClickListener() {
+                @Override
+                public void onClick() {
+                    Intent intent = new Intent(Intent.ACTION_PICK);
+                    intent.setType("image/*");
+                    parentActivity.startActivityForResult(intent, HomeActivity.SELECT_PICTURE);
+                }
+            }));
 
-                ActionSheet.showWithItems(parentActivity, items);
-            }
+            ActionSheet.showWithItems(parentActivity, items);
         });
 
-        menuActionList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (parentActivity != null) {
-                    switch (i) {
-                        case 0:
-                            FloozRestClient.getInstance().updateCurrentUser(null);
-                            Intent intentSettings = new Intent(parentActivity, ProfileSettingsActivity.class);
-                            parentActivity.startActivity(intentSettings);
-                            parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-                            break;
-                        case 1:
-                            Intent intentNotifs = new Intent(parentActivity, NotificationActivity.class);
-                            parentActivity.startActivity(intentNotifs);
-                            parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-                            break;
-                        case 2:
-                            Intent intentShare = new Intent(parentActivity, ShareAppActivity.class);
-                            parentActivity.startActivity(intentShare);
-                            parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-                            break;
+        menuActionList.setOnItemClickListener((adapterView, view1, i, l) -> {
+            if (parentActivity != null) {
+                switch (i) {
+                    case 0:
+                        FloozRestClient.getInstance().updateCurrentUser(null);
+                        Intent intentSettings = new Intent(parentActivity, ProfileSettingsActivity.class);
+                        parentActivity.startActivity(intentSettings);
+                        parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                        break;
+                    case 1:
+                        Intent intentNotifs = new Intent(parentActivity, NotificationActivity.class);
+                        parentActivity.startActivity(intentNotifs);
+                        parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                        break;
+                    case 2:
+                        Intent intentShare = new Intent(parentActivity, ShareAppActivity.class);
+                        parentActivity.startActivity(intentShare);
+                        parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                        break;
 //                        case 3:
 //                            Intent intentScan = new Intent(parentActivity, ScannerActivity.class);
 //                            parentActivity.startActivity(intentScan);
 //                            parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
 //                            break;
-                        case 3:
-                            FloozRestClient.getInstance().showLoadView();
-                            FloozRestClient.getInstance().cashoutValidate(new FloozHttpResponseHandler() {
-                                @Override
-                                public void success(Object response) {
-                                    Intent intentCashout = new Intent(parentActivity, CashoutActivity.class);
-                                    parentActivity.startActivity(intentCashout);
-                                    parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-                                }
+                    case 3:
+                        FloozRestClient.getInstance().showLoadView();
+                        FloozRestClient.getInstance().cashoutValidate(new FloozHttpResponseHandler() {
+                            @Override
+                            public void success(Object response) {
+                                Intent intentCashout = new Intent(parentActivity, CashoutActivity.class);
+                                parentActivity.startActivity(intentCashout);
+                                parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                            }
 
-                                @Override
-                                public void failure(int statusCode, FLError error) {
+                            @Override
+                            public void failure(int statusCode, FLError error) {
 
-                                }
-                            });
-                            break;
-                        case 4:
-                            Intent intentCashout = new Intent(parentActivity, AboutActivity.class);
-                            parentActivity.startActivity(intentCashout);
-                            parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-                            break;
-                        default:
-                            break;
-                    }
+                            }
+                        });
+                        break;
+                    case 4:
+                        Intent intentCashout = new Intent(parentActivity, AboutActivity.class);
+                        parentActivity.startActivity(intentCashout);
+                        parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                        break;
+                    default:
+                        break;
                 }
             }
         });

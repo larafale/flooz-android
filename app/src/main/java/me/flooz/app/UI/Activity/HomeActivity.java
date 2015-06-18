@@ -34,6 +34,8 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.branch.referral.Branch;
+import io.branch.referral.BranchError;
 import me.flooz.app.Adapter.HeaderPagerAdapter;
 import me.flooz.app.Adapter.TimelinePagerAdapter;
 import me.flooz.app.Model.FLError;
@@ -446,6 +448,44 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
         }
     }
 
+    public void onStart() {
+        super.onStart();
+
+        Branch branch = Branch.getInstance(getApplicationContext());
+        branch.initSession((referringParams, error) -> {
+            if (error == null) {
+                String data = referringParams.optString("data");
+                String referrer = referringParams.optString("referrer");
+
+                if (data != null && !data.isEmpty()) {
+                    try {
+                        JSONObject dataObject = new JSONObject(data);
+
+                        JSONArray t = dataObject.optJSONArray("triggers");
+
+                        for (int i = 0; i < t.length(); i++) {
+                            final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
+                            if (trigger.delay.intValue() > 0) {
+                                Handler thandler = new Handler(Looper.getMainLooper());
+                                thandler.postDelayed(() -> FloozRestClient.getInstance().handleTrigger(trigger), (int) (trigger.delay.doubleValue() * 1000));
+                            } else {
+                                Handler thandler = new Handler(Looper.getMainLooper());
+                                thandler.post(() -> FloozRestClient.getInstance().handleTrigger(trigger));
+                            }
+                        }
+
+                        if (dataObject.has("popup")) {
+                            FLError errorContent = new FLError(dataObject.optJSONObject("popup"));
+                            CustomToast.show(FloozApplication.getAppContext(), errorContent);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }, this.getIntent().getData(), this);
+    }
+
     protected void onResume() {
         super.onResume();
 
@@ -828,5 +868,10 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
         } else {
             this.finish();
         }
+    }
+
+    @Override
+    public void onNewIntent(Intent intent) {
+        this.setIntent(intent);
     }
 }

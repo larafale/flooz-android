@@ -3,6 +3,7 @@ package me.flooz.app.UI.Activity;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
@@ -62,79 +63,46 @@ public class AboutActivity extends Activity {
         });
 
         final List<SettingsListItem> list = new ArrayList<>();
-        list.add(new SettingsListItem(this.getResources().getString(R.string.INFORMATIONS_FAQ), new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent();
-                intent.putExtra("title", list.get(position).getTitle());
-                intent.putExtra("url", "https://www.flooz.me/faq?layout=webview");
-                intent.setClass(instance, WebContentActivity.class);
-                instance.startActivity(intent);
-                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+
+        list.add(new SettingsListItem(this.getResources().getString(R.string.INFORMATIONS_RATE_APP), (parent, view, position, id) -> {
+            final String appPackageName = getPackageName();
+            try {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+            } catch (android.content.ActivityNotFoundException anfe) {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
             }
         }));
-        list.add(new SettingsListItem(this.getResources().getString(R.string.INFORMATIONS_TERMS), new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent();
-                intent.putExtra("title", list.get(position).getTitle());
-                intent.putExtra("url", "https://www.flooz.me/cgu?layout=webview");
-                intent.setClass(instance, WebContentActivity.class);
-                instance.startActivity(intent);
-                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
-            }
+
+        list.add(new SettingsListItem(this.getResources().getString(R.string.INFORMATIONS_FAQ), (parent, view, position, id) -> {
+            Intent intent = new Intent();
+            intent.putExtra("title", list.get(position).getTitle());
+            intent.putExtra("url", "https://www.flooz.me/faq?layout=webview");
+            intent.setClass(instance, WebContentActivity.class);
+            instance.startActivity(intent);
+            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
         }));
-        list.add(new SettingsListItem(this.getResources().getString(R.string.INFORMATIONS_CONTACT), new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent();
-                intent.putExtra("title", list.get(position).getTitle());
-                intent.putExtra("url", "https://www.flooz.me/contact?layout=webview");
-                intent.setClass(instance, WebContentActivity.class);
-                instance.startActivity(intent);
-                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
-            }
+
+        list.add(new SettingsListItem(this.getResources().getString(R.string.INFORMATIONS_TERMS), (parent, view, position, id) -> {
+            Intent intent = new Intent();
+            intent.putExtra("title", list.get(position).getTitle());
+            intent.putExtra("url", "https://www.flooz.me/cgu?layout=webview");
+            intent.setClass(instance, WebContentActivity.class);
+            instance.startActivity(intent);
+            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
         }));
-        list.add(new SettingsListItem(this.getResources().getString(R.string.INFORMATIONS_REVIEW), new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = WebContentActivity.newEmailIntent("hello@flooz.me", list.get(position).getTitle(), "Voici quelques idées pour améliorer l'application : ", "");
-                startActivity(intent);
-            }
+
+        list.add(new SettingsListItem(this.getResources().getString(R.string.INFORMATIONS_CONTACT), (parent, view, position, id) -> {
+            Intent intent = new Intent();
+            intent.putExtra("title", list.get(position).getTitle());
+            intent.putExtra("url", "https://www.flooz.me/contact?layout=webview");
+            intent.setClass(instance, WebContentActivity.class);
+            instance.startActivity(intent);
+            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
         }));
-        list.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_LOGOUT), new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final Dialog validationDialog = new Dialog(instance);
 
-                validationDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                validationDialog.setContentView(R.layout.custom_dialog_validate_transaction);
-
-                TextView text = (TextView) validationDialog.findViewById(R.id.dialog_validate_flooz_text);
-                text.setText(instance.getResources().getString(R.string.LOGOUT_INFO));
-                text.setTypeface(CustomFonts.customContentRegular(instance));
-
-                Button decline = (Button) validationDialog.findViewById(R.id.dialog_validate_flooz_decline);
-                Button accept = (Button) validationDialog.findViewById(R.id.dialog_validate_flooz_accept);
-
-                decline.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        validationDialog.dismiss();
-                    }
-                });
-
-                accept.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        validationDialog.dismiss();
-                        FloozRestClient.getInstance().logout();
-                    }
-                });
-
-                validationDialog.setCanceledOnTouchOutside(false);
-                validationDialog.show();
-            }
+        list.add(new SettingsListItem(this.getResources().getString(R.string.INFORMATIONS_REVIEW), (parent, view, position, id) -> {
+            Intent intent = WebContentActivity.newEmailIntent("hello@flooz.me", list.get(position).getTitle(), "Voici quelques idées pour améliorer l'application : ", "");
+            startActivity(intent);
         }));
 
         new SettingsListAdapter(this, list, contentList);

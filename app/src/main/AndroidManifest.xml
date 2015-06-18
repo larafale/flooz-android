@@ -246,7 +246,10 @@
             </intent-filter>
         </receiver>
         <service android:name=".App.GcmIntentService" />
+
         <meta-data android:name="com.crashlytics.ApiKey" android:value="4f18178e0b7894ec76bb6f01a60f34baf68acbf7"/>
+        <meta-data android:name="io.branch.sdk.BranchKey" android:value="key_live_ipnB3ABZ5HPHhFU0IZGmEjpoByfw0qM2" />
+
     </application>
 
     <supports-screens

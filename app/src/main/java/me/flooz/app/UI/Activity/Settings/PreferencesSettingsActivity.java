@@ -10,10 +10,16 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
 import com.facebook.Session;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import me.flooz.app.Adapter.SettingsListAdapter;
+import me.flooz.app.Adapter.SettingsListItem;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
@@ -58,47 +64,47 @@ public class PreferencesSettingsActivity extends Activity {
         this.headerBackButton = (ImageView) this.findViewById(R.id.settings_preferences_header_back);
         TextView headerTitle = (TextView) this.findViewById(R.id.settings_preferences_header_title);
         TextView fbText = (TextView) this.findViewById(R.id.settings_preferences_fb_text);
-        TextView notifText = (TextView) this.findViewById(R.id.settings_preferences_notif_text);
         this.fbSwitch = (CheckBox) this.findViewById(R.id.settings_preferences_fb_toggle);
+        ListView contentList = (ListView) this.findViewById(R.id.settings_preferences_list);
 
         headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
-        notifText.setTypeface(CustomFonts.customTitleExtraLight(this));
         fbText.setTypeface(CustomFonts.customTitleExtraLight(this));
 
-        this.findViewById(R.id.settings_preferences_notif).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(instance, NotificationsSettingsActivity.class);
-                instance.startActivity(intent);
-                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
-            }
-        });
+        List<SettingsListItem> itemList = new ArrayList<>();
+
+        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_NOTIFICATIONS), (parent, view, position, id) -> {
+            Intent intent = new Intent(instance, NotificationsSettingsActivity.class);
+            instance.startActivity(intent);
+            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+        }));
+
+        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_PRIVACY), (parent, view, position, id) -> {
+            Intent intent = new Intent(instance, PrivacySettingsActivity.class);
+            instance.startActivity(intent);
+            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+        }));
+
+        new SettingsListAdapter(this, itemList, contentList);
 
         this.reloadView();
 
-        this.fbSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    if (!FloozRestClient.getInstance().isConnectedToFacebook()) {
-                        FloozRestClient.getInstance().connectFacebook();
-                        fbSwitch.setChecked(false);
-                    }
-                } else {
-                    FloozRestClient.getInstance().disconnectFacebook();
+        this.fbSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (isChecked) {
+                if (!FloozRestClient.getInstance().isConnectedToFacebook()) {
+                    FloozRestClient.getInstance().connectFacebook();
+                    fbSwitch.setChecked(false);
                 }
+            } else {
+                FloozRestClient.getInstance().disconnectFacebook();
             }
         });
 
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-                if (modal)
-                    overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                else
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-            }
+        this.headerBackButton.setOnClickListener(view -> {
+            finish();
+            if (modal)
+                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+            else
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
         });
     }
 

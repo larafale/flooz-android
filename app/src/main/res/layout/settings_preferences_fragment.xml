@@ -66,32 +66,40 @@
 
         </RelativeLayout>
 
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:id="@+id/settings_preferences_notif"
+        <ListView
+            android:id="@+id/settings_preferences_list"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:paddingLeft="@dimen/dimen_xxlarge"
-            android:paddingRight="@dimen/dimen_xlarge"
-            android:paddingTop="@dimen/dimen_large"
-            android:paddingBottom="@dimen/dimen_large">
+            android:overScrollMode="never"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dp"/>
 
-            <TextView
-                android:id="@+id/settings_preferences_notif_text"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/SETTINGS_NOTIFICATIONS"
-                android:textSize="@dimen/settings_list_item_size"
-                android:textColor="@android:color/white"
-                android:singleLine="true"/>
+        <!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
+            <!--android:id="@+id/settings_preferences_notif"-->
+            <!--android:layout_width="fill_parent"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:gravity="center_vertical"-->
+            <!--android:paddingLeft="@dimen/dimen_xxlarge"-->
+            <!--android:paddingRight="@dimen/dimen_xlarge"-->
+            <!--android:paddingTop="@dimen/dimen_large"-->
+            <!--android:paddingBottom="@dimen/dimen_large">-->
 
-            <ImageView
-                android:layout_width="@dimen/settings_arrow_size"
-                android:layout_height="@dimen/settings_arrow_size"
-                android:src="@drawable/nav_next"
-                android:layout_alignParentRight="true"/>
+            <!--<TextView-->
+                <!--android:id="@+id/settings_preferences_notif_text"-->
+                <!--android:layout_width="wrap_content"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:text="@string/SETTINGS_NOTIFICATIONS"-->
+                <!--android:textSize="@dimen/settings_list_item_size"-->
+                <!--android:textColor="@android:color/white"-->
+                <!--android:singleLine="true"/>-->
 
-        </RelativeLayout>
+            <!--<ImageView-->
+                <!--android:layout_width="@dimen/settings_arrow_size"-->
+                <!--android:layout_height="@dimen/settings_arrow_size"-->
+                <!--android:src="@drawable/nav_next"-->
+                <!--android:layout_alignParentRight="true"/>-->
+
+        <!--</RelativeLayout>-->
 
     </LinearLayout>
 

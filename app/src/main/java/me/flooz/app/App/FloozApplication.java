@@ -9,17 +9,11 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.inputmethod.InputMethodManager;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
-import com.google.zxing.BarcodeFormat;
-import com.google.zxing.WriterException;
-import com.google.zxing.common.BitMatrix;
-import com.google.zxing.qrcode.QRCodeWriter;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
@@ -30,6 +24,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.branch.referral.Branch;
+import io.branch.referral.BranchApp;
 import me.flooz.app.BuildConfig;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLReport;
@@ -43,13 +39,12 @@ import me.flooz.app.UI.Activity.NewTransactionActivity;
 import me.flooz.app.UI.Activity.StartActivity;
 import me.flooz.app.UI.Tools.ActionSheet;
 import me.flooz.app.UI.Tools.ActionSheetItem;
-import me.flooz.app.Utils.ContactsManager;
 import me.flooz.app.Utils.FLHelper;
 
 /**
  * Created by Flooz on 9/8/14.
  */
-public class FloozApplication extends Application
+public class FloozApplication extends BranchApp
 {
     private static Context context;
 
@@ -81,10 +76,11 @@ public class FloozApplication extends Application
     public void onCreate(){
         super.onCreate();
 
-        if (BuildConfig.DEBUG_API)
+        if (BuildConfig.DEBUG_API) {
             mixpanelAPI = MixpanelAPI.getInstance(this, "82c134b277474d6143decdc6ae73d5c9");
-        else
+        } else {
             mixpanelAPI = MixpanelAPI.getInstance(this, "81df2d3dcfb7c866f37e78f1ad8aa1c4");
+        }
 
         FloozApplication.instance = this;
         FloozApplication.context = getApplicationContext();

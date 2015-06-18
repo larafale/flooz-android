@@ -145,12 +145,13 @@ dependencies {
     compile 'org.apache.commons:commons-lang3:3.0'
     compile 'com.google.zxing:core:2.2'
     compile 'com.github.inaka:tinytask:v1'
+    compile('com.crashlytics.sdk.android:crashlytics:2.2.4@aar') {
+        transitive = true;
+    }
+    compile 'io.branch.sdk.android:library:1.5.8'
     compile project(':tooltips')
     compile project(':slidingMenu')
     compile project(':facebook')
     compile project(':pullRefreshLayout')
     compile files('libs/libScanpay.jar')
-    compile('com.crashlytics.sdk.android:crashlytics:2.2.4@aar') {
-        transitive = true;
-    }
 }
