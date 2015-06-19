@@ -136,7 +136,7 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
             @Override
             public void success(Object response) {
                 suggestionList.clear();
-                suggestionList.addAll((List<FLUser>)response);
+                suggestionList.addAll((List<FLUser>) response);
                 notifyDataSetChanged();
             }
 
@@ -154,10 +154,10 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
         friendList = currentUser.friends;
 
         if (pendingList == null)
-            pendingList = new ArrayList<FLUser>(0);
+            pendingList = new ArrayList<>(0);
 
         if (friendList == null)
-            friendList = new ArrayList<FLUser>(0);
+            friendList = new ArrayList<>(0);
 
         notifyDataSetChanged();
     }
@@ -279,25 +279,22 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
             holder.button.setImageResource(R.drawable.friends_add);
             holder.button.setVisibility(View.VISIBLE);
 
-            holder.button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    holder.button.setOnClickListener(null);
-                    holder.button.setImageResource(R.drawable.friends_accepted);
-                    user.selectedCanal = FLUser.FLUserSelectedCanal.SuggestionCanal;
-                    FloozRestClient.getInstance().sendFriendRequest(user.userId, user.getSelectedCanal(), new FloozHttpResponseHandler() {
-                        @Override
-                        public void success(Object response) {
-                            reloadSuggestions();
-                            FloozRestClient.getInstance().updateCurrentUser(null);
-                        }
+            holder.button.setOnClickListener(view -> {
+                holder.button.setOnClickListener(null);
+                holder.button.setImageResource(R.drawable.friends_accepted);
+                user.selectedCanal = FLUser.FLUserSelectedCanal.SuggestionCanal;
+                FloozRestClient.getInstance().sendFriendRequest(user.userId, user.getSelectedCanal(), new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        reloadSuggestions();
+                        FloozRestClient.getInstance().updateCurrentUser(null);
+                    }
 
-                        @Override
-                        public void failure(int statusCode, FLError error) {
+                    @Override
+                    public void failure(int statusCode, FLError error) {
 
-                        }
-                    });
-                }
+                    }
+                });
             });
         }
         else if (this.isSearchActive && FloozRestClient.getInstance().currentUser.userIsAFriend(user)) {
@@ -309,43 +306,27 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
             holder.button.setImageResource(R.drawable.friends_add);
             holder.button.setVisibility(View.VISIBLE);
 
-            holder.button.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    holder.button.setOnClickListener(null);
-                    holder.button.setImageResource(R.drawable.friends_accepted);
-                    user.selectedCanal = FLUser.FLUserSelectedCanal.SearchCanal;
-                    FloozRestClient.getInstance().sendFriendRequest(user.userId, user.getSelectedCanal(), new FloozHttpResponseHandler() {
-                        @Override
-                        public void success(Object response) {
-                            FloozRestClient.getInstance().updateCurrentUser(null);
-                        }
+            holder.button.setOnClickListener(view -> {
+                holder.button.setOnClickListener(null);
+                holder.button.setImageResource(R.drawable.friends_accepted);
+                user.selectedCanal = FLUser.FLUserSelectedCanal.SearchCanal;
+                FloozRestClient.getInstance().sendFriendRequest(user.userId, user.getSelectedCanal(), new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        FloozRestClient.getInstance().updateCurrentUser(null);
+                    }
 
-                        @Override
-                        public void failure(int statusCode, FLError error) {
+                    @Override
+                    public void failure(int statusCode, FLError error) {
 
-                        }
-                    });
-                }
+                    }
+                });
             });
         }
         else
             holder.button.setVisibility(View.GONE);
 
         return convertView;
-    }
-
-    public FriendKind getUserKind(int position) {
-        if (!this.isSearchActive) {
-            if (position < this.suggestionList.size())
-                return FriendKind.SUGGESTION;
-            else if (position >= this.suggestionList.size() && position < this.pendingList.size() + this.suggestionList.size())
-                return FriendKind.REQUEST;
-            else
-                return FriendKind.FRIEND;
-        }
-        else
-            return FriendKind.SEARCH;
     }
 
     public void searchUser(String searchString) {

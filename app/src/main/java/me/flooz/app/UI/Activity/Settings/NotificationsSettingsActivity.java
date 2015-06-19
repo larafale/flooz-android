@@ -42,15 +42,12 @@ public class NotificationsSettingsActivity extends Activity {
 
         headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
 
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-                if (modal)
-                    overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                else
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-            }
+        this.headerBackButton.setOnClickListener(view -> {
+            finish();
+            if (modal)
+                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+            else
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
         });
 
         NotificationSettingsListAdapter listAdapter = new NotificationSettingsListAdapter(this);

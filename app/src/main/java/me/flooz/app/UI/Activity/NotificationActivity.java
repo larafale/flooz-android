@@ -49,44 +49,33 @@ public class NotificationActivity extends Activity {
 
         headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
 
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FloozRestClient.getInstance().readAllNotifications(null);
-                finish();
-                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-            }
+        this.headerBackButton.setOnClickListener(view -> {
+            FloozRestClient.getInstance().readAllNotifications(null);
+            finish();
+            overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
         });
 
         this.listAdapter = new NotificationListAdapter(this);
         contentList.setAdapter(this.listAdapter);
 
-        this.contentContainer.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
+        this.contentContainer.setOnRefreshListener(() -> FloozRestClient.getInstance().updateNotificationFeed(new FloozHttpResponseHandler() {
             @Override
-            public void onRefresh() {
-                FloozRestClient.getInstance().updateNotificationFeed(new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
-                        contentContainer.setRefreshing(false);
-                    }
-
-                    @Override
-                    public void failure(int statusCode, FLError error) {
-                        contentContainer.setRefreshing(false);
-                    }
-                });
+            public void success(Object response) {
+                contentContainer.setRefreshing(false);
             }
-        });
 
-        contentList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                FLNotification notif = (FLNotification) listAdapter.getItem(position);
-                notif.isRead = true;
-                if (notif.triggers.size() > 0)
-                    FloozRestClient.getInstance().handleRequestTriggers(notif.data);
-                listAdapter.notifyDataSetChanged();
+            public void failure(int statusCode, FLError error) {
+                contentContainer.setRefreshing(false);
             }
+        }));
+
+        contentList.setOnItemClickListener((parent, view, position, id) -> {
+            FLNotification notif = (FLNotification) listAdapter.getItem(position);
+            notif.isRead = true;
+            if (notif.triggers.size() > 0)
+                FloozRestClient.getInstance().handleRequestTriggers(notif.data);
+            listAdapter.notifyDataSetChanged();
         });
     }
 

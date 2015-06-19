@@ -58,7 +58,6 @@ public class CreditCardSettingsActivity extends Activity {
     private Button addCardButton;
 
     public Boolean next3DSecure = false;
-    public String secureData;
 
     private FLCreditCard creditCard;
 

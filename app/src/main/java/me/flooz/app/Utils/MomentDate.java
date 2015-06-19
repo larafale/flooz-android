@@ -5,6 +5,7 @@ import android.content.Context;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -23,7 +24,7 @@ public class MomentDate {
 
         this.context = ctx;
 
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'");
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'", Locale.FRANCE);
         dateFormatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         this._date = dateFormatter.parse(dateString);

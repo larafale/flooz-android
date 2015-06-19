@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Random;
 
 import me.flooz.app.App.FloozApplication;
@@ -113,7 +114,7 @@ public class ImageHelper {
                 File file = ImageHelper.getOutputMediaFile(MEDIA_TYPE_IMAGE);
 
                 try {
-                    file.createNewFile();
+                    boolean newFile = file.createNewFile();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -181,7 +182,7 @@ public class ImageHelper {
             }
         }
 
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(new Date());
         File mediaFile;
         if (type == MEDIA_TYPE_IMAGE){
             mediaFile = new File(mediaStorageDir.getPath() + File.separator +

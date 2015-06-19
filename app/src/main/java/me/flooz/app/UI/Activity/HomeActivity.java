@@ -327,11 +327,8 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
 
         this.imageViewerAttacher.setOnLongClickListener(v -> {
             List<ActionSheetItem> items = new ArrayList<>();
-            items.add(new ActionSheetItem(instance, R.string.MENU_SAVE_PICTURE, new ActionSheetItem.ActionSheetItemClickListener() {
-                @Override
-                public void onClick() {
-                    ImageHelper.saveImageOnPhone(instance, ((BitmapDrawable)imageViewerAttacher.getImageView().getDrawable()).getBitmap());
-                }
+            items.add(new ActionSheetItem(instance, R.string.MENU_SAVE_PICTURE, () -> {
+                ImageHelper.saveImageOnPhone(instance, ((BitmapDrawable)imageViewerAttacher.getImageView().getDrawable()).getBitmap());
             }));
             ActionSheet.showWithItems(instance, items);
 
@@ -511,7 +508,7 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
                 CustomNotificationIntents.filterReloadNotifications());
 
         Handler handlerIntent = new Handler(Looper.getMainLooper());
-        handlerIntent.postDelayed(() -> {
+        final boolean b = handlerIntent.postDelayed(() -> {
             final Intent intent = getIntent();
             JSONArray triggersArray = null;
             if (intent != null && intent.getExtras() != null) {
@@ -812,15 +809,12 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
                         public void onLoadingCancelled(String imageUri, View view) {
 
                         }
-                    }, new ImageLoadingProgressListener() {
-                        @Override
-                        public void onProgressUpdate(String imageUri, View view, int current, int total) {
-                            float tmp = current;
-                            tmp /= total;
-                            tmp *= 100;
+                    }, (imageUri, view, current, total) -> {
+                        float tmp = current;
+                        tmp /= total;
+                        tmp *= 100;
 
-                            imageViewerProgress.setProgress((int) tmp);
-                        }
+                        imageViewerProgress.setProgress((int) tmp);
                     });
                 }
 

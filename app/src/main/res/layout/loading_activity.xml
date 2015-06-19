@@ -14,7 +14,7 @@
         android:id="@+id/loading_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="chargement..."
+        android:text="@string/GLOBAL_LOADING"
         android:textColor="@color/blue"
         android:textSize="18sp"
         android:layout_alignParentBottom="true"

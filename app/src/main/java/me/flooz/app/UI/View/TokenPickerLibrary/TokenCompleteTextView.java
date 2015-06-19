@@ -136,27 +136,24 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
         setOnEditorActionListener(this);
 
         // Initialise the textfilter (listens for the splitchars)
-        setFilters(new InputFilter[] {new InputFilter() {
-            @Override
-            public CharSequence filter(CharSequence source, int start, int end, Spanned dest, int dstart, int dend) {
-                // Token limit check
-                if (tokenLimit != -1 && objects.size() == tokenLimit) {
+        setFilters(new InputFilter[] {(source, start, end, dest, dstart, dend) -> {
+            // Token limit check
+            if (tokenLimit != -1 && objects.size() == tokenLimit) {
+                return "";
+            } else if(source.length() == 1) {//Detect split characters, remove them and complete the current token instead
+                boolean isSplitChar = false;
+                for(char c : splitChar) isSplitChar = source.charAt(0) == c || isSplitChar;
+                if (isSplitChar) {
+                    performCompletion();
                     return "";
-                } else if(source.length() == 1) {//Detect split characters, remove them and complete the current token instead
-                    boolean isSplitChar = false;
-                    for(char c : splitChar) isSplitChar = source.charAt(0) == c || isSplitChar;
-                    if (isSplitChar) {
-                        performCompletion();
-                        return "";
-                    }
                 }
-
-                //We need to not do anything when we would delete the prefix
-                if (dstart < prefix.length() && dend == prefix.length()) {
-                    return prefix.substring(dstart, dend);
-                }
-                return null;
             }
+
+            //We need to not do anything when we would delete the prefix
+            if (dstart < prefix.length() && dend == prefix.length()) {
+                return prefix.substring(dstart, dend);
+            }
+            return null;
         }});
 
         //We had _Parent style during initialization to handle an edge case in the parent
@@ -654,12 +651,7 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
                 } else {
                     // Slightly delay moving the cursor to the end. Inserting spans seems to take
                     // some time. (ugly, but what can you do :( )
-                    postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            setSelection(text.length());
-                        }
-                    }, 10);
+                    postDelayed(() -> setSelection(text.length()), 10);
                 }
 
                 TokenSpanWatcher[] watchers = getText().getSpans(0, getText().length(), TokenSpanWatcher.class);
@@ -758,14 +750,11 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
      * @param sourceText the text used if this object is deleted
      */
     public void addObject(final Object object, final CharSequence sourceText) {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                if (object == null) return;
-                if (!allowDuplicates && objects.contains(object)) return;
-                insertSpan(object, sourceText);
-                if (getText() != null && isFocused()) setSelection(getText().length());
-            }
+        post(() -> {
+            if (object == null) return;
+            if (!allowDuplicates && objects.contains(object)) return;
+            insertSpan(object, sourceText);
+            if (getText() != null && isFocused()) setSelection(getText().length());
         });
     }
 
@@ -786,35 +775,32 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
      */
     @SuppressWarnings("unused")
     public void removeObject(final Object object) {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                //To make sure all the appropriate callbacks happen, we just want to piggyback on the
-                //existing code that handles deleting spans when the text changes
-                Editable text = getText();
-                if (text == null) return;
+        post(() -> {
+            //To make sure all the appropriate callbacks happen, we just want to piggyback on the
+            //existing code that handles deleting spans when the text changes
+            Editable text = getText();
+            if (text == null) return;
 
-                // If the object is currently hidden, remove it
-                ArrayList<TokenImageSpan> toRemove = new ArrayList<>();
-                for(TokenImageSpan span: hiddenSpans) {
-                    if(span.getToken().equals(object)) {
-                        toRemove.add(span);
-                    }
+            // If the object is currently hidden, remove it
+            ArrayList<TokenImageSpan> toRemove = new ArrayList<>();
+            for(TokenImageSpan span: hiddenSpans) {
+                if(span.getToken().equals(object)) {
+                    toRemove.add(span);
                 }
-                for (TokenImageSpan span : toRemove) {
-                    hiddenSpans.remove(span);
-                    // Remove it from the state and fire the callback
-                    spanWatcher.onSpanRemoved(text, span, 0, 0);
-                }
+            }
+            for (TokenImageSpan span : toRemove) {
+                hiddenSpans.remove(span);
+                // Remove it from the state and fire the callback
+                spanWatcher.onSpanRemoved(text, span, 0, 0);
+            }
 
-                updateCountSpan();
+            updateCountSpan();
 
-                // If the object is currently visible, remove it
-                TokenImageSpan[] spans = text.getSpans(0, text.length(), TokenImageSpan.class);
-                for (TokenImageSpan span : spans) {
-                    if (span.getToken().equals(object)) {
-                        removeSpan(span);
-                    }
+            // If the object is currently visible, remove it
+            TokenImageSpan[] spans = text.getSpans(0, text.length(), TokenImageSpan.class);
+            for (TokenImageSpan span : spans) {
+                if (span.getToken().equals(object)) {
+                    removeSpan(span);
                 }
             }
         });
@@ -922,21 +908,18 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
      */
     @SuppressWarnings("unused")
     public void clear() {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                // If there's no text, we're already empty
-                Editable text = getText();
-                if (text == null) return;
+        post(() -> {
+            // If there's no text, we're already empty
+            Editable text = getText();
+            if (text == null) return;
 
-                // Get all spans in the EditText and remove them
-                TokenImageSpan[] spans = text.getSpans(0,text.length(),TokenImageSpan.class);
-                for(TokenImageSpan span :spans){
-                    removeSpan(span);
+            // Get all spans in the EditText and remove them
+            TokenImageSpan[] spans = text.getSpans(0,text.length(),TokenImageSpan.class);
+            for(TokenImageSpan span :spans){
+                removeSpan(span);
 
-                    // Make sure the callback gets called
-                    spanWatcher.onSpanRemoved(text,span,text.getSpanStart(span),text.getSpanEnd(span));
-                }
+                // Make sure the callback gets called
+                spanWatcher.onSpanRemoved(text,span,text.getSpanStart(span),text.getSpanEnd(span));
             }
         });
     }
@@ -1054,9 +1037,9 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
         }
     }
 
-    public static interface TokenListener {
-        public void onTokenAdded(Object token);
-        public void onTokenRemoved(Object token);
+    public interface TokenListener {
+        void onTokenAdded(Object token);
+        void onTokenRemoved(Object token);
     }
 
     private class TokenSpanWatcher implements SpanWatcher {
@@ -1213,12 +1196,9 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
 
         // Collapse the view if necessary
         if (!isFocused() && allowCollapse) {
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    //Resize the view and display the +x if appropriate
-                    performCollapse(isFocused());
-                }
+            post(() -> {
+                //Resize the view and display the +x if appropriate
+                performCollapse(isFocused());
             });
         }
     }

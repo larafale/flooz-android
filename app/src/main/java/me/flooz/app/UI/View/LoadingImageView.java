@@ -86,15 +86,12 @@ public class LoadingImageView extends RelativeLayout {
                 public void onLoadingCancelled(String imageUri, View view) {
 
                 }
-            }, new ImageLoadingProgressListener() {
-                @Override
-                public void onProgressUpdate(String imageUri, View view, int current, int total) {
-                    float tmp = current;
-                    tmp /= total;
-                    tmp *= 100;
+            }, (imageUri, view, current, total) -> {
+                float tmp = current;
+                tmp /= total;
+                tmp *= 100;
 
-                    progressBar.setProgress((int) tmp);
-                }
+                progressBar.setProgress((int) tmp);
             });
         }
     }

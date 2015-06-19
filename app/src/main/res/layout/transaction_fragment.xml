@@ -139,7 +139,8 @@
                     android:orientation="horizontal"
                     android:layout_width="fill_parent"
                     android:padding="@dimen/dimen_large"
-                    android:layout_height="fill_parent">
+                    android:layout_height="fill_parent"
+                    android:baselineAligned="false">
 
                     <RelativeLayout
                         android:id="@+id/new_transac_content"

@@ -24,41 +24,20 @@ public class SlideFragment extends Fragment {
 
     public FLSliderPage data;
 
-    private ImageView image;
-    private TextView text;
-    private Button button;
-
     public SlideFragment() {
         this.data = null;
-    }
-
-    @SuppressLint("ValidFragment")
-    public SlideFragment(FLSliderPage page) {
-        this.data = page;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
     }
 
     @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.slide_fragment, null);
 
-        this.text = (TextView) view.findViewById(R.id.slide_text);
+        TextView text = (TextView) view.findViewById(R.id.slide_text);
 
-        this.text.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
-        this.button.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
+        text.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
 
         if (this.data != null) {
-            ImageLoader.getInstance().displayImage(this.data.imgURL, this.image);
-            this.text.setText(this.data.text);
-
-            if (this.data.skipText != null && !this.data.skipText.isEmpty()) {
-                this.button.setText(this.data.skipText);
-                this.button.setVisibility(View.VISIBLE);
-            }
+            text.setText(this.data.text);
         }
 
         return view;

@@ -90,9 +90,7 @@ public class StartLoginFragment extends StartBaseFragment {
             });
         });
 
-        forgetButton.setOnClickListener(v -> {
-            parentActivity.changeCurrentPage(new StartForgetFragment(), android.R.animator.fade_in, android.R.animator.fade_out, true);
-        });
+        forgetButton.setOnClickListener(v -> parentActivity.changeCurrentPage(new StartForgetFragment(), android.R.animator.fade_in, android.R.animator.fade_out, true));
 
         return view;
     }

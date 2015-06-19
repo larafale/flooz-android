@@ -68,13 +68,15 @@ public class FLSocial {
     }
 
     public static SocialScope socialScopeParamToEnum(String param) {
-        if (param.equals("0"))
-            return SocialScope.SocialScopePublic;
-        else if (param.equals("1"))
-            return SocialScope.SocialScopeFriend;
-        else if (param.equals("2"))
-            return SocialScope.SocialScopePrivate;
-        else
-            return SocialScope.SocialScopeNone;
+        switch (param) {
+            case "0":
+                return SocialScope.SocialScopePublic;
+            case "1":
+                return SocialScope.SocialScopeFriend;
+            case "2":
+                return SocialScope.SocialScopePrivate;
+            default:
+                return SocialScope.SocialScopeNone;
+        }
     }
 }

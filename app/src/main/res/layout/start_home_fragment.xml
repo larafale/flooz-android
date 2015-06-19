@@ -8,7 +8,7 @@
         android:id="@+id/start_home_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pay, Like,"
+        android:text="@string/START_TITLE"
         android:textColor="@android:color/white"
         android:textSize="25sp"
         android:layout_centerHorizontal="true"

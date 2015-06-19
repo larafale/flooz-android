@@ -110,7 +110,7 @@
             android:id="@+id/numeric_keyboard_key_backspace"
             style="@style/numeric_keyboard_key"
             android:src="@drawable/keyboard_backward"
-            android:textIsSelectable="false" />
+            android:textIsSelectable="false"/>
     </TableRow>
 
 </TableLayout>

@@ -22,9 +22,8 @@ public class ToolTipScopeView {
     public ToolTipScopeViewDelegate delegate;
 
     public ToolTipScopeView(Context context) {
-        Context context1 = context;
 
-        this.view = LayoutInflater.from(context1).inflate(R.layout.tooltip_scope_view, null);
+        this.view = LayoutInflater.from(context).inflate(R.layout.tooltip_scope_view, null);
 
         RelativeLayout publicLayout = (RelativeLayout) this.view.findViewById(R.id.tooltip_scope_public);
         RelativeLayout friendLayout = (RelativeLayout) this.view.findViewById(R.id.tooltip_scope_friends);
@@ -42,50 +41,40 @@ public class ToolTipScopeView {
         this.friendCheck = (ImageView) this.view.findViewById(R.id.tooltip_scope_friends_check);
         this.privateCheck = (ImageView) this.view.findViewById(R.id.tooltip_scope_private_check);
 
-        publicImg.setColorFilter(context1.getResources().getColor(android.R.color.black));
-        friendImg.setColorFilter(context1.getResources().getColor(android.R.color.black));
-        privateImg.setColorFilter(context1.getResources().getColor(android.R.color.black));
+        publicImg.setColorFilter(context.getResources().getColor(android.R.color.black));
+        friendImg.setColorFilter(context.getResources().getColor(android.R.color.black));
+        privateImg.setColorFilter(context.getResources().getColor(android.R.color.black));
 
-        this.publicCheck.setColorFilter(context1.getResources().getColor(R.color.blue));
-        this.friendCheck.setColorFilter(context1.getResources().getColor(R.color.blue));
-        this.privateCheck.setColorFilter(context1.getResources().getColor(R.color.blue));
+        this.publicCheck.setColorFilter(context.getResources().getColor(R.color.blue));
+        this.friendCheck.setColorFilter(context.getResources().getColor(R.color.blue));
+        this.privateCheck.setColorFilter(context.getResources().getColor(R.color.blue));
 
-        publicText.setTypeface(CustomFonts.customContentRegular(context1));
-        friendText.setTypeface(CustomFonts.customContentRegular(context1));
-        privateText.setTypeface(CustomFonts.customContentRegular(context1));
+        publicText.setTypeface(CustomFonts.customContentRegular(context));
+        friendText.setTypeface(CustomFonts.customContentRegular(context));
+        privateText.setTypeface(CustomFonts.customContentRegular(context));
 
-        publicLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (delegate != null)
-                    delegate.scopeChanged(FLTransaction.TransactionScope.TransactionScopePublic);
-                changeScope(FLTransaction.TransactionScope.TransactionScopePublic);
-            }
+        publicLayout.setOnClickListener(v -> {
+            if (delegate != null)
+                delegate.scopeChanged(FLTransaction.TransactionScope.TransactionScopePublic);
+            changeScope(FLTransaction.TransactionScope.TransactionScopePublic);
         });
 
-        friendLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (delegate != null)
-                    delegate.scopeChanged(FLTransaction.TransactionScope.TransactionScopeFriend);
-                changeScope(FLTransaction.TransactionScope.TransactionScopeFriend);
-            }
+        friendLayout.setOnClickListener(v -> {
+            if (delegate != null)
+                delegate.scopeChanged(FLTransaction.TransactionScope.TransactionScopeFriend);
+            changeScope(FLTransaction.TransactionScope.TransactionScopeFriend);
         });
 
-        privateLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (delegate != null)
-                    delegate.scopeChanged(FLTransaction.TransactionScope.TransactionScopePrivate);
-                changeScope(FLTransaction.TransactionScope.TransactionScopePrivate);
-            }
+        privateLayout.setOnClickListener(v -> {
+            if (delegate != null)
+                delegate.scopeChanged(FLTransaction.TransactionScope.TransactionScopePrivate);
+            changeScope(FLTransaction.TransactionScope.TransactionScopePrivate);
         });
     }
 
     public void changeScope(FLTransaction.TransactionScope scope) {
-        FLTransaction.TransactionScope currentScope = scope;
 
-        switch (currentScope) {
+        switch (scope) {
             case TransactionScopePublic:
                 this.publicCheck.setVisibility(View.VISIBLE);
                 this.friendCheck.setVisibility(View.GONE);

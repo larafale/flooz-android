@@ -17,7 +17,7 @@
                 android:id="@+id/start_signup_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Bienvenue !"
+                android:text="@string/START_WELCOME"
                 android:textColor="@android:color/white"
                 android:textSize="25sp"
                 android:layout_centerHorizontal="true"
@@ -57,7 +57,7 @@
                             android:id="@+id/settings_credit_card_remove_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="Facebook"
+                            android:text="@string/SIGNUP_FACEBOOK"
                             android:textSize="15sp"
                             android:textColor="@android:color/white"
                             android:layout_marginLeft="@dimen/dimen_large"/>

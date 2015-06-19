@@ -210,7 +210,7 @@ public class AutoResizeTextView extends TextView {
         int lastBest = start;
         int lo = start;
         int hi = end - 1;
-        int mid = 0;
+        int mid;
         while (lo <= hi) {
             mid = lo + hi >>> 1;
             final int midValCmp = sizeTester.onTestSize(mid, availableSpace);

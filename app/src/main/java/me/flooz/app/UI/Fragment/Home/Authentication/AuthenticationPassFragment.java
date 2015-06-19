@@ -35,11 +35,6 @@ public class AuthenticationPassFragment extends AuthenticationBaseFragment {
     private EditText passwordTextfield;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.authentication_pass_fragment, null);
 
@@ -125,7 +120,6 @@ public class AuthenticationPassFragment extends AuthenticationBaseFragment {
         });
 
         forgetButton.setOnClickListener(v -> {
-
             FloozRestClient.getInstance().showLoadView();
             FloozRestClient.getInstance().passwordForget(FloozRestClient.getInstance().currentUser.email, new FloozHttpResponseHandler() {
                 @Override

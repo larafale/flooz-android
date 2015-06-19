@@ -58,15 +58,12 @@ public class SecuritySettingsActivity extends Activity {
 
         this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
 
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-                if (modal)
-                    overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                else
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-            }
+        this.headerBackButton.setOnClickListener(view -> {
+            finish();
+            if (modal)
+                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+            else
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
         });
    }
 
@@ -103,12 +100,6 @@ public class SecuritySettingsActivity extends Activity {
 
         itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_PASSWORD), (parent, view, position, id) -> {
             Intent intent = new Intent(instance, PasswordSettingsActivity.class);
-            instance.startActivity(intent);
-            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
-        }));
-
-        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_SECRET), securityNotif, (parent, view, position, id) -> {
-            Intent intent = new Intent(instance, SecretSettingsActivity.class);
             instance.startActivity(intent);
             instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
         }));

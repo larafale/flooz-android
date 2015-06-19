@@ -18,11 +18,6 @@ public class TimelineHeaderFragment extends Fragment {
     public String text;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.timeline_header_fragment, null);
 

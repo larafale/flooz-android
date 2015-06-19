@@ -109,13 +109,10 @@ public class CashoutActivity extends Activity {
             return false;
         });
 
-        this.cashoutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentNotifs = new Intent(instance, AuthenticationActivity.class);
-                instance.startActivityForResult(intentNotifs, AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY);
-                instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-            }
+        this.cashoutButton.setOnClickListener(v -> {
+            Intent intentNotifs = new Intent(instance, AuthenticationActivity.class);
+            instance.startActivityForResult(intentNotifs, AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY);
+            instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
         });
     }
 

@@ -74,11 +74,6 @@ public class StartActivity extends Activity {
         this.changeCurrentPage(homeFragment, false);
     }
 
-    @Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-    }
-
     protected void onResume() {
         super.onResume();
 
@@ -170,27 +165,6 @@ public class StartActivity extends Activity {
 
         this.fragmentHistory.add(fragment);
         this.currentFragment = fragment;
-    }
-
-    public void backToPreviousPage() {
-        if (this.fragmentHistory.size() > 1) {
-            InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), 0);
-
-            StartBaseFragment fragment = this.fragmentHistory.get(this.fragmentHistory.size() - 1);
-
-            FragmentTransaction ft = this.getFragmentManager().beginTransaction();
-
-            ft.setCustomAnimations(R.animator.slide_in_right, R.animator.slide_out_left);
-
-            ft.remove(fragment);
-            ft.addToBackStack(null).commit();
-
-            this.fragmentHistory.remove(this.fragmentHistory.size() - 1);
-
-            this.currentFragment = this.fragmentHistory.get(this.fragmentHistory.size() - 1);
-            this.currentFragment.onResume();
-        }
     }
 
     public void updateUserData(Map<String, Object> data) {

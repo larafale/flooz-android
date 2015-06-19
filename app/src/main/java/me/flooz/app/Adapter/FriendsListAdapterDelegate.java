@@ -5,5 +5,5 @@ package me.flooz.app.Adapter;
  */
 
 public interface FriendsListAdapterDelegate {
-    public void dataReloaded();
+    void dataReloaded();
 }

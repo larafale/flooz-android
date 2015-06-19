@@ -22,7 +22,7 @@ public class NumericKeyboard extends TableLayout {
     public int maxLenght = 0;
 
     public interface NumericKeyboardDelegate {
-        public void keyPressed();
+        void keyPressed();
     }
 
     public NumericKeyboard(Context context) {
@@ -61,124 +61,91 @@ public class NumericKeyboard extends TableLayout {
         key9.setTypeface(CustomFonts.customContentLight(context));
         key0.setTypeface(CustomFonts.customContentLight(context));
 
-        key1.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (maxLenght == 0 || value.length() < maxLenght) {
-                    value += "1";
-                    if (delegate != null)
-                        delegate.keyPressed();
-                }
+        key1.setOnClickListener(view1 -> {
+            if (maxLenght == 0 || value.length() < maxLenght) {
+                value += "1";
+                if (delegate != null)
+                    delegate.keyPressed();
             }
         });
 
-        key2.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (maxLenght == 0 || value.length() < maxLenght) {
-                    value += "2";
-                    if (delegate != null)
-                        delegate.keyPressed();
-                }
+        key2.setOnClickListener(view1 -> {
+            if (maxLenght == 0 || value.length() < maxLenght) {
+                value += "2";
+                if (delegate != null)
+                    delegate.keyPressed();
             }
         });
 
-        key3.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (maxLenght == 0 || value.length() < maxLenght) {
-                    value += "3";
-                    if (delegate != null)
-                        delegate.keyPressed();
-                }
+        key3.setOnClickListener(view1 -> {
+            if (maxLenght == 0 || value.length() < maxLenght) {
+                value += "3";
+                if (delegate != null)
+                    delegate.keyPressed();
             }
         });
 
-        key4.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (maxLenght == 0 || value.length() < maxLenght) {
-                    value += "4";
-                    if (delegate != null)
-                        delegate.keyPressed();
-                }
+        key4.setOnClickListener(view1 -> {
+            if (maxLenght == 0 || value.length() < maxLenght) {
+                value += "4";
+                if (delegate != null)
+                    delegate.keyPressed();
             }
         });
 
-        key5.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (maxLenght == 0 || value.length() < maxLenght) {
-                    value += "5";
-                    if (delegate != null)
-                        delegate.keyPressed();
-                }
+        key5.setOnClickListener(view1 -> {
+            if (maxLenght == 0 || value.length() < maxLenght) {
+                value += "5";
+                if (delegate != null)
+                    delegate.keyPressed();
             }
         });
 
-        key6.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (maxLenght == 0 || value.length() < maxLenght) {
-                    value += "6";
-                    if (delegate != null)
-                        delegate.keyPressed();
-                }
+        key6.setOnClickListener(view1 -> {
+            if (maxLenght == 0 || value.length() < maxLenght) {
+                value += "6";
+                if (delegate != null)
+                    delegate.keyPressed();
             }
         });
 
-        key7.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (maxLenght == 0 || value.length() < maxLenght) {
-                    value += "7";
-                    if (delegate != null)
-                        delegate.keyPressed();
-                }
+        key7.setOnClickListener(view1 -> {
+            if (maxLenght == 0 || value.length() < maxLenght) {
+                value += "7";
+                if (delegate != null)
+                    delegate.keyPressed();
             }
         });
 
-        key8.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (maxLenght == 0 || value.length() < maxLenght) {
-                    value += "8";
-                    if (delegate != null)
-                        delegate.keyPressed();
-                }
+        key8.setOnClickListener(view1 -> {
+            if (maxLenght == 0 || value.length() < maxLenght) {
+                value += "8";
+                if (delegate != null)
+                    delegate.keyPressed();
             }
         });
 
-        key9.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (maxLenght == 0 || value.length() < maxLenght) {
-                    value += "9";
-                    if (delegate != null)
-                        delegate.keyPressed();
-                }
+        key9.setOnClickListener(view1 -> {
+            if (maxLenght == 0 || value.length() < maxLenght) {
+                value += "9";
+                if (delegate != null)
+                    delegate.keyPressed();
             }
         });
 
-        key0.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (maxLenght == 0 || value.length() < maxLenght) {
-                    value += "0";
-                    if (delegate != null)
-                        delegate.keyPressed();
-                }
+        key0.setOnClickListener(view1 -> {
+            if (maxLenght == 0 || value.length() < maxLenght) {
+                value += "0";
+                if (delegate != null)
+                    delegate.keyPressed();
             }
         });
 
-        keyClear.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (value.length() > 0) {
-                    value = value.substring(0, value.length() - 1);
-                    if (delegate != null)
-                        delegate.keyPressed();
-                }
+        keyClear.setOnClickListener(view1 -> {
+            if (value.length() > 0) {
+                value = value.substring(0, value.length() - 1);
+                if (delegate != null)
+                    delegate.keyPressed();
             }
         });
     }

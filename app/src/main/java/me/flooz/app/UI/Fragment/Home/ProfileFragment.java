@@ -85,11 +85,6 @@ public class ProfileFragment extends HomeBaseFragment
     };
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.profile_fragment, null);
 
@@ -133,12 +128,7 @@ public class ProfileFragment extends HomeBaseFragment
 
             Button close = (Button) dialog.findViewById(R.id.dialog_wallet_btn);
 
-            close.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                }
-            });
+            close.setOnClickListener(v1 -> dialog.dismiss());
 
             dialog.setCanceledOnTouchOutside(true);
             dialog.show();
@@ -147,26 +137,20 @@ public class ProfileFragment extends HomeBaseFragment
         this.userView.setOnClickListener(v -> {
             List<ActionSheetItem> items = new ArrayList<>();
 
-            items.add(new ActionSheetItem(inflater.getContext(), R.string.SIGNUP_IMAGE_BUTTON_TAKE, new ActionSheetItem.ActionSheetItemClickListener() {
-                @Override
-                public void onClick() {
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            items.add(new ActionSheetItem(inflater.getContext(), R.string.SIGNUP_IMAGE_BUTTON_TAKE, () -> {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                    Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
-                    tmpUriImage = fileUri;
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
+                tmpUriImage = fileUri;
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
 
-                    parentActivity.startActivityForResult(intent, HomeActivity.TAKE_PICTURE);
-                }
+                parentActivity.startActivityForResult(intent, HomeActivity.TAKE_PICTURE);
             }));
 
-            items.add(new ActionSheetItem(inflater.getContext(), R.string.SIGNUP_IMAGE_BUTTON_CHOOSE, new ActionSheetItem.ActionSheetItemClickListener() {
-                @Override
-                public void onClick() {
-                    Intent intent = new Intent(Intent.ACTION_PICK);
-                    intent.setType("image/*");
-                    parentActivity.startActivityForResult(intent, HomeActivity.SELECT_PICTURE);
-                }
+            items.add(new ActionSheetItem(inflater.getContext(), R.string.SIGNUP_IMAGE_BUTTON_CHOOSE, () -> {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                parentActivity.startActivityForResult(intent, HomeActivity.SELECT_PICTURE);
             }));
 
             ActionSheet.showWithItems(parentActivity, items);

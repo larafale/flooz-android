@@ -1,14 +1,9 @@
 package me.flooz.app.UI.Activity;
 
 import android.app.Activity;
-import android.app.Dialog;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import android.view.View;
-import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -19,7 +14,6 @@ import java.util.List;
 import me.flooz.app.Adapter.SettingsListAdapter;
 import me.flooz.app.Adapter.SettingsListItem;
 import me.flooz.app.App.FloozApplication;
-import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.FLHelper;

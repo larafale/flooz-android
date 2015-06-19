@@ -111,6 +111,7 @@ public class FloozApplication extends BranchApp
     private String getRegistrationId(Context context) {
         final SharedPreferences prefs = getSharedPreferences("FloozPrefs", Context.MODE_PRIVATE);
         String registrationId = prefs.getString(PROPERTY_REG_ID, "");
+        assert registrationId != null;
         if (registrationId.isEmpty()) {
             return "";
         }
@@ -424,21 +425,15 @@ public class FloozApplication extends BranchApp
 //            }
 //        }));
 
-        items.add(new ActionSheetItem(this, R.string.MENU_REPORT_LINE, new ActionSheetItem.ActionSheetItemClickListener() {
-            @Override
-            public void onClick() {
-                new AlertDialog.Builder(getCurrentActivity())
-                        .setTitle(R.string.MENU_REPORT_USER)
-                        .setMessage(R.string.REPORT_LINE_ALERT_MESSAGE)
-                        .setPositiveButton(R.string.GLOBAL_YES, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                FloozRestClient.getInstance().reportContent(new FLReport(FLReport.ReportType.Transaction, transac.transactionId), null);
-                            }
-                        })
-                        .setNegativeButton(R.string.GLOBAL_NO, null)
-                        .show();
-            }
+        items.add(new ActionSheetItem(this, R.string.MENU_REPORT_LINE, () -> {
+            new AlertDialog.Builder(getCurrentActivity())
+                    .setTitle(R.string.MENU_REPORT_USER)
+                    .setMessage(R.string.REPORT_LINE_ALERT_MESSAGE)
+                    .setPositiveButton(R.string.GLOBAL_YES, (dialog, which) -> {
+                        FloozRestClient.getInstance().reportContent(new FLReport(FLReport.ReportType.Transaction, transac.transactionId), null);
+                    })
+                    .setNegativeButton(R.string.GLOBAL_NO, null)
+                    .show();
         }));
         ActionSheet.showWithItems(getCurrentActivity(), items);
     }

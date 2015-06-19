@@ -37,11 +37,6 @@ public class AuthenticationSecureCodeFragment extends AuthenticationBaseFragment
     private TextView clearCode;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.authentication_secure_code_fragment, null);
 
@@ -92,37 +87,21 @@ public class AuthenticationSecureCodeFragment extends AuthenticationBaseFragment
         codeKey8.setOnClickListener(keyClickListener);
         codeKey9.setOnClickListener(keyClickListener);
 
-        this.clearCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                currentCode = "";
-                refreshCodeContainer();
-            }
+        this.clearCode.setOnClickListener(view1 -> {
+            currentCode = "";
+            refreshCodeContainer();
         });
 
-        this.headerBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                parentActivity.dismissView(false);
-            }
-        });
+        this.headerBack.setOnClickListener(view1 -> parentActivity.dismissView(false));
 
-        forgetCode.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                parentActivity.gotToNextPage();
-            }
-        });
+        forgetCode.setOnClickListener(v -> parentActivity.gotToNextPage());
 
         return view;
     }
 
-    private View.OnClickListener keyClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            TextView key = (TextView) view;
-            addKeyToCode(key.getText().toString());
-        }
+    private View.OnClickListener keyClickListener = view -> {
+        TextView key = (TextView) view;
+        addKeyToCode(key.getText().toString());
     };
 
     private void refreshCodeContainer() {

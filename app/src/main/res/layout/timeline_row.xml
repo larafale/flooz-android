@@ -32,7 +32,6 @@
         android:textStyle="bold"
         android:textSize="@dimen/timeline_cell_title"
         android:inputType="none"
-        android:text="Jean dupont a flooze paulo"
         android:layout_toRightOf="@id/userTimelineTransactionPic"/>
 
     <TextView
@@ -42,7 +41,6 @@
         android:layout_marginTop="@dimen/dimen_medium"
         android:textColor="@android:color/white"
         android:textSize="@dimen/timeline_cell_title"
-        android:text="Merci pour le cadeau"
         android:layout_toRightOf="@id/userTimelineTransactionPic"
         android:layout_below="@id/timelineTransactionText3D"/>
 

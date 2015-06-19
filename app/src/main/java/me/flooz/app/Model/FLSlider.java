@@ -24,14 +24,4 @@ public class FLSlider {
             this.slides.add(new FLSliderPage(slidesData.optJSONObject(i)));
         }
     }
-
-    public List<SlideFragment> generateFragments() {
-        List<SlideFragment> ret = new ArrayList<>();
-
-        for (int i = 0; i < slides.size(); i++) {
-            ret.add(new SlideFragment(slides.get(i)));
-        }
-
-        return ret;
-    }
 }

@@ -53,15 +53,12 @@ public class WebContentActivity extends Activity {
         headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
         headerTitle.setText(this.title);
 
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-                if (modal)
-                    overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                else
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-            }
+        this.headerBackButton.setOnClickListener(view -> {
+            finish();
+            if (modal)
+                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+            else
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
         });
 
         this.progressBar = (ProgressBar) this.findViewById(R.id.custom_webview_progress_bar);

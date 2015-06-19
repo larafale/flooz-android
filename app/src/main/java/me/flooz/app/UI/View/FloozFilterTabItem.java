@@ -99,35 +99,32 @@ public class FloozFilterTabItem extends LinearLayout
         this.iconImageView.setImageDrawable(getResources().getDrawable(iconId));
         this.textView.setText(titleId);
 
-        setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                switch (motionEvent.getAction()) {
-                    case MotionEvent.ACTION_DOWN:
+        setOnTouchListener((view1, motionEvent) -> {
+            switch (motionEvent.getAction()) {
+                case MotionEvent.ACTION_DOWN:
 
-                        break;
-                    case MotionEvent.ACTION_MOVE:
-                        if (ViewUtils.isEventInsideView(FloozFilterTabItem.this, motionEvent)) {
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    if (ViewUtils.isEventInsideView(FloozFilterTabItem.this, motionEvent)) {
 
-                        } else {
+                    } else {
 
-                        }
-                        break;
-                    case MotionEvent.ACTION_UP:
-                        if (ViewUtils.isEventInsideView(FloozFilterTabItem.this, motionEvent)) {
-                            select();
-                            delegate.tabElementViewClick(tabType);
-                        } else {
+                    }
+                    break;
+                case MotionEvent.ACTION_UP:
+                    if (ViewUtils.isEventInsideView(FloozFilterTabItem.this, motionEvent)) {
+                        select();
+                        delegate.tabElementViewClick(tabType);
+                    } else {
 
-                        }
-                        break;
-                    case MotionEvent.ACTION_CANCEL:
+                    }
+                    break;
+                case MotionEvent.ACTION_CANCEL:
 
-                        break;
-                }
-
-                return true;
+                    break;
             }
+
+            return true;
         });
     }
 
@@ -156,6 +153,6 @@ public class FloozFilterTabItem extends LinearLayout
 
     public interface Delegate
     {
-        public void tabElementViewClick(TabType tabType);
+        void tabElementViewClick(TabType tabType);
     }
 }

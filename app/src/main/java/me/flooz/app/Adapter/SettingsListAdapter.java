@@ -26,15 +26,9 @@ public class SettingsListAdapter extends BaseAdapter {
         this.inflater = LayoutInflater.from(ctx);
         this.context = ctx;
         this.items = data;
-        ListView listView = list;
 
-        listView.setAdapter(this);
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                getItem(position).getItemClickListener().onItemClick(parent, view, position, id);
-            }
-        });
+        list.setAdapter(this);
+        list.setOnItemClickListener((parent, view, position, id) -> getItem(position).getItemClickListener().onItemClick(parent, view, position, id));
     }
 
     @Override

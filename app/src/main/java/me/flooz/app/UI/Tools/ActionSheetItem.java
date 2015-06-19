@@ -13,7 +13,7 @@ import me.flooz.app.Utils.CustomFonts;
 public class ActionSheetItem {
 
     public interface ActionSheetItemClickListener {
-        public void onClick();
+        void onClick();
     }
 
     public Button itemLayout;

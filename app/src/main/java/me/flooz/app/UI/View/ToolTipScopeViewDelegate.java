@@ -7,5 +7,5 @@ import me.flooz.app.Model.FLTransaction;
  */
 
 public interface ToolTipScopeViewDelegate {
-    public void scopeChanged(FLTransaction.TransactionScope scope);
+    void scopeChanged(FLTransaction.TransactionScope scope);
 }

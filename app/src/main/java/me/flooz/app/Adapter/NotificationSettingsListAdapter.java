@@ -163,18 +163,15 @@ public class NotificationSettingsListAdapter extends BaseAdapter implements Stic
         holder.settingName.setText(itemTitle);
         holder.settingSwitch.setChecked(itemValue);
 
-        holder.settingSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (position < ((HashMap) notifications.get("push")).size()) {
-                    ((HashMap) notifications.get("push")).put(itemKey, isChecked);
-                    FloozRestClient.getInstance().updateNotificationSettings("push", itemKey, isChecked, null);
-                } else {
-                    ((HashMap) notifications.get("email")).put(itemKey, isChecked);
-                    FloozRestClient.getInstance().updateNotificationSettings("email", itemKey, isChecked, null);
-                }
-                notifyDataSetChanged();
+        holder.settingSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            if (position < ((HashMap) notifications.get("push")).size()) {
+                ((HashMap) notifications.get("push")).put(itemKey, isChecked);
+                FloozRestClient.getInstance().updateNotificationSettings("push", itemKey, isChecked, null);
+            } else {
+                ((HashMap) notifications.get("email")).put(itemKey, isChecked);
+                FloozRestClient.getInstance().updateNotificationSettings("email", itemKey, isChecked, null);
             }
+            notifyDataSetChanged();
         });
 
         return convertView;

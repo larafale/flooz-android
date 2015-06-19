@@ -76,8 +76,6 @@ public class ShareAppActivity extends Activity {
         this.h1 = (TextView) this.findViewById(R.id.invite_h1);
         this.content = (TextView) this.findViewById(R.id.invite_content);
         LinearLayout smsButton = (LinearLayout) this.findViewById(R.id.invite_sms);
-        LinearLayout fbButton = (LinearLayout) this.findViewById(R.id.invite_fb);
-        LinearLayout twitterButton = (LinearLayout) this.findViewById(R.id.invite_twitter);
         LinearLayout mailButton = (LinearLayout) this.findViewById(R.id.invite_mail);
         TextView smsText = (TextView) this.findViewById(R.id.invite_sms_text);
         TextView fbText = (TextView) this.findViewById(R.id.invite_fb_text);
@@ -103,47 +101,38 @@ public class ShareAppActivity extends Activity {
         twitterImage.setColorFilter(this.getResources().getColor(R.color.blue));
         mailImage.setColorFilter(this.getResources().getColor(R.color.blue));
 
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-            }
+        this.headerBackButton.setOnClickListener(view -> {
+            finish();
+            overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
         });
 
         this.tipContainer.dismiss();
         this.toolTip = null;
 
-        this.content.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+        this.content.setOnClickListener(v -> {
 
-                if (toolTip != null) {
+            if (toolTip != null) {
+                tipContainer.dismiss();
+                toolTip = null;
+            } else if (_code != null && !_code.isEmpty() && !_code.replace(" ", "").isEmpty()) {
+                View contentTooltip = getLayoutInflater().inflate(R.layout.invite_tooltip_code, null);
+
+                contentTooltip.setOnClickListener(v1 -> {
+                    ClipboardManager _clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                    _clipboard.setPrimaryClip(ClipData.newPlainText("FloozCode", _code));
                     tipContainer.dismiss();
                     toolTip = null;
-                } else if (_code != null && !_code.isEmpty() && !_code.replace(" ", "").isEmpty()) {
-                    View contentTooltip = getLayoutInflater().inflate(R.layout.invite_tooltip_code, null);
+                });
 
-                    contentTooltip.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            ClipboardManager _clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
-                            _clipboard.setPrimaryClip(ClipData.newPlainText("FloozCode", _code));
-                            tipContainer.dismiss();
-                            toolTip = null;
-                        }
-                    });
+                toolTip = new ToolTip.Builder(instance)
+                        .anchor(content)
+                        .gravity(Gravity.TOP)
+                        .color(instance.getResources().getColor(R.color.black_alpha))
+                        .pointerSize(25)
+                        .contentView(contentTooltip)
+                        .build();
 
-                    toolTip = new ToolTip.Builder(instance)
-                            .anchor(content)
-                            .gravity(Gravity.TOP)
-                            .color(instance.getResources().getColor(R.color.black_alpha))
-                            .pointerSize(25)
-                            .contentView(contentTooltip)
-                            .build();
-
-                    tipContainer.addTooltip(toolTip, true);
-                }
+                tipContainer.addTooltip(toolTip, true);
             }
         });
 
@@ -220,28 +209,22 @@ public class ShareAppActivity extends Activity {
             content.append(text2);
         }
 
-        smsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-                sendIntent.setData(Uri.parse("sms:"));
-                sendIntent.putExtra("sms_body", _smsText);
-                if (sendIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(sendIntent);
-                }
+        smsButton.setOnClickListener(v -> {
+            Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+            sendIntent.setData(Uri.parse("sms:"));
+            sendIntent.putExtra("sms_body", _smsText);
+            if (sendIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(sendIntent);
             }
         });
 
-        mailButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
-                sendIntent.setData(Uri.parse("mailto:"));
-                sendIntent.putExtra(Intent.EXTRA_TEXT, _mailData.optString("content"));
-                sendIntent.putExtra(Intent.EXTRA_SUBJECT, _mailData.optString("title"));
-                if (sendIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(Intent.createChooser(sendIntent, "Partager par mail..."));
-                }
+        mailButton.setOnClickListener(v -> {
+            Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
+            sendIntent.setData(Uri.parse("mailto:"));
+            sendIntent.putExtra(Intent.EXTRA_TEXT, _mailData.optString("content"));
+            sendIntent.putExtra(Intent.EXTRA_SUBJECT, _mailData.optString("title"));
+            if (sendIntent.resolveActivity(getPackageManager()) != null) {
+                startActivity(Intent.createChooser(sendIntent, "Partager par mail..."));
             }
         });
     }

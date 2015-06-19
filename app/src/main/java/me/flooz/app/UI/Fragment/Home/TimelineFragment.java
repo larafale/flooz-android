@@ -37,9 +37,9 @@ import me.flooz.app.Utils.CustomNotificationIntents;
 public class TimelineFragment extends Fragment implements TimelineListAdapter.TimelineListRowDelegate {
 
     public interface TimelineFragmentDelegate {
-        public void onItemSelected(FLTransaction transac);
-        public void onItemCommentSelected(FLTransaction transac);
-        public void onItemImageSelected(String imgUrl);
+        void onItemSelected(FLTransaction transac);
+        void onItemCommentSelected(FLTransaction transac);
+        void onItemImageSelected(String imgUrl);
     }
 
     public PullRefreshLayout refreshContainer;
@@ -70,12 +70,6 @@ public class TimelineFragment extends Fragment implements TimelineListAdapter.Ti
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         View view = inflater.inflate(R.layout.timeline_fragment, null);
@@ -85,12 +79,7 @@ public class TimelineFragment extends Fragment implements TimelineListAdapter.Ti
         ((TextView)this.timelineListView.getScrollBarPanel().findViewById(R.id.timeline_scrollbar_panel_when)).setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
         this.backgroundImage  = (ImageView) view.findViewById(R.id.timeline_background);
 
-        this.refreshContainer.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshTransactions();
-            }
-        });
+        this.refreshContainer.setOnRefreshListener(TimelineFragment.this::refreshTransactions);
 
         this.timelineListView.setOnTimelineListViewListener(new TimelineListView.OnTimelineListViewListener() {
             @Override
@@ -127,12 +116,6 @@ public class TimelineFragment extends Fragment implements TimelineListAdapter.Ti
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-
-    @Override
     public void onResume() {
         super.onResume();
         this.refreshTransactions();
@@ -146,12 +129,6 @@ public class TimelineFragment extends Fragment implements TimelineListAdapter.Ti
         super.onPause();
 
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadTimelineReceiver);
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
     }
 
     @Override
@@ -211,20 +188,17 @@ public class TimelineFragment extends Fragment implements TimelineListAdapter.Ti
 
                     if (transactions.size() == 0) {
                         Handler _timer = new Handler();
-                        _timer.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (transactions.size() == 0) {
-                                    if (currentScope == FLTransaction.TransactionScope.TransactionScopeFriend) {
-                                        backgroundImage.setImageResource(R.drawable.empty_tl_friend);
-                                        backgroundImage.setVisibility(View.VISIBLE);
-                                    } else if (currentScope == FLTransaction.TransactionScope.TransactionScopePrivate) {
-                                        backgroundImage.setImageResource(R.drawable.empty_tl_private);
-                                        backgroundImage.setVisibility(View.VISIBLE);
-                                    }
-                                } else {
-                                    backgroundImage.setVisibility(View.GONE);
+                        _timer.postDelayed(() -> {
+                            if (transactions.size() == 0) {
+                                if (currentScope == FLTransaction.TransactionScope.TransactionScopeFriend) {
+                                    backgroundImage.setImageResource(R.drawable.empty_tl_friend);
+                                    backgroundImage.setVisibility(View.VISIBLE);
+                                } else if (currentScope == FLTransaction.TransactionScope.TransactionScopePrivate) {
+                                    backgroundImage.setImageResource(R.drawable.empty_tl_private);
+                                    backgroundImage.setVisibility(View.VISIBLE);
                                 }
+                            } else {
+                                backgroundImage.setVisibility(View.GONE);
                             }
                         }, 500);
                     } else {

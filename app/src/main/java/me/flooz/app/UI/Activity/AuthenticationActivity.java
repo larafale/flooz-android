@@ -17,7 +17,6 @@ import me.flooz.app.UI.Fragment.Home.Authentication.AuthenticationBaseFragment;
 import me.flooz.app.UI.Fragment.Home.Authentication.AuthenticationChangePassFragment;
 import me.flooz.app.UI.Fragment.Home.Authentication.AuthenticationPassFragment;
 import me.flooz.app.UI.Fragment.Home.Authentication.AuthenticationResetCodeFragment;
-import me.flooz.app.UI.Fragment.Home.Authentication.AuthenticationSecretFragment;
 import me.flooz.app.UI.Fragment.Home.Authentication.AuthenticationSecureCodeFragment;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.FLHelper;
@@ -37,13 +36,7 @@ public class AuthenticationActivity extends Activity {
         AuthenticationPass,
         AuthenticationResetCode,
         AuthenticationResetCodeConfirm,
-        AuthenticationChangePass,
-        AuthenticationSecret
-    }
-
-    public interface AuthenticationDelegate {
-        void authenticationValidated();
-        void authenticationFailed();
+        AuthenticationChangePass
     }
 
     private RelativeLayout header;
@@ -75,12 +68,7 @@ public class AuthenticationActivity extends Activity {
         this.headerTitleImg = (ImageView)this.findViewById(R.id.authentication_header_title_img);
 
         this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                backToPreviousPage();
-            }
-        });
+        this.headerBackButton.setOnClickListener(view -> backToPreviousPage());
 
         this.currentPage = AuthenticationPageIdentifier.AuthenticationSecureCode;
 
@@ -175,8 +163,6 @@ public class AuthenticationActivity extends Activity {
             case AuthenticationChangePass:
                 fragment = new AuthenticationChangePassFragment();
                 break;
-            case AuthenticationSecret:
-                fragment = new AuthenticationSecretFragment();
             default:
                 break;
         }
@@ -223,8 +209,6 @@ public class AuthenticationActivity extends Activity {
                 break;
             case AuthenticationChangePass:
                 break;
-            case AuthenticationSecret:
-                this.currentPage = AuthenticationPageIdentifier.AuthenticationResetCode;
         }
 
         InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -263,8 +247,6 @@ public class AuthenticationActivity extends Activity {
                 break;
             case AuthenticationChangePass:
                 break;
-            case AuthenticationSecret:
-                this.currentPage = AuthenticationPageIdentifier.AuthenticationPass;
         }
 
         InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);

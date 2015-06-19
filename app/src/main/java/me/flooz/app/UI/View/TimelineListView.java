@@ -3,6 +3,7 @@ package me.flooz.app.UI.View;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -21,10 +22,10 @@ import me.flooz.app.R;
  */
 public class TimelineListView extends ListView implements OnScrollListener {
 
-    public static interface OnTimelineListViewListener {
+    public interface OnTimelineListViewListener {
 
-        public void onPositionChanged(TimelineListView listView, int position, View scrollBarPanel);
-        public void onShowLastItem();
+        void onPositionChanged(TimelineListView listView, int position, View scrollBarPanel);
+        void onShowLastItem();
 
     }
 
@@ -42,13 +43,9 @@ public class TimelineListView extends ListView implements OnScrollListener {
 
     private final Handler handler = new Handler();
 
-    private final Runnable scrollBarPanelFadeRunnable = new Runnable() {
-
-        @Override
-        public void run() {
-            if (outAnimation != null) {
-                scrollBarPanel.startAnimation(outAnimation);
-            }
+    private final Runnable scrollBarPanelFadeRunnable = () -> {
+        if (outAnimation != null) {
+            scrollBarPanel.startAnimation(outAnimation);
         }
     };
 
@@ -224,7 +221,7 @@ public class TimelineListView extends ListView implements OnScrollListener {
     }
 
     @Override
-    protected void dispatchDraw(Canvas canvas) {
+    protected void dispatchDraw(@NonNull Canvas canvas) {
         super.dispatchDraw(canvas);
 
         if (scrollBarPanel != null && scrollBarPanel.getVisibility() == View.VISIBLE) {

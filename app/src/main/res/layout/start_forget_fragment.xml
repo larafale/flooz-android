@@ -18,7 +18,7 @@
                 android:id="@+id/start_forget_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mot de passe oublié !"
+                android:text="@string/START_FORGET"
                 android:textColor="@android:color/white"
                 android:textSize="25sp"
                 android:layout_centerHorizontal="true"

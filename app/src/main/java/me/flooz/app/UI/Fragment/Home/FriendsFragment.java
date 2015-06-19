@@ -66,64 +66,58 @@ public class FriendsFragment extends HomeBaseFragment implements FriendsListAdap
         this.backgroundView = (LinearLayout) view.findViewById(R.id.friends_empty_background);
         Button inviteFriends = (Button) view.findViewById(R.id.friends_invite_button);
 
-        inviteFriends.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intentShare = new Intent(parentActivity, ShareAppActivity.class);
-                parentActivity.startActivity(intentShare);
-                parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-            }
+        inviteFriends.setOnClickListener(v -> {
+            Intent intentShare = new Intent(parentActivity, ShareAppActivity.class);
+            parentActivity.startActivity(intentShare);
+            parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
         });
 
         this.searchTextfield.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
 
-        this.refreshContainer.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                final Boolean[] validate = {false};
+        this.refreshContainer.setOnRefreshListener(() -> {
+            final Boolean[] validate = {false};
 
-                FloozRestClient.getInstance().updateCurrentUser(new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
+            FloozRestClient.getInstance().updateCurrentUser(new FloozHttpResponseHandler() {
+                @Override
+                public void success(Object response) {
 
-                        listAdapter.reloadFriends();
+                    listAdapter.reloadFriends();
 
-                        if (validate[0])
-                            refreshContainer.setRefreshing(false);
-                        else
-                            validate[0] = true;
-                     }
+                    if (validate[0])
+                        refreshContainer.setRefreshing(false);
+                    else
+                        validate[0] = true;
+                 }
 
-                    @Override
-                    public void failure(int statusCode, FLError error) {
-                        if (validate[0])
-                            refreshContainer.setRefreshing(false);
-                        else
-                            validate[0] = true;
-                    }
-                });
+                @Override
+                public void failure(int statusCode, FLError error) {
+                    if (validate[0])
+                        refreshContainer.setRefreshing(false);
+                    else
+                        validate[0] = true;
+                }
+            });
 
-                FloozRestClient.getInstance().loadFriendSuggestions(new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
+            FloozRestClient.getInstance().loadFriendSuggestions(new FloozHttpResponseHandler() {
+                @Override
+                public void success(Object response) {
 
-                        listAdapter.reloadSuggestions((List<FLUser>)response);
+                    listAdapter.reloadSuggestions((List<FLUser>)response);
 
-                        if (validate[0])
-                            refreshContainer.setRefreshing(false);
-                        else
-                            validate[0] = true;
-                    }
+                    if (validate[0])
+                        refreshContainer.setRefreshing(false);
+                    else
+                        validate[0] = true;
+                }
 
-                    @Override
-                    public void failure(int statusCode, FLError error) {
-                        if (validate[0])
-                            refreshContainer.setRefreshing(false);
-                        else
-                            validate[0] = true;
-                    }
-                });
-            }
+                @Override
+                public void failure(int statusCode, FLError error) {
+                    if (validate[0])
+                        refreshContainer.setRefreshing(false);
+                    else
+                        validate[0] = true;
+                }
+            });
         });
 
         this.searchTextfield.addTextChangedListener(new TextWatcher() {
@@ -142,12 +136,7 @@ public class FriendsFragment extends HomeBaseFragment implements FriendsListAdap
                 if (editable.length() > 0) {
                     clearSearchTextfieldButton.setVisibility(View.VISIBLE);
                     Handler handler = new Handler(Looper.getMainLooper());
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            listAdapter.searchUser(searchTextfield.getText().toString());
-                        }
-                    }, 300);
+                    handler.postDelayed(() -> listAdapter.searchUser(searchTextfield.getText().toString()), 300);
                 } else {
                     clearSearchTextfieldButton.setVisibility(View.GONE);
                     listAdapter.searchUser(editable.toString());
@@ -155,12 +144,9 @@ public class FriendsFragment extends HomeBaseFragment implements FriendsListAdap
             }
         });
 
-        this.clearSearchTextfieldButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                searchTextfield.setText("");
-                listAdapter.searchUser("");
-            }
+        this.clearSearchTextfieldButton.setOnClickListener(view1 -> {
+            searchTextfield.setText("");
+            listAdapter.searchUser("");
         });
 
         StickyListHeadersListView resultList = (StickyListHeadersListView) view.findViewById(R.id.friends_result_list);
@@ -168,13 +154,10 @@ public class FriendsFragment extends HomeBaseFragment implements FriendsListAdap
         this.listAdapter.delegate = this;
         resultList.setAdapter(this.listAdapter);
 
-        resultList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
-                FLUser user = listAdapter.getItem(position);
-                user.selectedCanal = FLUser.FLUserSelectedCanal.values()[(int) listAdapter.getHeaderId(position)];
-                FloozApplication.getInstance().showUserActionMenu(user);
-            }
+        resultList.setOnItemClickListener((adapterView, view1, position, l) -> {
+            FLUser user = listAdapter.getItem(position);
+            user.selectedCanal = FLUser.FLUserSelectedCanal.values()[(int) listAdapter.getHeaderId(position)];
+            FloozApplication.getInstance().showUserActionMenu(user);
         });
 
         this.dataReloaded();

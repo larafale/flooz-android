@@ -113,15 +113,12 @@ public class IdentitySettingsActivity extends Activity {
 
         this.reloadView();
 
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-                if (modal)
-                    overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                else
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-            }
+        this.headerBackButton.setOnClickListener(view -> {
+            finish();
+            if (modal)
+                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+            else
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
         });
 
         this.birthdateTextfield.addTextChangedListener(new TextWatcher() {
@@ -195,48 +192,37 @@ public class IdentitySettingsActivity extends Activity {
             }
         });
 
-        this.birthdateTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    saveButton.performClick();
-                }
-                return false;
+        this.birthdateTextfield.setOnEditorActionListener((v, actionId, event) -> {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                saveButton.performClick();
+            }
+            return false;
+        });
+
+        cniRectoTextfield.setOnClickListener(v -> {
+            FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+            if (currentUser.checkDocuments.get("cniRecto").equals(0) || currentUser.checkDocuments.get("cniRecto").equals(3)) {
+                currentDoc = "cniRecto";
+                showImageActionMenu();
             }
         });
 
-        cniRectoTextfield.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FLUser currentUser = FloozRestClient.getInstance().currentUser;
+        this.cniRectoButton.setOnClickListener(v -> {
+            FLUser currentUser = FloozRestClient.getInstance().currentUser;
 
-                if (currentUser.checkDocuments.get("cniRecto").equals(0) || currentUser.checkDocuments.get("cniRecto").equals(3)) {
-                    currentDoc = "cniRecto";
-                    showImageActionMenu();
-                }
+            if (currentUser.checkDocuments.get("cniRecto").equals(0) || currentUser.checkDocuments.get("cniRecto").equals(3)) {
+                currentDoc = "cniRecto";
+                showImageActionMenu();
             }
         });
 
-        this.cniRectoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FLUser currentUser = FloozRestClient.getInstance().currentUser;
+        cniVersoTextfield.setOnClickListener(v -> {
+            FLUser currentUser = FloozRestClient.getInstance().currentUser;
 
-                if (currentUser.checkDocuments.get("cniRecto").equals(0) || currentUser.checkDocuments.get("cniRecto").equals(3)) {
-                    currentDoc = "cniRecto";
-                    showImageActionMenu();
-                }
-            }
-        });
-
-        cniVersoTextfield.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FLUser currentUser = FloozRestClient.getInstance().currentUser;
-
-                if (currentUser.checkDocuments.get("cniVerso").equals(0) || currentUser.checkDocuments.get("cniVerso").equals(3)) {
-                    currentDoc = "cniVerso";
-                    showImageActionMenu();
-                }
+            if (currentUser.checkDocuments.get("cniVerso").equals(0) || currentUser.checkDocuments.get("cniVerso").equals(3)) {
+                currentDoc = "cniVerso";
+                showImageActionMenu();
             }
         });
 
@@ -348,13 +334,10 @@ public class IdentitySettingsActivity extends Activity {
         }
     };
 
-    private ActionSheetItem.ActionSheetItemClickListener showGallery = new ActionSheetItem.ActionSheetItemClickListener() {
-        @Override
-        public void onClick() {
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setType("image/*");
-            startActivityForResult(intent, SELECT_PICTURE);
-        }
+    private ActionSheetItem.ActionSheetItemClickListener showGallery = () -> {
+        Intent intent = new Intent(Intent.ACTION_PICK);
+        intent.setType("image/*");
+        startActivityForResult(intent, SELECT_PICTURE);
     };
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -374,42 +357,34 @@ public class IdentitySettingsActivity extends Activity {
                     FLUser currentUser = FloozRestClient.getInstance().currentUser;
                     currentUser.checkDocuments.put(currentDoc, 1);
                     Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            reloadDocuments();
-                        }
-                    });
+                    handler.post(this::reloadDocuments);
 
                     Handler mainHandler = new Handler(Looper.getMainLooper());
-                    Runnable myRunnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
-                            String imagePath = ImageHelper.getPath(instance, selectedImageUri);
-                            if (imagePath != null) {
-                                FloozRestClient.getInstance().uploadDocument(currentDoc, new File(imagePath), new FloozHttpResponseHandler() {
-                                    @Override
-                                    public void success(Object response) {
-                                        reloadDocuments();
-                                    }
+                    Runnable myRunnable = () -> {
+                        android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
+                        String imagePath = ImageHelper.getPath(instance, selectedImageUri);
+                        if (imagePath != null) {
+                            FloozRestClient.getInstance().uploadDocument(currentDoc, new File(imagePath), new FloozHttpResponseHandler() {
+                                @Override
+                                public void success(Object response) {
+                                    reloadDocuments();
+                                }
 
-                                    @Override
-                                    public void failure(int statusCode, FLError error) {
-                                        FloozRestClient.getInstance().updateCurrentUser(new FloozHttpResponseHandler() {
-                                            @Override
-                                            public void success(Object response) {
-                                                reloadDocuments();
-                                            }
+                                @Override
+                                public void failure(int statusCode, FLError error) {
+                                    FloozRestClient.getInstance().updateCurrentUser(new FloozHttpResponseHandler() {
+                                        @Override
+                                        public void success(Object response) {
+                                            reloadDocuments();
+                                        }
 
-                                            @Override
-                                            public void failure(int statusCode, FLError error) {
+                                        @Override
+                                        public void failure(int statusCode, FLError error) {
 
-                                            }
-                                        });
-                                    }
-                                });
-                            }
+                                        }
+                                    });
+                                }
+                            });
                         }
                     };
                     mainHandler.post(myRunnable);

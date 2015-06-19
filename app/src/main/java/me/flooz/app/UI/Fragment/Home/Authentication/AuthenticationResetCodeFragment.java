@@ -37,11 +37,6 @@ public class AuthenticationResetCodeFragment extends AuthenticationBaseFragment 
     public Boolean confirmMode = false;
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-    }
-
-    @Override
     public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.authentication_reset_secure_code_fragment, null);
 

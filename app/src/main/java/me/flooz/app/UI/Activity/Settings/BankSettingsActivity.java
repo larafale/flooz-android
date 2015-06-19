@@ -56,15 +56,12 @@ public class BankSettingsActivity extends Activity {
         headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
         this.ibanTextfield.setTypeface(CustomFonts.customContentRegular(this));
 
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-                if (modal)
-                    overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                else
-                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-            }
+        this.headerBackButton.setOnClickListener(view -> {
+            finish();
+            if (modal)
+                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+            else
+                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
         });
 
         this.reloadView();
@@ -94,40 +91,35 @@ public class BankSettingsActivity extends Activity {
             }
         });
 
-        this.ibanTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    saveButton.performClick();
-                }
-                return false;
+        this.ibanTextfield.setOnEditorActionListener((v, actionId, event) -> {
+            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                saveButton.performClick();
             }
+            return false;
         });
 
-        this.saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FloozRestClient.getInstance().showLoadView();
-                Map<String, Object> sepa = new HashMap<>();
-                sepa.put("iban", ibanTextfield.getText());
+        this.saveButton.setOnClickListener(v -> {
+            FloozRestClient.getInstance().showLoadView();
+            Map<String, Object> sepa = new HashMap<>();
+            sepa.put("iban", ibanTextfield.getText());
 
-                Map<String, Object> settings = new HashMap<>();
-                settings.put("sepa", sepa);
+            Map<String, Object> settings = new HashMap<>();
+            settings.put("sepa", sepa);
 
-                Map<String, Object> user = new HashMap<>();
-                user.put("settings", settings);
+            Map<String, Object> user = new HashMap<>();
+            user.put("settings", settings);
 
-                FloozRestClient.getInstance().updateUser(user, new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
+            FloozRestClient.getInstance().updateUser(user, new FloozHttpResponseHandler() {
+                @Override
+                public void success(Object response) {
 
-                    }
+                }
 
-                    @Override
-                    public void failure(int statusCode, FLError error) {
+                @Override
+                public void failure(int statusCode, FLError error) {
 
-                    }
-                });
-            }
+                }
+            });
         });
     }
 

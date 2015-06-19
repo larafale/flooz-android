@@ -77,6 +77,7 @@ public class ContactsManager {
             }
         }
 
+        assert contactCursor != null;
         contactCursor.close();
         return resultList;
     }
@@ -132,16 +133,16 @@ public class ContactsManager {
             }
         }
 
+        assert contactCursor != null;
         contactCursor.close();
         return resultList;
     }
 
     private static String validatePhoneNumber(String number) {
-        String nb = number;
 
         PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
         try {
-            Phonenumber.PhoneNumber numberProto = phoneUtil.parse(nb, "FR");
+            Phonenumber.PhoneNumber numberProto = phoneUtil.parse(number, "FR");
 
             if (phoneUtil.isValidNumberForRegion(numberProto, "FR") && phoneUtil.getNumberType(numberProto) == PhoneNumberUtil.PhoneNumberType.MOBILE)
                 return phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.E164);

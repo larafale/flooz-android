@@ -28,10 +28,16 @@
     <string name="GLOBAL_INTERO">\?</string>
     <string name="GLOBAL_UPDATE">Mise à jour disponible !</string>
 
+    <string name="GLOBAL_LOADING">chargement…</string>
+
     <string name="LOGOUT_INFO">Êtes-vous sûr de vouloir vous déconnecter ?</string>
 
     <string name="START_SIGNUP">Inscription</string>
     <string name="START_LOGIN">Connexion</string>
+    <string name="START_TITLE">Pay, Like,</string>
+    <string name="START_WELCOME">Bienvenue !</string>
+    <string name="START_WELCOME_BACK">Ravis de vous revoir !</string>
+    <string name="START_FORGET">Mot de passe oublié !</string>
 
     <string name="MSG_UPDATE">Bonne nouvelle ! Une nouvelle version de Flooz est disponible.</string>
     <string name="BTN_UPDATE">Mettre à jour</string>
@@ -145,8 +151,8 @@
     <string name="FIELD_TRANSACTION_SELECT_FRIEND">A qui ?</string>
     <string name="FIELD_TRANSACTION_HIDE">Masquer ma participation</string>
 
-    <string name="SIGNUP_FACEBOOK">Avec Facebook</string>
-    <string name="CUSTOM_SECRET_QUESTION">Question personnalisée...</string>
+    <string name="SIGNUP_FACEBOOK">Facebook</string>
+    <string name="CUSTOM_SECRET_QUESTION">Question personnalisée…</string>
 
     <string name="LOGIN_FACEBOOK">Utiliser mes infos Facebook</string>
     <string name="LOGIN_OR">ou</string>

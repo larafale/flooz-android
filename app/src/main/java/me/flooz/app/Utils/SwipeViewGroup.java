@@ -12,10 +12,10 @@ import android.widget.LinearLayout;
 public class SwipeViewGroup extends LinearLayout {
 
     public interface SwipeEvents {
-        public void onSwipeRight();
-        public void onSwipeLeft();
-        public void onSwipeTop();
-        public void onSwipeBottom();
+        void onSwipeRight();
+        void onSwipeLeft();
+        void onSwipeTop();
+        void onSwipeBottom();
     }
 
     public GestureDetector gestureDetector;
