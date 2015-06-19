@@ -21,6 +21,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONObject;
 
+import io.branch.referral.Branch;
+import io.branch.referral.BranchApp;
+import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
@@ -108,6 +111,12 @@ public class StartSignupFragment extends StartBaseFragment {
         signupButton.setOnClickListener(v -> {
             parentActivity.hideKeyboard();
 
+            Branch branch = Branch.getInstance(parentActivity.getApplicationContext());
+
+            if (branch.getLatestReferringParams().has("referrer"))
+                parentActivity.signupData.put("referrer", branch.getLatestReferringParams().optString("referrer"));
+
+            parentActivity.signupData.put("distinctId", FloozApplication.mixpanelAPI.getDistinctId());
             parentActivity.signupData.put("firstName", firstnameTextfield.getText().toString());
             parentActivity.signupData.put("lastName", lastnameTextfield.getText().toString());
             parentActivity.signupData.put("nick", nicknameTextfield.getText().toString());

@@ -1771,7 +1771,6 @@ public class FloozRestClient
                 fbData.remove("type");
 
                 userData.put("fb", fbData);
-                userData.put("distinctId", FloozApplication.mixpanelAPI.getDistinctId());
 
                 if (fbData.containsKey("email"))
                     userData.put("email", fbData.get("email"));

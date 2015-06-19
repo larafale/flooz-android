@@ -455,7 +455,6 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
         branch.initSession((referringParams, error) -> {
             if (error == null) {
                 String data = referringParams.optString("data");
-                String referrer = referringParams.optString("referrer");
 
                 if (data != null && !data.isEmpty()) {
                     try {

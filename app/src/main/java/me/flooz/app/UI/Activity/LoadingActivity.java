@@ -3,17 +3,27 @@ package me.flooz.app.UI.Activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
 import com.facebook.AppEventsLogger;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import io.branch.referral.Branch;
 import io.fabric.sdk.android.Fabric;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.BuildConfig;
+import me.flooz.app.Model.FLError;
+import me.flooz.app.Model.FLTrigger;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Tools.CustomToast;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.ViewServer;
@@ -76,8 +86,12 @@ public class LoadingActivity extends Activity {
 
     protected void onStart() {
         super.onStart();
-        floozApp.setCurrentActivity(this);
-        AppEventsLogger.activateApp(this);
+
+        Branch branch = Branch.getInstance(getApplicationContext());
+        branch.initSession((referringParams, error) -> {
+
+
+        }, this.getIntent().getData(), this);
     }
 
     protected void onResume() {
