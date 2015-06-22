@@ -27,7 +27,7 @@
 
         <EditText
             android:id="@+id/start_sms_textfield"
-            android:layout_marginTop="@dimen/dimen_xlarge"
+            android:layout_marginTop="@dimen/dimen_xxxlarge"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
             android:gravity="bottom|center_horizontal"

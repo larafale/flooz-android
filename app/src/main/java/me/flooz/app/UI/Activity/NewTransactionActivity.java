@@ -50,6 +50,7 @@ import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLPreset;
 import me.flooz.app.Model.FLTransaction;
+import me.flooz.app.Model.FLTrigger;
 import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
@@ -118,6 +119,8 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
     private ToolTip demoToolTip;
 
     private Boolean transactionPending = false;
+
+    private Dialog popupDialog;
 
     public void init() {
         this.random = FLHelper.generateRandomString();
@@ -613,6 +616,21 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         this.amountTextfield.setText(this.savedAmount);
         this.contentTextfield.setText(this.savedWhy);
 
+        if (this.preset != null && this.preset.triggers != null) {
+            for (int i = 0; i < this.preset.triggers.length(); i++) {
+                FLTrigger trigger = new FLTrigger(this.preset.triggers.optJSONObject(i));
+                if (trigger.delay.doubleValue() > 0) {
+                    double delay = trigger.delay.doubleValue() * 1000;
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.postDelayed(() -> FloozRestClient.getInstance().handleTrigger(trigger), (int) delay);
+                } else {
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(() -> FloozRestClient.getInstance().handleTrigger(trigger));
+                }
+            }
+            this.preset.triggers = null;
+        }
+
         if (!this.isDemo) {
             final InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
 
@@ -625,37 +643,38 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
             } else
                 this.baseLayout.requestFocus();
         } else {
-            if (this.preset.popup != null) {
-                final Dialog dialog = new Dialog(this);
+            if (this.preset != null && this.preset.popup != null && popupDialog == null) {
+                popupDialog = new Dialog(this);
 
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setContentView(R.layout.custom_dialog_balance);
+                popupDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                popupDialog.setContentView(R.layout.custom_dialog_balance);
 
-                TextView title = (TextView) dialog.findViewById(R.id.dialog_wallet_title);
+                TextView title = (TextView) popupDialog.findViewById(R.id.dialog_wallet_title);
                 title.setTypeface(CustomFonts.customContentRegular(this), Typeface.BOLD);
 
                 title.setText(this.preset.popup.optString("title"));
 
-                TextView text = (TextView) dialog.findViewById(R.id.dialog_wallet_msg);
+                TextView text = (TextView) popupDialog.findViewById(R.id.dialog_wallet_msg);
                 text.setTypeface(CustomFonts.customContentRegular(this));
 
                 text.setText(this.preset.popup.optString("content"));
 
-                Button close = (Button) dialog.findViewById(R.id.dialog_wallet_btn);
+                Button close = (Button) popupDialog.findViewById(R.id.dialog_wallet_btn);
 
                 if (this.preset.popup.has("button") && !this.preset.popup.optString("button").isEmpty())
                     close.setText(this.preset.popup.optString("button"));
 
                 close.setOnClickListener(v -> {
-                    dialog.dismiss();
-                    preset.popup = null;
+                    popupDialog.dismiss();
+                    popupDialog = null;
                     if (preset.steps != null)
                         showDemoStepPopover(preset.steps.optJSONObject(demoCurrentStep));
                 });
 
-                dialog.setCanceledOnTouchOutside(false);
-                dialog.show();
-            } else if (this.preset.steps != null)
+                preset.popup = null;
+                popupDialog.setCanceledOnTouchOutside(false);
+                popupDialog.show();
+            } else if (this.preset != null && this.preset.steps != null && popupDialog == null)
                 this.showDemoStepPopover(this.preset.steps.optJSONObject(demoCurrentStep));
         }
 

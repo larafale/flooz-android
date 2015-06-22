@@ -180,7 +180,6 @@ public class FloozApplication extends BranchApp
     }
 
     public void didConnected() {
-
         FloozRestClient.getInstance().textObjectFromApi(null);
         FloozRestClient.getInstance().updateNotificationFeed(null);
 
@@ -196,10 +195,10 @@ public class FloozApplication extends BranchApp
             Intent intent = new Intent();
             intent.setClass(context, HomeActivity.class);
             if (tmp == null) {
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             } else {
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 tmp.startActivity(intent);
                 tmp.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 tmp.finish();
@@ -219,10 +218,10 @@ public class FloozApplication extends BranchApp
             Intent intent = new Intent();
             intent.setClass(context, StartActivity.class);
             if (tmp == null) {
-                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 startActivity(intent);
             } else {
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
                 tmp.startActivity(intent);
                 tmp.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 tmp.finish();

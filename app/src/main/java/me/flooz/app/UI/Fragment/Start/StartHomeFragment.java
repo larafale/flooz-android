@@ -1,6 +1,9 @@
 package me.flooz.app.UI.Fragment.Start;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +11,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.viewpagerindicator.CirclePageIndicator;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 import me.flooz.app.Adapter.StartSliderAdapter;
 import me.flooz.app.Model.FLError;
@@ -26,11 +32,17 @@ public class StartHomeFragment extends StartBaseFragment {
     private CirclePageIndicator pageIndicator;
     private StartSliderAdapter pagerAdapter;
 
+    private Handler handler = new Handler();
+
+    private Runnable runnable = () -> {
+        pagerView.setCurrentItem(pagerView.getCurrentItem() + 1, true);
+        handler.postDelayed(this.runnable, 4000);
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
-
     }
 
     @Override
@@ -45,6 +57,26 @@ public class StartHomeFragment extends StartBaseFragment {
 
         title.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
 
+        this.handler = new Handler(Looper.getMainLooper());
+
+        this.pageIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                handler.removeCallbacks(runnable);
+                handler.postDelayed(runnable, 4000);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
         FloozRestClient.getInstance().textObjectFromApi(new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
@@ -55,6 +87,9 @@ public class StartHomeFragment extends StartBaseFragment {
                 pageIndicator.setViewPager(pagerView);
                 pageIndicator.setFillColor(inflater.getContext().getResources().getColor(android.R.color.white));
                 pageIndicator.setStrokeColor(inflater.getContext().getResources().getColor(android.R.color.white));
+
+                handler.removeCallbacks(runnable);
+                handler.postDelayed(runnable, 4000);
             }
 
             @Override
@@ -67,5 +102,20 @@ public class StartHomeFragment extends StartBaseFragment {
         signupButton.setOnClickListener(v -> parentActivity.changeCurrentPage(new StartSignupFragment(), android.R.animator.fade_in, android.R.animator.fade_out, true));
 
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        if (this.pagerView.getAdapter() != null)
+            this.handler.postDelayed(runnable, 4000);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        handler.removeCallbacks(runnable);
     }
 }

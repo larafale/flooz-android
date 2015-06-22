@@ -300,7 +300,7 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
 
                 for (int i = 0; i < t.length(); i++) {
                     final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
-                    if (trigger.delay.intValue() > 0) {
+                    if (trigger.delay.doubleValue() > 0) {
                         Handler handler = new Handler(Looper.getMainLooper());
                         handler.postDelayed(() -> FloozRestClient.getInstance().handleTrigger(trigger), (int) (trigger.delay.doubleValue() * 1000));
                     } else {
@@ -461,7 +461,7 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
 
                         for (int i = 0; i < t.length(); i++) {
                             final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
-                            if (trigger.delay.intValue() > 0) {
+                            if (trigger.delay.doubleValue() > 0) {
                                 Handler thandler = new Handler(Looper.getMainLooper());
                                 thandler.postDelayed(() -> FloozRestClient.getInstance().handleTrigger(trigger), (int) (trigger.delay.doubleValue() * 1000));
                             } else {
@@ -525,7 +525,7 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
                         if (floozApp.getCurrentActivity() instanceof HomeActivity) {
                             for (int i = 0; i < finalJsonObject.length(); i++) {
                                 final FLTrigger trigger = new FLTrigger(finalJsonObject.optJSONObject(i));
-                                if (trigger.delay.intValue() > 0) {
+                                if (trigger.delay.doubleValue() > 0) {
                                     Handler handlerTrigger = new Handler(Looper.getMainLooper());
                                     handlerTrigger.postDelayed(() -> FloozRestClient.getInstance().handleTrigger(trigger), (int) (trigger.delay.doubleValue() * 1000));
                                 } else {
@@ -553,7 +553,7 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
 
                             for (int i = 0; i < t.length(); i++) {
                                 final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
-                                if (trigger.delay.intValue() > 0) {
+                                if (trigger.delay.doubleValue() > 0) {
                                     Handler thandler = new Handler(Looper.getMainLooper());
                                     thandler.postDelayed(() -> FloozRestClient.getInstance().handleTrigger(trigger), (int) (trigger.delay.doubleValue() * 1000));
                                 } else {

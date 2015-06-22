@@ -814,6 +814,18 @@ public class FloozRestClient
     /********  CASHOUT  ********/
     /***************************/
 
+    public void cashoutValidate(Number amount, FloozHttpResponseHandler responseHandler) {
+        Map<String, Object> param = new HashMap<>();
+
+        param.put("amount", amount);
+        param.put("validate", true);
+
+        if (this.getSecureCode() != null)
+            param.put("secureCode", this.getSecureCode());
+
+        this.request("/cashouts", HttpRequestType.POST, param, responseHandler);
+    }
+
     public void cashoutValidate(FloozHttpResponseHandler responseHandler) {
         Map<String, Object> param = new HashMap<>();
 
@@ -1984,7 +1996,7 @@ public class FloozRestClient
                 if (canExecute) {
                     for (int i = 0; i < t.length(); i++) {
                         final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
-                        if (trigger.delay.intValue() > 0) {
+                        if (trigger.delay.doubleValue() > 0) {
                             Handler handler = new Handler(Looper.getMainLooper());
                             handler.postDelayed(() -> handleTrigger(trigger), (int) (trigger.delay.doubleValue() * 1000));
                         } else {

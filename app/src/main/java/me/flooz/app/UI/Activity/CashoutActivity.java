@@ -110,9 +110,25 @@ public class CashoutActivity extends Activity {
         });
 
         this.cashoutButton.setOnClickListener(v -> {
-            Intent intentNotifs = new Intent(instance, AuthenticationActivity.class);
-            instance.startActivityForResult(intentNotifs, AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY);
-            instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+            String amount = amountTextfield.getText().toString();
+
+            if (amount.isEmpty())
+                amount = "0";
+
+            FloozRestClient.getInstance().showLoadView();
+            FloozRestClient.getInstance().cashoutValidate(Float.parseFloat(amount), new FloozHttpResponseHandler() {
+                @Override
+                public void success(Object response) {
+                    Intent intentNotifs = new Intent(instance, AuthenticationActivity.class);
+                    instance.startActivityForResult(intentNotifs, AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY);
+                    instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                }
+
+                @Override
+                public void failure(int statusCode, FLError error) {
+
+                }
+            });
         });
     }
 

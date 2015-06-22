@@ -1,127 +1,149 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal"
     android:clickable="true"
     android:background="@color/background_header">
 
-    <TextView
-        android:id="@+id/start_card_title"
-        android:layout_width="wrap_content"
-        android:textSize="@dimen/header_pager_view_fontsize"
-        android:layout_marginTop="@dimen/dimen_xlarge"
-        android:textColor="@color/blue"
-        android:layout_height="wrap_content"
-        android:text="@string/SETTINGS_CARD"/>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical"
-        android:layout_marginTop="@dimen/dimen_xlarge"
-        android:paddingLeft="@dimen/dimen_xlarge"
-        android:paddingRight="@dimen/dimen_xlarge">
-
-        <EditText
-            android:id="@+id/start_card_owner"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_medium"
-            android:singleLine="true"
-            android:hint="@string/SIGNUP_FIELD_CARD_OWNER_PLACEHOLDER"
-            android:textColorHint="@color/placeholder"/>
-
-
-        <RelativeLayout
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_medium">
-
-            <EditText
-                android:id="@+id/start_card_number"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:inputType="number|text"
-                android:hint="@string/SIGNUP_FIELD_CARD_NUMBER_PLACEHOLDER"
-                android:textColorHint="@color/placeholder"
-                android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"/>
-
-            <ImageView
-                android:id="@+id/start_card_scanpay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/camera_grey"
-                android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/dimen_large"
-                android:layout_centerVertical="true"
-                android:visibility="gone"/>
-
-        </RelativeLayout>
-
-        <EditText
-            android:id="@+id/start_card_expires"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_medium"
-            android:singleLine="true"
-            android:inputType="date"
-            android:hint="@string/SIGNUP_FIELD_CARD_EXPIRES_PLACEHOLDER"
-            android:textColorHint="@color/placeholder"/>
-
-        <EditText
-            android:id="@+id/start_card_cvv"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_medium"
-            android:singleLine="true"
-            android:inputType="number|text"
-            android:hint="@string/SIGNUP_FIELD_CARD_CVV_PLACEHOLDER"
-            android:textColorHint="@color/placeholder"/>
-
-        <Button
-            android:id="@+id/start_card_add"
-            android:layout_marginTop="@dimen/dimen_xlarge"
-            android:layout_width="fill_parent"
-            android:layout_height="@dimen/signup_button_height"
-            android:gravity="center"
-            android:background="@drawable/background_action_button"
-            android:text="@string/SIGNUP_VIEW_IGNORE_BUTTON_2"
-            android:layout_marginBottom="@dimen/dimen_large"
-            android:textSize="20sp"
-            android:textColor="@drawable/text_color_action_button"/>
-
-        <Button
-            android:id="@+id/start_card_skip"
-            android:layout_marginTop="@dimen/dimen_medium"
-            android:layout_width="fill_parent"
-            android:layout_height="@dimen/signup_button_height"
-            android:gravity="center"
-            android:background="@drawable/signup_image_button_background"
-            android:text="@string/SIGNUP_VIEW_IGNORE_BUTTON"
-            android:layout_marginBottom="@dimen/dimen_xlarge"
-            android:textSize="20sp"
-            android:textColor="@drawable/text_color_action_button"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:overScrollMode="never">
 
         <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:gravity="bottom|center_horizontal"
-            android:paddingTop="@dimen/dimen_xxlarge">
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_horizontal"
+            android:clickable="true">
 
             <TextView
-                android:id="@+id/start_card_infos"
-                android:layout_width="fill_parent"
+                android:id="@+id/start_card_title"
+                android:layout_width="wrap_content"
+                android:textSize="@dimen/header_pager_view_fontsize"
+                android:layout_marginTop="@dimen/dimen_xlarge"
+                android:textColor="@android:color/white"
                 android:layout_height="wrap_content"
-                android:text="@string/CREDIT_CARD_INFOS"
-                android:gravity="center"
-                android:textColor="@color/placeholder"
-                android:layout_marginTop="@dimen/dimen_xlarge"/>
+                android:text="@string/SETTINGS_CARD"/>
 
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:orientation="vertical"
+                android:layout_marginTop="@dimen/dimen_xlarge"
+                android:paddingLeft="@dimen/dimen_xlarge"
+                android:paddingRight="@dimen/dimen_xlarge">
+
+                <EditText
+                    android:id="@+id/start_card_owner"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_medium"
+                    android:singleLine="true"
+                    android:hint="@string/SIGNUP_FIELD_CARD_OWNER_PLACEHOLDER"
+                    android:textColorHint="@color/placeholder"/>
+
+
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_medium">
+
+                    <EditText
+                        android:id="@+id/start_card_number"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:inputType="number|text"
+                        android:hint="@string/SIGNUP_FIELD_CARD_NUMBER_PLACEHOLDER"
+                        android:textColorHint="@color/placeholder"
+                        android:layout_alignParentLeft="true"
+                        android:layout_centerVertical="true"/>
+
+                    <ImageView
+                        android:id="@+id/start_card_scanpay"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/camera_grey"
+                        android:layout_alignParentRight="true"
+                        android:layout_marginRight="@dimen/dimen_large"
+                        android:layout_centerVertical="true"
+                        android:visibility="gone"/>
+
+                </RelativeLayout>
+
+                <EditText
+                    android:id="@+id/start_card_expires"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_medium"
+                    android:singleLine="true"
+                    android:inputType="date"
+                    android:hint="@string/SIGNUP_FIELD_CARD_EXPIRES_PLACEHOLDER"
+                    android:textColorHint="@color/placeholder"/>
+
+                <EditText
+                    android:id="@+id/start_card_cvv"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_medium"
+                    android:singleLine="true"
+                    android:inputType="number|text"
+                    android:hint="@string/SIGNUP_FIELD_CARD_CVV_PLACEHOLDER"
+                    android:textColorHint="@color/placeholder"/>
+
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="@dimen/dimen_xlarge"
+                    android:layout_marginBottom="@dimen/dimen_xlarge">
+
+                    <Button
+                        android:id="@+id/start_card_add"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:layout_height="@dimen/signup_button_height"
+                        android:gravity="center"
+                        android:background="@drawable/background_action_button"
+                        android:text="@string/SIGNUP_VIEW_IGNORE_BUTTON_2"
+                        android:textSize="20sp"
+                        android:textColor="@drawable/text_color_action_button"
+                        android:layout_marginRight="@dimen/dimen_medium"/>
+
+                    <Button
+                        android:id="@+id/start_card_skip"
+                        android:layout_width="0dp"
+                        android:layout_height="@dimen/signup_button_height"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:background="@drawable/signup_image_button_background"
+                        android:text="@string/SIGNUP_VIEW_IGNORE_BUTTON"
+                        android:textSize="20sp"
+                        android:textColor="@drawable/text_color_action_button"
+                        android:layout_marginLeft="@dimen/dimen_medium"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:gravity="bottom|center_horizontal"
+                    android:paddingTop="@dimen/dimen_large">
+
+                    <TextView
+                        android:id="@+id/start_card_infos"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/CREDIT_CARD_INFOS"
+                        android:gravity="center"
+                        android:textColor="@color/placeholder"
+                        android:layout_marginTop="@dimen/dimen_large"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
         </LinearLayout>
-
-    </LinearLayout>
-</LinearLayout>
+    </ScrollView>
+</RelativeLayout>

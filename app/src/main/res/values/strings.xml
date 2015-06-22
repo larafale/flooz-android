@@ -323,7 +323,7 @@
     <string name="SIGNUP_PAGE_TITLE_CGU">C.G.U.</string>
     <string name="SIGNUP_PAGE_TITLE_Ask_Contact">Accès à vos contacts</string>
     <string name="SIGNUP_PAGE_TITLE_Friends">Ajouter des amis</string>
-    <string name="SIGNUP_PAGE_TITLE_Secure">100% Sécurisée</string>
+    <string name="SIGNUP_PAGE_TITLE_Secure">100% Sécurisé</string>
 
     <string name="SIGNUP_PSEUDO_EXPLICATION">Donnez votre pseudo pour recevoir de l\'argent. C\'est votre identité, il est unique et non modifiable.</string>
     <string name="SIGNUP_PASSWORD_EXPLICATION">6 caractères min</string>

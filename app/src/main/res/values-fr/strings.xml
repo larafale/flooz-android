@@ -23,7 +23,6 @@
     <string name="GLOBAL_SAVE">Enregistrer</string>
     <string name="GLOBAL_EDIT">Changer</string>
     <string name="GLOBAL_JOIN">Rejoindre</string>
-    <string name="GLOBAL_START">Démarrer</string>
     <string name="GLOBAL_VALIDATE">Valider</string>
     <string name="GLOBAL_INTERO">\?</string>
     <string name="GLOBAL_UPDATE">Mise à jour disponible !</string>
@@ -324,7 +323,7 @@
     <string name="SIGNUP_PAGE_TITLE_CGU">C.G.U.</string>
     <string name="SIGNUP_PAGE_TITLE_Ask_Contact">Accès à vos contacts</string>
     <string name="SIGNUP_PAGE_TITLE_Friends">Ajouter des amis</string>
-    <string name="SIGNUP_PAGE_TITLE_Secure">100% Sécurisée</string>
+    <string name="SIGNUP_PAGE_TITLE_Secure">100% Sécurisé</string>
 
     <string name="SIGNUP_PSEUDO_EXPLICATION">Donnez votre pseudo pour recevoir de l\'argent. C\'est votre identité, il est unique et non modifiable.</string>
     <string name="SIGNUP_PASSWORD_EXPLICATION">6 caractères min</string>
