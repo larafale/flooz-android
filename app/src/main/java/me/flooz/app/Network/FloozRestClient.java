@@ -1336,9 +1336,14 @@ public class FloozRestClient
                 }
             }
 
-            path += "&api=v2";
-            path += "&os=" + Build.VERSION.RELEASE;
-            path += "&dmo=" + getDeviceName().replaceAll(" ", "%20");
+            if (!path.contains("&api="))
+                path += "&api=v2";
+
+            if (!path.contains("&os="))
+                path += "&os=" + Build.VERSION.RELEASE;
+
+            if (!path.contains("&mo="))
+                path += "&mo=" + getDeviceName().replaceAll(" ", "%20");
 
             final JsonHttpResponseHandler jsonHttpResponseHandler = new JsonHttpResponseHandler() {
                 @Override
