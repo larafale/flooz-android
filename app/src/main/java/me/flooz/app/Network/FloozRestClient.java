@@ -1062,7 +1062,7 @@ public class FloozRestClient
         Map<String, Object> param = new HashMap<>(1);
         param.put("metrics", metrics);
 
-        this.request("/friends/" + userID + "/" + this.friendActionToParams(FriendAction.Request), HttpRequestType.GET, param, new FloozHttpResponseHandler() {
+        this.request("/friends/" + userID + "/" + this.friendActionToParams(FriendAction.Request), HttpRequestType.POST, param, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
                 if (canal.contentEquals("suggestion"))
@@ -1082,7 +1082,7 @@ public class FloozRestClient
     }
 
     public void performActionOnFriend(String friendID, FriendAction action, final FloozHttpResponseHandler responseHandler) {
-        this.request("/friends/" + friendID + "/" + this.friendActionToParams(action), HttpRequestType.GET, null, responseHandler);
+        this.request("/friends/" + friendID + "/" + this.friendActionToParams(action), HttpRequestType.POST, null, responseHandler);
     }
 
     public void searchUser(String searchString, Boolean newFLooz, final FloozHttpResponseHandler responseHandler) {
