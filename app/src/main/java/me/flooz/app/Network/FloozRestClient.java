@@ -1338,7 +1338,7 @@ public class FloozRestClient
 
             path += "&api=v2";
             path += "&os=" + Build.VERSION.RELEASE;
-            path += "&dmo=" + getDeviceName();
+            path += "&dmo=" + getDeviceName().replaceAll(" ", "%20");
 
             final JsonHttpResponseHandler jsonHttpResponseHandler = new JsonHttpResponseHandler() {
                 @Override
