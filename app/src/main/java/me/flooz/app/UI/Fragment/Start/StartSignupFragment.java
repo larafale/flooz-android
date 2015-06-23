@@ -116,7 +116,7 @@ public class StartSignupFragment extends StartBaseFragment {
             if (branch.getLatestReferringParams().has("referrer"))
                 parentActivity.signupData.put("referrer", branch.getLatestReferringParams().optString("referrer"));
 
-            parentActivity.signupData.put("distinctId", FloozApplication.mixpanelAPI.getDistinctId());
+            parentActivity.signupData.put("distinctId", FloozApplication.mixpanelAPI.getPeople().getDistinctId());
             parentActivity.signupData.put("firstName", firstnameTextfield.getText().toString());
             parentActivity.signupData.put("lastName", lastnameTextfield.getText().toString());
             parentActivity.signupData.put("nick", nicknameTextfield.getText().toString());

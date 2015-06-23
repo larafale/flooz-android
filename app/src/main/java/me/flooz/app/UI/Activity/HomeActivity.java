@@ -494,8 +494,6 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
             ViewServer.get(this).setFocusedWindow(this);
 
         floozApp.setCurrentActivity(this);
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(() -> FloozApplication.mixpanelAPI.getPeople().showSurveyIfAvailable(instance), 1500);
 
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(showLeftMenu,
                 CustomNotificationIntents.filterShowSlidingLeftMenu());

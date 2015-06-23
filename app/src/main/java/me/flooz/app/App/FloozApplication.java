@@ -183,9 +183,11 @@ public class FloozApplication extends BranchApp
         FloozRestClient.getInstance().textObjectFromApi(null);
         FloozRestClient.getInstance().updateNotificationFeed(null);
 
-        mixpanelAPI.identify(FloozRestClient.getInstance().currentUser.userId);
         mixpanelAPI.getPeople().identify(FloozRestClient.getInstance().currentUser.userId);
         mixpanelAPI.getPeople().initPushHandling("202597897110");
+
+        if (mixpanelAPI.getPeople().getSurveyIfAvailable() != null)
+            mixpanelAPI.getPeople().showSurveyIfAvailable(getCurrentActivity());
     }
 
     public void displayMainView() {
@@ -208,7 +210,7 @@ public class FloozApplication extends BranchApp
 
     public void didDisconnected() {
         this.displayStartView();
-        mixpanelAPI.identify(FLHelper.generateRandomString());
+        mixpanelAPI.getPeople().identify(FLHelper.generateRandomString());
     }
 
     public void displayStartView() {
