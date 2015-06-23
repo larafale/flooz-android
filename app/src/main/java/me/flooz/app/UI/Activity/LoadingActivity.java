@@ -49,6 +49,17 @@ public class LoadingActivity extends Activity {
 
         TextView loadingText = (TextView)this.findViewById(R.id.loading_text);
         loadingText.setTypeface(CustomFonts.customContentRegular(this.getApplicationContext()));
+    }
+
+    protected void onStart() {
+        super.onStart();
+
+        Branch branch = Branch.getInstance(getApplicationContext());
+        branch.initSession((referringParams, error) -> {
+            if (error == null) {
+                String referrer = referringParams.optString("referrer");
+            }
+        }, this.getIntent().getData(), this);
 
         if (!BuildConfig.LOCAL_API) {
             if (!FloozRestClient.getInstance().autologin()) {
@@ -82,16 +93,6 @@ public class LoadingActivity extends Activity {
 
             alert.show();
         }
-    }
-
-    protected void onStart() {
-        super.onStart();
-
-        Branch branch = Branch.getInstance(getApplicationContext());
-        branch.initSession((referringParams, error) -> {
-
-
-        }, this.getIntent().getData(), this);
     }
 
     protected void onResume() {

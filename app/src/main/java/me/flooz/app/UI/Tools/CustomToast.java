@@ -1,5 +1,6 @@
 package me.flooz.app.UI.Tools;
 
+import android.app.Activity;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
@@ -96,18 +97,40 @@ public class CustomToast {
                 popupWindow.setOutsideTouchable(true);
                 popupWindow.setTouchable(true);
 
-                popupWindow.showAtLocation(FloozApplication.getInstance().getCurrentActivity().findViewById(android.R.id.content), Gravity.TOP, 0, view.getMeasuredHeight() / 2 + 10);
-                popupWindow.setAnimationStyle(R.style.alert_animation);
+                final int[] showTentative = {0};
 
-                Handler handler = new Handler(Looper.getMainLooper());
-                handler.postDelayed(() -> {
-                    try {
-                        if (popupWindow.isShowing())
-                            popupWindow.dismiss();
-                    } catch (final IllegalArgumentException e) {
-                        // Handle or log or ignore
+                Handler showHandler = new Handler(Looper.getMainLooper());
+
+                final Runnable showRunnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        ++showTentative[0];
+                        Activity currentActivity = FloozApplication.getInstance().getCurrentActivity();
+
+                        if (currentActivity != null) {
+                            showTentative[0] = 0;
+                            popupWindow.showAtLocation(currentActivity.findViewById(android.R.id.content), Gravity.TOP, 0, view.getMeasuredHeight() / 2 + 10);
+                            popupWindow.setAnimationStyle(R.style.alert_animation);
+
+                            Handler handler = new Handler(Looper.getMainLooper());
+                            handler.postDelayed(() -> {
+                                try {
+                                    if (popupWindow.isShowing())
+                                        popupWindow.dismiss();
+                                } catch (final IllegalArgumentException e) {
+                                    // Handle or log or ignore
+                                }
+                            }, content.time.intValue() * 1000);
+                        } else if (showTentative[0] < 5) {
+                            showHandler.removeCallbacks(this);
+                            showHandler.postDelayed(this, 200);
+                        } else {
+                            showTentative[0] = 0;
+                        }
                     }
-                }, content.time.intValue() * 1000);
+                };
+
+                showHandler.post(showRunnable);
             });
         }
     }

@@ -179,7 +179,11 @@ public class TimelineFragment extends Fragment implements TimelineListAdapter.Ti
                 Map<String, Object> responseMap = (Map<String, Object>) response;
 
                 if (responseMap.containsKey("transactions") && responseMap.get("transactions") != null && responseMap.get("transactions") instanceof List) {
-                    transactions.clear();
+                    if (transactions != null)
+                        transactions.clear();
+                    else
+                        transactions = new ArrayList<>();
+
                     transactions.addAll((List<FLTransaction>) responseMap.get("transactions"));
                     nextPageUrl = (String) responseMap.get("nextUrl");
 

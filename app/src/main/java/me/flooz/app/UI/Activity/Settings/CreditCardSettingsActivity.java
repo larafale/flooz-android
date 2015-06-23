@@ -96,6 +96,7 @@ public class CreditCardSettingsActivity extends Activity {
         TextView removeCreditCardText = (TextView) this.findViewById(R.id.settings_credit_card_remove_text);
         this.removeCardContainer = (LinearLayout) this.findViewById(R.id.settings_credit_card_remove_card_view);
         this.createCardContainer = (LinearLayout) this.findViewById(R.id.settings_credit_card_create_card_view);
+        TextView cardInfos = (TextView) this.findViewById(R.id.settings_credit_card_infos);
 
         headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
         this.creditCardOwner.setTypeface(CustomFonts.customContentRegular(this));
@@ -106,8 +107,7 @@ public class CreditCardSettingsActivity extends Activity {
         this.cardExpires.setTypeface(CustomFonts.customContentLight(this));
         this.cardCVV.setTypeface(CustomFonts.customContentLight(this));
         this.addCardButton.setTypeface(CustomFonts.customContentLight(this));
-
-        ((TextView)this.findViewById(R.id.settings_credit_card_infos)).setTypeface(CustomFonts.customContentLight(this));
+        cardInfos.setTypeface(CustomFonts.customContentLight(this));
 
         this.headerBackButton.setOnClickListener(view -> {
             finish();
@@ -269,6 +269,13 @@ public class CreditCardSettingsActivity extends Activity {
                 }
             });
         });
+
+        if (FloozRestClient.getInstance().currentTexts != null && FloozRestClient.getInstance().currentTexts.cardInfos != null)
+            cardInfos.setText(FloozRestClient.getInstance().currentTexts.cardInfos);
+
+        if (getIntent().getStringExtra("label") != null) {
+            cardInfos.setText(getIntent().getStringExtra("label"));
+        }
 
         this.reloadCreditCard();
     }

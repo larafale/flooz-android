@@ -49,8 +49,8 @@ android {
         applicationId "me.flooz.app"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 13
-        versionName "1.2.1"
+        versionCode 14
+        versionName "1.2.2"
         signingConfig signingConfigs.release
     }
 

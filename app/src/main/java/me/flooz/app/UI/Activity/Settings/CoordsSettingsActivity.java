@@ -1,6 +1,7 @@
 package me.flooz.app.UI.Activity.Settings;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -29,6 +30,7 @@ import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Tools.ActionSheet;
 import me.flooz.app.UI.Tools.ActionSheetItem;
 import me.flooz.app.Utils.CustomFonts;
@@ -337,7 +339,12 @@ public class CoordsSettingsActivity extends Activity {
     private ActionSheetItem.ActionSheetItemClickListener showGallery = () -> {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
-        startActivityForResult(intent, SELECT_PICTURE);
+
+        try {
+            startActivityForResult(Intent.createChooser(intent, ""), SELECT_PICTURE);
+        } catch (ActivityNotFoundException e) {
+
+        }
     };
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

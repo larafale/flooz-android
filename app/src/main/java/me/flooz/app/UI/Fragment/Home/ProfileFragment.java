@@ -5,6 +5,7 @@ package me.flooz.app.UI.Fragment.Home;
  */
 
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -144,13 +145,21 @@ public class ProfileFragment extends HomeBaseFragment
                 tmpUriImage = fileUri;
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
 
-                parentActivity.startActivityForResult(intent, HomeActivity.TAKE_PICTURE);
+                try {
+                    parentActivity.startActivityForResult(intent, HomeActivity.TAKE_PICTURE);
+                } catch (ActivityNotFoundException e) {
+
+                }
             }));
 
             items.add(new ActionSheetItem(inflater.getContext(), R.string.SIGNUP_IMAGE_BUTTON_CHOOSE, () -> {
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType("image/*");
-                parentActivity.startActivityForResult(intent, HomeActivity.SELECT_PICTURE);
+                try {
+                    parentActivity.startActivityForResult(Intent.createChooser(intent, ""), HomeActivity.SELECT_PICTURE);
+                } catch (ActivityNotFoundException e) {
+
+                }
             }));
 
             ActionSheet.showWithItems(parentActivity, items);

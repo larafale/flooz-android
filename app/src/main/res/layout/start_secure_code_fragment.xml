@@ -28,7 +28,7 @@
             android:layout_height="wrap_content"
             android:text="@string/SECORE_CODE_CHOOSE"
             android:textColor="@android:color/white"
-            android:layout_marginTop="@dimen/dimen_xxlarge"
+            android:layout_marginTop="@dimen/dimen_xxxlarge"
             android:textSize="18sp"/>
 
         <LinearLayout

@@ -186,6 +186,43 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
             }
         }
 
+        Branch branch = Branch.getInstance(getApplicationContext());
+        branch.initSession((referringParams, error) -> {
+            if (error == null) {
+                if (FloozRestClient.getInstance().accessToken != null) {
+                    String data = referringParams.optString("data");
+
+                    if (data != null && !data.isEmpty()) {
+                        try {
+                            JSONObject dataObject = new JSONObject(data);
+
+                            JSONArray t = dataObject.optJSONArray("triggers");
+
+                            for (int i = 0; i < t.length(); i++) {
+                                final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
+                                if (trigger.delay.doubleValue() > 0) {
+                                    Handler thandler = new Handler(Looper.getMainLooper());
+                                    thandler.postDelayed(() -> FloozRestClient.getInstance().handleTrigger(trigger), (int) (trigger.delay.doubleValue() * 1000));
+                                } else {
+                                    Handler thandler = new Handler(Looper.getMainLooper());
+                                    thandler.post(() -> FloozRestClient.getInstance().handleTrigger(trigger));
+                                }
+                            }
+
+                            if (dataObject.has("popup")) {
+                                FLError errorContent = new FLError(dataObject.optJSONObject("popup"));
+                                CustomToast.show(FloozApplication.getAppContext(), errorContent);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                } else {
+                    FloozApplication.getInstance().displayStartView();
+                }
+            }
+        }, this.getIntent().getData(), this);
+
         floozApp = (FloozApplication)this.getApplicationContext();
 
         this.fragmentManager = this.getFragmentManager();
@@ -448,38 +485,6 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
     public void onStart() {
         super.onStart();
 
-        Branch branch = Branch.getInstance(getApplicationContext());
-        branch.initSession((referringParams, error) -> {
-            if (error == null) {
-                String data = referringParams.optString("data");
-
-                if (data != null && !data.isEmpty()) {
-                    try {
-                        JSONObject dataObject = new JSONObject(data);
-
-                        JSONArray t = dataObject.optJSONArray("triggers");
-
-                        for (int i = 0; i < t.length(); i++) {
-                            final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
-                            if (trigger.delay.doubleValue() > 0) {
-                                Handler thandler = new Handler(Looper.getMainLooper());
-                                thandler.postDelayed(() -> FloozRestClient.getInstance().handleTrigger(trigger), (int) (trigger.delay.doubleValue() * 1000));
-                            } else {
-                                Handler thandler = new Handler(Looper.getMainLooper());
-                                thandler.post(() -> FloozRestClient.getInstance().handleTrigger(trigger));
-                            }
-                        }
-
-                        if (dataObject.has("popup")) {
-                            FLError errorContent = new FLError(dataObject.optJSONObject("popup"));
-                            CustomToast.show(FloozApplication.getAppContext(), errorContent);
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }, this.getIntent().getData(), this);
     }
 
     protected void onResume() {

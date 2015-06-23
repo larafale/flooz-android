@@ -13,6 +13,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -103,9 +104,9 @@ public class FloozRestClient
 
     public FLTexts currentTexts = null;
     public FLUser currentUser = null;
-    private String secureCode = null;
-    private String accessToken = null;
-    private String fbAccessToken= null;
+    public String secureCode = null;
+    public String accessToken = null;
+    public String fbAccessToken= null;
 
     public static String customIpAdress = "http://dev.flooz.me";
 
@@ -1336,6 +1337,8 @@ public class FloozRestClient
             }
 
             path += "&api=v2";
+            path += "&os=" + Build.VERSION.RELEASE;
+            path += "&dmo=" + getDeviceName();
 
             final JsonHttpResponseHandler jsonHttpResponseHandler = new JsonHttpResponseHandler() {
                 @Override
@@ -1493,6 +1496,29 @@ public class FloozRestClient
         }
     }
 
+    public String getDeviceName() {
+        String manufacturer = Build.MANUFACTURER;
+        String model = Build.MODEL;
+        if (model.startsWith(manufacturer)) {
+            return capitalize(model);
+        } else {
+            return capitalize(manufacturer) + " " + model;
+        }
+    }
+
+
+    private String capitalize(String s) {
+        if (s == null || s.length() == 0) {
+            return "";
+        }
+        char first = s.charAt(0);
+        if (Character.isUpperCase(first)) {
+            return s;
+        } else {
+            return Character.toUpperCase(first) + s.substring(1);
+        }
+    }
+
     /***************************/
     /*******  FACEBOOK  ********/
     /***************************/
@@ -1617,11 +1643,15 @@ public class FloozRestClient
         this.updateCurrentUser(null);
     }
 
-    private void handleTriggerCardShow() {
+    private void handleTriggerCardShow(JSONObject data) {
         if (!(floozApp.getCurrentActivity() instanceof CreditCardSettingsActivity)) {
             FloozRestClient.getInstance().updateCurrentUser(null);
             Intent intent = new Intent(floozApp.getCurrentActivity(), CreditCardSettingsActivity.class);
             intent.putExtra("modal", true);
+
+            if (data != null && data.has("label"))
+                intent.putExtra("label", data.optString("label"));
+
             Activity tmpActivity = floozApp.getCurrentActivity();
             tmpActivity.startActivity(intent);
             tmpActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
@@ -1894,7 +1924,7 @@ public class FloozRestClient
                 handleTriggerProfileReload();
                 break;
             case TriggerShowCard:
-                handleTriggerCardShow();
+                handleTriggerCardShow(trigger.data);
                 break;
             case TriggerReloadFriend:
                 handleTriggerFriendReload();

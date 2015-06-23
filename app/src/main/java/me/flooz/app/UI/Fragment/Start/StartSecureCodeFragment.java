@@ -153,7 +153,6 @@ public class StartSecureCodeFragment extends StartBaseFragment implements Numeri
 
                     }
                 });
-
             }
             else {
                 Animation shake = AnimationUtils.loadAnimation(FloozApplication.getInstance(), R.anim.secure_code_shake);

@@ -2,6 +2,7 @@ package me.flooz.app.UI.Activity;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -131,7 +132,6 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
 
         this.savedAmount = "";
         this.savedWhy = "";
-        this.currentScope = FLTransaction.transactionScopeParamToEnum((String) ((Map) FloozRestClient.getInstance().currentUser.settings.get("def")).get("scope"));
     }
 
     public void initWithPreset(FLPreset data) {
@@ -179,8 +179,6 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         }
 
         this.isDemo = preset.popup != null || preset.steps != null;
-
-        this.currentScope = FLTransaction.transactionScopeParamToEnum((String)((Map)FloozRestClient.getInstance().currentUser.settings.get("def")).get("scope"));
     }
 
     @Override
@@ -449,7 +447,7 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         contentContainer.setOnClickListener(v -> {
             InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
             contentTextfield.requestFocus();
-            imm.showSoftInput(contentTextfield, 0);
+            imm.showSoftInput(contentTextfield, InputMethodManager.SHOW_FORCED);
         });
 
         if (this.preset != null) {
@@ -488,15 +486,15 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
 
                             if (focus.contentEquals("why") && !preset.blockWhy) {
                                 contentTextfield.requestFocus();
-                                imm.showSoftInput(contentTextfield, 0);
+                                imm.showSoftInput(contentTextfield, InputMethodManager.SHOW_FORCED);
                             }
                             else if (focus.contentEquals("to") && !preset.blockTo) {
                                 toPicker.requestFocus();
-                                imm.showSoftInput(toPicker, 0);
+                                imm.showSoftInput(toPicker, InputMethodManager.SHOW_FORCED);
                             }
                             else if (focus.contentEquals("amount") && !preset.blockAmount) {
                                 amountTextfield.requestFocus();
-                                imm.showSoftInput(amountTextfield, 0);
+                                imm.showSoftInput(amountTextfield, InputMethodManager.SHOW_FORCED);
                             }
                             else if (focus.contentEquals("scope")) {
                                 scopePic.performClick();
@@ -601,6 +599,11 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
     @Override
     public void onStart() {
         super.onStart();
+
+        if (FloozRestClient.getInstance().currentUser != null)
+            this.currentScope = FLTransaction.transactionScopeParamToEnum((String) ((Map) FloozRestClient.getInstance().currentUser.settings.get("def")).get("scope"));
+        else
+            this.currentScope = FLTransaction.TransactionScope.TransactionScopePublic;
     }
 
     @Override
@@ -636,10 +639,10 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
 
             if (this.amountTextfield.getText().length() == 0) {
                 this.amountTextfield.requestFocus();
-                imm.showSoftInput(amountTextfield, 0);
+                imm.showSoftInput(amountTextfield, InputMethodManager.SHOW_FORCED);
             } else if (this.contentTextfield.getText().length() == 0) {
                 this.contentTextfield.requestFocus();
-                imm.showSoftInput(contentTextfield, 0);
+                imm.showSoftInput(contentTextfield, InputMethodManager.SHOW_FORCED);
             } else
                 this.baseLayout.requestFocus();
         } else {
@@ -720,15 +723,15 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
 
             if (stepData.optString("focus").contentEquals("why") && !preset.blockWhy) {
                 contentTextfield.requestFocus();
-                imm.showSoftInput(contentTextfield, 0);
+                imm.showSoftInput(contentTextfield, InputMethodManager.SHOW_FORCED);
             }
             else if (stepData.optString("focus").contentEquals("to") && !preset.blockTo) {
                 toPicker.requestFocus();
-                imm.showSoftInput(toPicker, 0);
+                imm.showSoftInput(toPicker, InputMethodManager.SHOW_FORCED);
             }
             else if (stepData.optString("focus").contentEquals("amount") && !preset.blockAmount) {
                 amountTextfield.requestFocus();
-                imm.showSoftInput(amountTextfield, 0);
+                imm.showSoftInput(amountTextfield, InputMethodManager.SHOW_FORCED);
             }
             else if (stepData.optString("focus").contentEquals("scope")) {
                 scopePic.performClick();
@@ -858,7 +861,7 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
             this.headerBalance.setVisibility(View.GONE);
             this.headerCB.setVisibility(View.GONE);
         } else {
-            if (amount >= 0) {
+            if (amount > 0) {
                 this.headerCB.setVisibility(View.GONE);
                 this.headerBalance.setVisibility(View.VISIBLE);
                 this.headerBalance.setText(FLHelper.trimTrailingZeros(String.format("%.2f", amount)) + " €");
@@ -972,7 +975,11 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
             tmpUriImage = fileUri;
             intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
 
-            startActivityForResult(intent, TAKE_PICTURE);
+            try {
+                startActivityForResult(intent, TAKE_PICTURE);
+            } catch (ActivityNotFoundException e) {
+
+            }
         }
     };
 
@@ -980,7 +987,11 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         saveData();
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
-        startActivityForResult(intent, SELECT_PICTURE);
+        try {
+            startActivityForResult(Intent.createChooser(intent, ""), SELECT_PICTURE);
+        } catch (ActivityNotFoundException e) {
+
+        }
     };
 
     public void changeUser(FLUser user) {
@@ -1069,7 +1080,6 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
     }
 
     private Map<String, Object> generateRequestParams(boolean validate) {
-
 
         Map<String, Object> params = new HashMap<>();
         params.put("amount", this.amountTextfield.getText().toString());

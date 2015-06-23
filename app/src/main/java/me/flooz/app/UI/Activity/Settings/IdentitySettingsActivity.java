@@ -1,6 +1,7 @@
 package me.flooz.app.UI.Activity.Settings;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -274,11 +275,19 @@ public class IdentitySettingsActivity extends Activity {
         String lastname = "";
         String firstname = "";
 
-        if (currentUser.lastname != null && !currentUser.lastname.isEmpty())
-            lastname = currentUser.lastname.substring(0,1).toUpperCase() + currentUser.lastname.substring(1);
+        if (currentUser.lastname != null && !currentUser.lastname.isEmpty()) {
+            if (currentUser.lastname.length() > 2)
+                lastname = currentUser.lastname.substring(0, 1).toUpperCase() + currentUser.lastname.substring(1);
+            else
+                lastname = currentUser.lastname.toUpperCase();
+        }
 
-        if (currentUser.firstname != null && !currentUser.firstname.isEmpty())
-            firstname = currentUser.firstname.substring(0,1).toUpperCase() + currentUser.firstname.substring(1);
+        if (currentUser.firstname != null && !currentUser.firstname.isEmpty()) {
+            if (currentUser.firstname.length() > 2)
+                firstname = currentUser.firstname.substring(0, 1).toUpperCase() + currentUser.firstname.substring(1);
+            else
+                firstname = currentUser.firstname.toUpperCase();
+        }
 
         this.firstnameTextfield.setText(firstname);
         this.lastnameTextfield.setText(lastname);
@@ -337,7 +346,12 @@ public class IdentitySettingsActivity extends Activity {
     private ActionSheetItem.ActionSheetItemClickListener showGallery = () -> {
         Intent intent = new Intent(Intent.ACTION_PICK);
         intent.setType("image/*");
-        startActivityForResult(intent, SELECT_PICTURE);
+
+        try {
+            startActivityForResult(Intent.createChooser(intent, ""), SELECT_PICTURE);
+        } catch (ActivityNotFoundException e) {
+
+        }
     };
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

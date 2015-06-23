@@ -349,14 +349,17 @@ public class FLTransaction {
 
     public static String transactionTypeToParams(TransactionType type)
     {
-        switch (type) {
-            case TransactionTypePayment:
-                return "pay";
-            case TransactionTypeCharge:
-                return "charge";
-            default:
-                return "event";
-        }
+        if (type != null)
+            switch (type) {
+                case TransactionTypePayment:
+                    return "pay";
+                case TransactionTypeCharge:
+                    return "charge";
+                default:
+                    return "pay";
+            }
+        else
+            return "pay";
     }
 
     public static String transactionPaymentMethodToParams(TransactionPaymentMethod paymentMethod)
