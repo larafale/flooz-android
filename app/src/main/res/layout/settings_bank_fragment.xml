@@ -42,7 +42,11 @@
         android:gravity="bottom"
         android:inputType="textNoSuggestions|textCapCharacters"
         android:hint="@string/FIELD_IBAN_PLACEHOLDER"
-        android:singleLine="true"/>
+        android:singleLine="true"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:textColor="@android:color/white"
+        android:textColorHint="@color/placeholder"/>
 
     <Button
         android:id="@+id/settings_bank_save"

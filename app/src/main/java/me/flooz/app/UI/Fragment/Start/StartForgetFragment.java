@@ -34,6 +34,7 @@ public class StartForgetFragment extends StartBaseFragment {
         Button forgetButton = (Button) view.findViewById(R.id.start_forget_next);
 
         title.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
+        emailTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
 
         forgetButton.setOnClickListener(v -> {
             FloozRestClient.getInstance().showLoadView();

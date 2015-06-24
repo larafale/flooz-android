@@ -36,7 +36,9 @@ public class ContactsManager {
                 Contacts.DISPLAY_NAME,
                 Contacts.IN_VISIBLE_GROUP,
                 CommonDataKinds.Phone.NUMBER,
-                CommonDataKinds.Phone.TYPE};
+                CommonDataKinds.Phone.TYPE,
+                CommonDataKinds.StructuredName.GIVEN_NAME,
+                CommonDataKinds.StructuredName.FAMILY_NAME};
 
         String selection = Contacts.HAS_PHONE_NUMBER + "=1 AND " + Contacts.IN_VISIBLE_GROUP + "=1 AND (lower(" + Contacts.DISPLAY_NAME + ") LIKE ? OR replace(replace(replace(replace(" + CommonDataKinds.Phone.NUMBER + ", ' ', ''), '+33', '0'), '(', ''), ')', '') LIKE ?)";
 

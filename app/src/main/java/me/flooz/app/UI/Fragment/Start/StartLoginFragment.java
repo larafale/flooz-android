@@ -44,6 +44,8 @@ public class StartLoginFragment extends StartBaseFragment {
         Button forgetButton = (Button) view.findViewById(R.id.start_login_forget);
         ImageView facebookPicto = (ImageView) view.findViewById(R.id.start_login_facebook_picto);
 
+        phoneTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+        passwordTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
         orLabel.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
         title.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
         forgetButton.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
@@ -63,8 +65,10 @@ public class StartLoginFragment extends StartBaseFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() > 10)
+                if (s.length() > 10) {
                     s.delete(10, s.length());
+                    passwordTextfield.requestFocus();
+                }
             }
         });
 

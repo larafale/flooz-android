@@ -135,7 +135,10 @@
             android:layout_marginTop="@dimen/dimen_medium"
             android:singleLine="true"
             android:hint="@string/SIGNUP_FIELD_CARD_OWNER_PLACEHOLDER"
-            android:textColorHint="@color/placeholder"/>
+            android:textColorHint="@color/placeholder"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:textColor="@android:color/white"/>
 
 
         <RelativeLayout
@@ -152,7 +155,10 @@
                 android:hint="@string/SIGNUP_FIELD_CARD_NUMBER_PLACEHOLDER"
                 android:textColorHint="@color/placeholder"
                 android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"/>
+                android:layout_centerVertical="true"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:textColor="@android:color/white"/>
 
             <ImageView
                 android:id="@+id/settings_credit_card_create_scanpay"
@@ -174,7 +180,10 @@
             android:singleLine="true"
             android:inputType="date"
             android:hint="@string/SIGNUP_FIELD_CARD_EXPIRES_PLACEHOLDER"
-            android:textColorHint="@color/placeholder"/>
+            android:textColorHint="@color/placeholder"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:textColor="@android:color/white"/>
 
         <EditText
             android:id="@+id/settings_credit_card_create_cvv"
@@ -184,7 +193,10 @@
             android:singleLine="true"
             android:inputType="number|text"
             android:hint="@string/SIGNUP_FIELD_CARD_CVV_PLACEHOLDER"
-            android:textColorHint="@color/placeholder"/>
+            android:textColorHint="@color/placeholder"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:textColor="@android:color/white"/>
 
         <Button
             android:id="@+id/settings_credit_card_create_add"

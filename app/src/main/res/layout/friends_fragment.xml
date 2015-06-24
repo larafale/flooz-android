@@ -28,8 +28,10 @@
                 android:layout_margin="@dimen/dimen_large"
                 android:singleLine="true"
                 android:textColorHint="@color/placeholder"
-                android:textColor="@android:color/white"
-                android:hint="@string/SEARCH_FRIENDS">
+                android:hint="@string/SEARCH_FRIENDS"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:textColor="@android:color/white">
 
             </EditText>
 

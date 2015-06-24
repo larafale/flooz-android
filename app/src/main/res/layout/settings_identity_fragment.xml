@@ -45,14 +45,22 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:inputType="textCapWords|textNoSuggestions"
-            android:hint="@string/FIELD_LASTNAME"/>
+            android:hint="@string/FIELD_LASTNAME"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:textColor="@android:color/white"
+            android:textColorHint="@color/placeholder"/>
 
         <EditText
             android:id="@+id/settings_identity_firstname"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:inputType="textCapWords|textNoSuggestions"
-            android:hint="@string/FIELD_FIRSTNAME"/>
+            android:hint="@string/FIELD_FIRSTNAME"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:textColor="@android:color/white"
+            android:textColorHint="@color/placeholder"/>
 
         <EditText
             android:id="@+id/settings_identity_username"

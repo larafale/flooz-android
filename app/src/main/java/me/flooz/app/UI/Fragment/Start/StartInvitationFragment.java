@@ -41,6 +41,7 @@ public class StartInvitationFragment extends StartBaseFragment {
         this.couponTextfield = (EditText) view.findViewById(R.id.start_invitation_textfield);
 
         title.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
+        couponTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
 
         nextButton = (Button) view.findViewById(R.id.start_invitation_next);
 

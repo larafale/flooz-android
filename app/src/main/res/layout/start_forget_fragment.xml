@@ -40,7 +40,11 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/FIELD_EMAIL"
                     android:inputType="textEmailAddress"
-                    android:singleLine="true"/>
+                    android:singleLine="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@color/placeholder"/>
 
                 <Button
                     android:id="@+id/start_forget_next"

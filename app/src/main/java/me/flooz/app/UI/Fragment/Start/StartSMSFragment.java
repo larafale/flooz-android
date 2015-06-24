@@ -53,7 +53,7 @@ public class StartSMSFragment extends StartBaseFragment implements NumericKeyboa
 
         codeTextfield.requestFocus();
         title.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
-        codeTextfield.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
+        codeTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
 
         codeTextfield.setOnTouchListener((v, event) -> {
             v.onTouchEvent(event);

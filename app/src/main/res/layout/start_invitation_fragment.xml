@@ -23,8 +23,11 @@
         android:layout_height="wrap_content"
         android:gravity="bottom"
         android:hint=""
+        android:singleLine="true"
         android:focusable="true"
-        android:singleLine="true"/>
+        android:focusableInTouchMode="true"
+        android:textColor="@android:color/white"
+        android:textColorHint="@color/placeholder"/>
 
     <Button
         android:id="@+id/start_invitation_next"

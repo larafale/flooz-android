@@ -79,14 +79,16 @@
                     android:layout_height="fill_parent"
                     android:gravity="center_vertical"
                     android:layout_weight="4"
-                    android:textColor="@android:color/white"
                     android:hint="@string/TRANSACTION_CONTACT_PICKER_HINT"
                     android:textColorHint="@color/placeholder"
                     android:background="@color/background"
                     android:textSize="16sp"
                     android:layout_marginLeft="@dimen/dimen_large"
                     android:layout_marginBottom="@dimen/dimen_medium"
-                    android:layout_marginTop="@dimen/dimen_medium"/>
+                    android:layout_marginTop="@dimen/dimen_medium"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:textColor="@android:color/white"/>
 
                 <LinearLayout
                     android:id="@+id/new_transac_amount_container"
@@ -107,11 +109,13 @@
                         android:singleLine="true"
                         android:hint="0"
                         android:textColorHint="@color/placeholder"
-                        android:textColor="@android:color/white"
                         android:background="@android:color/transparent"
                         android:ellipsize="start"
                         android:textCursorDrawable="@drawable/cursor_white"
-                        android:gravity="right"/>
+                        android:gravity="right"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:textColor="@android:color/white"/>
 
                     <TextView
                         android:id="@+id/new_transac_currency_symbol"
@@ -156,13 +160,15 @@
                             android:background="@android:color/transparent"
                             android:hint="@string/FIELD_TRANSACTION_CONTENT_PLACEHOLDER"
                             android:textColorHint="@color/placeholder"
-                            android:textColor="@android:color/white"
                             android:maxLength="150"
                             android:text=""
                             android:cursorVisible="true"
                             android:textCursorDrawable="@null"
                             android:layout_marginBottom="40dp"
-                            android:gravity="top"/>
+                            android:gravity="top"
+                            android:focusable="true"
+                            android:focusableInTouchMode="true"
+                            android:textColor="@android:color/white"/>
 
                     </RelativeLayout>
 

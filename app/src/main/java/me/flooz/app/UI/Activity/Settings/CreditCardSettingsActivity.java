@@ -260,6 +260,7 @@ public class CreditCardSettingsActivity extends Activity {
                     }
                     else {
                         FloozRestClient.getInstance().updateCurrentUser(null);
+                        headerBackButton.performClick();
                     }
                 }
 
@@ -270,10 +271,10 @@ public class CreditCardSettingsActivity extends Activity {
             });
         });
 
-        if (FloozRestClient.getInstance().currentTexts != null && FloozRestClient.getInstance().currentTexts.cardInfos != null)
+        if (FloozRestClient.getInstance().currentTexts != null && FloozRestClient.getInstance().currentTexts.cardInfos != null && !FloozRestClient.getInstance().currentTexts.cardInfos.isEmpty())
             cardInfos.setText(FloozRestClient.getInstance().currentTexts.cardInfos);
 
-        if (getIntent().getStringExtra("label") != null) {
+        if (getIntent().getStringExtra("label") != null && !getIntent().getStringExtra("label").isEmpty()) {
             cardInfos.setText(getIntent().getStringExtra("label"));
         }
 

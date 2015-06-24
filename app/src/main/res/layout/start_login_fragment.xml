@@ -108,7 +108,11 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/SIGNUP_PHONE_PLACEHOLDER"
                     android:inputType="phone"
-                    android:singleLine="true"/>
+                    android:singleLine="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@color/placeholder"/>
 
                 <EditText
                     android:id="@+id/start_login_password"
@@ -117,7 +121,11 @@
                     android:layout_height="wrap_content"
                     android:inputType="textPassword"
                     android:hint="@string/SIGNUP_PAGE_TITLE_Password"
-                    android:singleLine="true"/>
+                    android:singleLine="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@color/placeholder"/>
 
                 <Button
                     android:id="@+id/start_login_next"

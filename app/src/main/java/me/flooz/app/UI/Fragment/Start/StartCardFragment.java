@@ -67,6 +67,10 @@ public class StartCardFragment extends StartBaseFragment {
 
         title.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
         cardInfo.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
+        cardOwner.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+        cardNumber.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+        cardExpires.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+        cardCVV.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
 
         this.cardOwner.setText(FloozRestClient.getInstance().currentUser.fullname);
 

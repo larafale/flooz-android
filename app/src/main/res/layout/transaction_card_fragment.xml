@@ -413,15 +413,17 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="5"
                     android:hint="@string/SEND_COMMENT"
-                    android:textColor="@android:color/white"
                     android:textSize="@dimen/card_comment_textfield"
                     android:layout_marginRight="@dimen/dimen_medium"
                     android:paddingTop="@dimen/dimen_medium"
                     android:paddingBottom="@dimen/dimen_medium"
                     android:paddingLeft="@dimen/dimen_xlarge"
                     android:paddingRight="@dimen/dimen_large"
-                    android:textColorHint="@color/placeholder"
-                    android:background="@drawable/card_comment_input_background"/>
+                    android:background="@drawable/card_comment_input_background"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@color/placeholder"/>
 
                 <TextView
                     android:id="@+id/transac_card_comments_send"

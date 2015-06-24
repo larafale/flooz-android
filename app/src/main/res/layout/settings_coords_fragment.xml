@@ -52,9 +52,11 @@
                 android:singleLine="true"
                 android:textColorHint="@color/placeholder"
                 android:inputType="phone"
-                android:textColor="@android:color/white"
                 android:nextFocusForward="@+id/signup_infos_password"
-                android:hint="@string/FIELD_PHONE"/>
+                android:hint="@string/FIELD_PHONE"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:textColor="@android:color/white"/>
 
             <TextView
                 android:id="@+id/settings_coord_verify_phone"
@@ -80,9 +82,11 @@
                 android:singleLine="true"
                 android:textColorHint="@color/placeholder"
                 android:inputType="textEmailAddress"
-                android:textColor="@android:color/white"
                 android:nextFocusForward="@+id/signup_infos_password"
-                android:hint="@string/FIELD_EMAIL"/>
+                android:hint="@string/FIELD_EMAIL"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
+                android:textColor="@android:color/white"/>
 
             <TextView
                 android:id="@+id/settings_coord_verify_email"
@@ -102,7 +106,11 @@
             android:inputType="textPostalAddress"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:hint="@string/FIELD_ADDRESS"/>
+            android:hint="@string/FIELD_ADDRESS"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:textColor="@android:color/white"
+            android:textColorHint="@color/placeholder"/>
 
         <EditText
             android:id="@+id/settings_coord_zip"
@@ -110,7 +118,11 @@
             android:inputType="number"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:hint="@string/FIELD_ZIP_CODE"/>
+            android:hint="@string/FIELD_ZIP_CODE"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:textColor="@android:color/white"
+            android:textColorHint="@color/placeholder"/>
 
         <EditText
             android:id="@+id/settings_coord_city"
@@ -118,8 +130,11 @@
             android:inputType="textNoSuggestions"
             android:layout_height="wrap_content"
             android:singleLine="true"
-            android:hint="@string/FIELD_CITY"/>
-
+            android:hint="@string/FIELD_CITY"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:textColor="@android:color/white"
+            android:textColorHint="@color/placeholder"/>
 
         <FrameLayout
             android:id="@+id/settings_coord_justificatory_container"

@@ -72,6 +72,13 @@ public class StartSignupFragment extends StartBaseFragment {
         fbPicView = (RelativeLayout) view.findViewById(R.id.start_signup_fb_pic_view);
         fbPic = (RoundedImageView) view.findViewById(R.id.start_signup_fb_pic);
 
+        firstnameTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+        lastnameTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+        emailTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+        nicknameTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+        phoneTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+        passwordTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+
         orLabel.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
         title.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
         cguButton.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
@@ -98,8 +105,10 @@ public class StartSignupFragment extends StartBaseFragment {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() > 10)
+                if (s.length() > 10) {
                     s.delete(10, s.length());
+                    emailTextfield.requestFocus();
+                }
             }
         });
 

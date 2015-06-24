@@ -143,7 +143,11 @@
                         android:clickable="false"
                         android:hint="@string/FIELD_LASTNAME"
                         android:inputType="textCapWords"
-                        android:singleLine="true"/>
+                        android:singleLine="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:textColor="@android:color/white"
+                        android:textColorHint="@color/placeholder"/>
 
                     <EditText
                         android:id="@+id/start_signup_firstname"
@@ -154,7 +158,11 @@
                         android:clickable="false"
                         android:hint="@string/FIELD_FIRSTNAME"
                         android:inputType="textCapWords"
-                        android:singleLine="true"/>
+                        android:singleLine="true"
+                        android:focusable="true"
+                        android:focusableInTouchMode="true"
+                        android:textColor="@android:color/white"
+                        android:textColorHint="@color/placeholder"/>
 
                 </LinearLayout>
 
@@ -165,7 +173,11 @@
                     android:hint="@string/FIELD_USERNAME"
                     android:inputType="text"
                     android:layout_marginTop="@dimen/dimen_large"
-                    android:singleLine="true"/>
+                    android:singleLine="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@color/placeholder"/>
 
                 <EditText
                     android:id="@+id/start_signup_phone"
@@ -174,7 +186,11 @@
                     android:hint="@string/FIELD_PHONE"
                     android:inputType="phone"
                     android:layout_marginTop="@dimen/dimen_large"
-                    android:singleLine="true"/>
+                    android:singleLine="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@color/placeholder"/>
 
                 <EditText
                     android:id="@+id/start_signup_email"
@@ -183,7 +199,11 @@
                     android:hint="@string/FIELD_EMAIL"
                     android:inputType="textEmailAddress"
                     android:layout_marginTop="@dimen/dimen_large"
-                    android:singleLine="true"/>
+                    android:singleLine="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@color/placeholder"/>
 
                 <EditText
                     android:id="@+id/start_signup_password"
@@ -192,7 +212,11 @@
                     android:hint="@string/FIELD_PASSWORD"
                     android:inputType="textPassword"
                     android:layout_marginTop="@dimen/dimen_large"
-                    android:singleLine="true"/>
+                    android:singleLine="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@color/placeholder"/>
 
                 <Button
                     android:id="@+id/start_signup_next"

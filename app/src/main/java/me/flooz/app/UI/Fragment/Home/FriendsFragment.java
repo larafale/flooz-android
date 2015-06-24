@@ -72,7 +72,7 @@ public class FriendsFragment extends HomeBaseFragment implements FriendsListAdap
             parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
         });
 
-        this.searchTextfield.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
+        searchTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
 
         this.refreshContainer.setOnRefreshListener(() -> {
             final Boolean[] validate = {false};

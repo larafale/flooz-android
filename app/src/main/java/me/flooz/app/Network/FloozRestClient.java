@@ -1078,7 +1078,6 @@ public class FloozRestClient
                     responseHandler.failure(statusCode, error);
             }
         });
-
     }
 
     public void performActionOnFriend(String friendID, FriendAction action, final FloozHttpResponseHandler responseHandler) {
@@ -1718,7 +1717,6 @@ public class FloozRestClient
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-
         }
     }
 

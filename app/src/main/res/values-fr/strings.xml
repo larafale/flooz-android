@@ -276,7 +276,7 @@
     <string name="SECORE_CODE_TEXT_LOGIN">Identifiez vous pour réinitialiser votre code</string>
     <string name="SECURE_CODE_FORGOT">Code oublié ?</string>
     <string name="SECORE_CODE_CHOOSE">Choisissez votre code secret</string>
-    <string name="SECORE_CODE_CHOOSE_CONFIRM">Veuillez retapez votre code</string>
+    <string name="SECORE_CODE_CHOOSE_CONFIRM">Veuillez resaisir votre code</string>
 
     <string name="DOCUMENTS_CARD_ID_RECTO">Carte d’identité (Recto)</string>
     <string name="DOCUMENTS_CARD_ID_VERSO">Carte d’identité (Verso)</string>

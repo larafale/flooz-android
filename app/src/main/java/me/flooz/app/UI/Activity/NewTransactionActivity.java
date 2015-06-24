@@ -1092,10 +1092,19 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
             if (currentReceiver.userKind == FLUser.UserKind.PhoneUser) {
                 Map<String, Object> contact = new HashMap<>();
                 if (currentReceiver.firstname != null)
-                    contact.put("firstname", currentReceiver.firstname);
+                    contact.put("firstName", currentReceiver.firstname);
 
                 if (currentReceiver.lastname != null)
                     contact.put("lastName", currentReceiver.lastname);
+
+                if (contact.values().size() == 0) {
+                    if (currentReceiver.fullname.contains(" ")) {
+                        contact.put("firstName", currentReceiver.fullname.substring(0, currentReceiver.fullname.indexOf(' ')));
+                        contact.put("lastName", currentReceiver.fullname.substring(currentReceiver.fullname.indexOf(' ') + 1));
+                    } else {
+                        contact.put("firstName", currentReceiver.fullname);
+                    }
+                }
 
                 if (contact.values().size() > 0)
                     params.put("contact", contact);
