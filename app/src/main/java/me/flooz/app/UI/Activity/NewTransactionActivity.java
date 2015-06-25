@@ -60,6 +60,7 @@ import me.flooz.app.UI.View.ContactPickerView;
 import me.flooz.app.UI.View.TokenPickerLibrary.TokenCompleteTextView;
 import me.flooz.app.UI.View.ToolTipScopeView;
 import me.flooz.app.UI.View.ToolTipScopeViewDelegate;
+import me.flooz.app.Utils.ContactsManager;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
 import me.flooz.app.Utils.FLHelper;
@@ -199,6 +200,9 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
             }
         else
             this.init();
+
+        if (FloozRestClient.getInstance().currentUser != null && FloozRestClient.getInstance().currentUser.settings != null)
+            this.currentScope = FLTransaction.transactionScopeParamToEnum((String)((Map)FloozRestClient.getInstance().currentUser.settings.get("def")).get("scope"));
 
         this.setContentView(R.layout.transaction_fragment);
 
@@ -1090,21 +1094,18 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
                 params.put("to", currentReceiver.phone.replace("+33", "0"));
 
             if (currentReceiver.userKind == FLUser.UserKind.PhoneUser) {
+
+                currentReceiver = ContactsManager.fillUserInformations(currentReceiver);
+
                 Map<String, Object> contact = new HashMap<>();
-                if (currentReceiver.firstname != null)
+                if (currentReceiver.firstname != null && !currentReceiver.firstname.isEmpty())
                     contact.put("firstName", currentReceiver.firstname);
 
-                if (currentReceiver.lastname != null)
+                if (currentReceiver.lastname != null && !currentReceiver.lastname.isEmpty())
                     contact.put("lastName", currentReceiver.lastname);
 
-                if (contact.values().size() == 0) {
-                    if (currentReceiver.fullname.contains(" ")) {
-                        contact.put("firstName", currentReceiver.fullname.substring(0, currentReceiver.fullname.indexOf(' ')));
-                        contact.put("lastName", currentReceiver.fullname.substring(currentReceiver.fullname.indexOf(' ') + 1));
-                    } else {
-                        contact.put("firstName", currentReceiver.fullname);
-                    }
-                }
+                if (currentReceiver.fullname != null && !currentReceiver.fullname.isEmpty())
+                    contact.put("name", currentReceiver.fullname);
 
                 if (contact.values().size() > 0)
                     params.put("contact", contact);

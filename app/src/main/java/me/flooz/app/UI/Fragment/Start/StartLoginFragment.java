@@ -1,7 +1,5 @@
 package me.flooz.app.UI.Fragment.Start;
 
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -49,6 +47,9 @@ public class StartLoginFragment extends StartBaseFragment {
         orLabel.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
         title.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
         forgetButton.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
+
+        phoneTextfield.getText().clear();
+        passwordTextfield.getText().clear();
 
         facebookPicto.setColorFilter(inflater.getContext().getResources().getColor(android.R.color.white));
 

@@ -157,6 +157,26 @@ public class ContactsManager {
         }
     }
 
+    public static FLUser fillUserInformations(FLUser user) {
+
+        String whereName = ContactsContract.Data.MIMETYPE + " = ? AND " + CommonDataKinds.StructuredName.DISPLAY_NAME + " = ?";
+        String[] whereNameParams = new String[] { ContactsContract.CommonDataKinds.StructuredName.CONTENT_ITEM_TYPE, user.fullname };
+
+        ContentResolver contentResolver = FloozApplication.getAppContext().getContentResolver();
+        Cursor nameCur = contentResolver.query(ContactsContract.Data.CONTENT_URI, null, whereName, whereNameParams, ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME);
+
+        while (nameCur.moveToNext()) {
+            user.firstname = nameCur.getString(nameCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredName.GIVEN_NAME));
+            user.lastname = nameCur.getString(nameCur.getColumnIndex(ContactsContract.CommonDataKinds.StructuredName.FAMILY_NAME));
+            if (user.firstname != null && !user.firstname.isEmpty() && user.lastname != null && !user.lastname.isEmpty())
+                break;
+        }
+
+        nameCur.close();
+
+        return user;
+    }
+
     public static List<FLUser> getContactsList() {
         if (allContacts != null)
             return allContacts;

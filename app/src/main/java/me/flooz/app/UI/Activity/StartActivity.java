@@ -46,9 +46,7 @@ import me.flooz.app.Utils.ViewServer;
 public class StartActivity extends Activity {
 
     public FloozApplication floozApp;
-    private StartActivity instance;
 
-    private StartBaseFragment currentFragment;
     public List<StartBaseFragment> fragmentHistory;
 
     public Map<String, Object> signupData;
@@ -62,7 +60,6 @@ public class StartActivity extends Activity {
 
         setContentView(R.layout.start_activity);
         floozApp = (FloozApplication)this.getApplicationContext();
-        instance = this;
 
         this.fragmentHistory = new ArrayList<>();
 
@@ -74,6 +71,10 @@ public class StartActivity extends Activity {
         this.changeCurrentPage(homeFragment, false);
     }
 
+    protected void onStart() {
+        super.onStart();
+    }
+
     protected void onResume() {
         super.onResume();
 
@@ -81,7 +82,6 @@ public class StartActivity extends Activity {
             ViewServer.get(this).setFocusedWindow(this);
 
         floozApp.setCurrentActivity(this);
-
     }
 
     protected void onPause() {
@@ -119,12 +119,13 @@ public class StartActivity extends Activity {
         ft.commit();
 
         this.fragmentHistory.add(fragment);
-        this.currentFragment = fragment;
     }
 
     public void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), 0);
+
+        if (imm.isActive())
+            imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
     }
 
     public void changeCurrentPage(StartBaseFragment fragment, int animEnter, int animExit, int animPopEnter, int animPopExit, Boolean addToBackStack) {
@@ -144,7 +145,6 @@ public class StartActivity extends Activity {
         ft.commit();
 
         this.fragmentHistory.add(fragment);
-        this.currentFragment = fragment;
     }
 
     public void changeCurrentPage(StartBaseFragment fragment, int animIn, int animOut, Boolean addToBackStack) {
@@ -164,7 +164,6 @@ public class StartActivity extends Activity {
         ft.commit();
 
         this.fragmentHistory.add(fragment);
-        this.currentFragment = fragment;
     }
 
     public void updateUserData(Map<String, Object> data) {
