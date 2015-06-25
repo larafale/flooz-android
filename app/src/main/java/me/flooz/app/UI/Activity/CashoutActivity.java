@@ -146,6 +146,8 @@ public class CashoutActivity extends Activity {
                 balance.setText(amountValue);
                 amountTextfield.setText("");
                 amountTextfield.clearFocus();
+
+                headerBackButton.performClick();
             }
 
             @Override

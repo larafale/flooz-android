@@ -355,6 +355,8 @@ public class CreditCardSettingsActivity extends Activity {
                 this.cardCVV.setText("");
                 this.cardExpires.setText("");
             }
+
+            this.cardNumber.requestFocus();
         }
     }
 
