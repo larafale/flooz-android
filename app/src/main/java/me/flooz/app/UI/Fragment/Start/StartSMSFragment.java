@@ -49,8 +49,6 @@ public class StartSMSFragment extends StartBaseFragment implements NumericKeyboa
 
         keyboard.delegate = this;
 
-        keyboard.maxLenght = 4;
-
         codeTextfield.requestFocus();
         title.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
         codeTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
