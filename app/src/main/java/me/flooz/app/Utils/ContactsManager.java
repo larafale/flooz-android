@@ -119,11 +119,11 @@ public class ContactsManager {
                 user.username = ContactsManager.validatePhoneNumber(phoneNumber);
                 user.phone = user.username;
 
-                if (user.username != null && !user.username.isEmpty()) {
+                if (user.fullname != null && !user.fullname.isEmpty() && user.username != null && !user.username.isEmpty()) {
                     boolean alreadyExist = false;
                     for (int i = 0; i < resultList.size(); i++) {
                         FLUser tmpUser = resultList.get(i);
-                        if (tmpUser.fullname.contentEquals(user.fullname) && tmpUser.phone.contentEquals(user.phone)) {
+                        if (tmpUser.fullname.contentEquals(user.fullname) && tmpUser.username.contentEquals(user.username)) {
                             alreadyExist = true;
                             break;
                         }
@@ -185,5 +185,4 @@ public class ContactsManager {
 
         return allContacts;
     }
-
 }

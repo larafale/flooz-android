@@ -554,14 +554,16 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
 
                             JSONArray t = data.optJSONArray("triggers");
 
-                            for (int i = 0; i < t.length(); i++) {
-                                final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
-                                if (trigger.delay.doubleValue() > 0) {
-                                    Handler thandler = new Handler(Looper.getMainLooper());
-                                    thandler.postDelayed(() -> FloozRestClient.getInstance().handleTrigger(trigger), (int) (trigger.delay.doubleValue() * 1000));
-                                } else {
-                                    Handler thandler = new Handler(Looper.getMainLooper());
-                                    thandler.post(() -> FloozRestClient.getInstance().handleTrigger(trigger));
+                            if (t != null) {
+                                for (int i = 0; i < t.length(); i++) {
+                                    final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
+                                    if (trigger.delay.doubleValue() > 0) {
+                                        Handler thandler = new Handler(Looper.getMainLooper());
+                                        thandler.postDelayed(() -> FloozRestClient.getInstance().handleTrigger(trigger), (int) (trigger.delay.doubleValue() * 1000));
+                                    } else {
+                                        Handler thandler = new Handler(Looper.getMainLooper());
+                                        thandler.post(() -> FloozRestClient.getInstance().handleTrigger(trigger));
+                                    }
                                 }
                             }
 

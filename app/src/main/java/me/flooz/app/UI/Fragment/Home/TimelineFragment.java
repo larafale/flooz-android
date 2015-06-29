@@ -187,7 +187,13 @@ public class TimelineFragment extends Fragment implements TimelineListAdapter.Ti
                     transactions.addAll((List<FLTransaction>) responseMap.get("transactions"));
                     nextPageUrl = (String) responseMap.get("nextUrl");
 
+                    if (timelineAdapter == null) {
+                        timelineAdapter = new TimelineListAdapter(FloozApplication.getAppContext(), transactions);
+                        timelineAdapter.delegate = TimelineFragment.this;
+                    }
+
                     timelineAdapter.notifyDataSetChanged();
+
                     refreshContainer.setRefreshing(false);
 
                     if (transactions.size() == 0) {
