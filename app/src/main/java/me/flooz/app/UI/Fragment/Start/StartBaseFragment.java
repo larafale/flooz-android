@@ -4,6 +4,11 @@ import android.app.Fragment;
 
 import org.json.JSONObject;
 
+import me.flooz.app.App.FloozApplication;
+import me.flooz.app.Model.FLError;
+import me.flooz.app.Network.FloozHttpResponseHandler;
+import me.flooz.app.Network.FloozRestClient;
+import me.flooz.app.R;
 import me.flooz.app.UI.Activity.StartActivity;
 
 /**
@@ -39,5 +44,41 @@ public class StartBaseFragment extends Fragment {
             ret.setInitData(data);
 
         return ret;
+    }
+
+    public static void handleStepResponse(JSONObject response, StartActivity activity) {
+        if (response.has("step") && response.optJSONObject("step").has("next")) {
+            if (response.optJSONObject("step").optString("next").contentEquals("signup")) {
+                FloozRestClient.getInstance().showLoadView();
+                FloozRestClient.getInstance().signupPassStep("signup", activity.signupData, new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        JSONObject responseObject = (JSONObject) response;
+                        FloozApplication.getInstance().pendingTriggers = null;
+                        FloozApplication.getInstance().pendingPopup = null;
+                        FloozRestClient.getInstance().updateCurrentUserAfterSignup(responseObject);
+
+                        if (responseObject.has("step") && responseObject.optJSONObject("step").has("next")) {
+                            StartBaseFragment nextFragment = StartBaseFragment.getSignupFragmentFromId(responseObject.optJSONObject("step").optString("next"), responseObject.optJSONObject("step"));
+
+                            if (nextFragment != null) {
+                                activity.changeCurrentPage(nextFragment, R.animator.slide_in_left, R.animator.slide_out_right, R.animator.slide_in_right, R.animator.slide_out_left, true);
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void failure(int statusCode, FLError error) {
+
+                    }
+                });
+            } else {
+                StartBaseFragment nextFragment = StartBaseFragment.getSignupFragmentFromId(response.optJSONObject("step").optString("next"), response.optJSONObject("step"));
+
+                if (nextFragment != null) {
+                    activity.changeCurrentPage(nextFragment, R.animator.slide_in_left, R.animator.slide_out_right, R.animator.slide_in_right, R.animator.slide_out_left, true);
+                }
+            }
+        }
     }
 }

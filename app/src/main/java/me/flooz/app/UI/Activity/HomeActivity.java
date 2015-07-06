@@ -172,57 +172,6 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
         if (FLHelper.isDebuggable())
             ViewServer.get(this).addWindow(this);
 
-        final Intent intent = getIntent();
-        if (intent != null && intent.getAction() != null && intent.getAction().contentEquals(Intent.ACTION_VIEW)) {
-            if (!FloozRestClient.getInstance().autologin()) {
-                FloozApplication.getInstance().displayStartView();
-            }
-        }
-        if (intent != null && intent.getExtras() != null) {
-            if (!intent.getBooleanExtra("inApp", false)) {
-                if (!FloozRestClient.getInstance().autologin()) {
-                    FloozApplication.getInstance().displayStartView();
-                }
-            }
-        }
-
-        Branch branch = Branch.getInstance(getApplicationContext());
-        branch.initSession((referringParams, error) -> {
-            if (error == null) {
-                if (FloozRestClient.getInstance().accessToken != null) {
-                    String data = referringParams.optString("data");
-
-                    if (data != null && !data.isEmpty()) {
-                        try {
-                            JSONObject dataObject = new JSONObject(data);
-
-                            JSONArray t = dataObject.optJSONArray("triggers");
-
-                            for (int i = 0; i < t.length(); i++) {
-                                final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
-                                if (trigger.delay.doubleValue() > 0) {
-                                    Handler thandler = new Handler(Looper.getMainLooper());
-                                    thandler.postDelayed(() -> FloozRestClient.getInstance().handleTrigger(trigger), (int) (trigger.delay.doubleValue() * 1000));
-                                } else {
-                                    Handler thandler = new Handler(Looper.getMainLooper());
-                                    thandler.post(() -> FloozRestClient.getInstance().handleTrigger(trigger));
-                                }
-                            }
-
-                            if (dataObject.has("popup")) {
-                                FLError errorContent = new FLError(dataObject.optJSONObject("popup"));
-                                CustomToast.show(FloozApplication.getAppContext(), errorContent);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                } else {
-                    FloozApplication.getInstance().displayStartView();
-                }
-            }
-        }, this.getIntent().getData(), this);
-
         floozApp = (FloozApplication)this.getApplicationContext();
 
         this.fragmentManager = this.getFragmentManager();
@@ -510,76 +459,22 @@ public class HomeActivity extends SlidingFragmentActivity implements TimelineFra
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadNotificationsReceiver,
                 CustomNotificationIntents.filterReloadNotifications());
 
-        Handler handlerIntent = new Handler(Looper.getMainLooper());
-        final boolean b = handlerIntent.postDelayed(() -> {
-            final Intent intent = getIntent();
-            JSONArray triggersArray = null;
-            if (intent != null && intent.getExtras() != null) {
-                String message = intent.getStringExtra("triggers");
-                if (message != null && !message.isEmpty()) {
-                    try {
-                        triggersArray = new JSONArray(message);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+        if (FloozApplication.getInstance().pendingTriggers != null) {
+            Handler handlerIntent = new Handler(Looper.getMainLooper());
+            final boolean b = handlerIntent.postDelayed(() -> {
+                FloozRestClient.getInstance().handleTriggerArray(FloozApplication.getInstance().pendingTriggers);
+                FloozApplication.getInstance().pendingTriggers = null;
+            }, 100);
+        }
 
-                    if (triggersArray != null) {
-                        final JSONArray finalJsonObject = triggersArray;
-                        if (floozApp.getCurrentActivity() instanceof HomeActivity) {
-                            for (int i = 0; i < finalJsonObject.length(); i++) {
-                                final FLTrigger trigger = new FLTrigger(finalJsonObject.optJSONObject(i));
-                                if (trigger.delay.doubleValue() > 0) {
-                                    Handler handlerTrigger = new Handler(Looper.getMainLooper());
-                                    handlerTrigger.postDelayed(() -> FloozRestClient.getInstance().handleTrigger(trigger), (int) (trigger.delay.doubleValue() * 1000));
-                                } else {
-                                    FloozRestClient.getInstance().handleTrigger(trigger);
-                                }
-                            }
-                        }
-                    }
-                } else if (intent.getData() != null) {
-                    String path = null;
-                    try {
-                        path = URLDecoder.decode(intent.getData().toString(), "UTF-8");
-                        path = path.replace("flooz://", "");
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
-                    }
+        if (FloozApplication.getInstance().pendingPopup != null) {
+            Handler handlerIntent = new Handler(Looper.getMainLooper());
+            final boolean b = handlerIntent.postDelayed(() -> {
+                CustomToast.show(this, new FLError(FloozApplication.getInstance().pendingPopup));
+                FloozApplication.getInstance().pendingPopup = null;
+            }, 100);
+        }
 
-                    if (path != null) {
-                        try {
-                            JSONObject obj = new JSONObject(path);
-
-                            JSONObject data = obj.optJSONObject("data");
-
-                            JSONArray t = data.optJSONArray("triggers");
-
-                            if (t != null) {
-                                for (int i = 0; i < t.length(); i++) {
-                                    final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
-                                    if (trigger.delay.doubleValue() > 0) {
-                                        Handler thandler = new Handler(Looper.getMainLooper());
-                                        thandler.postDelayed(() -> FloozRestClient.getInstance().handleTrigger(trigger), (int) (trigger.delay.doubleValue() * 1000));
-                                    } else {
-                                        Handler thandler = new Handler(Looper.getMainLooper());
-                                        thandler.post(() -> FloozRestClient.getInstance().handleTrigger(trigger));
-                                    }
-                                }
-                            }
-
-                            if (data.has("popup")) {
-                                FLError errorContent = new FLError(data.optJSONObject("popup"));
-                                CustomToast.show(FloozApplication.getAppContext(), errorContent);
-                            }
-
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                }
-                setIntent(new Intent());
-            }
-        }, 1000);
     }
 
     protected void onPause() {

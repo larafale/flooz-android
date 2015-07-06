@@ -15,6 +15,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.HomeActivity;
+import me.flooz.app.UI.Activity.LoadingActivity;
 
 /**
  * Created by Flooz on 1/14/15.
@@ -50,7 +51,7 @@ public class GcmIntentService extends IntentService {
 
             String array = extras.getCharSequence("triggers", "").toString();
 
-            Intent pendingIntentContent = new Intent(this, HomeActivity.class);
+            Intent pendingIntentContent = new Intent(this, LoadingActivity.class);
 
             if (!array.isEmpty())
                 pendingIntentContent.putExtra("triggers", array);

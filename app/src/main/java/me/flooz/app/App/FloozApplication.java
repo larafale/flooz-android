@@ -20,6 +20,9 @@ import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -53,7 +56,8 @@ public class FloozApplication extends BranchApp
     private final static String SENDER_ID = "202597897110";
     private GoogleCloudMessaging gcm;
     public String regid;
-
+    public JSONArray pendingTriggers;
+    public JSONObject pendingPopup;
 
     public static MixpanelAPI mixpanelAPI;
     private static FloozApplication instance;

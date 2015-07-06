@@ -52,39 +52,8 @@ public class StartInvitationFragment extends StartBaseFragment {
                 @Override
                 public void success(Object response) {
                     JSONObject responseObject = (JSONObject) response;
+                    StartBaseFragment.handleStepResponse(responseObject, parentActivity);
 
-                    if (responseObject.has("step") && responseObject.optJSONObject("step").has("next")) {
-                        if (responseObject.optJSONObject("step").optString("next").contentEquals("signup")) {
-                            FloozRestClient.getInstance().showLoadView();
-                            FloozRestClient.getInstance().signupPassStep("signup", parentActivity.signupData, new FloozHttpResponseHandler() {
-                                @Override
-                                public void success(Object response) {
-                                    JSONObject responseObject = (JSONObject) response;
-
-                                    FloozRestClient.getInstance().updateCurrentUserAfterSignup(responseObject);
-
-                                    if (responseObject.has("step") && responseObject.optJSONObject("step").has("next")) {
-                                        StartBaseFragment nextFragment = StartBaseFragment.getSignupFragmentFromId(responseObject.optJSONObject("step").optString("next"), responseObject.optJSONObject("step"));
-
-                                        if (nextFragment != null) {
-                                            parentActivity.changeCurrentPage(nextFragment, R.animator.slide_in_left, R.animator.slide_out_right, R.animator.slide_in_right, R.animator.slide_out_left, true);
-                                        }
-                                    }
-                                }
-
-                                @Override
-                                public void failure(int statusCode, FLError error) {
-
-                                }
-                            });
-                        } else {
-                            StartBaseFragment nextFragment = StartBaseFragment.getSignupFragmentFromId(responseObject.optJSONObject("step").optString("next"), responseObject.optJSONObject("step"));
-
-                            if (nextFragment != null) {
-                                parentActivity.changeCurrentPage(nextFragment, R.animator.slide_in_left, R.animator.slide_out_right, R.animator.slide_in_right, R.animator.slide_out_left, true);
-                            }
-                        }
-                    }
                 }
 
                 @Override

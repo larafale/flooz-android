@@ -1280,7 +1280,7 @@ public class FloozRestClient
         return BASE_URL + relativeUrl;
     }
 
-    private void setNewAccessToken(String token) {
+    public void setNewAccessToken(String token) {
         this.accessToken = token;
 
         this.appSettings.edit().putString("access_token", token).apply();
@@ -2024,12 +2024,49 @@ public class FloozRestClient
                     Intent intent = new Intent();
                     intent.setClass(this.floozApp, handlerClass);
                     intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    intent.putExtra("inApp", true);
-                    intent.putExtra("triggers", t.toString());
                     Activity tmpActivity = floozApp.getCurrentActivity();
                     tmpActivity.startActivity(intent);
                     tmpActivity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
                 }
+            }
+        }
+    }
+
+    public void handleTriggerArray(JSONArray t) {
+        if (FloozApplication.appInForeground) {
+
+            Boolean canExecute = true;
+            Class handlerClass = null;
+
+            for (int i = 0; i < t.length(); i++) {
+                final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
+                if (trigger.handlerClass != null && !this.floozApp.getCurrentActivity().getClass().isAssignableFrom(trigger.handlerClass)) {
+                    canExecute = false;
+                    handlerClass = trigger.handlerClass;
+                    break;
+                }
+            }
+
+            if (canExecute) {
+                for (int i = 0; i < t.length(); i++) {
+                    final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
+                    if (trigger.delay.doubleValue() > 0) {
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.postDelayed(() -> handleTrigger(trigger), (int) (trigger.delay.doubleValue() * 1000));
+                    } else {
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.post(() -> handleTrigger(trigger));
+                    }
+                }
+            } else {
+                FloozApplication.getInstance().pendingTriggers = t;
+                Intent intent = new Intent();
+                intent.setClass(this.floozApp, handlerClass);
+                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                intent.putExtra("triggers", t.toString());
+                Activity tmpActivity = floozApp.getCurrentActivity();
+                tmpActivity.startActivity(intent);
+                tmpActivity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
             }
         }
     }
