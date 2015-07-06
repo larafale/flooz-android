@@ -78,6 +78,7 @@ import me.flooz.app.UI.Tools.CustomToast;
 import me.flooz.app.Utils.ContactsManager;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
+import me.flooz.app.Utils.DeviceManager;
 import me.flooz.app.Utils.JSONHelper;
 import me.flooz.app.Utils.NotificationsManager;
 
@@ -123,6 +124,8 @@ public class FloozRestClient
     private AsyncHttpClient aHttpClient = new AsyncHttpClient();
     private AsyncHttpClient sHttpClient = new SyncHttpClient();
 
+    private DeviceManager deviceManager;
+
     public static FloozRestClient getInstance()
     {
         if (instance == null)
@@ -139,7 +142,7 @@ public class FloozRestClient
 
         this.secureCode =  this.appSettings.getString("secure_code", null);
         this.accessToken =  this.appSettings.getString("access_token", null);
-
+        this.deviceManager = new DeviceManager(FloozApplication.getAppContext());
         this.floozApp = (FloozApplication)FloozApplication.getAppContext().getApplicationContext();
 
         if (BuildConfig.LOCAL_API)
@@ -207,7 +210,7 @@ public class FloozRestClient
         params.put("password", password);
         params.put("codeReset", true);
 
-        this.request("/login/basic", HttpRequestType.POST, params, responseHandler);
+        this.request("/users/login", HttpRequestType.POST, params, responseHandler);
     }
 
     public void loginWithPseudoAndPassword(String pseudo, String password, final FloozHttpResponseHandler responseHandler) {
@@ -215,7 +218,7 @@ public class FloozRestClient
         params.put("login", pseudo);
         params.put("password", password);
 
-        this.request("/login/basic", HttpRequestType.POST, params, new FloozHttpResponseHandler() {
+        this.request("/users/login", HttpRequestType.POST, params, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
                 JSONObject responseObject = (JSONObject)response;
@@ -253,7 +256,7 @@ public class FloozRestClient
 
         param.put("accessToken", fbToken);
 
-        this.request("/login/facebook", HttpRequestType.POST, param, new FloozHttpResponseHandler() {
+        this.request("/users/facebook", HttpRequestType.POST, param, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
                 JSONObject responseObject = (JSONObject) response;
@@ -1342,7 +1345,10 @@ public class FloozRestClient
                 path += "&os=" + Build.VERSION.RELEASE;
 
             if (!path.contains("&mo="))
-                path += "&mo=" + getDeviceName().replaceAll(" ", "%20");
+                path += "&mo=" + this.deviceManager.getDeviceName();
+
+            if (!path.contains("&uuid="))
+                path += "&uuid=" + this.deviceManager.getDeviceUuid();
 
             final JsonHttpResponseHandler jsonHttpResponseHandler = new JsonHttpResponseHandler() {
                 @Override
@@ -1497,29 +1503,6 @@ public class FloozRestClient
 
             if (responseHandler != null)
                 responseHandler.failure(442, null);
-        }
-    }
-
-    public String getDeviceName() {
-        String manufacturer = Build.MANUFACTURER;
-        String model = Build.MODEL;
-        if (model.startsWith(manufacturer)) {
-            return capitalize(model);
-        } else {
-            return capitalize(manufacturer) + " " + model;
-        }
-    }
-
-
-    private String capitalize(String s) {
-        if (s == null || s.length() == 0) {
-            return "";
-        }
-        char first = s.charAt(0);
-        if (Character.isUpperCase(first)) {
-            return s;
-        } else {
-            return Character.toUpperCase(first) + s.substring(1);
         }
     }
 
