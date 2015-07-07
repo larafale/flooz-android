@@ -67,6 +67,7 @@ import me.flooz.app.Model.FLUser;
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.NewTransactionActivity;
+import me.flooz.app.UI.Activity.Secure3DActivity;
 import me.flooz.app.UI.Activity.Settings.BankSettingsActivity;
 import me.flooz.app.UI.Activity.Settings.CoordsSettingsActivity;
 import me.flooz.app.UI.Activity.Settings.CreditCardSettingsActivity;
@@ -125,6 +126,17 @@ public class FloozRestClient
     private AsyncHttpClient sHttpClient = new SyncHttpClient();
 
     private DeviceManager deviceManager;
+
+    private Handler socketHandler = new Handler(Looper.getMainLooper());
+
+    private Runnable socketCloseRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (socket != null && socket.connected() && currentUser != null) {
+                socketSendSessionEnd();
+            }
+        }
+    };
 
     public static FloozRestClient getInstance()
     {
@@ -811,7 +823,7 @@ public class FloozRestClient
     }
 
     public void abort3DSecure() {
-        this.request("/cards/3ds/abort", HttpRequestType.GET, null, null);
+        this.request("/psp/3ds/abort", HttpRequestType.GET, null, null);
     }
 
     /***************************/
@@ -1738,35 +1750,46 @@ public class FloozRestClient
 
     private void handleTriggerUserIdentityShow() {
         if (!(floozApp.getCurrentActivity() instanceof IdentitySettingsActivity)) {
-            Intent intent = new Intent(floozApp.getCurrentActivity(), IdentitySettingsActivity.class);
-            intent.putExtra("modal", true);
             Activity tmpActivity = floozApp.getCurrentActivity();
+            Intent intent = new Intent(tmpActivity, IdentitySettingsActivity.class);
+            intent.putExtra("modal", true);
             tmpActivity.startActivity(intent);
             tmpActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
         }
     }
 
     private void handleTrigger3DSecureShow(JSONObject data) {
-//        if (floozApp.getCurrentActivity() instanceof HomeActivity) {
-////            HomeActivity tmp = (HomeActivity)floozApp.getCurrentActivity();
-////            ((CreditCardSettingsFragment)tmp.contentFragments.get("settings_credit_card")).next3DSecure = true;
-////            ((CreditCardSettingsFragment)tmp.contentFragments.get("settings_credit_card")).secureData = data.optString("html");
-//        }
+        if (!(floozApp.getCurrentActivity() instanceof Secure3DActivity)) {
+            Activity tmpActivity = floozApp.getCurrentActivity();
+            Intent intent = new Intent(tmpActivity, Secure3DActivity.class);
+            intent.putExtra("html", data.optString("html"));
+
+            if (tmpActivity instanceof CreditCardSettingsActivity)
+                ((CreditCardSettingsActivity)tmpActivity).next3DSecure = true;
+
+            tmpActivity.startActivity(intent);
+            tmpActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+        }
     }
 
     private void handleTrigger3DSecureComplete() {
         Handler handler = new Handler(floozApp.getMainLooper());
         handler.post(() -> updateCurrentUser(null));
 
-//        if (floozApp.getCurrentActivity() instanceof HomeActivity) {
-////            ((Secure3DFragment)((HomeActivity)floozApp.getCurrentActivity()).contentFragments.get("settings_3ds")).dismiss();
-//        }
+        if (floozApp.getCurrentActivity() instanceof Secure3DActivity) {
+            floozApp.getCurrentActivity().finish();
+            floozApp.getCurrentActivity().overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+        }
     }
 
     private void handleTrigger3DSecureFail() {
-//        if (floozApp.getCurrentActivity() instanceof HomeActivity) {
-////            ((Secure3DFragment)((HomeActivity)floozApp.getCurrentActivity()).contentFragments.get("settings_3ds")).dismiss();
-//        }
+        Handler handler = new Handler(floozApp.getMainLooper());
+        handler.post(() -> updateCurrentUser(null));
+
+        if (floozApp.getCurrentActivity() instanceof Secure3DActivity) {
+            floozApp.getCurrentActivity().finish();
+            floozApp.getCurrentActivity().overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+        }
     }
 
     private void handleTriggerResetPassword() {
@@ -1890,6 +1913,12 @@ public class FloozRestClient
         }
     }
 
+    private void handleTriggerViewClose() {
+        Activity tmpActivity = floozApp.getCurrentActivity();
+        if (tmpActivity != null)
+            tmpActivity.finish();
+    }
+
     public void handleTrigger(final FLTrigger trigger) {
         if (trigger == null)
             return;
@@ -1987,6 +2016,9 @@ public class FloozRestClient
             case TriggerShowHome:
                 handleTriggerHomeShow();
                 break;
+            case TriggerCloseView:
+                handleTriggerViewClose();
+                break;
             default:
                 break;
         }
@@ -2076,6 +2108,7 @@ public class FloozRestClient
     /***************************/
 
     public void initializeSockets() {
+        this.socketHandler.removeCallbacks(this.socketCloseRunnable);
         if (this.currentUser != null) {
             try {
                 if (this.socket == null) {
@@ -2144,8 +2177,6 @@ public class FloozRestClient
     }
 
     public void closeSockets() {
-        if (this.socket != null && this.socket.connected() && this.currentUser != null) {
-            this.socketSendSessionEnd();
-        }
+        this.socketHandler.postDelayed(this.socketCloseRunnable, 200);
     }
 }

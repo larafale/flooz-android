@@ -242,7 +242,7 @@ public class FloozApplication extends BranchApp
     public void setCurrentActivity(Activity activity){
         appInForeground = activity != null;
 
-        if (this.currentActivity == null && activity != null && activity instanceof HomeActivity) {
+        if (this.currentActivity == null && activity != null) {
             FloozRestClient.getInstance().initializeSockets();
         } else if (this.currentActivity != null && activity == null) {
             InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);

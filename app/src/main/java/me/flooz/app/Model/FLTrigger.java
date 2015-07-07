@@ -43,6 +43,7 @@ public class FLTrigger {
         TriggerHttpCall,
         TriggerShowHome,
         TriggerShowIban,
+        TriggerCloseView
     }
 
     public FLTriggerType type;
@@ -140,6 +141,8 @@ public class FLTrigger {
             return TriggerShowIban;
         else if (param.contentEquals("http:call"))
             return TriggerHttpCall;
+        else if (param.contentEquals("view:close"))
+            return TriggerCloseView;
         else
             return TriggerNone;
     }

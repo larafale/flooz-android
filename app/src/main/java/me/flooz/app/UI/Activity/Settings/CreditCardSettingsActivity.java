@@ -253,20 +253,11 @@ public class CreditCardSettingsActivity extends Activity {
                     creditCard.cvv = cardCVV.getText().toString();
 
                     FloozRestClient.getInstance().currentUser.creditCard = creditCard;
-
-                    if (next3DSecure) {
-//                            ((Secure3DFragment)parentActivity.contentFragments.get("settings_3ds")).data = secureData;
-//                            parentActivity.pushMainFragment("settings_3ds", R.animator.slide_up, android.R.animator.fade_out);
-                    }
-                    else {
-                        FloozRestClient.getInstance().updateCurrentUser(null);
-                        headerBackButton.performClick();
-                    }
                 }
 
                 @Override
                 public void failure(int statusCode, FLError error) {
-                    FloozRestClient.getInstance().currentUser.creditCard = null;
+
                 }
             });
         });
