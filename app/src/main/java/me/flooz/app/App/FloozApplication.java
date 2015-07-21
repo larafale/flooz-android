@@ -58,6 +58,7 @@ public class FloozApplication extends BranchApp
     public String regid;
     public JSONArray pendingTriggers;
     public JSONObject pendingPopup;
+    public JSONObject branchParams;
 
     public static MixpanelAPI mixpanelAPI;
     private static FloozApplication instance;

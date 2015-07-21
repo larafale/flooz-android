@@ -35,7 +35,14 @@ public class StartHomeFragment extends StartBaseFragment {
     private Handler handler = new Handler();
 
     private Runnable runnable = () -> {
-        pagerView.setCurrentItem(pagerView.getCurrentItem() + 1, true);
+        int newPage = pagerView.getCurrentItem();
+
+        if (newPage + 1 > pagerView.getAdapter().getCount() - 1)
+            newPage = 0;
+        else
+            ++newPage;
+
+        pagerView.setCurrentItem(newPage, true);
         handler.postDelayed(this.runnable, 4000);
     };
 

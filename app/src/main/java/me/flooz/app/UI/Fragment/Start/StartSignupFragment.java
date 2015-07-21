@@ -120,10 +120,9 @@ public class StartSignupFragment extends StartBaseFragment {
         signupButton.setOnClickListener(v -> {
             parentActivity.hideKeyboard();
 
-            Branch branch = Branch.getInstance(parentActivity.getApplicationContext());
 
-            if (branch.getLatestReferringParams().has("referrer"))
-                parentActivity.signupData.put("referrer", branch.getLatestReferringParams().optString("referrer"));
+            if (FloozApplication.getInstance().branchParams != null && FloozApplication.getInstance().branchParams.has("referrer"))
+                parentActivity.signupData.put("referrer",  FloozApplication.getInstance().branchParams.optString("referrer"));
 
             parentActivity.signupData.put("distinctId", FloozApplication.mixpanelAPI.getPeople().getDistinctId());
             parentActivity.signupData.put("firstName", firstnameTextfield.getText().toString());

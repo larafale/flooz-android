@@ -63,6 +63,8 @@ public class LoadingActivity extends Activity {
         Branch branch = Branch.getInstance(getApplicationContext());
         branch.initSession((referringParams, error) -> {
             if (error == null) {
+                FloozApplication.getInstance().branchParams = referringParams;
+
                 String data = referringParams.optString("data");
 
                 if (data != null && !data.isEmpty()) {

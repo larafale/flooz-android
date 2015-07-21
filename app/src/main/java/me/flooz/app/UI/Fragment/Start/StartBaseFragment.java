@@ -4,6 +4,7 @@ import android.app.Fragment;
 
 import org.json.JSONObject;
 
+import io.branch.referral.Branch;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Network.FloozHttpResponseHandler;
@@ -56,6 +57,8 @@ public class StartBaseFragment extends Fragment {
                         JSONObject responseObject = (JSONObject) response;
                         FloozApplication.getInstance().pendingTriggers = null;
                         FloozApplication.getInstance().pendingPopup = null;
+                        FloozApplication.getInstance().branchParams = null;
+
                         FloozRestClient.getInstance().updateCurrentUserAfterSignup(responseObject);
 
                         if (responseObject.has("step") && responseObject.optJSONObject("step").has("next")) {
