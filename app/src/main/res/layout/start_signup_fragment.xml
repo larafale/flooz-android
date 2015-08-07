@@ -76,7 +76,7 @@
                         android:textColor="@color/placeholder"
                         android:paddingRight="@dimen/dimen_large"
                         android:paddingLeft="@dimen/dimen_large"
-                        android:layout_marginTop="@dimen/dimen_xlarge"/>
+                        android:layout_marginTop="@dimen/dimen_large"/>
 
                     <View android:id="@+id/leftLine"
                         android:layout_width="0dp"
@@ -120,7 +120,7 @@
             </RelativeLayout>
 
             <LinearLayout
-                android:layout_marginTop="@dimen/dimen_xlarge"
+                android:layout_marginTop="@dimen/dimen_large"
                 android:layout_below="@id/start_signup_fb_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -211,6 +211,19 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/FIELD_PASSWORD"
                     android:inputType="textPassword"
+                    android:layout_marginTop="@dimen/dimen_large"
+                    android:singleLine="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="@color/placeholder"/>
+
+                <EditText
+                    android:id="@+id/start_signup_sponsor"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/FIELD_SPONSOR"
+                    android:inputType="text"
                     android:layout_marginTop="@dimen/dimen_large"
                     android:singleLine="true"
                     android:focusable="true"

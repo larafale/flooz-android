@@ -17,8 +17,19 @@ public class MenuItem {
         this.image = ctx.getResources().getDrawable(idDrawable);
     }
 
+    public MenuItem(Context ctx, String title, int idDrawable) {
+        this.name = title;
+        this.image = ctx.getResources().getDrawable(idDrawable);
+    }
+
     public MenuItem(Context ctx, int idString, int idDrawable, int notifs) {
         this.name = ctx.getResources().getString(idString);
+        this.image = ctx.getResources().getDrawable(idDrawable);
+        this.nbNotification = notifs;
+    }
+
+    public MenuItem(Context ctx, String title, int idDrawable, int notifs) {
+        this.name = title;
         this.image = ctx.getResources().getDrawable(idDrawable);
         this.nbNotification = notifs;
     }

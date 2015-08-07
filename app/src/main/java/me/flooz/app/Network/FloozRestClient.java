@@ -60,6 +60,7 @@ import me.flooz.app.Model.FLCreditCard;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLNotification;
 import me.flooz.app.Model.FLReport;
+import me.flooz.app.Model.FLShareText;
 import me.flooz.app.Model.FLTexts;
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Model.FLTrigger;
@@ -93,6 +94,7 @@ public class FloozRestClient
     public static String kFriendTimelineData = "friendTimelineData";
     public static String kPrivateTimelineData = "privateTimelineData";
     public static String kTextData = "textData";
+    public static String kShareData = "shareData";
     public static String kNotificationsData = "notifData";
 
     public enum FriendAction {
@@ -105,6 +107,7 @@ public class FloozRestClient
     public FloozApplication floozApp;
 
     public FLTexts currentTexts = null;
+    public FLShareText currentShareText = null;
     public FLUser currentUser = null;
     public String secureCode = null;
     public String accessToken = null;
@@ -367,9 +370,19 @@ public class FloozRestClient
                 e.printStackTrace();
             }
         }
-
     }
 
+    public void loadShareData() {
+        String textData = this.appSettings.getString(kShareData, null);
+        if (textData != null) {
+            try {
+                JSONObject textJson = new JSONObject(textData);
+                this.currentShareText = new FLShareText(textJson);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    }
     public List<FLTransaction> loadTimelineData(FLTransaction.TransactionScope scope) {
         String dataKey = "";
 
@@ -418,6 +431,9 @@ public class FloozRestClient
         this.appSettings.edit().putString(kTextData, currentTexts.json.toString()).apply();
     }
 
+    public void saveShareData() {
+        this.appSettings.edit().putString(kShareData, currentShareText.json.toString()).apply();
+    }
     public void saveNotificationData(JSONArray notifs) {
         if (notifs != null)
             this.appSettings.edit().putString(kNotificationsData, notifs.toString()).apply();
@@ -523,6 +539,41 @@ public class FloozRestClient
     /***************************/
     /********  USERS  **********/
     /***************************/
+
+    public void invitationFacebook(final FloozHttpResponseHandler responseHandler) {
+        this.request("/invitations/facebook", HttpRequestType.GET, null, responseHandler);
+    }
+
+    public void getInvitationText(final FloozHttpResponseHandler responseHandler) {
+        this.request("/invitations/text", HttpRequestType.GET, null, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                JSONObject res = (JSONObject)response;
+                currentShareText = new FLShareText(res.optJSONObject("item"));
+                saveShareData();
+
+                if (responseHandler != null)
+                    responseHandler.success(currentTexts);
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+                if (statusCode != 442) {
+                    if (responseHandler != null)
+                        responseHandler.failure(statusCode, error);
+                } else {
+                    loadShareData();
+                    if (currentShareText != null) {
+                        if (responseHandler != null)
+                            responseHandler.success(currentShareText);
+                    } else {
+                        if (responseHandler != null)
+                            responseHandler.failure(statusCode, error);
+                    }
+                }
+            }
+        });
+    }
 
     public void textObjectFromApi(final FloozHttpResponseHandler responseHandler) {
         this.request("/utils/texts", HttpRequestType.GET, null, new FloozHttpResponseHandler() {
@@ -1580,7 +1631,18 @@ public class FloozRestClient
                     Map<String, Object> tmp = new HashMap<>();
                     tmp.put("fb", data);
 
-                    updateUser(tmp, null);
+                    showLoadView();
+                    updateUser(tmp, new FloozHttpResponseHandler() {
+                        @Override
+                        public void success(Object response) {
+                            FloozApplication.performLocalNotification(CustomNotificationIntents.connectFacebook());
+                        }
+
+                        @Override
+                        public void failure(int statusCode, FLError error) {
+
+                        }
+                    });
                 }
             });
             request.executeAsync();

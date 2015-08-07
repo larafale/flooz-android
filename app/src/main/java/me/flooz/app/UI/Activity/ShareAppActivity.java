@@ -1,6 +1,8 @@
 package me.flooz.app.UI.Activity;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
@@ -8,15 +10,19 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.view.Gravity;
 import android.view.View;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.facebook.Session;
 import com.ryanharter.android.tooltips.ToolTip;
 import com.ryanharter.android.tooltips.ToolTipLayout;
 
@@ -25,11 +31,13 @@ import org.json.JSONObject;
 
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
+import me.flooz.app.Model.FLShareText;
 import me.flooz.app.Model.FLTexts;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.CustomNotificationIntents;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.ViewServer;
 
@@ -50,12 +58,19 @@ public class ShareAppActivity extends Activity {
 
     private String _code;
     private JSONArray _appText;
-    private JSONObject _fbData;
+    private String _fbData;
     private JSONObject _mailData;
     private String _twitterText;
     private String _smsText;
     private String _h1;
     private String _viewTitle;
+
+    private BroadcastReceiver facebookConnected = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            shareFacebook();
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -72,11 +87,11 @@ public class ShareAppActivity extends Activity {
         this.headerBackButton = (ImageView) this.findViewById(R.id.invite_header_back);
         this.headerTitle = (TextView) this.findViewById(R.id.invite_header_title);
 
-        ImageView worldmap = (ImageView) this.findViewById(R.id.invite_worldmap);
         this.h1 = (TextView) this.findViewById(R.id.invite_h1);
         this.content = (TextView) this.findViewById(R.id.invite_content);
         LinearLayout smsButton = (LinearLayout) this.findViewById(R.id.invite_sms);
         LinearLayout mailButton = (LinearLayout) this.findViewById(R.id.invite_mail);
+        LinearLayout fbButton = (LinearLayout) this.findViewById(R.id.invite_fb);
         TextView smsText = (TextView) this.findViewById(R.id.invite_sms_text);
         TextView fbText = (TextView) this.findViewById(R.id.invite_fb_text);
         TextView twitterText = (TextView) this.findViewById(R.id.invite_twitter_text);
@@ -95,7 +110,6 @@ public class ShareAppActivity extends Activity {
         twitterText.setTypeface(CustomFonts.customTitleExtraLight(this));
         mailText.setTypeface(CustomFonts.customTitleExtraLight(this));
 
-        worldmap.setColorFilter(this.getResources().getColor(R.color.blue));
         smsImage.setColorFilter(this.getResources().getColor(R.color.blue));
         fbImage.setColorFilter(this.getResources().getColor(R.color.blue));
         twitterImage.setColorFilter(this.getResources().getColor(R.color.blue));
@@ -136,11 +150,11 @@ public class ShareAppActivity extends Activity {
             }
         });
 
-        if (FloozRestClient.getInstance().currentTexts == null) {
-            FloozRestClient.getInstance().textObjectFromApi(new FloozHttpResponseHandler() {
+        if (FloozRestClient.getInstance().currentShareText == null) {
+            FloozRestClient.getInstance().getInvitationText(new FloozHttpResponseHandler() {
                 @Override
                 public void success(Object response) {
-                    FLTexts texts = FloozRestClient.getInstance().currentTexts;
+                    FLShareText texts = FloozRestClient.getInstance().currentShareText;
 
                     _code = texts.shareCode;
                     _appText = texts.shareText;
@@ -178,7 +192,7 @@ public class ShareAppActivity extends Activity {
                 }
             });
         } else {
-            FLTexts texts = FloozRestClient.getInstance().currentTexts;
+            FLShareText texts = FloozRestClient.getInstance().currentShareText;
 
             _code = texts.shareCode;
             _appText = texts.shareText;
@@ -227,6 +241,51 @@ public class ShareAppActivity extends Activity {
                 startActivity(Intent.createChooser(sendIntent, "Partager par mail..."));
             }
         });
+
+        fbButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (FloozRestClient.getInstance().isConnectedToFacebook())
+                    shareFacebook();
+                else
+                    FloozRestClient.getInstance().connectFacebook();
+            }
+        });
+    }
+
+    private void shareFacebook() {
+        final Dialog fbDialog = new Dialog(this);
+
+        fbDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        fbDialog.setContentView(R.layout.custom_dialog_validate_transaction);
+
+        TextView text = (TextView) fbDialog.findViewById(R.id.dialog_validate_flooz_text);
+        text.setText(_fbData);
+        text.setTypeface(CustomFonts.customContentRegular(this));
+
+        Button decline = (Button) fbDialog.findViewById(R.id.dialog_validate_flooz_decline);
+        Button accept = (Button) fbDialog.findViewById(R.id.dialog_validate_flooz_accept);
+
+        decline.setOnClickListener(v -> {
+            if (fbDialog != null)
+                fbDialog.dismiss();
+        });
+
+        accept.setOnClickListener(v -> {
+            FloozRestClient.getInstance().showLoadView();
+            FloozRestClient.getInstance().invitationFacebook(null);
+
+            if (fbDialog != null)
+                fbDialog.dismiss();
+        });
+
+        fbDialog.setCanceledOnTouchOutside(false);
+        fbDialog.setCancelable(false);
+        fbDialog.show();
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
     }
 
     @Override
@@ -238,12 +297,15 @@ public class ShareAppActivity extends Activity {
             ViewServer.get(this).setFocusedWindow(this);
 
         FloozRestClient.getInstance().updateNotificationFeed(null);
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(facebookConnected,
+                CustomNotificationIntents.filterFacebookConnect());
     }
 
     @Override
     public void onPause() {
         clearReferences();
         super.onPause();
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(facebookConnected);
     }
 
     @Override

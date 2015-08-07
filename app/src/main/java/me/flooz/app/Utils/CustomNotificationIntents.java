@@ -8,6 +8,9 @@ import android.content.IntentFilter;
  */
 public class CustomNotificationIntents
 {
+    public static Intent connectFacebook() {return new Intent("NotificationFacebookConnect");}
+    public static IntentFilter filterFacebookConnect() {return new IntentFilter("NotificationFacebookConnect");}
+
     public static Intent reloadCurrentUser() {return new Intent("NotificationReloadCurrentUser");}
     public static IntentFilter filterReloadCurrentUser() {return new IntentFilter("NotificationReloadCurrentUser");}
 

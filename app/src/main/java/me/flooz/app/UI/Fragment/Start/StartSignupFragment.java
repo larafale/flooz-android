@@ -42,6 +42,7 @@ public class StartSignupFragment extends StartBaseFragment {
     private EditText nicknameTextfield;
     private EditText phoneTextfield;
     private EditText passwordTextfield;
+    private EditText sponsorTextfield;
     private RelativeLayout fbButtonView;
     private RelativeLayout fbPicView;
     private RoundedImageView fbPic;
@@ -65,6 +66,7 @@ public class StartSignupFragment extends StartBaseFragment {
         nicknameTextfield = (EditText) view.findViewById(R.id.start_signup_nick);
         phoneTextfield = (EditText) view.findViewById(R.id.start_signup_phone);
         passwordTextfield = (EditText) view.findViewById(R.id.start_signup_password);
+        sponsorTextfield = (EditText) view.findViewById(R.id.start_signup_sponsor);
         Button signupButton = (Button) view.findViewById(R.id.start_signup_next);
         Button cguButton = (Button) view.findViewById(R.id.start_signup_cgu);
         ImageView facebookPicto = (ImageView) view.findViewById(R.id.start_signup_facebook_picto);
@@ -78,6 +80,7 @@ public class StartSignupFragment extends StartBaseFragment {
         nicknameTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
         phoneTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
         passwordTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+        sponsorTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
 
         orLabel.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
         title.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
@@ -131,6 +134,7 @@ public class StartSignupFragment extends StartBaseFragment {
             parentActivity.signupData.put("email", emailTextfield.getText().toString());
             parentActivity.signupData.put("phone", phoneTextfield.getText().toString());
             parentActivity.signupData.put("password", passwordTextfield.getText().toString());
+            parentActivity.signupData.put("sponsor", sponsorTextfield.getText().toString());
 
             FloozRestClient.getInstance().showLoadView();
             FloozRestClient.getInstance().signupPassStep("profile", parentActivity.signupData, new FloozHttpResponseHandler() {

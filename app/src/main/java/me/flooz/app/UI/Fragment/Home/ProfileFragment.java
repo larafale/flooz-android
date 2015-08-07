@@ -280,11 +280,29 @@ public class ProfileFragment extends HomeBaseFragment
                 e.printStackTrace();
             }
 
+            String shareTitle = this.context.getResources().getString(R.string.ACCOUNT_MENU_SHARE);
+
+            if (FloozRestClient.getInstance().currentShareText != null)
+                shareTitle = FloozRestClient.getInstance().currentShareText.shareTitle;
+            else {
+                FloozRestClient.getInstance().getInvitationText(new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        reloadUserData();
+                    }
+
+                    @Override
+                    public void failure(int statusCode, FLError error) {
+
+                    }
+                });
+            }
+
             this.menuItems = new ArrayList<>();
 
             this.menuItems.add(new MenuItem(this.context, R.string.ACCOUNT_MENU_PROFILE, R.drawable.account_profile_button, nbNotif));
             this.menuItems.add(new MenuItem(this.context, R.string.ACCOUNT_MENU_NOTIFICATION, R.drawable.account_notification_button, FloozRestClient.getInstance().notificationsManager.nbUnreadNotifications));
-            this.menuItems.add(new MenuItem(this.context, R.string.ACCOUNT_MENU_SHARE, R.drawable.account_share_button));
+            this.menuItems.add(new MenuItem(this.context, shareTitle, R.drawable.account_share_button));
 //        this.menuItems.add(new MenuItem(inflater.getContext(), R.string.ACCOUNT_MENU_SCANNER, R.drawable.qrcode));
             this.menuItems.add(new MenuItem(this.context, R.string.ACCOUNT_MENU_CASHOUT, R.drawable.account_bank_button));
             this.menuItems.add(new MenuItem(this.context, R.string.ACCOUNT_MENU_OTHER, R.drawable.account_other_button));
