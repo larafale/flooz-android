@@ -1,5 +1,2 @@
-include ':app', ":slidingMenu", ':facebook', ':pullRefreshLayout', ':tooltips'
-project(':facebook').projectDir = new File('libraries/facebook-android-sdk-3.20.0/facebook')
-project(':slidingMenu').projectDir = new File('libraries/SlidingMenu')
-project(':pullRefreshLayout').projectDir = new File('libraries/PullRefreshLayout')
+include ':app', ':tooltips'
 project(':tooltips').projectDir = new File('libraries/android-tooltips/library')

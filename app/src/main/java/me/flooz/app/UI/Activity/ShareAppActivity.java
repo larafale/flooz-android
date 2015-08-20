@@ -18,21 +18,31 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.facebook.Session;
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
+import com.facebook.share.Sharer;
+import com.facebook.share.model.ShareLinkContent;
+import com.facebook.share.widget.ShareDialog;
 import com.ryanharter.android.tooltips.ToolTip;
 import com.ryanharter.android.tooltips.ToolTipLayout;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.Arrays;
+
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLShareText;
-import me.flooz.app.Model.FLTexts;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
@@ -46,6 +56,10 @@ import me.flooz.app.Utils.ViewServer;
  */
 public class ShareAppActivity extends Activity {
 
+    private Boolean pendingShare = false;
+    private CallbackManager fbShareCallbackManager;
+    private CallbackManager fbPublishCallbackManager;
+
     private ShareAppActivity instance;
     private FloozApplication floozApp;
     private ImageView headerBackButton;
@@ -56,9 +70,11 @@ public class ShareAppActivity extends Activity {
     private ToolTip toolTip;
     private ToolTipLayout tipContainer;
 
+    private LinearLayout fbButton;
+
     private String _code;
     private JSONArray _appText;
-    private String _fbData;
+    private JSONObject _fbData;
     private JSONObject _mailData;
     private String _twitterText;
     private String _smsText;
@@ -68,7 +84,7 @@ public class ShareAppActivity extends Activity {
     private BroadcastReceiver facebookConnected = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            shareFacebook();
+            internalFbShareCheckPublishPermissions();
         }
     };
 
@@ -91,7 +107,7 @@ public class ShareAppActivity extends Activity {
         this.content = (TextView) this.findViewById(R.id.invite_content);
         LinearLayout smsButton = (LinearLayout) this.findViewById(R.id.invite_sms);
         LinearLayout mailButton = (LinearLayout) this.findViewById(R.id.invite_mail);
-        LinearLayout fbButton = (LinearLayout) this.findViewById(R.id.invite_fb);
+        this.fbButton = (LinearLayout) this.findViewById(R.id.invite_fb);
         TextView smsText = (TextView) this.findViewById(R.id.invite_sms_text);
         TextView fbText = (TextView) this.findViewById(R.id.invite_fb_text);
         TextView twitterText = (TextView) this.findViewById(R.id.invite_twitter_text);
@@ -168,22 +184,7 @@ public class ShareAppActivity extends Activity {
                     if (_code == null || _code.isEmpty())
                         _code = "";
 
-                    headerTitle.setText(_viewTitle);
-                    h1.setText(_h1);
-
-                    Spannable text = new SpannableString(_appText.optString(0));
-                    text.setSpan(new ForegroundColorSpan(Color.WHITE), 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                    Spannable code = new SpannableString(_code);
-                    code.setSpan(new ForegroundColorSpan(instance.getResources().getColor(R.color.blue)), 0, code.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                    Spannable text2 = new SpannableString(_appText.optString(1));
-                    text2.setSpan(new ForegroundColorSpan(Color.WHITE), 0, text2.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-                    content.setText(text);
-                    content.append(code);
-                    content.append(text2);
-
+                    reloadView();
                 }
 
                 @Override
@@ -206,21 +207,7 @@ public class ShareAppActivity extends Activity {
             if (_code == null || _code.isEmpty())
                 _code = "";
 
-            headerTitle.setText(_viewTitle);
-            h1.setText(_h1);
-
-            Spannable text = new SpannableString(_appText.optString(0));
-            text.setSpan(new ForegroundColorSpan(Color.WHITE), 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-            Spannable code = new SpannableString(_code);
-            code.setSpan(new ForegroundColorSpan(instance.getResources().getColor(R.color.blue)), 0, code.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-            Spannable text2 = new SpannableString(_appText.optString(1));
-            text2.setSpan(new ForegroundColorSpan(Color.WHITE), 0, text2.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-
-            content.setText(text);
-            content.append(code);
-            content.append(text2);
+            reloadView();
         }
 
         smsButton.setOnClickListener(v -> {
@@ -253,18 +240,111 @@ public class ShareAppActivity extends Activity {
         });
     }
 
+    private void reloadView() {
+        headerTitle.setText(_viewTitle);
+        h1.setText(_h1);
+
+        Spannable text = new SpannableString(_appText.optString(0));
+        text.setSpan(new ForegroundColorSpan(Color.WHITE), 0, text.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        Spannable code = new SpannableString(_code);
+        code.setSpan(new ForegroundColorSpan(instance.getResources().getColor(R.color.blue)), 0, code.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        Spannable text2 = new SpannableString(_appText.optString(1));
+        text2.setSpan(new ForegroundColorSpan(Color.WHITE), 0, text2.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        content.setText(text);
+        content.append(code);
+        content.append(text2);
+
+        if (_fbData == null || _fbData.length() == 0)
+            this.fbButton.setVisibility(View.GONE);
+    }
+
     private void shareFacebook() {
+        if (_fbData.optString("method").contentEquals("widget") && ShareDialog.canShow(ShareLinkContent.class)) {
+            fbShareCallbackManager = CallbackManager.Factory.create();
+            ShareDialog shareDialog = new ShareDialog(this);
+
+            shareDialog.registerCallback(fbShareCallbackManager, new FacebookCallback<Sharer.Result>() {
+                @Override
+                public void onSuccess(Sharer.Result result) {
+                    FloozRestClient.getInstance().sendInvitationMetric("facebook");
+                    pendingShare = false;
+                }
+
+                @Override
+                public void onCancel() {
+                    pendingShare = false;
+                }
+
+                @Override
+                public void onError(FacebookException e) {
+                    pendingShare = false;
+                }
+            });
+
+            ShareLinkContent linkContent = new ShareLinkContent.Builder()
+                    .setContentTitle(_fbData.optString("name"))
+                    .setContentDescription(_fbData.optString("description"))
+                    .setContentUrl(Uri.parse(_fbData.optString("link")))
+                    .build();
+
+            shareDialog.show(linkContent);
+            pendingShare = true;
+        } else {
+            if (FloozRestClient.getInstance().isConnectedToFacebook()) {
+                this.internalFbShareCheckPublishPermissions();
+            } else {
+                FloozRestClient.getInstance().connectFacebook();
+            }
+        }
+    }
+
+    public void internalFbShareCheckPublishPermissions() {
+        if (AccessToken.getCurrentAccessToken().getPermissions().contains("publish_actions")) {
+            showCustomFbSharePopup();
+        } else {
+            fbPublishCallbackManager = CallbackManager.Factory.create();
+
+            LoginManager.getInstance().registerCallback(fbPublishCallbackManager,
+                    new FacebookCallback<LoginResult>() {
+                        @Override
+                        public void onSuccess(LoginResult loginResult) {
+                            showCustomFbSharePopup();
+                        }
+
+                        @Override
+                        public void onCancel() {
+                            // App code
+                        }
+
+                        @Override
+                        public void onError(FacebookException exception) {
+                            // App code
+                        }
+                    });
+
+            LoginManager.getInstance().logInWithPublishPermissions(floozApp.getCurrentActivity(), Arrays.asList("publish_actions"));
+        }
+    }
+
+    public void showCustomFbSharePopup() {
         final Dialog fbDialog = new Dialog(this);
 
         fbDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        fbDialog.setContentView(R.layout.custom_dialog_validate_transaction);
+        fbDialog.setContentView(R.layout.custom_dialog_share);
 
-        TextView text = (TextView) fbDialog.findViewById(R.id.dialog_validate_flooz_text);
-        text.setText(_fbData);
+        TextView text = (TextView) fbDialog.findViewById(R.id.dialog_share_text);
+        text.setText(_fbData.optString("title"));
         text.setTypeface(CustomFonts.customContentRegular(this));
 
-        Button decline = (Button) fbDialog.findViewById(R.id.dialog_validate_flooz_decline);
-        Button accept = (Button) fbDialog.findViewById(R.id.dialog_validate_flooz_accept);
+        EditText textArea = (EditText) fbDialog.findViewById(R.id.dialog_share_field);
+        textArea.setHint(_fbData.optString("placeholder"));
+        textArea.setTypeface(CustomFonts.customContentRegular(this));
+
+        Button decline = (Button) fbDialog.findViewById(R.id.dialog_share_decline);
+        Button accept = (Button) fbDialog.findViewById(R.id.dialog_share_accept);
 
         decline.setOnClickListener(v -> {
             if (fbDialog != null)
@@ -273,19 +353,27 @@ public class ShareAppActivity extends Activity {
 
         accept.setOnClickListener(v -> {
             FloozRestClient.getInstance().showLoadView();
-            FloozRestClient.getInstance().invitationFacebook(null);
+            FloozRestClient.getInstance().invitationFacebook(textArea.getText().toString(), null);
 
             if (fbDialog != null)
                 fbDialog.dismiss();
         });
 
-        fbDialog.setCanceledOnTouchOutside(false);
-        fbDialog.setCancelable(false);
+        fbDialog.setCanceledOnTouchOutside(true);
+        fbDialog.setCancelable(true);
         fbDialog.show();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+        if (pendingShare) {
+            fbShareCallbackManager.onActivityResult(requestCode, resultCode, data);
+        } else {
+            if (FloozRestClient.getInstance().isConnectedToFacebook()) {
+                fbPublishCallbackManager.onActivityResult(requestCode, resultCode, data);
+            } else {
+                FloozRestClient.getInstance().fbLoginCallbackManager.onActivityResult(requestCode, resultCode, data);
+            }
+        }
     }
 
     @Override

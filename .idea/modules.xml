@@ -3,10 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/libraries/facebook-android-sdk-3.20.0/facebook/facebook.iml" filepath="$PROJECT_DIR$/libraries/facebook-android-sdk-3.20.0/facebook/facebook.iml" />
       <module fileurl="file://$PROJECT_DIR$/flooz-android.iml" filepath="$PROJECT_DIR$/flooz-android.iml" />
-      <module fileurl="file://$PROJECT_DIR$/libraries/PullRefreshLayout/pullRefreshLayout.iml" filepath="$PROJECT_DIR$/libraries/PullRefreshLayout/pullRefreshLayout.iml" />
-      <module fileurl="file://$PROJECT_DIR$/libraries/SlidingMenu/slidingMenu.iml" filepath="$PROJECT_DIR$/libraries/SlidingMenu/slidingMenu.iml" />
       <module fileurl="file://$PROJECT_DIR$/libraries/android-tooltips/library/tooltips.iml" filepath="$PROJECT_DIR$/libraries/android-tooltips/library/tooltips.iml" />
     </modules>
   </component>

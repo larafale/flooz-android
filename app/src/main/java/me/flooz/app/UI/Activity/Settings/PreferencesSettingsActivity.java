@@ -13,8 +13,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.facebook.Session;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -157,7 +155,7 @@ public class PreferencesSettingsActivity extends Activity {
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
+        FloozRestClient.getInstance().fbLoginCallbackManager.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override

@@ -5,7 +5,6 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -29,10 +28,15 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 import org.json.*;
 
-import com.facebook.HttpMethod;
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.github.nkzawa.emitter.Emitter;
+import com.facebook.AccessToken;
+import com.facebook.CallbackManager;
+import com.facebook.FacebookCallback;
+import com.facebook.FacebookException;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.Profile;
+import com.facebook.login.LoginManager;
+import com.facebook.login.LoginResult;
 import com.github.nkzawa.engineio.client.transports.WebSocket;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
@@ -105,6 +109,8 @@ public class FloozRestClient
     }
 
     public FloozApplication floozApp;
+
+    public CallbackManager fbLoginCallbackManager;
 
     public FLTexts currentTexts = null;
     public FLShareText currentShareText = null;
@@ -350,8 +356,9 @@ public class FloozRestClient
             try {
                 JSONObject userJson = new JSONObject(userData);
                 this.currentUser = new FLUser(userJson);
-                if (userJson.has("fb"))
-                    this.fbAccessToken = userJson.optJSONObject("fb").optString("token");
+                if (userJson.has("fb")) {
+                    this.updateFBToken(userJson.optJSONObject("fb").optString("token"));
+                }
 
                 this.checkDeviceToken();
             } catch (JSONException e) {
@@ -540,8 +547,19 @@ public class FloozRestClient
     /********  USERS  **********/
     /***************************/
 
-    public void invitationFacebook(final FloozHttpResponseHandler responseHandler) {
-        this.request("/invitations/facebook", HttpRequestType.GET, null, responseHandler);
+    public void sendInvitationMetric(String channel) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("canal", channel);
+
+        this.request("/invitations/callback", HttpRequestType.GET, params, null);
+    }
+
+    public void invitationFacebook(String message, final FloozHttpResponseHandler responseHandler) {
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("message", message);
+
+        this.request("/invitations/facebook", HttpRequestType.POST, params, responseHandler);
     }
 
     public void getInvitationText(final FloozHttpResponseHandler responseHandler) {
@@ -637,8 +655,9 @@ public class FloozRestClient
         this.currentUser = new FLUser((responseObject.optJSONArray("items").optJSONObject(1)));
         this.appSettings.edit().putString("userId", currentUser.userId).commit();
 
-        if (responseObject.optJSONArray("items").optJSONObject(1).has("fb"))
-            fbAccessToken = responseObject.optJSONArray("items").optJSONObject(1).optJSONObject("fb").optString("token");
+        if (responseObject.optJSONArray("items").optJSONObject(1).has("fb")) {
+            updateFBToken(responseObject.optJSONArray("items").optJSONObject(1).optJSONObject("fb").optString("token"));
+        }
 
         checkDeviceToken();
 
@@ -653,13 +672,6 @@ public class FloozRestClient
             public void success(Object response) {
                 JSONObject responseObject = (JSONObject)response;
 
-                if (responseObject.optJSONObject("item").has("fb")
-                        && responseObject.optJSONObject("item").optJSONObject("fb") != null
-                        && responseObject.optJSONObject("item").optJSONObject("fb").optString("token") != null)
-                    fbAccessToken = responseObject.optJSONObject("item").optJSONObject("fb").optString("token");
-                else
-                    fbAccessToken = null;
-
                 if (currentUser == null) {
                     currentUser = new FLUser(responseObject.optJSONObject("item"));
                     appSettings.edit().putString("userId", currentUser.userId).apply();
@@ -670,6 +682,13 @@ public class FloozRestClient
                     appSettings.edit().putString("userId", currentUser.userId).apply();
                     initializeSockets();
                 }
+
+                if (responseObject.optJSONObject("item").has("fb")
+                        && responseObject.optJSONObject("item").optJSONObject("fb") != null
+                        && responseObject.optJSONObject("item").optJSONObject("fb").optString("token") != null)
+                    updateFBToken(responseObject.optJSONObject("item").optJSONObject("fb").optString("token"));
+                else
+                    fbAccessToken = null;
 
                 saveUserData();
 
@@ -698,14 +717,15 @@ public class FloozRestClient
             public void success(Object response) {
                 JSONObject responseObject = (JSONObject)response;
 
+                currentUser.setJson(responseObject.optJSONObject("item"));
+
                 if (responseObject.optJSONObject("item").has("fb")
                         && responseObject.optJSONObject("item").optJSONObject("fb") != null
                         && responseObject.optJSONObject("item").optJSONObject("fb").optString("token") != null)
-                    fbAccessToken = responseObject.optJSONObject("item").optJSONObject("fb").optString("token");
+                    updateFBToken(responseObject.optJSONObject("item").optJSONObject("fb").optString("token"));
                 else
                     fbAccessToken = null;
 
-                currentUser.setJson(responseObject.optJSONObject("item"));
                 appSettings.edit().putString("userId", currentUser.userId).apply();
                 FloozApplication.performLocalNotification(CustomNotificationIntents.reloadCurrentUser());
                 saveUserData();
@@ -758,12 +778,13 @@ public class FloozRestClient
             public void success(Object response) {
                 JSONObject responseObject = (JSONObject)response;
 
+                currentUser.setJson(responseObject.optJSONObject("item"));
+
                 if (responseObject.optJSONObject("item").has("fb")
                         && responseObject.optJSONObject("item").optJSONObject("fb") != null
                         && responseObject.optJSONObject("item").optJSONObject("fb").optString("token") != null)
-                    fbAccessToken = responseObject.optJSONObject("item").optJSONObject("fb").optString("token");
+                    updateFBToken(responseObject.optJSONObject("item").optJSONObject("fb").optString("token"));
 
-                currentUser.setJson(responseObject.optJSONObject("item"));
                 appSettings.edit().putString("userId", currentUser.userId).apply();
                 FloozApplication.performLocalNotification(CustomNotificationIntents.reloadCurrentUser());
                 saveUserData();
@@ -1573,35 +1594,47 @@ public class FloozRestClient
     /*******  FACEBOOK  ********/
     /***************************/
 
+    private void updateFBToken(String token) {
+        if (token != null) {
+            if (this.fbAccessToken == null || !token.contentEquals(this.fbAccessToken)) {
+                this.fbAccessToken = token;
+
+                AccessToken.setCurrentAccessToken(new AccessToken(token, FloozApplication.getAppContext().getResources().getString(R.string.facebook_app_id), currentUser.json.optJSONObject("fb").optString("id"), null, null, null, null, null));
+                Profile.fetchProfileForCurrentAccessToken();
+            }
+        }
+    }
+
     public Boolean isConnectedToFacebook() {
         return this.fbAccessToken != null && !this.fbAccessToken.isEmpty();
     }
 
-    private void facebookSessionStateChanged(Session session, SessionState state, Exception exception) {
-        this.hideLoadView();
-
-        if (exception != null) {
-            Session.getActiveSession().closeAndClearTokenInformation();
-        }
-
-        if (exception == null && state == SessionState.OPENED) {
-            this.didConnectFacebook();
-        }
-    }
-
     public void connectFacebook() {
-        if (Session.getActiveSession() != null)
-            Session.getActiveSession().closeAndClearTokenInformation();
+        fbLoginCallbackManager = CallbackManager.Factory.create();
 
-        Session.openActiveSession(floozApp.getCurrentActivity(), true, Arrays.asList("public_profile", "email", "user_friends"), (session, state, exception) -> {
-            facebookSessionStateChanged(session, state, exception);
-        });
+        LoginManager.getInstance().registerCallback(fbLoginCallbackManager,
+                new FacebookCallback<LoginResult>() {
+                    @Override
+                    public void onSuccess(LoginResult loginResult) {
+                        didConnectFacebook();
+                    }
+
+                    @Override
+                    public void onCancel() {
+                        // App code
+                    }
+
+                    @Override
+                    public void onError(FacebookException exception) {
+                        // App code
+                    }
+                });
+
+        LoginManager.getInstance().logInWithReadPermissions(floozApp.getCurrentActivity(), Arrays.asList("public_profile", "email", "user_friends"));
     }
 
     public void disconnectFacebook() {
-        if (Session.getActiveSession() != null)
-            Session.getActiveSession().closeAndClearTokenInformation();
-
+        LoginManager.getInstance().logOut();
         this.fbAccessToken = null;
 
         Map<String, Object> data = new HashMap<>(1);
@@ -1611,52 +1644,71 @@ public class FloozRestClient
     }
 
     public void didConnectFacebook() {
-        this.fbAccessToken =  Session.getActiveSession().getAccessToken();
+        this.fbAccessToken =  AccessToken.getCurrentAccessToken().getToken();
 
         if (this.currentUser != null) {
             Bundle params = new Bundle();
             params.putString("fields", "id,email,first_name,last_name,name");
-            com.facebook.Request request = new com.facebook.Request(Session.getActiveSession(), "me", params, HttpMethod.GET, response -> {
-                hideLoadView();
 
-                if (response.getError() == null) {
-                    Map<String, Object> data = new HashMap<>();
-                    data.put("email", response.getGraphObject().getProperty("email"));
-                    data.put("id", response.getGraphObject().getProperty("id"));
-                    data.put("firstName", response.getGraphObject().getProperty("first_name"));
-                    data.put("lastName", response.getGraphObject().getProperty("last_name"));
-                    data.put("name", response.getGraphObject().getProperty("name"));
-                    data.put("token", (fbAccessToken != null ? fbAccessToken : ""));
-
-                    Map<String, Object> tmp = new HashMap<>();
-                    tmp.put("fb", data);
-
-                    showLoadView();
-                    updateUser(tmp, new FloozHttpResponseHandler() {
+            GraphRequest request = GraphRequest.newMeRequest(
+                    AccessToken.getCurrentAccessToken(),
+                    new GraphRequest.GraphJSONObjectCallback() {
                         @Override
-                        public void success(Object response) {
-                            FloozApplication.performLocalNotification(CustomNotificationIntents.connectFacebook());
-                        }
+                        public void onCompleted(JSONObject object, GraphResponse response) {
+                            hideLoadView();
 
-                        @Override
-                        public void failure(int statusCode, FLError error) {
+                            if (response.getError() == null) {
+                                Map<String, Object> data = new HashMap<>();
+                                response.getJSONObject().optString("email");
 
+                                data.put("email", response.getJSONObject().optString("email"));
+                                data.put("id", response.getJSONObject().optString("id"));
+                                data.put("firstName", response.getJSONObject().optString("first_name"));
+                                data.put("lastName", response.getJSONObject().optString("last_name"));
+                                data.put("name", response.getJSONObject().optString("name"));
+                                data.put("token", (fbAccessToken != null ? fbAccessToken : ""));
+
+                                Map<String, Object> tmp = new HashMap<>();
+                                tmp.put("fb", data);
+
+                                showLoadView();
+                                updateUser(tmp, new FloozHttpResponseHandler() {
+                                    @Override
+                                    public void success(Object response) {
+                                        FloozApplication.performLocalNotification(CustomNotificationIntents.connectFacebook());
+                                    }
+
+                                    @Override
+                                    public void failure(int statusCode, FLError error) {
+
+                                    }
+                                });
+
+                            }
                         }
                     });
-                }
-            });
+
+            request.setParameters(params);
             request.executeAsync();
         }
         else {
             Bundle params = new Bundle();
             params.putString("fields", "id,email,first_name,last_name,name");
-            com.facebook.Request request = new com.facebook.Request(Session.getActiveSession(), "me", params, HttpMethod.GET, response -> {
-                hideLoadView();
 
-                if (response.getError() == null) {
-                    loginWithFacebook(fbAccessToken);
-                }
-            });
+            GraphRequest request = GraphRequest.newMeRequest(
+                    AccessToken.getCurrentAccessToken(),
+                    new GraphRequest.GraphJSONObjectCallback() {
+                        @Override
+                        public void onCompleted(JSONObject object, GraphResponse response) {
+                            hideLoadView();
+
+                            if (response.getError() == null) {
+                                loginWithFacebook(fbAccessToken);
+                            }
+                        }
+                    });
+
+            request.setParameters(params);
             request.executeAsync();
         }
     }

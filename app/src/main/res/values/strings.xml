@@ -26,6 +26,7 @@
     <string name="GLOBAL_VALIDATE">Valider</string>
     <string name="GLOBAL_INTERO">\?</string>
     <string name="GLOBAL_UPDATE">Mise à jour disponible !</string>
+    <string name="GLOBAL_SHARE">Partager</string>
 
     <string name="GLOBAL_LOADING">chargement…</string>
 

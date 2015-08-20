@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.inputmethod.InputMethodManager;
 
+import com.facebook.FacebookSdk;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -107,6 +108,8 @@ public class FloozApplication extends BranchApp
 
         gcm = GoogleCloudMessaging.getInstance(this);
         regid = getRegistrationId(context);
+
+        FacebookSdk.sdkInitialize(this.getApplicationContext());
 
         if (regid.isEmpty()) {
             registerInBackground();

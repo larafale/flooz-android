@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="@dimen/dialog_validate_flooz_width"
+    android:layout_height="wrap_content"
+    android:background="@drawable/tooltip_scope_view"
+    android:gravity="center_horizontal">
+
+    <TextView
+        android:id="@+id/dialog_share_text"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_xlarge"
+        android:paddingRight="@dimen/dimen_xlarge"
+        android:paddingLeft="@dimen/dimen_xlarge"
+        android:textColor="@color/placeholder"
+        android:textSize="@dimen/dialog_validate_flooz_text_size"
+        android:textAlignment="center"
+        android:gravity="center"/>
+
+    <EditText
+        android:id="@+id/dialog_share_field"
+        android:layout_width="fill_parent"
+        android:layout_margin="@dimen/dimen_xlarge"
+        android:background="@drawable/dialog_textarea_background"
+        android:textColorHint="@color/placeholder"
+        android:textColor="@android:color/black"
+        android:layout_height="150dp"
+        android:gravity="start"
+        android:padding="@dimen/dimen_medium"
+        android:cursorVisible="true"
+        android:ellipsize="end"
+        android:singleLine="false"
+        android:isScrollContainer="true"
+        android:textCursorDrawable="@null" />
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="@dimen/dimen_large">
+
+        <Button
+            android:id="@+id/dialog_share_decline"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/signup_button_height"
+            android:layout_weight="1"
+            android:background="@drawable/background_action_button"
+            android:textColor="@android:color/white"
+            android:text="@string/GLOBAL_NO"
+            android:layout_marginLeft="@dimen/dimen_large"
+            android:layout_marginRight="@dimen/dimen_medium"/>
+
+        <Button
+            android:id="@+id/dialog_share_accept"
+            android:layout_width="0dp"
+            android:layout_height="@dimen/signup_button_height"
+            android:layout_weight="1"
+            android:background="@drawable/background_action_button"
+            android:textColor="@android:color/white"
+            android:text="@string/GLOBAL_SHARE"
+            android:textStyle="bold"
+            android:layout_marginRight="@dimen/dimen_large"
+            android:layout_marginLeft="@dimen/dimen_medium"/>
+
+    </LinearLayout>
+
+</LinearLayout>
