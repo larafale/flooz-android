@@ -38,7 +38,8 @@ public class FLTransaction {
     public enum TransactionScope {
         TransactionScopePublic,
         TransactionScopeFriend,
-        TransactionScopePrivate
+        TransactionScopePrivate,
+        TransactionScopeAll
     }
 
     public enum TransactionPaymentMethod {
@@ -322,6 +323,8 @@ public class FLTransaction {
                     return "friend";
                 case TransactionScopePrivate:
                     return "private";
+                case TransactionScopeAll:
+                    return "all";
                 default:
                     break;
             }

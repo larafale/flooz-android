@@ -44,6 +44,7 @@ import me.flooz.app.UI.Activity.StartActivity;
 import me.flooz.app.UI.Tools.ActionSheet;
 import me.flooz.app.UI.Tools.ActionSheetItem;
 import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.SafeLooper;
 
 /**
  * Created by Flooz on 9/8/14.
@@ -114,6 +115,8 @@ public class FloozApplication extends BranchApp
         if (regid.isEmpty()) {
             registerInBackground();
         }
+
+        SafeLooper.install();
     }
 
     private String getRegistrationId(Context context) {
@@ -246,12 +249,14 @@ public class FloozApplication extends BranchApp
     public void setCurrentActivity(Activity activity){
         appInForeground = activity != null;
 
-        if (this.currentActivity == null && activity != null) {
-            FloozRestClient.getInstance().initializeSockets();
-        } else if (this.currentActivity != null && activity == null) {
-            InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(this.getCurrentActivity().getWindow().getDecorView().getRootView().getWindowToken(), 0);
-            FloozRestClient.getInstance().closeSockets();
+        if (!BuildConfig.LOCAL_API) {
+            if (this.currentActivity == null && activity != null) {
+                FloozRestClient.getInstance().initializeSockets();
+            } else if (this.currentActivity != null && activity == null) {
+                InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(this.getCurrentActivity().getWindow().getDecorView().getRootView().getWindowToken(), 0);
+                FloozRestClient.getInstance().closeSockets();
+            }
         }
 
         this.currentActivity = activity;

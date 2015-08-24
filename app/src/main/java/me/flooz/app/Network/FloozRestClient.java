@@ -1747,8 +1747,8 @@ public class FloozRestClient
 
     private void handleTriggerAvatarShow() {
         if (floozApp.getCurrentActivity() instanceof HomeActivity) {
-            FloozApplication.performLocalNotification(CustomNotificationIntents.showSlidingLeftMenu());
-            ((HomeActivity)floozApp.getCurrentActivity()).leftMenu.userView.performClick();
+//            FloozApplication.performLocalNotification(CustomNotificationIntents.showSlidingLeftMenu());
+//            ((HomeActivity)floozApp.getCurrentActivity()).leftMenu.userView.performClick();
         }
     }
 

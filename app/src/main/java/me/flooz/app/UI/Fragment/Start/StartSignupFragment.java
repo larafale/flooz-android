@@ -3,6 +3,7 @@ package me.flooz.app.UI.Fragment.Start;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -30,6 +31,7 @@ import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.WebContentActivity;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.FLHelper;
 
 /**
  * Created by Flooz on 6/11/15.
@@ -128,6 +130,13 @@ public class StartSignupFragment extends StartBaseFragment {
                 parentActivity.signupData.put("referrer",  FloozApplication.getInstance().branchParams.optString("referrer"));
 
             parentActivity.signupData.put("distinctId", FloozApplication.mixpanelAPI.getPeople().getDistinctId());
+
+            if (TextUtils.isEmpty((String)parentActivity.signupData.get("distinctId"))) {
+                String newId = FLHelper.generateRandomString();
+                FloozApplication.mixpanelAPI.getPeople().identify(newId);
+                parentActivity.signupData.put("distinctId", newId);
+            }
+
             parentActivity.signupData.put("firstName", firstnameTextfield.getText().toString());
             parentActivity.signupData.put("lastName", lastnameTextfield.getText().toString());
             parentActivity.signupData.put("nick", nicknameTextfield.getText().toString());

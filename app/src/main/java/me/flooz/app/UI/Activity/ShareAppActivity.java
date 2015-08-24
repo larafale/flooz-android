@@ -257,8 +257,8 @@ public class ShareAppActivity extends Activity {
         content.append(code);
         content.append(text2);
 
-        if (_fbData == null || _fbData.length() == 0)
-            this.fbButton.setVisibility(View.GONE);
+//        if (_fbData == null || _fbData.length() == 0)
+//            this.fbButton.setVisibility(View.GONE);
     }
 
     private void shareFacebook() {

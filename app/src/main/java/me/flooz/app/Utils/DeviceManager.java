@@ -14,6 +14,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
 import me.flooz.app.App.FloozApplication;
+import tslamic.github.io.adn.DeviceNames;
 
 public class DeviceManager {
 
@@ -93,11 +94,17 @@ public class DeviceManager {
     public String getDeviceName() {
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;
-        if (model.startsWith(manufacturer)) {
-            return capitalize(model).replaceAll(" ", "%20");
-        } else {
-            return (capitalize(manufacturer) + " " + model).replaceAll(" ", "%20");
-        }
+
+        String finalName = DeviceNames.getCurrentDeviceName(model);
+
+        if (finalName.contentEquals(model)) {
+            if (model.startsWith(manufacturer)) {
+                return capitalize(model).replaceAll(" ", "%20");
+            } else {
+                return (capitalize(manufacturer) + " " + model).replaceAll(" ", "%20");
+            }
+        } else
+            return finalName.replaceAll(" ", "%20");
     }
 
     private String capitalize(String s) {

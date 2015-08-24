@@ -73,6 +73,11 @@
     <string name="NAV_FRIEND_PICKER">Choisir un destinataire</string>
     <string name="NAV_SCANNER">Scanner un code</string>
 
+    <string name="MENU_HOME">Accueil</string>
+    <string name="MENU_NOTIF">Notifs</string>
+    <string name="MENU_SHARE">Partager</string>
+    <string name="MENU_ACCOUNT">Compte</string>
+
     <string name="HOME_LOGIN">Connexion</string>
     <string name="HOME_SIGNUP">S\'inscrire</string>
 
@@ -250,6 +255,11 @@
     <string name="TRANSACTION_SCOPE_PUBLIC">Public</string>
     <string name="TRANSACTION_SCOPE_FRIEND">Amis</string>
     <string name="TRANSACTION_SCOPE_PRIVATE">Privé</string>
+
+    <string name="TRANSACTION_FILTER_TITLE">Filtrer les paiements :</string>
+    <string name="TRANSACTION_FILTER_ALL">Tous</string>
+    <string name="TRANSACTION_FILTER_FRIEND"> Mes amis &amp; moi</string>
+    <string name="TRANSACTION_FILTER_PRIVATE">Moi uniquement</string>
 
     <string name="FILTER_SCOPE_PUBLIC">Fil Public</string>
     <string name="FILTER_SCOPE_FRIEND">Fil d\'actualité</string>

@@ -60,77 +60,77 @@ public class LoadingActivity extends Activity {
 
         final Intent intent = getIntent();
 
-        Branch branch = Branch.getInstance(getApplicationContext());
-        branch.initSession((referringParams, error) -> {
-            if (error == null) {
-                FloozApplication.getInstance().branchParams = referringParams;
-
-                String data = referringParams.optString("data");
-
-                if (data != null && !data.isEmpty()) {
-                    try {
-                        JSONObject dataObject = new JSONObject(data);
-
-                        if (dataObject.has("login"))
-                            FloozRestClient.getInstance().setNewAccessToken(dataObject.optString("login"));
-
-                        if (dataObject.has("triggers"))
-                            FloozApplication.getInstance().pendingTriggers = dataObject.optJSONArray("triggers");
-
-                        if (dataObject.has("popup"))
-                            FloozApplication.getInstance().pendingPopup = dataObject.optJSONObject("popup");
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }, this.getIntent().getData(), this);
-
-        JSONArray triggersArray = null;
-        if (intent != null && intent.getExtras() != null) {
-            String message = intent.getStringExtra("triggers");
-            if (message != null && !message.isEmpty()) {
-                try {
-                    triggersArray = new JSONArray(message);
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-                if (triggersArray != null) {
-                    FloozApplication.getInstance().pendingTriggers = triggersArray;
-                }
-            } else if (intent.getData() != null) {
-                String path = null;
-                try {
-                    path = URLDecoder.decode(intent.getData().toString(), "UTF-8");
-                    path = path.replace("flooz://", "");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-
-                if (path != null) {
-                    try {
-                        JSONObject obj = new JSONObject(path);
-
-                        JSONObject data = obj.optJSONObject("data");
-
-                        if (data != null) {
-                            if (data.has("login"))
-                                FloozRestClient.getInstance().setNewAccessToken(data.optString("login"));
-
-                            if (data.has("triggers"))
-                                FloozApplication.getInstance().pendingTriggers = data.optJSONArray("triggers");
-
-                            if (data.has("popup"))
-                                FloozApplication.getInstance().pendingPopup = data.optJSONObject("popup");
-                        }
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
+//        Branch branch = Branch.getInstance(getApplicationContext());
+//        branch.initSession((referringParams, error) -> {
+//            if (error == null) {
+//                FloozApplication.getInstance().branchParams = referringParams;
+//
+//                String data = referringParams.optString("data");
+//
+//                if (data != null && !data.isEmpty()) {
+//                    try {
+//                        JSONObject dataObject = new JSONObject(data);
+//
+//                        if (dataObject.has("login"))
+//                            FloozRestClient.getInstance().setNewAccessToken(dataObject.optString("login"));
+//
+//                        if (dataObject.has("triggers"))
+//                            FloozApplication.getInstance().pendingTriggers = dataObject.optJSONArray("triggers");
+//
+//                        if (dataObject.has("popup"))
+//                            FloozApplication.getInstance().pendingPopup = dataObject.optJSONObject("popup");
+//
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }, this.getIntent().getData(), this);
+//
+//        JSONArray triggersArray = null;
+//        if (intent != null && intent.getExtras() != null) {
+//            String message = intent.getStringExtra("triggers");
+//            if (message != null && !message.isEmpty()) {
+//                try {
+//                    triggersArray = new JSONArray(message);
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                if (triggersArray != null) {
+//                    FloozApplication.getInstance().pendingTriggers = triggersArray;
+//                }
+//            } else if (intent.getData() != null) {
+//                String path = null;
+//                try {
+//                    path = URLDecoder.decode(intent.getData().toString(), "UTF-8");
+//                    path = path.replace("flooz://", "");
+//                } catch (UnsupportedEncodingException e) {
+//                    e.printStackTrace();
+//                }
+//
+//                if (path != null) {
+//                    try {
+//                        JSONObject obj = new JSONObject(path);
+//
+//                        JSONObject data = obj.optJSONObject("data");
+//
+//                        if (data != null) {
+//                            if (data.has("login"))
+//                                FloozRestClient.getInstance().setNewAccessToken(data.optString("login"));
+//
+//                            if (data.has("triggers"))
+//                                FloozApplication.getInstance().pendingTriggers = data.optJSONArray("triggers");
+//
+//                            if (data.has("popup"))
+//                                FloozApplication.getInstance().pendingPopup = data.optJSONObject("popup");
+//                        }
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
+//        }
 
         if (!BuildConfig.LOCAL_API) {
             if (!FloozRestClient.getInstance().autologin()) {

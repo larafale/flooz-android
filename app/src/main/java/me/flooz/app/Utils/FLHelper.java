@@ -1,17 +1,6 @@
 package me.flooz.app.Utils;
 
-import android.content.Context;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.Signature;
-
-import java.io.ByteArrayInputStream;
-import java.security.cert.CertificateException;
-import java.security.cert.CertificateFactory;
-import java.security.cert.X509Certificate;
 import java.util.Random;
-
-import javax.security.auth.x500.X500Principal;
 
 import me.flooz.app.BuildConfig;
 
@@ -29,13 +18,13 @@ public class FLHelper {
         return generateRandomString(16);
     }
 
-    public static String generateRandomString(int lenght) {
+    public static String generateRandomString(int length) {
         String letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
         String randomString = "";
         Random r = new Random();
 
-        for (int i = 0; i < lenght; i++) {
-            randomString += String.format("%C", letters.charAt(r.nextInt(letters.length())));
+        for (int i = 0; i < length; i++) {
+            randomString += letters.charAt(r.nextInt(letters.length()));
         }
 
         return randomString;

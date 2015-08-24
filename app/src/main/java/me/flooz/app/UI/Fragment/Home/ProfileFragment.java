@@ -56,7 +56,7 @@ import me.flooz.app.Utils.ImageHelper;
 import me.flooz.app.Utils.JSONHelper;
 import me.flooz.app.Utils.MenuItem;
 
-public class ProfileFragment extends HomeBaseFragment
+public class ProfileFragment extends TabBarFragment
 {
     Context context;
 
@@ -146,7 +146,7 @@ public class ProfileFragment extends HomeBaseFragment
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
 
                 try {
-                    parentActivity.startActivityForResult(intent, HomeActivity.TAKE_PICTURE);
+                    tabBarActivity.startActivityForResult(intent, HomeActivity.TAKE_PICTURE);
                 } catch (ActivityNotFoundException e) {
 
                 }
@@ -156,47 +156,47 @@ public class ProfileFragment extends HomeBaseFragment
                 Intent intent = new Intent(Intent.ACTION_PICK);
                 intent.setType("image/*");
                 try {
-                    parentActivity.startActivityForResult(Intent.createChooser(intent, ""), HomeActivity.SELECT_PICTURE);
+                    tabBarActivity.startActivityForResult(Intent.createChooser(intent, ""), HomeActivity.SELECT_PICTURE);
                 } catch (ActivityNotFoundException e) {
 
                 }
             }));
 
-            ActionSheet.showWithItems(parentActivity, items);
+            ActionSheet.showWithItems(tabBarActivity, items);
         });
 
         menuActionList.setOnItemClickListener((adapterView, view1, i, l) -> {
-            if (parentActivity != null) {
+            if (tabBarActivity != null) {
                 switch (i) {
                     case 0:
                         FloozRestClient.getInstance().updateCurrentUser(null);
-                        Intent intentSettings = new Intent(parentActivity, ProfileSettingsActivity.class);
-                        parentActivity.startActivity(intentSettings);
-                        parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                        Intent intentSettings = new Intent(tabBarActivity, ProfileSettingsActivity.class);
+                        tabBarActivity.startActivity(intentSettings);
+                        tabBarActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
                         break;
                     case 1:
-                        Intent intentNotifs = new Intent(parentActivity, NotificationActivity.class);
-                        parentActivity.startActivity(intentNotifs);
-                        parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                        Intent intentNotifs = new Intent(tabBarActivity, NotificationActivity.class);
+                        tabBarActivity.startActivity(intentNotifs);
+                        tabBarActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
                         break;
                     case 2:
-                        Intent intentShare = new Intent(parentActivity, ShareAppActivity.class);
-                        parentActivity.startActivity(intentShare);
-                        parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                        Intent intentShare = new Intent(tabBarActivity, ShareAppActivity.class);
+                        tabBarActivity.startActivity(intentShare);
+                        tabBarActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
                         break;
 //                        case 3:
-//                            Intent intentScan = new Intent(parentActivity, ScannerActivity.class);
-//                            parentActivity.startActivity(intentScan);
-//                            parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+//                            Intent intentScan = new Intent(tabBarActivity, ScannerActivity.class);
+//                            tabBarActivity.startActivity(intentScan);
+//                            tabBarActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
 //                            break;
                     case 3:
                         FloozRestClient.getInstance().showLoadView();
                         FloozRestClient.getInstance().cashoutValidate(new FloozHttpResponseHandler() {
                             @Override
                             public void success(Object response) {
-                                Intent intentCashout = new Intent(parentActivity, CashoutActivity.class);
-                                parentActivity.startActivity(intentCashout);
-                                parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                                Intent intentCashout = new Intent(tabBarActivity, CashoutActivity.class);
+                                tabBarActivity.startActivity(intentCashout);
+                                tabBarActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
                             }
 
                             @Override
@@ -206,9 +206,9 @@ public class ProfileFragment extends HomeBaseFragment
                         });
                         break;
                     case 4:
-                        Intent intentCashout = new Intent(parentActivity, AboutActivity.class);
-                        parentActivity.startActivity(intentCashout);
-                        parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                        Intent intentCashout = new Intent(tabBarActivity, AboutActivity.class);
+                        tabBarActivity.startActivity(intentCashout);
+                        tabBarActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
                         break;
                     default:
                         break;
