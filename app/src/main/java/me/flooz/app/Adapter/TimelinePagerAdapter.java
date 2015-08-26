@@ -5,7 +5,7 @@ import android.app.FragmentManager;
 import android.support.v13.app.FragmentStatePagerAdapter;
 
 import me.flooz.app.Model.FLTransaction;
-import me.flooz.app.UI.Fragment.Home.TimelineFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.TimelineFragment;
 
 /**
  * Created by Flooz on 9/23/14.

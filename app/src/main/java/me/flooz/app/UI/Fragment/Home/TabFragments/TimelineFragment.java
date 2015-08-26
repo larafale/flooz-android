@@ -1,4 +1,4 @@
-package me.flooz.app.UI.Fragment.Home;
+package me.flooz.app.UI.Fragment.Home.TabFragments;
 
 import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;

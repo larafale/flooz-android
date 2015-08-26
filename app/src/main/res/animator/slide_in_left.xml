@@ -4,7 +4,7 @@
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:duration="@android:integer/config_mediumAnimTime"
         android:propertyName="x"
-        android:valueFrom="1000"
+        android:valueFrom="1100"
         android:valueTo="0"
         android:valueType="floatType" />
 </set>

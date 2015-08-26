@@ -1,10 +1,8 @@
 package me.flooz.app.UI.Activity;
 
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -15,33 +13,35 @@ import android.content.BroadcastReceiver;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.support.v4.content.LocalBroadcastManager;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URL;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import me.flooz.app.Model.FLError;
+import me.flooz.app.Model.FLShareText;
 import me.flooz.app.Model.FLTrigger;
-import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.R;
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.App.FloozApplication;
-import me.flooz.app.UI.Fragment.Home.ProfileFragment;
-import me.flooz.app.UI.Fragment.Home.TabBarFragment;
-import me.flooz.app.UI.Fragment.Home.TimelineFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.NotificationsFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.ProfileFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.ShareFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.TabBarFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.TimelineFragment;
 import me.flooz.app.UI.Tools.ActionSheet;
 import me.flooz.app.UI.Tools.ActionSheetItem;
 import me.flooz.app.UI.Tools.CustomToast;
@@ -51,6 +51,7 @@ import me.flooz.app.Utils.CustomNotificationIntents;
 import me.flooz.app.UI.Fragment.Home.TransactionCardFragment;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.ImageHelper;
+import me.flooz.app.Utils.SoftKeyboardHandledRelativeLayout;
 import me.flooz.app.Utils.ViewServer;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
@@ -76,10 +77,22 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
 
     private FragmentManager fragmentManager;
 
-    private TimelineFragment timelineFragment;
-    private ProfileFragment accountFragment;
+    private ArrayList<TabID> tabHistory;
+    private ArrayList<TabBarFragment> homeTabHistory;
+    private ArrayList<TabBarFragment> notifsTabHistory;
+    private ArrayList<TabBarFragment> shareTabHistory;
+    private ArrayList<TabBarFragment> accountTabHistory;
 
+    private TabID currentTabID;
     private TabBarFragment currentFragment;
+    private ArrayList<TabBarFragment> currentTabHistory;
+
+    private SoftKeyboardHandledRelativeLayout mainView;
+
+    private FrameLayout fragmentContainer;
+    private int fragmentContainerTabBarMargin;
+
+    private LinearLayout tabBar;
 
     private LinearLayout homeTab;
     private LinearLayout notifTab;
@@ -102,8 +115,6 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
     private TextView notifTabBadge;
     private TextView shareTabBadge;
     private TextView accountTabBadge;
-
-    private TabID currentTab;
 
     private RelativeLayout imageViewer;
     private ImageView imageViewerClose;
@@ -139,6 +150,25 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         this.fragmentManager = this.getFragmentManager();
 
         this.setContentView(R.layout.activity_home);
+
+        this.mainView = (SoftKeyboardHandledRelativeLayout) this.findViewById(R.id.main_view);
+        this.mainView.setOnSoftKeyboardVisibilityChangeListener(new SoftKeyboardHandledRelativeLayout.SoftKeyboardVisibilityChangeListener() {
+            @Override
+            public void onSoftKeyboardShow() {
+                hideTabBar();
+            }
+
+            @Override
+            public void onSoftKeyboardHide() {
+                showTabBar();
+            }
+        });
+
+        this.fragmentContainer = (FrameLayout) this.findViewById(R.id.fragment_container);
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) fragmentContainer.getLayoutParams();
+        this.fragmentContainerTabBarMargin = layoutParams.bottomMargin;
+
+        this.tabBar = (LinearLayout) this.findViewById(R.id.tab_bar);
 
         this.homeTab = (LinearLayout) this.findViewById(R.id.home_tab);
         this.notifTab = (LinearLayout) this.findViewById(R.id.notif_tab);
@@ -202,11 +232,27 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         this.shareTab.setOnClickListener(v -> changeCurrentTab(TabID.SHARE_TAB));
         this.accountTab.setOnClickListener(v -> changeCurrentTab(TabID.ACCOUNT_TAB));
 
-        this.timelineFragment = new TimelineFragment();
-        this.accountFragment = new ProfileFragment();
+        this.tabHistory = new ArrayList<>();
 
-        this.timelineFragment.tabBarActivity = this;
-        this.accountFragment.tabBarActivity = this;
+        TabBarFragment timelineFragment = new TimelineFragment();
+        TabBarFragment accountFragment = new ProfileFragment();
+        TabBarFragment notifFragment = new NotificationsFragment();
+        TabBarFragment shareFragment = new ShareFragment();
+
+        timelineFragment.tabBarActivity = this;
+        accountFragment.tabBarActivity = this;
+        notifFragment.tabBarActivity = this;
+        shareFragment.tabBarActivity = this;
+
+        this.homeTabHistory = new ArrayList<>();
+        this.notifsTabHistory = new ArrayList<>();
+        this.shareTabHistory = new ArrayList<>();
+        this.accountTabHistory = new ArrayList<>();
+
+        this.homeTabHistory.add(timelineFragment);
+        this.notifsTabHistory.add(notifFragment);
+        this.shareTabHistory.add(shareFragment);
+        this.accountTabHistory.add(accountFragment);
 
         this.floozTabImage.setOnClickListener(v -> {
             if (FloozRestClient.getInstance().currentUser.ux != null
@@ -268,70 +314,91 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         FragmentTransaction ft = this.fragmentManager.beginTransaction();
         ft.replace(R.id.main_transac_view, this.transactionCardFragment);
         ft.addToBackStack(null).commit();
-     }
+
+        this.changeCurrentTab(TabID.HOME_TAB);
+    }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == RESULT_OK) {
-            if (requestCode == AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY) {
-                transactionCardFragment.authenticationValidated();
-            }
-
-            if (requestCode == SELECT_PICTURE || requestCode == TAKE_PICTURE) {
-                Uri imageUri = Uri.EMPTY;
-//                if (data == null || data.getData() == null)
-//                    imageUri = this.leftMenu.tmpUriImage;
-//                else
-//                    imageUri = data.getData();
+        currentFragment.onActivityResult(requestCode, resultCode, data);
+//        if (resultCode == RESULT_OK) {
+//            if (requestCode == AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY) {
+//                transactionCardFragment.authenticationValidated();
+//            }
 //
-//                this.leftMenu.tmpUriImage = null;
-
-                final Uri selectedImageUri = imageUri;
-                if (selectedImageUri != null) {
-                    Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(() -> {
-                        String path = ImageHelper.getPath(instance, selectedImageUri);
-                        if (path != null) {
-                            File image = new File(path);
-                            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                            Bitmap photo = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
-
-                            if (photo != null) {
-                                int rotation = ImageHelper.getRotation(instance, selectedImageUri);
-                                if (rotation != 0) {
-                                    photo = ImageHelper.rotateBitmap(photo, rotation);
-                                }
-
-                                int nh = (int) (photo.getHeight() * (512.0 / photo.getWidth()));
-                                Bitmap scaled = Bitmap.createScaledBitmap(photo, 512, nh, true);
-//                                leftMenu.userView.setImageBitmap(scaled);
-                                FloozRestClient.getInstance().uploadDocument("picId", image, new FloozHttpResponseHandler() {
-                                    @Override
-                                    public void success(Object response) {
-                                        FloozRestClient.getInstance().updateCurrentUser(null);
-                                    }
-
-                                    @Override
-                                    public void failure(int statusCode, FLError error) {
-                                        FLUser user = FloozRestClient.getInstance().currentUser;
-
-//                                        if (user.avatarURL != null)
-//                                            ImageLoader.getInstance().displayImage(user.avatarURL, leftMenu.userView);
-//                                        else
-//                                            leftMenu.userView.setImageDrawable(getResources().getDrawable(R.drawable.avatar_default));
-                                    }
-                                });
-                            }
-                        }
-                    });
-                }
-            }
-        }
+//            if (requestCode == SELECT_PICTURE || requestCode == TAKE_PICTURE) {
+//                Uri imageUri = Uri.EMPTY;
+////                if (data == null || data.getData() == null)
+////                    imageUri = this.leftMenu.tmpUriImage;
+////                else
+////                    imageUri = data.getData();
+////
+////                this.leftMenu.tmpUriImage = null;
+//
+//                final Uri selectedImageUri = imageUri;
+//                if (selectedImageUri != null) {
+//                    Handler handler = new Handler(Looper.getMainLooper());
+//                    handler.post(() -> {
+//                        String path = ImageHelper.getPath(instance, selectedImageUri);
+//                        if (path != null) {
+//                            File image = new File(path);
+//                            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+//                            Bitmap photo = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
+//
+//                            if (photo != null) {
+//                                int rotation = ImageHelper.getRotation(instance, selectedImageUri);
+//                                if (rotation != 0) {
+//                                    photo = ImageHelper.rotateBitmap(photo, rotation);
+//                                }
+//
+//                                int nh = (int) (photo.getHeight() * (512.0 / photo.getWidth()));
+//                                Bitmap scaled = Bitmap.createScaledBitmap(photo, 512, nh, true);
+////                                leftMenu.userView.setImageBitmap(scaled);
+//                                FloozRestClient.getInstance().uploadDocument("picId", image, new FloozHttpResponseHandler() {
+//                                    @Override
+//                                    public void success(Object response) {
+//                                        FloozRestClient.getInstance().updateCurrentUser(null);
+//                                    }
+//
+//                                    @Override
+//                                    public void failure(int statusCode, FLError error) {
+//                                        FLUser user = FloozRestClient.getInstance().currentUser;
+//
+////                                        if (user.avatarURL != null)
+////                                            ImageLoader.getInstance().displayImage(user.avatarURL, leftMenu.userView);
+////                                        else
+////                                            leftMenu.userView.setImageDrawable(getResources().getDrawable(R.drawable.avatar_default));
+//                                    }
+//                                });
+//                            }
+//                        }
+//                    });
+//                }
+//            }
+//        }
     }
 
     public void onStart() {
         super.onStart();
 
-        this.changeCurrentTab(TabID.HOME_TAB);
+        if (FloozRestClient.getInstance().currentShareText == null) {
+            FloozRestClient.getInstance().getInvitationText(new FloozHttpResponseHandler() {
+                @Override
+                public void success(Object response) {
+                    FLShareText texts = FloozRestClient.getInstance().currentShareText;
+
+                    shareTabText.setText(texts.shareTitle);
+                }
+
+                @Override
+                public void failure(int statusCode, FLError error) {
+
+                }
+            });
+        } else {
+            FLShareText texts = FloozRestClient.getInstance().currentShareText;
+
+            shareTabText.setText(texts.shareTitle);
+        }
     }
 
     protected void onResume() {
@@ -360,7 +427,6 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
                 FloozApplication.getInstance().pendingPopup = null;
             }, 100);
         }
-
     }
 
     protected void onPause() {
@@ -419,62 +485,129 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
     }
 
     private void changeCurrentTab(@NonNull TabID tabID) {
-        int clearColor = this.getResources().getColor(R.color.placeholder);
-        int selectedColor = this.getResources().getColor(R.color.blue);
+        if (tabID != this.currentTabID) {
+            int clearColor = this.getResources().getColor(R.color.placeholder);
+            int selectedColor = this.getResources().getColor(R.color.blue);
 
-        if (tabID != this.currentTab) {
-            if (this.currentTab != null) {
-                switch (this.currentTab) {
+            if (tabID != this.currentTabID) {
+                if (this.currentTabID != null) {
+                    switch (this.currentTabID) {
+                        case HOME_TAB:
+                            this.homeTabText.setTextColor(clearColor);
+                            this.homeTabImage.setColorFilter(clearColor);
+                            break;
+                        case NOTIF_TAB:
+                            this.notifTabText.setTextColor(clearColor);
+                            this.notifTabImage.setColorFilter(clearColor);
+                            break;
+                        case SHARE_TAB:
+                            this.shareTabText.setTextColor(clearColor);
+                            this.shareTabImage.setColorFilter(clearColor);
+                            break;
+                        case ACCOUNT_TAB:
+                            this.accountTabText.setTextColor(clearColor);
+                            this.accountTabImage.setColorFilter(clearColor);
+                            break;
+                    }
+                }
+
+                this.currentTabID = tabID;
+
+                if (this.tabHistory.contains(this.currentTabID))
+                    this.tabHistory.remove(this.currentTabID);
+
+                this.tabHistory.add(this.currentTabID);
+
+                TabBarFragment fragment = null;
+
+                switch (this.currentTabID) {
                     case HOME_TAB:
-                        this.homeTabText.setTextColor(clearColor);
-                        this.homeTabImage.setColorFilter(clearColor);
+                        this.homeTabText.setTextColor(selectedColor);
+                        this.homeTabImage.setColorFilter(selectedColor);
+                        fragment = this.homeTabHistory.get(this.homeTabHistory.size() - 1);
+                        this.currentTabHistory = this.homeTabHistory;
                         break;
                     case NOTIF_TAB:
-                        this.notifTabText.setTextColor(clearColor);
-                        this.notifTabImage.setColorFilter(clearColor);
+                        this.notifTabText.setTextColor(selectedColor);
+                        this.notifTabImage.setColorFilter(selectedColor);
+                        fragment = this.notifsTabHistory.get(this.notifsTabHistory.size() - 1);
+                        this.currentTabHistory = this.notifsTabHistory;
                         break;
                     case SHARE_TAB:
-                        this.shareTabText.setTextColor(clearColor);
-                        this.shareTabImage.setColorFilter(clearColor);
+                        this.shareTabText.setTextColor(selectedColor);
+                        this.shareTabImage.setColorFilter(selectedColor);
+                        fragment = this.shareTabHistory.get(this.shareTabHistory.size() - 1);
+                        this.currentTabHistory = this.shareTabHistory;
                         break;
                     case ACCOUNT_TAB:
-                        this.accountTabText.setTextColor(clearColor);
-                        this.accountTabImage.setColorFilter(clearColor);
+                        this.accountTabText.setTextColor(selectedColor);
+                        this.accountTabImage.setColorFilter(selectedColor);
+                        fragment = this.accountTabHistory.get(this.accountTabHistory.size() - 1);
+                        this.currentTabHistory = this.accountTabHistory;
                         break;
                 }
-            }
 
-            this.currentTab = tabID;
-
-            TabBarFragment fragment = null;
-
-            switch (this.currentTab) {
-                case HOME_TAB:
-                    this.homeTabText.setTextColor(selectedColor);
-                    this.homeTabImage.setColorFilter(selectedColor);
-                    fragment = timelineFragment;
-                    break;
-                case NOTIF_TAB:
-                    this.notifTabText.setTextColor(selectedColor);
-                    this.notifTabImage.setColorFilter(selectedColor);
-                    break;
-                case SHARE_TAB:
-                    this.shareTabText.setTextColor(selectedColor);
-                    this.shareTabImage.setColorFilter(selectedColor);
-                    break;
-                case ACCOUNT_TAB:
-                    this.accountTabText.setTextColor(selectedColor);
-                    this.accountTabImage.setColorFilter(selectedColor);
-                    fragment = accountFragment;
-                    break;
-            }
-
-            if (fragment != null) {
-                FragmentTransaction ft = this.fragmentManager.beginTransaction();
-                ft.replace(R.id.home_fragment_container, fragment);
-                ft.addToBackStack(null).commit();
+                if (fragment != null) {
+                    this.currentFragment = fragment;
+                    FragmentTransaction ft = this.fragmentManager.beginTransaction();
+                    ft.replace(R.id.fragment_container, fragment);
+                    ft.addToBackStack(null).commit();
+                }
             }
         }
+    }
+
+    public void pushFragmentInCurrentTab(TabBarFragment fragment, int animIn, int animOut) {
+        fragment.tabBarActivity = this;
+
+        FragmentTransaction ft = this.getFragmentManager().beginTransaction();
+
+        ft.setCustomAnimations(animIn, animOut, animIn, animOut);
+
+        ft.replace(R.id.fragment_container, fragment);
+
+        ft.commit();
+
+        this.currentTabHistory.add(fragment);
+        this.currentFragment = fragment;
+    }
+
+    public void popFragmentInCurrentTab(int animIn, int animOut) {
+        if (this.currentTabHistory.size() > 1) {
+
+            this.currentTabHistory.remove(this.currentTabHistory.size() - 1);
+
+            TabBarFragment fragment = this.currentTabHistory.get(this.currentTabHistory.size() - 1);
+
+            FragmentTransaction ft = this.getFragmentManager().beginTransaction();
+
+            ft.setCustomAnimations(animIn, animOut, animIn, animOut);
+
+            ft.replace(R.id.fragment_container, fragment);
+
+            ft.commit();
+
+            this.currentFragment = fragment;
+        }
+    }
+
+    public void showTabBar() {
+        Handler handler = new Handler(Looper.getMainLooper());
+        handler.postDelayed(() -> {
+            ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) fragmentContainer.getLayoutParams();
+            layoutParams.setMargins(layoutParams.leftMargin, layoutParams.topMargin, layoutParams.rightMargin, fragmentContainerTabBarMargin);
+            fragmentContainer.setLayoutParams(layoutParams);
+
+            tabBar.setVisibility(View.VISIBLE);
+        }, 100);
+    }
+
+    public void hideTabBar() {
+        this.tabBar.setVisibility(View.GONE);
+
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams)this.fragmentContainer.getLayoutParams();
+        layoutParams.setMargins(layoutParams.leftMargin, layoutParams.topMargin, layoutParams.rightMargin, 0);
+        this.fragmentContainer.setLayoutParams(layoutParams);
     }
 
     public void showTransactionCard(FLTransaction transaction) {
@@ -641,9 +774,14 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
     @Override
     public void onBackPressed() {
         if (this.imageViewer.getVisibility() == View.VISIBLE) {
-            this.imageViewerClose.performClick();
+            this.hideImageViewer();
         } else if (this.transactionCardContainer.getVisibility() == View.VISIBLE) {
             this.hideTransactionCard();
+        } else if (this.currentTabHistory.size() > 1) {
+            this.currentFragment.onBackPressed();
+        } else if (this.tabHistory.size() > 1) {
+            this.tabHistory.remove(this.tabHistory.size() - 1);
+            this.changeCurrentTab(this.tabHistory.get(this.tabHistory.size() - 1));
         } else {
             this.finish();
         }

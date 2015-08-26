@@ -1,4 +1,4 @@
-package me.flooz.app.UI.Fragment.Home;
+package me.flooz.app.UI.Fragment.Home.TabFragments;
 
 /**
  * Created by Flooz on 9/2/14.
@@ -18,9 +18,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -33,7 +31,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.flooz.app.Adapter.MenuListAdapter;
-import me.flooz.app.Adapter.SettingsListItem;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLUser;
@@ -44,7 +41,6 @@ import me.flooz.app.UI.Activity.AboutActivity;
 import me.flooz.app.UI.Activity.CashoutActivity;
 import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.NotificationActivity;
-import me.flooz.app.UI.Activity.ScannerActivity;
 import me.flooz.app.UI.Activity.Settings.ProfileSettingsActivity;
 import me.flooz.app.UI.Activity.ShareAppActivity;
 import me.flooz.app.UI.Tools.ActionSheet;
@@ -194,9 +190,10 @@ public class ProfileFragment extends TabBarFragment
                         FloozRestClient.getInstance().cashoutValidate(new FloozHttpResponseHandler() {
                             @Override
                             public void success(Object response) {
-                                Intent intentCashout = new Intent(tabBarActivity, CashoutActivity.class);
-                                tabBarActivity.startActivity(intentCashout);
-                                tabBarActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                                tabBarActivity.pushFragmentInCurrentTab(new CashoutFragment(), R.animator.slide_in_left, R.animator.slide_out_right);
+//                                Intent intentCashout = new Intent(tabBarActivity, CashoutActivity.class);
+//                                tabBarActivity.startActivity(intentCashout);
+//                                tabBarActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
                             }
 
                             @Override

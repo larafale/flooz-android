@@ -17,6 +17,9 @@ import me.flooz.app.Model.FLError;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Controllers.CashoutController;
+import me.flooz.app.UI.Controllers.NotificationsController;
+import me.flooz.app.UI.Controllers.ShareController;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.ViewServer;
@@ -26,13 +29,8 @@ import me.flooz.app.Utils.ViewServer;
  */
 public class CashoutActivity extends Activity {
 
-    private CashoutActivity instance;
+    private CashoutController controller;
     private FloozApplication floozApp;
-
-    private ImageView headerBackButton;
-    private TextView balance;
-    private EditText amountTextfield;
-    private TextView cashoutButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -41,151 +39,30 @@ public class CashoutActivity extends Activity {
         if (FLHelper.isDebuggable())
             ViewServer.get(this).addWindow(this);
 
-        instance = this;
-        floozApp = (FloozApplication)this.getApplicationContext();
+        floozApp = (FloozApplication) this.getApplicationContext();
 
-        this.setContentView(R.layout.cashout_fragment);
+        this.setContentView(R.layout.invite_fragment);
 
-        this.headerBackButton = (ImageView) this.findViewById(R.id.cashout_header_back);
-        TextView headerTitle = (TextView) this.findViewById(R.id.cashout_header_title);
-        TextView balanceInfos = (TextView) this.findViewById(R.id.cashout_balance_infos);
-        TextView globalInfos = (TextView) this.findViewById(R.id.cashout_infos);
-        this.balance = (TextView) this.findViewById(R.id.cashout_balance);
-        TextView balanceCurrency = (TextView) this.findViewById(R.id.cashout_balance_currency);
-        this.amountTextfield = (EditText) this.findViewById(R.id.cashout_amount_textfield);
-        this.cashoutButton = (TextView) this.findViewById(R.id.cashout_button);
-
-        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
-        balanceInfos.setTypeface(CustomFonts.customContentRegular(this));
-        globalInfos.setTypeface(CustomFonts.customContentRegular(this));
-        this.balance.setTypeface(CustomFonts.customContentRegular(this));
-        balanceCurrency.setTypeface(CustomFonts.customContentRegular(this));
-        this.amountTextfield.setTypeface(CustomFonts.customContentRegular(this));
-        this.cashoutButton.setTypeface(CustomFonts.customContentRegular(this));
-
-        this.cashoutButton.setText(String.format(this.getResources().getString(R.string.CASHOUT_BUTTON), ""));
-
-        String amountValue = FLHelper.trimTrailingZeros(FloozRestClient.getInstance().currentUser.amount.toString());
-
-        this.balance.setText(amountValue);
-
-        this.headerBackButton.setOnClickListener(view -> {
-            finish();
-            overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-        });
-
-        this.amountTextfield.setText("");
-
-        this.amountTextfield.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 7)
-                    s.delete(7, s.length());
-
-                if (s.length() > 0) {
-                    cashoutButton.setText(String.format(instance.getResources().getString(R.string.CASHOUT_BUTTON), FLHelper.trimTrailingZeros(s.toString()) + " €"));
-                }
-                else {
-                    cashoutButton.setText(String.format(instance.getResources().getString(R.string.CASHOUT_BUTTON), ""));
-                }
-            }
-        });
-
-        this.amountTextfield.setOnEditorActionListener((v, actionId, event) -> {
-            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                if (cashoutButton.isEnabled())
-                    cashoutButton.performClick();
-            }
-            return false;
-        });
-
-        this.cashoutButton.setOnClickListener(v -> {
-            String amount = amountTextfield.getText().toString();
-
-            if (amount.isEmpty())
-                amount = "0";
-
-            FloozRestClient.getInstance().showLoadView();
-            FloozRestClient.getInstance().cashoutValidate(Float.parseFloat(amount), new FloozHttpResponseHandler() {
-                @Override
-                public void success(Object response) {
-                    Intent intentNotifs = new Intent(instance, AuthenticationActivity.class);
-                    instance.startActivityForResult(intentNotifs, AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY);
-                    instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-                }
-
-                @Override
-                public void failure(int statusCode, FLError error) {
-
-                }
-            });
-        });
-    }
-
-    public void authenticationValidated() {
-        String amount = amountTextfield.getText().toString();
-
-        if (amount.isEmpty())
-            amount = "0";
-
-        FloozRestClient.getInstance().cashout(Float.parseFloat(amount), new FloozHttpResponseHandler() {
-            @Override
-            public void success(Object response) {
-                String amountValue = FLHelper.trimTrailingZeros(FloozRestClient.getInstance().currentUser.amount.toString());
-
-                balance.setText(amountValue);
-                amountTextfield.setText("");
-                amountTextfield.clearFocus();
-
-                headerBackButton.performClick();
-            }
-
-            @Override
-            public void failure(int statusCode, FLError error) {
-
-            }
-        });
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY) {
-            if (resultCode == Activity.RESULT_OK)
-                authenticationValidated();
-        }
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        this.amountTextfield.setText("");
-        this.amountTextfield.clearFocus();
+        this.controller = new CashoutController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        floozApp.setCurrentActivity(this);
 
         if (FLHelper.isDebuggable())
             ViewServer.get(this).setFocusedWindow(this);
 
-        floozApp.setCurrentActivity(this);
+        this.controller.onResume();
     }
 
     @Override
     public void onPause() {
         clearReferences();
         super.onPause();
+
+        this.controller.onPause();
     }
 
     @Override
@@ -196,18 +73,23 @@ public class CashoutActivity extends Activity {
             ViewServer.get(this).removeWindow(this);
 
         super.onDestroy();
+
+        this.controller.onPause();
     }
 
-
-    private void clearReferences(){
+    private void clearReferences() {
         Activity currActivity = floozApp.getCurrentActivity();
         if (currActivity != null && currActivity.equals(this))
             floozApp.setCurrentActivity(null);
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        this.controller.onActivityResult(requestCode, resultCode, data);
+    }
+
     @Override
     public void onBackPressed() {
-        this.headerBackButton.performClick();
+        this.controller.onBackPressed();
     }
 
 }
