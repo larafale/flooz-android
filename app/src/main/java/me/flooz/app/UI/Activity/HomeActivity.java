@@ -63,10 +63,8 @@ import org.json.JSONArray;
 
 public class HomeActivity extends Activity implements TimelineFragment.TimelineFragmentDelegate
 {
-    public static final int SELECT_PICTURE = 1;
-    public static final int TAKE_PICTURE = 2;
 
-    private enum TabID {
+    public enum TabID {
         HOME_TAB,
         NOTIF_TAB,
         SHARE_TAB,
@@ -155,12 +153,14 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         this.mainView.setOnSoftKeyboardVisibilityChangeListener(new SoftKeyboardHandledRelativeLayout.SoftKeyboardVisibilityChangeListener() {
             @Override
             public void onSoftKeyboardShow() {
-                hideTabBar();
+                if (FloozApplication.getInstance().getCurrentActivity() instanceof HomeActivity)
+                    hideTabBar();
             }
 
             @Override
             public void onSoftKeyboardHide() {
-                showTabBar();
+                if (FloozApplication.getInstance().getCurrentActivity() instanceof HomeActivity)
+                    showTabBar();
             }
         });
 
@@ -484,7 +484,7 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         }
     }
 
-    private void changeCurrentTab(@NonNull TabID tabID) {
+    public void changeCurrentTab(@NonNull TabID tabID) {
         if (tabID != this.currentTabID) {
             int clearColor = this.getResources().getColor(R.color.placeholder);
             int selectedColor = this.getResources().getColor(R.color.blue);
@@ -557,6 +557,10 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         }
     }
 
+    public void pushFragmentInCurrentTab(TabBarFragment fragment) {
+        this.pushFragmentInCurrentTab(fragment, R.animator.slide_in_left, R.animator.slide_out_right);
+    }
+
     public void pushFragmentInCurrentTab(TabBarFragment fragment, int animIn, int animOut) {
         fragment.tabBarActivity = this;
 
@@ -570,6 +574,10 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
 
         this.currentTabHistory.add(fragment);
         this.currentFragment = fragment;
+    }
+
+    public void popFragmentInCurrentTab() {
+        this.popFragmentInCurrentTab(R.animator.slide_in_right, R.animator.slide_out_left);
     }
 
     public void popFragmentInCurrentTab(int animIn, int animOut) {

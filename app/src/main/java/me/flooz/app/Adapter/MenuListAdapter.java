@@ -34,32 +34,32 @@ public class MenuListAdapter extends ArrayAdapter<MenuItem>
     public View getView(int position, View convertView, ViewGroup parent) {
         final ViewHolder holder;
 
-        if (convertView == null) {
-            holder = new ViewHolder();
-            convertView = LayoutInflater.from(this.context).inflate(R.layout.account_menu_row, parent, false);
-            holder.img = (ImageView)convertView.findViewById(R.id.menu_row_img);
-            holder.text = (TextView)convertView.findViewById(R.id.menu_row_label);
-            holder.notifsLabel = (TextView)convertView.findViewById(R.id.menu_row_notification);
-
-            holder.text.setTypeface(CustomFonts.customTitleLight(this.context));
-            holder.notifsLabel.setTypeface(CustomFonts.customTitleLight(this.context));
-
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
-
-        MenuItem item = this.items.get(position);
-
-        holder.img.setImageDrawable(item.image);
-        holder.img.setColorFilter(this.context.getResources().getColor(android.R.color.white));
-        holder.text.setText(item.name.toUpperCase());
-        if (item.nbNotification > 0) {
-            holder.notifsLabel.setVisibility(View.VISIBLE);
-            holder.notifsLabel.setText(String.format("%d", item.nbNotification));
-        } else {
-            holder.notifsLabel.setVisibility(View.INVISIBLE);
-        }
+//        if (convertView == null) {
+//            holder = new ViewHolder();
+//            convertView = LayoutInflater.from(this.context).inflate(R.layout.account_menu_row, parent, false);
+//            holder.img = (ImageView)convertView.findViewById(R.id.menu_row_img);
+//            holder.text = (TextView)convertView.findViewById(R.id.menu_row_label);
+//            holder.notifsLabel = (TextView)convertView.findViewById(R.id.menu_row_notification);
+//
+//            holder.text.setTypeface(CustomFonts.customTitleLight(this.context));
+//            holder.notifsLabel.setTypeface(CustomFonts.customTitleLight(this.context));
+//
+//            convertView.setTag(holder);
+//        } else {
+//            holder = (ViewHolder) convertView.getTag();
+//        }
+//
+//        MenuItem item = this.items.get(position);
+//
+//        holder.img.setImageDrawable(item.image);
+//        holder.img.setColorFilter(this.context.getResources().getColor(android.R.color.white));
+//        holder.text.setText(item.name.toUpperCase());
+//        if (item.nbNotification > 0) {
+//            holder.notifsLabel.setVisibility(View.VISIBLE);
+//            holder.notifsLabel.setText(String.format("%d", item.nbNotification));
+//        } else {
+//            holder.notifsLabel.setVisibility(View.INVISIBLE);
+//        }
 
         return convertView;
     }

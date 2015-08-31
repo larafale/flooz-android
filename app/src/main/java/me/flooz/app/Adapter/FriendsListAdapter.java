@@ -112,6 +112,19 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
 
         this.reloadSuggestions();
         this.searchHandler = new Handler(Looper.getMainLooper());
+
+        FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+        pendingList = currentUser.friendsRequest;
+        friendList = currentUser.friends;
+
+        if (pendingList == null)
+            pendingList = new ArrayList<>(0);
+
+        if (friendList == null)
+            friendList = new ArrayList<>(0);
+
+        notifyDataSetChanged();
     }
 
     public void loadBroadcastReceivers() {
@@ -180,12 +193,12 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
     public View getHeaderView(int position, View convertView, ViewGroup parent) {
         HeaderViewHolder holder;
 
-        if (convertView == null) {
+        if (convertView == null || convertView.getTag() == null) {
             holder = new HeaderViewHolder();
-            convertView = inflater.inflate(R.layout.user_list_header, parent, false);
-            holder.text = (TextView) convertView.findViewById(R.id.user_list_header_text);
+            convertView = inflater.inflate(R.layout.account_menu_header, parent, false);
+            holder.text = (TextView) convertView.findViewById(R.id.account_menu_header_title);
 
-            holder.text.setTypeface(CustomFonts.customTitleExtraLight(this.context));
+            holder.text.setTypeface(CustomFonts.customContentBold(this.context));
 
             convertView.setTag(holder);
         } else {
@@ -259,7 +272,7 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
             holder.button = (ImageView) convertView.findViewById(R.id.user_list_row_button);
 
             holder.username.setTypeface(CustomFonts.customTitleExtraLight(this.context), Typeface.BOLD);
-            holder.fullname.setTypeface(CustomFonts.customContentBold(this.context));
+            holder.fullname.setTypeface(CustomFonts.customContentRegular(this.context));
 
             convertView.setTag(holder);
         } else {

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/dimen_large"
+    android:paddingBottom="@dimen/dimen_large"
+    android:gravity="center"
+    android:background="@color/background_header"
+    android:clipChildren="false"
+    android:clipToPadding="false">
+
+    <com.makeramen.RoundedImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/account_menu_user_view_img"
+        android:scaleType="centerCrop"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/avatar_default"
+        app:corner_radius="30dip"
+        app:mutate_background="true"
+        app:oval="true"/>
+
+    <TextView
+        android:id="@+id/account_menu_user_view_balance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_large"
+        android:textColor="@android:color/white"
+        android:textSize="16sp"
+        android:paddingTop="@dimen/dimen_medium"
+        android:paddingBottom="@dimen/dimen_medium"
+        android:paddingLeft="@dimen/dimen_large"
+        android:paddingRight="@dimen/dimen_large"
+        android:background="@drawable/account_balance_background"/>
+
+</LinearLayout>

@@ -1,43 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center_vertical"
-    android:paddingTop="5dp"
-    android:paddingBottom="5dp"
-    android:paddingLeft="20dp">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <RelativeLayout
-        android:id="@+id/menu_row_img_container"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/menu_row_img"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:padding="5dp"
-            android:scaleType="centerInside"/>
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/dimen_large"
+        android:paddingBottom="@dimen/dimen_large"
+        android:paddingLeft="@dimen/dimen_large"
+        android:paddingRight="@dimen/dimen_large">
 
         <TextView
-            android:id="@+id/menu_row_notification"
-            android:layout_width="20dp"
-            android:layout_height="20dp"
-            android:gravity="center"
-            android:padding="2dp"
-            android:textSize="12sp"
-            android:background="@drawable/notification_alert_background"
-            android:layout_alignRight="@id/menu_row_img"/>
+            android:id="@+id/account_menu_row_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/placeholder"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:textSize="15dp"/>
+
+        <ImageView
+            android:id="@+id/account_menu_row_arrow"
+            android:layout_width="@dimen/dimen_xlarge"
+            android:layout_height="@dimen/dimen_xlarge"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:src="@drawable/arrow_right"/>
+
+        <TextView
+            android:id="@+id/account_menu_row_notif"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="@dimen/dimen_medium"
+            android:paddingRight="@dimen/dimen_medium"
+            android:paddingTop="@dimen/dimen_small"
+            android:paddingBottom="@dimen/dimen_small"
+            android:background="@drawable/background_account_notif"
+            android:textColor="@color/placeholder"
+            android:layout_toLeftOf="@id/account_menu_row_arrow"
+            android:layout_marginRight="@dimen/dimen_large"
+            android:layout_centerVertical="true"
+            android:visibility="gone" />
 
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/menu_row_label"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:textSize="17sp"
-        android:textColor="@android:color/white"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/background"
+        android:layout_alignParentBottom="true"
+        android:layout_marginLeft="@dimen/dimen_large"
+        />
 
-</LinearLayout>
+</RelativeLayout>

@@ -1,20 +1,13 @@
-package me.flooz.app.UI.Fragment.Home;
+package me.flooz.app.UI.Controllers;
 
-/**
- * Created by Flooz on 9/2/14.
- */
-
-import android.content.Context;
+import android.app.Activity;
 import android.content.Intent;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -32,14 +25,17 @@ import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.ShareAppActivity;
 import me.flooz.app.Utils.CustomFonts;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
-public class FriendsFragment extends HomeBaseFragment implements FriendsListAdapterDelegate
-{
-    public Context context;
+/**
+ * Created by Flooz on 8/31/15.
+ */
+public class FriendsController extends BaseController implements FriendsListAdapterDelegate {
 
+    private ImageView headerBackButton;
     private TextView searchTextfield;
     private ImageView clearSearchTextfieldButton;
     public PullRefreshLayout refreshContainer;
@@ -48,31 +44,38 @@ public class FriendsFragment extends HomeBaseFragment implements FriendsListAdap
 
     private FriendsListAdapter listAdapter;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setRetainInstance(true);
-    }
+    public FriendsController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
+        super(mainView, parentActivity, kind);
 
-    @Override
-    public View onCreateView(final LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.friends_fragment, null);
+        this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
+        this.refreshContainer = (PullRefreshLayout) this.currentView.findViewById(R.id.friends_refresh_container);
+        this.searchTextfield = (TextView) this.currentView.findViewById(R.id.friends_search_textfield);
+        this.clearSearchTextfieldButton = (ImageView) this.currentView.findViewById(R.id.friends_search_clear);
+        this.backgroundView = (LinearLayout) this.currentView.findViewById(R.id.friends_empty_background);
+        Button inviteFriends = (Button) this.currentView.findViewById(R.id.friends_invite_button);
 
-        this.context = inflater.getContext();
+        if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
+            this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
 
-        this.refreshContainer = (PullRefreshLayout) view.findViewById(R.id.friends_refresh_container);
-        this.searchTextfield = (TextView) view.findViewById(R.id.friends_search_textfield);
-        this.clearSearchTextfieldButton = (ImageView) view.findViewById(R.id.friends_search_clear);
-        this.backgroundView = (LinearLayout) view.findViewById(R.id.friends_empty_background);
-        Button inviteFriends = (Button) view.findViewById(R.id.friends_invite_button);
-
-        inviteFriends.setOnClickListener(v -> {
-            Intent intentShare = new Intent(parentActivity, ShareAppActivity.class);
-            parentActivity.startActivity(intentShare);
-            parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+        this.headerBackButton.setOnClickListener(view -> {
+            if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
+                parentActivity.finish();
+                parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+            } else {
+                ((HomeActivity)this.parentActivity).popFragmentInCurrentTab(R.animator.slide_in_right, R.animator.slide_out_left);
+            }
         });
 
-        searchTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+        inviteFriends.setOnClickListener(v -> {
+            if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
+                Intent intentShare = new Intent(parentActivity, ShareAppActivity.class);
+                parentActivity.startActivity(intentShare);
+                parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+            } else
+                ((HomeActivity) parentActivity).changeCurrentTab(HomeActivity.TabID.SHARE_TAB);
+        });
+
+        searchTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
 
         this.refreshContainer.setOnRefreshListener(() -> {
             final Boolean[] validate = {false};
@@ -87,7 +90,7 @@ public class FriendsFragment extends HomeBaseFragment implements FriendsListAdap
                         refreshContainer.setRefreshing(false);
                     else
                         validate[0] = true;
-                 }
+                }
 
                 @Override
                 public void failure(int statusCode, FLError error) {
@@ -102,7 +105,7 @@ public class FriendsFragment extends HomeBaseFragment implements FriendsListAdap
                 @Override
                 public void success(Object response) {
 
-                    listAdapter.reloadSuggestions((List<FLUser>)response);
+                    listAdapter.reloadSuggestions((List<FLUser>) response);
 
                     if (validate[0])
                         refreshContainer.setRefreshing(false);
@@ -149,8 +152,8 @@ public class FriendsFragment extends HomeBaseFragment implements FriendsListAdap
             listAdapter.searchUser("");
         });
 
-        StickyListHeadersListView resultList = (StickyListHeadersListView) view.findViewById(R.id.friends_result_list);
-        this.listAdapter = new FriendsListAdapter(inflater.getContext());
+        StickyListHeadersListView resultList = (StickyListHeadersListView) this.currentView.findViewById(R.id.friends_result_list);
+        this.listAdapter = new FriendsListAdapter(this.parentActivity);
         this.listAdapter.delegate = this;
         resultList.setAdapter(this.listAdapter);
 
@@ -159,17 +162,15 @@ public class FriendsFragment extends HomeBaseFragment implements FriendsListAdap
             user.selectedCanal = FLUser.FLUserSelectedCanal.values()[(int) listAdapter.getHeaderId(position)];
             FloozApplication.getInstance().showUserActionMenu(user);
         });
-
-        this.dataReloaded();
-
-        return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (this.listAdapter != null)
+        if (this.listAdapter != null) {
+            this.listAdapter.notifyDataSetChanged();
             this.listAdapter.loadBroadcastReceivers();
+        }
     }
 
     @Override
@@ -185,5 +186,10 @@ public class FriendsFragment extends HomeBaseFragment implements FriendsListAdap
             backgroundView.setVisibility(View.VISIBLE);
         else
             backgroundView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void onBackPressed() {
+        this.headerBackButton.performClick();
     }
 }

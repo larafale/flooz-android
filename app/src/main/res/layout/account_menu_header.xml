@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/background"
+    android:paddingTop="@dimen/dimen_large"
+    android:paddingBottom="@dimen/dimen_large"
+    android:paddingLeft="@dimen/dimen_large"
+    android:paddingRight="@dimen/dimen_large">
+
+    <TextView
+        android:id="@+id/account_menu_header_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:textColor="@color/placeholder"
+        android:textAllCaps="true"/>
+
+</RelativeLayout>
