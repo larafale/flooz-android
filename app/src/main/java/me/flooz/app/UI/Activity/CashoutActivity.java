@@ -74,7 +74,7 @@ public class CashoutActivity extends Activity {
 
         super.onDestroy();
 
-        this.controller.onPause();
+        this.controller.onDestroy();
     }
 
     private void clearReferences() {

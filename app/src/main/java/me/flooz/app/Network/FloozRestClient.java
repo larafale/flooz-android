@@ -74,9 +74,9 @@ import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.NewTransactionActivity;
 import me.flooz.app.UI.Activity.Secure3DActivity;
 import me.flooz.app.UI.Activity.Settings.BankSettingsActivity;
-import me.flooz.app.UI.Activity.Settings.CoordsSettingsActivity;
-import me.flooz.app.UI.Activity.Settings.CreditCardSettingsActivity;
 import me.flooz.app.UI.Activity.Settings.IdentitySettingsActivity;
+import me.flooz.app.UI.Activity.Settings.CreditCardSettingsActivity;
+import me.flooz.app.UI.Activity.Settings.DocumentsSettingsActivity;
 import me.flooz.app.UI.Activity.Settings.ProfileSettingsActivity;
 import me.flooz.app.UI.Activity.ShareAppActivity;
 import me.flooz.app.UI.Activity.StartActivity;
@@ -1853,8 +1853,8 @@ public class FloozRestClient
     }
 
     private void handleTriggerContactInfoShow() {
-        if (!(floozApp.getCurrentActivity() instanceof CoordsSettingsActivity)) {
-            Intent intent = new Intent(floozApp.getCurrentActivity(), CoordsSettingsActivity.class);
+        if (!(floozApp.getCurrentActivity() instanceof IdentitySettingsActivity)) {
+            Intent intent = new Intent(floozApp.getCurrentActivity(), IdentitySettingsActivity.class);
             intent.putExtra("modal", true);
             Activity tmpActivity = floozApp.getCurrentActivity();
             tmpActivity.startActivity(intent);
@@ -1863,9 +1863,9 @@ public class FloozRestClient
     }
 
     private void handleTriggerUserIdentityShow() {
-        if (!(floozApp.getCurrentActivity() instanceof IdentitySettingsActivity)) {
+        if (!(floozApp.getCurrentActivity() instanceof DocumentsSettingsActivity)) {
             Activity tmpActivity = floozApp.getCurrentActivity();
-            Intent intent = new Intent(tmpActivity, IdentitySettingsActivity.class);
+            Intent intent = new Intent(tmpActivity, DocumentsSettingsActivity.class);
             intent.putExtra("modal", true);
             tmpActivity.startActivity(intent);
             tmpActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
@@ -1879,7 +1879,7 @@ public class FloozRestClient
             intent.putExtra("html", data.optString("html"));
 
             if (tmpActivity instanceof CreditCardSettingsActivity)
-                ((CreditCardSettingsActivity)tmpActivity).next3DSecure = true;
+                ((CreditCardSettingsActivity)tmpActivity).controller.next3DSecure = true;
 
             tmpActivity.startActivity(intent);
             tmpActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);

@@ -52,7 +52,10 @@ public class SoftKeyboardHandledRelativeLayout extends RelativeLayout {
             }
         } else {
             // Keyboard is hidden <<< this doesn't work sometimes, so I don't use it
-            listener.onSoftKeyboardHide();
+            if (isKeyboardShown) {
+                isKeyboardShown = false;
+                listener.onSoftKeyboardHide();
+            }
         }
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
     }

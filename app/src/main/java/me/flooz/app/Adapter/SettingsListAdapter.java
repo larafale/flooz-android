@@ -4,9 +4,8 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.BaseAdapter;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -52,13 +51,14 @@ public class SettingsListAdapter extends BaseAdapter {
 
         if (convertView == null) {
             holder = new ViewHolder();
-            convertView = inflater.inflate(R.layout.settings_row, parent, false);
-            holder.text = (TextView) convertView.findViewById(R.id.settings_row_text);
-            holder.notifsContainer = (LinearLayout) convertView.findViewById(R.id.settings_row_notifs_container);
-            holder.notifsText = (TextView) convertView.findViewById(R.id.settings_row_notifs_text);
+            convertView = inflater.inflate(R.layout.account_menu_row, parent, false);
+            holder.text = (TextView) convertView.findViewById(R.id.account_menu_row_title);
+            holder.notifsText = (TextView) convertView.findViewById(R.id.account_menu_row_notif);
 
             holder.text.setTypeface(CustomFonts.customTitleExtraLight(this.context));
             holder.notifsText.setTypeface(CustomFonts.customContentBold(this.context));
+
+            ((ImageView) convertView.findViewById(R.id.account_menu_row_arrow)).setColorFilter(inflater.getContext().getResources().getColor(R.color.placeholder));
 
             convertView.setTag(holder);
         } else {
@@ -70,10 +70,10 @@ public class SettingsListAdapter extends BaseAdapter {
         holder.text.setText(item.getTitle());
 
         if (item.hasNotifs()) {
-            holder.notifsContainer.setVisibility(View.VISIBLE);
+            holder.notifsText.setVisibility(View.VISIBLE);
             holder.notifsText.setText(String.format("%d", item.getNbNotifs()));
         } else {
-            holder.notifsContainer.setVisibility(View.GONE);
+            holder.notifsText.setVisibility(View.GONE);
         }
 
         return convertView;
@@ -81,7 +81,6 @@ public class SettingsListAdapter extends BaseAdapter {
 
     class ViewHolder {
         TextView text;
-        LinearLayout notifsContainer;
         TextView notifsText;
     }
 }

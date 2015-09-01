@@ -202,10 +202,10 @@
     <string name="SETTINGS_CODE">Code de sécurité</string>
     <string name="SETTINGS_CARD">Carte bancaire</string>
     <string name="SETTINGS_RIB">Compte bancaire</string>
-    <string name="SETTINGS_DOCUMENTS">Justificatifs</string>
+    <string name="SETTINGS_DOCUMENTS">Mes documents</string>
     <string name="SETTINGS_PASSWORD">Mot de passe</string>
     <string name="SETTINGS_IDENTITY">Identité</string>
-    <string name="SETTINGS_COORD">Coordonnées</string>
+    <string name="SETTINGS_COORD">Mes informations</string>
     <string name="SETTINGS_SECURITY">Sécurité</string>
     <string name="SETTINGS_PREFERENCES">Préférences</string>
     <string name="SETTINGS_LOGOUT">Déconnexion</string>

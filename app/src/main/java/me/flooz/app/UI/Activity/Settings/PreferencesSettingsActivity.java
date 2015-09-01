@@ -21,6 +21,9 @@ import me.flooz.app.Adapter.SettingsListItem;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Controllers.CashoutController;
+import me.flooz.app.UI.Controllers.NotificationsController;
+import me.flooz.app.UI.Controllers.PreferencesController;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
 import me.flooz.app.Utils.FLHelper;
@@ -31,20 +34,8 @@ import me.flooz.app.Utils.ViewServer;
  */
 public class PreferencesSettingsActivity extends Activity {
 
-    private PreferencesSettingsActivity instance;
+    private PreferencesController controller;
     private FloozApplication floozApp;
-    private Boolean modal;
-
-    private Boolean viewVisible = false;
-    private ImageView headerBackButton;
-    private CheckBox fbSwitch;
-
-    private BroadcastReceiver reloadCurrentUserDataReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            reloadView();
-        }
-    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,59 +44,12 @@ public class PreferencesSettingsActivity extends Activity {
         if (FLHelper.isDebuggable())
             ViewServer.get(this).addWindow(this);
 
-        this.instance = this;
-        this.floozApp = (FloozApplication) this.getApplicationContext();
-        this.modal = getIntent().getBooleanExtra("modal", false);
+        floozApp = (FloozApplication) this.getApplicationContext();
 
         this.setContentView(R.layout.settings_preferences_fragment);
 
-        this.headerBackButton = (ImageView) this.findViewById(R.id.settings_preferences_header_back);
-        TextView headerTitle = (TextView) this.findViewById(R.id.settings_preferences_header_title);
-        TextView fbText = (TextView) this.findViewById(R.id.settings_preferences_fb_text);
-        this.fbSwitch = (CheckBox) this.findViewById(R.id.settings_preferences_fb_toggle);
-        ListView contentList = (ListView) this.findViewById(R.id.settings_preferences_list);
-
-        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
-        fbText.setTypeface(CustomFonts.customTitleExtraLight(this));
-
-        List<SettingsListItem> itemList = new ArrayList<>();
-
-        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_NOTIFICATIONS), (parent, view, position, id) -> {
-            Intent intent = new Intent(instance, NotificationsSettingsActivity.class);
-            instance.startActivity(intent);
-            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
-        }));
-
-        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_PRIVACY), (parent, view, position, id) -> {
-            Intent intent = new Intent(instance, PrivacySettingsActivity.class);
-            instance.startActivity(intent);
-            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
-        }));
-
-        new SettingsListAdapter(this, itemList, contentList);
-
-        this.reloadView();
-
-        this.fbSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                if (!FloozRestClient.getInstance().isConnectedToFacebook()) {
-                    FloozRestClient.getInstance().connectFacebook();
-                    fbSwitch.setChecked(false);
-                }
-            } else {
-                FloozRestClient.getInstance().disconnectFacebook();
-            }
-        });
-
-        this.headerBackButton.setOnClickListener(view -> {
-            finish();
-            if (modal)
-                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-            else
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-        });
+        this.controller = new PreferencesController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER);
     }
-
 
     @Override
     public void onResume() {
@@ -115,18 +59,15 @@ public class PreferencesSettingsActivity extends Activity {
         if (FLHelper.isDebuggable())
             ViewServer.get(this).setFocusedWindow(this);
 
-        this.viewVisible = true;
-        this.reloadView();
-
-        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadCurrentUserDataReceiver,
-                CustomNotificationIntents.filterReloadCurrentUser());
+        this.controller.onResume();
     }
 
     @Override
     public void onPause() {
         clearReferences();
         super.onPause();
-        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadCurrentUserDataReceiver);
+
+        this.controller.onPause();
     }
 
     @Override
@@ -137,29 +78,22 @@ public class PreferencesSettingsActivity extends Activity {
             ViewServer.get(this).removeWindow(this);
 
         super.onDestroy();
+
+        this.controller.onDestroy();
     }
 
-    private void reloadView() {
-        if (this.viewVisible) {
-            if (FloozRestClient.getInstance().isConnectedToFacebook())
-                this.fbSwitch.setChecked(true);
-            else
-                this.fbSwitch.setChecked(false);
-        }
-    }
-
-    private void clearReferences(){
+    private void clearReferences() {
         Activity currActivity = floozApp.getCurrentActivity();
         if (currActivity != null && currActivity.equals(this))
             floozApp.setCurrentActivity(null);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        FloozRestClient.getInstance().fbLoginCallbackManager.onActivityResult(requestCode, resultCode, data);
+        this.controller.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     public void onBackPressed() {
-        this.headerBackButton.performClick();
+        this.controller.onBackPressed();
     }
 }

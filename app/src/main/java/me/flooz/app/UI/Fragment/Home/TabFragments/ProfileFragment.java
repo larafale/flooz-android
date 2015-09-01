@@ -54,6 +54,8 @@ import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.NotificationActivity;
 import me.flooz.app.UI.Activity.Settings.ProfileSettingsActivity;
 import me.flooz.app.UI.Activity.ShareAppActivity;
+import me.flooz.app.UI.Activity.WebContentActivity;
+import me.flooz.app.UI.Controllers.WebController;
 import me.flooz.app.UI.Tools.ActionSheet;
 import me.flooz.app.UI.Tools.ActionSheetItem;
 import me.flooz.app.Utils.CustomFonts;
@@ -131,87 +133,81 @@ public class ProfileFragment extends TabBarFragment implements ProfileListAdapte
 
                             break;
                         case "card":
+                            tabBarActivity.pushFragmentInCurrentTab(new CreditCardFragment());
                             break;
                         case "bank":
+                            tabBarActivity.pushFragmentInCurrentTab(new BankFragment());
                             break;
                         case "coords":
+                            tabBarActivity.pushFragmentInCurrentTab(new IdentityFragment());
                             break;
                         case "documents":
+                            tabBarActivity.pushFragmentInCurrentTab(new DocumentsFragment());
                             break;
                         case "sponsor":
                             break;
                         case "preferences":
+                            tabBarActivity.pushFragmentInCurrentTab(new PreferencesFragment());
                             break;
                         case "security":
                             break;
                         case "rate":
+                            final String appPackageName = tabBarActivity.getPackageName();
+                            try {
+                                tabBarActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                            } catch (android.content.ActivityNotFoundException anfe) {
+                                tabBarActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                            }
                             break;
                         case "faq":
+                            WebFragment webFragment = new WebFragment();
+                            webFragment.title = (String) item.get("title");
+                            webFragment.url = "https://www.flooz.me/faq?layout=webview";
+                            tabBarActivity.pushFragmentInCurrentTab(webFragment);
                             break;
-                        case "terms":
+                        case "cgu":
+                            WebFragment webFragment2 = new WebFragment();
+                            webFragment2.title = (String) item.get("title");
+                            webFragment2.url = "https://www.flooz.me/cgu?layout=webview";
+                            tabBarActivity.pushFragmentInCurrentTab(webFragment2);
                             break;
                         case "contact":
+                            WebFragment webFragment3 = new WebFragment();
+                            webFragment3.title = (String) item.get("title");
+                            webFragment3.url = "https://www.flooz.me/contact?layout=webview";
+                            tabBarActivity.pushFragmentInCurrentTab(webFragment3);
                             break;
                         case "critics":
+                            Intent intent = WebController.newEmailIntent("hello@flooz.me", (String) item.get("title"), "Voici quelques idées pour améliorer l'application : ", "");
+                            tabBarActivity.startActivity(intent);
                             break;
                         case "logout":
+                            final Dialog validationDialog = new Dialog(tabBarActivity);
+
+                            validationDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                            validationDialog.setContentView(R.layout.custom_dialog_validate_transaction);
+
+                            TextView text = (TextView) validationDialog.findViewById(R.id.dialog_validate_flooz_text);
+                            text.setText(tabBarActivity.getResources().getString(R.string.LOGOUT_INFO));
+                            text.setTypeface(CustomFonts.customContentRegular(tabBarActivity));
+
+                            Button decline = (Button) validationDialog.findViewById(R.id.dialog_validate_flooz_decline);
+                            Button accept = (Button) validationDialog.findViewById(R.id.dialog_validate_flooz_accept);
+
+                            decline.setOnClickListener(v -> validationDialog.dismiss());
+
+                            accept.setOnClickListener(v -> {
+                                validationDialog.dismiss();
+                                FloozRestClient.getInstance().logout();
+                            });
+
+                            validationDialog.setCanceledOnTouchOutside(false);
+                            validationDialog.show();
                             break;
                     }
                 }
             }
         });
-
-//        this.menuActionList.setOnItemClickListener((adapterView, view1, i, l) -> {
-//            if (tabBarActivity != null) {
-//                switch (i) {
-//                    case 0:
-//                        FloozRestClient.getInstance().updateCurrentUser(null);
-//                        Intent intentSettings = new Intent(tabBarActivity, ProfileSettingsActivity.class);
-//                        tabBarActivity.startActivity(intentSettings);
-//                        tabBarActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-//                        break;
-//                    case 1:
-//                        Intent intentNotifs = new Intent(tabBarActivity, NotificationActivity.class);
-//                        tabBarActivity.startActivity(intentNotifs);
-//                        tabBarActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-//                        break;
-//                    case 2:
-//                        Intent intentShare = new Intent(tabBarActivity, ShareAppActivity.class);
-//                        tabBarActivity.startActivity(intentShare);
-//                        tabBarActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-//                        break;
-////                        case 3:
-////                            Intent intentScan = new Intent(tabBarActivity, ScannerActivity.class);
-////                            tabBarActivity.startActivity(intentScan);
-////                            tabBarActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-////                            break;
-//                    case 3:
-//                        FloozRestClient.getInstance().showLoadView();
-//                        FloozRestClient.getInstance().cashoutValidate(new FloozHttpResponseHandler() {
-//                            @Override
-//                            public void success(Object response) {
-//                                tabBarActivity.pushFragmentInCurrentTab(new CashoutFragment(), R.animator.slide_in_left, R.animator.slide_out_right);
-////                                Intent intentCashout = new Intent(tabBarActivity, CashoutActivity.class);
-////                                tabBarActivity.startActivity(intentCashout);
-////                                tabBarActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-//                            }
-//
-//                            @Override
-//                            public void failure(int statusCode, FLError error) {
-//
-//                            }
-//                        });
-//                        break;
-//                    case 4:
-//                        Intent intentCashout = new Intent(tabBarActivity, AboutActivity.class);
-//                        tabBarActivity.startActivity(intentCashout);
-//                        tabBarActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-//                        break;
-//                    default:
-//                        break;
-//                }
-//            }
-//        });
 
         return view;
     }

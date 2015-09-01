@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.Window;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -131,13 +130,13 @@ public class ProfileSettingsActivity extends Activity {
         }));
 
         itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_IDENTITY), indentityNotif, (parent, view, position, id) -> {
-            Intent intent = new Intent(instance, IdentitySettingsActivity.class);
+            Intent intent = new Intent(instance, DocumentsSettingsActivity.class);
             instance.startActivity(intent);
             instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
         }));
 
         itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_COORD), coordsNotif, (parent, view, position, id) -> {
-            Intent intent = new Intent(instance, CoordsSettingsActivity.class);
+            Intent intent = new Intent(instance, IdentitySettingsActivity.class);
             instance.startActivity(intent);
             instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
         }));

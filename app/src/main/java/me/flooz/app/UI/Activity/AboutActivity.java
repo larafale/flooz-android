@@ -15,6 +15,7 @@ import me.flooz.app.Adapter.SettingsListAdapter;
 import me.flooz.app.Adapter.SettingsListItem;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.R;
+import me.flooz.app.UI.Controllers.WebController;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.ViewServer;
@@ -95,7 +96,7 @@ public class AboutActivity extends Activity {
         }));
 
         list.add(new SettingsListItem(this.getResources().getString(R.string.INFORMATIONS_REVIEW), (parent, view, position, id) -> {
-            Intent intent = WebContentActivity.newEmailIntent("hello@flooz.me", list.get(position).getTitle(), "Voici quelques idées pour améliorer l'application : ", "");
+            Intent intent = WebController.newEmailIntent("hello@flooz.me", list.get(position).getTitle(), "Voici quelques idées pour améliorer l'application : ", "");
             startActivity(intent);
         }));
 

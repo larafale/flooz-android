@@ -1,6 +1,7 @@
 package me.flooz.app.UI.Activity.Settings;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,6 +21,9 @@ import me.flooz.app.Model.FLError;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Controllers.BankController;
+import me.flooz.app.UI.Controllers.CashoutController;
+import me.flooz.app.UI.Controllers.NotificationsController;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.ViewServer;
@@ -29,12 +33,8 @@ import me.flooz.app.Utils.ViewServer;
  */
 public class BankSettingsActivity extends Activity {
 
+    private BankController controller;
     private FloozApplication floozApp;
-    private Boolean modal;
-
-    private ImageView headerBackButton;
-    private EditText ibanTextfield;
-    private Button saveButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,106 +43,30 @@ public class BankSettingsActivity extends Activity {
         if (FLHelper.isDebuggable())
             ViewServer.get(this).addWindow(this);
 
-        this.floozApp = (FloozApplication) this.getApplicationContext();
-        this.modal = getIntent().getBooleanExtra("modal", false);
+        floozApp = (FloozApplication) this.getApplicationContext();
 
         this.setContentView(R.layout.settings_bank_fragment);
 
-        this.headerBackButton = (ImageView) this.findViewById(R.id.settings_bank_header_back);
-        TextView headerTitle = (TextView) this.findViewById(R.id.settings_bank_header_title);
-        this.ibanTextfield = (EditText) this.findViewById(R.id.settings_bank_iban);
-        this.saveButton = (Button) this.findViewById(R.id.settings_bank_save);
-
-        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
-        this.ibanTextfield.setTypeface(CustomFonts.customContentRegular(this));
-
-        this.headerBackButton.setOnClickListener(view -> {
-            finish();
-            if (modal)
-                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-            else
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-        });
-
-        this.reloadView();
-
-        this.ibanTextfield.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 0 && s.toString().indexOf("FR") != 0) {
-                    s.insert(0, "FR");
-                }
-
-                if (s.length() == 2)
-                    s.delete(0, s.length());
-
-                if (s.length() > 27)
-                    s.delete(27, s.length());
-            }
-        });
-
-        this.ibanTextfield.setOnEditorActionListener((v, actionId, event) -> {
-            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                saveButton.performClick();
-            }
-            return false;
-        });
-
-        this.saveButton.setOnClickListener(v -> {
-            FloozRestClient.getInstance().showLoadView();
-            Map<String, Object> sepa = new HashMap<>();
-            sepa.put("iban", ibanTextfield.getText());
-
-            Map<String, Object> settings = new HashMap<>();
-            settings.put("sepa", sepa);
-
-            Map<String, Object> user = new HashMap<>();
-            user.put("settings", settings);
-
-            FloozRestClient.getInstance().updateUser(user, new FloozHttpResponseHandler() {
-                @Override
-                public void success(Object response) {
-
-                }
-
-                @Override
-                public void failure(int statusCode, FLError error) {
-
-                }
-            });
-        });
-    }
-
-    private void reloadView() {
-        if (FloozRestClient.getInstance().currentUser.sepa != null) {
-            this.ibanTextfield.setText((String)FloozRestClient.getInstance().currentUser.sepa.get("iban"));
-        }
+        this.controller = new BankController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER);
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        floozApp.setCurrentActivity(this);
 
         if (FLHelper.isDebuggable())
             ViewServer.get(this).setFocusedWindow(this);
 
-        floozApp.setCurrentActivity(this);
+        this.controller.onResume();
     }
 
     @Override
     public void onPause() {
         clearReferences();
         super.onPause();
+
+        this.controller.onPause();
     }
 
     @Override
@@ -153,17 +77,22 @@ public class BankSettingsActivity extends Activity {
             ViewServer.get(this).removeWindow(this);
 
         super.onDestroy();
+
+        this.controller.onDestroy();
     }
 
-
-    private void clearReferences(){
+    private void clearReferences() {
         Activity currActivity = floozApp.getCurrentActivity();
         if (currActivity != null && currActivity.equals(this))
             floozApp.setCurrentActivity(null);
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        this.controller.onActivityResult(requestCode, resultCode, data);
+    }
+
     @Override
     public void onBackPressed() {
-        this.headerBackButton.performClick();
+        this.controller.onBackPressed();
     }
 }

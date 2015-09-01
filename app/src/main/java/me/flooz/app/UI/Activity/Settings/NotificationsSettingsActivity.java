@@ -82,7 +82,6 @@ public class NotificationsSettingsActivity extends Activity {
         super.onDestroy();
     }
 
-
     private void clearReferences(){
         Activity currActivity = floozApp.getCurrentActivity();
         if (currActivity != null && currActivity.equals(this))

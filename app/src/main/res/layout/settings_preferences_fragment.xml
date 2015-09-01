@@ -1,68 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
     android:background="@color/background_header">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/header_pager_view_height"
-        android:background="@color/background_header"
-        android:gravity="center_vertical">
-
-        <TextView
-            android:id="@+id/settings_preferences_header_title"
-            android:layout_centerInParent="true"
-            android:layout_width="wrap_content"
-            android:textSize="@dimen/header_pager_view_fontsize"
-            android:textColor="@color/blue"
-            android:layout_height="wrap_content"
-            android:text="@string/SETTINGS_PREFERENCES"/>
-
-        <ImageView
-            android:id="@+id/settings_preferences_header_back"
-            android:layout_centerVertical="true"
-            android:layout_width="@dimen/new_flooz_header_cross"
-            android:padding="@dimen/dimen_large"
-            android:layout_height="fill_parent"
-            android:src="@drawable/nav_back"/>
-
-    </RelativeLayout>
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/header_size">
 
-        <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:paddingLeft="@dimen/dimen_xxlarge"
-            android:paddingRight="@dimen/dimen_xlarge"
-            android:paddingTop="@dimen/dimen_large"
-            android:paddingBottom="@dimen/dimen_large">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@+id/settings_preferences_fb_text"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/settings_preferences_fb"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/EDIT_ACCOUNT_FACEBOOK"
-                android:textSize="@dimen/settings_list_item_size"
-                android:textColor="@android:color/white"
-                android:singleLine="true"
-                android:layout_centerVertical="true"/>
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/dimen_large"
+                android:paddingRight="@dimen/dimen_large"
+                android:paddingTop="@dimen/dimen_large"
+                android:paddingBottom="@dimen/dimen_large">
 
-            <CheckBox
-                android:id="@+id/settings_preferences_fb_toggle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginRight="@dimen/dimen_small"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"/>
+                <TextView
+                    android:id="@+id/settings_preferences_fb_text"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/EDIT_ACCOUNT_FACEBOOK"
+                    android:textColor="@color/placeholder"
+                    android:layout_alignParentLeft="true"
+                    android:textSize="15dp"
+                    android:singleLine="true"
+                    android:layout_centerVertical="true"/>
+
+                <CheckBox
+                    android:id="@+id/settings_preferences_fb_toggle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="@dimen/dimen_small"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"/>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/background"
+                android:layout_below="@id/settings_preferences_fb"
+                android:layout_marginLeft="@dimen/dimen_large"
+                />
 
         </RelativeLayout>
 
@@ -74,33 +65,45 @@
             android:divider="@android:color/transparent"
             android:dividerHeight="0dp"/>
 
-        <!--<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"-->
-            <!--android:id="@+id/settings_preferences_notif"-->
-            <!--android:layout_width="fill_parent"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:gravity="center_vertical"-->
-            <!--android:paddingLeft="@dimen/dimen_xxlarge"-->
-            <!--android:paddingRight="@dimen/dimen_xlarge"-->
-            <!--android:paddingTop="@dimen/dimen_large"-->
-            <!--android:paddingBottom="@dimen/dimen_large">-->
-
-            <!--<TextView-->
-                <!--android:id="@+id/settings_preferences_notif_text"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:text="@string/SETTINGS_NOTIFICATIONS"-->
-                <!--android:textSize="@dimen/settings_list_item_size"-->
-                <!--android:textColor="@android:color/white"-->
-                <!--android:singleLine="true"/>-->
-
-            <!--<ImageView-->
-                <!--android:layout_width="@dimen/settings_arrow_size"-->
-                <!--android:layout_height="@dimen/settings_arrow_size"-->
-                <!--android:src="@drawable/nav_next"-->
-                <!--android:layout_alignParentRight="true"/>-->
-
-        <!--</RelativeLayout>-->
-
     </LinearLayout>
 
-</LinearLayout>
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/header_height">
+
+        <RelativeLayout
+            android:id="@+id/header"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/header_size">
+
+            <ImageView
+                android:id="@+id/header_item_left"
+                android:layout_width="@dimen/header_item_size"
+                android:layout_height="@dimen/header_item_size"
+                android:padding="@dimen/header_item_padding"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/nav_cross"
+                android:layout_marginLeft="@dimen/header_item_margin"
+                />
+
+            <TextView
+                android:id="@+id/header_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/SETTINGS_PREFERENCES"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/header_title"/>
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/header_shadow"
+            android:background="@drawable/header_background_shadow"
+            android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

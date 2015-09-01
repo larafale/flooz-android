@@ -1,36 +1,58 @@
-package me.flooz.app.UI.Activity;
+package me.flooz.app.UI.Activity.Settings;
 
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
-import android.net.MailTo;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.provider.MediaStore;
+import android.support.v4.content.LocalBroadcastManager;
+import android.text.Editable;
+import android.text.InputFilter;
+import android.text.TextWatcher;
+import android.view.KeyEvent;
 import android.view.View;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import me.flooz.app.App.FloozApplication;
+import me.flooz.app.Model.FLError;
+import me.flooz.app.Model.FLUser;
+import me.flooz.app.Network.FloozHttpResponseHandler;
+import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.UI.Controllers.CashoutController;
+import me.flooz.app.UI.Controllers.DocumentsController;
 import me.flooz.app.UI.Controllers.NotificationsController;
-import me.flooz.app.UI.Controllers.WebController;
+import me.flooz.app.UI.Tools.ActionSheet;
+import me.flooz.app.UI.Tools.ActionSheetItem;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.CustomNotificationIntents;
 import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.ImageHelper;
 import me.flooz.app.Utils.ViewServer;
 
 /**
  * Created by Flooz on 3/10/15.
  */
-public class WebContentActivity extends Activity {
+public class DocumentsSettingsActivity extends Activity {
 
+    private DocumentsController controller;
     private FloozApplication floozApp;
-    private WebController controller;
-
-    public String title;
-    public String url;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -39,15 +61,11 @@ public class WebContentActivity extends Activity {
         if (FLHelper.isDebuggable())
             ViewServer.get(this).addWindow(this);
 
-        this.floozApp = (FloozApplication) this.getApplicationContext();
+        floozApp = (FloozApplication) this.getApplicationContext();
 
-        this.title = getIntent().getStringExtra("title");
-        this.url = getIntent().getStringExtra("url");
+        this.setContentView(R.layout.settings_document_fragment);
 
-        this.setContentView(R.layout.custom_webview_fragment);
-        this.controller = new WebController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER);
-        this.controller.title = this.title;
-        this.controller.url = this.url;
+        this.controller = new DocumentsController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER);
     }
 
     @Override
@@ -95,5 +113,4 @@ public class WebContentActivity extends Activity {
     public void onBackPressed() {
         this.controller.onBackPressed();
     }
-
 }
