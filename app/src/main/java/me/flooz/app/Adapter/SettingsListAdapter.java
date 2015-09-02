@@ -55,8 +55,8 @@ public class SettingsListAdapter extends BaseAdapter {
             holder.text = (TextView) convertView.findViewById(R.id.account_menu_row_title);
             holder.notifsText = (TextView) convertView.findViewById(R.id.account_menu_row_notif);
 
-            holder.text.setTypeface(CustomFonts.customTitleExtraLight(this.context));
-            holder.notifsText.setTypeface(CustomFonts.customContentBold(this.context));
+            holder.text.setTypeface(CustomFonts.customContentRegular(this.context));
+            holder.notifsText.setTypeface(CustomFonts.customContentRegular(this.context));
 
             ((ImageView) convertView.findViewById(R.id.account_menu_row_arrow)).setColorFilter(inflater.getContext().getResources().getColor(R.color.placeholder));
 

@@ -66,10 +66,10 @@ public class NotificationSettingsListAdapter extends BaseAdapter implements Stic
 
         if (view == null) {
             holder = new HeaderViewHolder();
-            view = inflater.inflate(R.layout.settings_notification_header, viewGroup, false);
-            holder.text = (TextView) view.findViewById(R.id.settings_notification_header_text);
+            view = inflater.inflate(R.layout.account_menu_header, viewGroup, false);
+            holder.text = (TextView) view.findViewById(R.id.account_menu_header_title);
 
-            holder.text.setTypeface(CustomFonts.customTitleExtraLight(this.context));
+            holder.text.setTypeface(CustomFonts.customContentRegular(this.context));
 
             view.setTag(holder);
         } else {
@@ -163,15 +163,18 @@ public class NotificationSettingsListAdapter extends BaseAdapter implements Stic
         holder.settingName.setText(itemTitle);
         holder.settingSwitch.setChecked(itemValue);
 
-        holder.settingSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (position < ((HashMap) notifications.get("push")).size()) {
-                ((HashMap) notifications.get("push")).put(itemKey, isChecked);
-                FloozRestClient.getInstance().updateNotificationSettings("push", itemKey, isChecked, null);
-            } else {
-                ((HashMap) notifications.get("email")).put(itemKey, isChecked);
-                FloozRestClient.getInstance().updateNotificationSettings("email", itemKey, isChecked, null);
+        holder.settingSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (position < ((HashMap) notifications.get("push")).size()) {
+                    ((HashMap) notifications.get("push")).put(itemKey, isChecked);
+                    FloozRestClient.getInstance().updateNotificationSettings("push", itemKey, isChecked, null);
+                } else {
+                    ((HashMap) notifications.get("email")).put(itemKey, isChecked);
+                    FloozRestClient.getInstance().updateNotificationSettings("email", itemKey, isChecked, null);
+                }
+                notifyDataSetChanged();
             }
-            notifyDataSetChanged();
         });
 
         return convertView;

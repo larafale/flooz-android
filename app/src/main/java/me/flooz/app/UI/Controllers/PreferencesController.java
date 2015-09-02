@@ -23,6 +23,8 @@ import me.flooz.app.R;
 import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.Settings.NotificationsSettingsActivity;
 import me.flooz.app.UI.Activity.Settings.PrivacySettingsActivity;
+import me.flooz.app.UI.Fragment.Home.TabFragments.NotifsSettingsFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.PrivacyFragment;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
 import me.flooz.app.Utils.FLHelper;
@@ -64,7 +66,7 @@ public class PreferencesController extends BaseController {
                 this.parentActivity.startActivity(intent);
                 this.parentActivity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
             } else {
-
+                ((HomeActivity)this.parentActivity).pushFragmentInCurrentTab(new NotifsSettingsFragment());
             }
         }));
 
@@ -74,7 +76,7 @@ public class PreferencesController extends BaseController {
                 this.parentActivity.startActivity(intent);
                 this.parentActivity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
             } else {
-
+                ((HomeActivity)this.parentActivity).pushFragmentInCurrentTab(new PrivacyFragment());
             }
         }));
 

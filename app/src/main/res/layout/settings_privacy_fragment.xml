@@ -1,78 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:clickable="true"
     android:background="@color/background_header">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/header_pager_view_height"
-        android:background="@color/background_header"
-        android:gravity="center_vertical">
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:layout_marginTop="@dimen/header_size">
+
 
         <TextView
-            android:id="@+id/settings_privacy_header_title"
-            android:layout_centerInParent="true"
-            android:layout_width="wrap_content"
-            android:textSize="@dimen/header_pager_view_fontsize"
-            android:textColor="@color/blue"
+            android:id="@+id/settings_privacy_infos"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/SETTINGS_PRIVACY"/>
+            android:layout_marginTop="@dimen/dimen_xlarge"
+            android:layout_marginLeft="@dimen/dimen_xlarge"
+            android:layout_marginRight="@dimen/dimen_xlarge"
+            android:textColor="@android:color/white"
+            android:gravity="center"
+            android:textSize="16sp"
+            android:text="@string/SETTINGS_PRIVACY_INFOS"/>
 
-        <ImageView
-            android:id="@+id/settings_privacy_header_back"
-            android:layout_centerVertical="true"
-            android:layout_width="@dimen/new_flooz_header_cross"
-            android:padding="@dimen/dimen_large"
-            android:layout_height="fill_parent"
-            android:src="@drawable/nav_back"/>
+        <info.hoang8f.android.segmented.SegmentedGroup
+            android:id="@+id/settings_privacy_segment"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_xlarge"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/settings_privacy_segment_public"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/TRANSACTION_SCOPE_PUBLIC"
+                style="@style/RadioButton" />
+
+            <RadioButton
+                android:id="@+id/settings_privacy_segment_friend"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/TRANSACTION_SCOPE_FRIEND"
+                style="@style/RadioButton" />
+
+            <RadioButton
+                android:id="@+id/settings_privacy_segment_private"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/TRANSACTION_SCOPE_PRIVATE"
+                style="@style/RadioButton" />
+
+        </info.hoang8f.android.segmented.SegmentedGroup>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/header_height">
+
+        <RelativeLayout
+            android:id="@+id/header"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/header_size">
+
+            <ImageView
+                android:id="@+id/header_item_left"
+                android:layout_width="@dimen/header_item_size"
+                android:layout_height="@dimen/header_item_size"
+                android:padding="@dimen/header_item_padding"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/nav_cross"
+                android:layout_marginLeft="@dimen/header_item_margin"
+                />
+
+            <TextView
+                android:id="@+id/header_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="@string/SETTINGS_PRIVACY"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/header_title"/>
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/header_shadow"
+            android:background="@drawable/header_background_shadow"
+            android:layout_alignParentBottom="true"/>
 
     </RelativeLayout>
 
-    <TextView
-        android:id="@+id/settings_privacy_infos"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_xlarge"
-        android:layout_marginLeft="@dimen/dimen_xlarge"
-        android:layout_marginRight="@dimen/dimen_xlarge"
-        android:textColor="@android:color/white"
-        android:gravity="center"
-        android:textSize="16sp"
-        android:text="@string/SETTINGS_PRIVACY_INFOS"/>
-
-    <info.hoang8f.android.segmented.SegmentedGroup
-        android:id="@+id/settings_privacy_segment"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/dimen_xlarge"
-        android:orientation="horizontal">
-
-        <RadioButton
-            android:id="@+id/settings_privacy_segment_public"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/TRANSACTION_SCOPE_PUBLIC"
-            style="@style/RadioButton" />
-
-        <RadioButton
-            android:id="@+id/settings_privacy_segment_friend"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/TRANSACTION_SCOPE_FRIEND"
-            style="@style/RadioButton" />
-
-        <RadioButton
-            android:id="@+id/settings_privacy_segment_private"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/TRANSACTION_SCOPE_PRIVATE"
-            style="@style/RadioButton" />
-
-    </info.hoang8f.android.segmented.SegmentedGroup>
-
-</LinearLayout>
+</RelativeLayout>
