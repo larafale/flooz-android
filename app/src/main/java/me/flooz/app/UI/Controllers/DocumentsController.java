@@ -91,7 +91,7 @@ public class DocumentsController extends BaseController {
                 parentActivity.finish();
                 parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
             } else {
-                ((HomeActivity)this.parentActivity).popFragmentInCurrentTab(R.animator.slide_in_right, R.animator.slide_out_left);
+                ((HomeActivity)this.parentActivity).popFragmentInCurrentTab();
             }
         });
 

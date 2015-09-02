@@ -63,7 +63,6 @@ import org.json.JSONArray;
 
 public class HomeActivity extends Activity implements TimelineFragment.TimelineFragmentDelegate
 {
-
     public enum TabID {
         HOME_TAB,
         NOTIF_TAB,
@@ -320,61 +319,6 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         currentFragment.onActivityResult(requestCode, resultCode, data);
-//        if (resultCode == RESULT_OK) {
-//            if (requestCode == AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY) {
-//                transactionCardFragment.authenticationValidated();
-//            }
-//
-//            if (requestCode == SELECT_PICTURE || requestCode == TAKE_PICTURE) {
-//                Uri imageUri = Uri.EMPTY;
-////                if (data == null || data.getData() == null)
-////                    imageUri = this.leftMenu.tmpUriImage;
-////                else
-////                    imageUri = data.getData();
-////
-////                this.leftMenu.tmpUriImage = null;
-//
-//                final Uri selectedImageUri = imageUri;
-//                if (selectedImageUri != null) {
-//                    Handler handler = new Handler(Looper.getMainLooper());
-//                    handler.post(() -> {
-//                        String path = ImageHelper.getPath(instance, selectedImageUri);
-//                        if (path != null) {
-//                            File image = new File(path);
-//                            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-//                            Bitmap photo = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
-//
-//                            if (photo != null) {
-//                                int rotation = ImageHelper.getRotation(instance, selectedImageUri);
-//                                if (rotation != 0) {
-//                                    photo = ImageHelper.rotateBitmap(photo, rotation);
-//                                }
-//
-//                                int nh = (int) (photo.getHeight() * (512.0 / photo.getWidth()));
-//                                Bitmap scaled = Bitmap.createScaledBitmap(photo, 512, nh, true);
-////                                leftMenu.userView.setImageBitmap(scaled);
-//                                FloozRestClient.getInstance().uploadDocument("picId", image, new FloozHttpResponseHandler() {
-//                                    @Override
-//                                    public void success(Object response) {
-//                                        FloozRestClient.getInstance().updateCurrentUser(null);
-//                                    }
-//
-//                                    @Override
-//                                    public void failure(int statusCode, FLError error) {
-//                                        FLUser user = FloozRestClient.getInstance().currentUser;
-//
-////                                        if (user.avatarURL != null)
-////                                            ImageLoader.getInstance().displayImage(user.avatarURL, leftMenu.userView);
-////                                        else
-////                                            leftMenu.userView.setImageDrawable(getResources().getDrawable(R.drawable.avatar_default));
-//                                    }
-//                                });
-//                            }
-//                        }
-//                    });
-//                }
-//            }
-//        }
     }
 
     public void onStart() {
@@ -554,6 +498,11 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
                     ft.addToBackStack(null).commit();
                 }
             }
+        } else if (this.currentTabHistory.size() > 1) {
+            while (this.currentTabHistory.size() > 2)
+                this.currentTabHistory.remove(this.currentTabHistory.size() - 1);
+
+            this.popFragmentInCurrentTab();
         }
     }
 

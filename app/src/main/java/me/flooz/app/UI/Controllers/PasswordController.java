@@ -1,12 +1,12 @@
 package me.flooz.app.UI.Controllers;
 
 import android.app.Activity;
+import android.content.Context;
 import android.support.annotation.NonNull;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -23,24 +23,31 @@ import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.Utils.CustomFonts;
 
 /**
- * Created by Flooz on 9/1/15.
+ * Created by Flooz on 9/2/15.
  */
-public class BankController extends BaseController {
+public class PasswordController extends BaseController {
 
     private ImageView headerBackButton;
-    private EditText ibanTextfield;
+
+    private EditText oldPassword;
+    private EditText newPassword;
+    private EditText confirmPassword;
     private Button saveButton;
 
-    public BankController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
+    public PasswordController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
         this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
         TextView headerTitle = (TextView) this.currentView.findViewById(R.id.header_title);
-        this.ibanTextfield = (EditText) this.currentView.findViewById(R.id.settings_bank_iban);
-        this.saveButton = (Button) this.currentView.findViewById(R.id.settings_bank_save);
+        this.oldPassword = (EditText) this.currentView.findViewById(R.id.settings_password_old_pass);
+        this.newPassword = (EditText) this.currentView.findViewById(R.id.settings_password_new_pass);
+        this.confirmPassword = (EditText) this.currentView.findViewById(R.id.settings_password_new_pass_confirm);
+        this.saveButton = (Button) this.currentView.findViewById(R.id.settings_password_save);
 
         headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
-        this.ibanTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
+        this.oldPassword.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
+        this.newPassword.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
+        this.confirmPassword.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
 
         if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
             this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
@@ -54,34 +61,7 @@ public class BankController extends BaseController {
             }
         });
 
-        this.reloadView();
-
-        this.ibanTextfield.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 0 && s.toString().indexOf("FR") != 0) {
-                    s.insert(0, "FR");
-                }
-
-                if (s.length() == 2)
-                    s.delete(0, s.length());
-
-                if (s.length() > 27)
-                    s.delete(27, s.length());
-            }
-        });
-
-        this.ibanTextfield.setOnEditorActionListener((v, actionId, event) -> {
+        this.confirmPassword.setOnEditorActionListener((v, actionId, event) -> {
             if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
                 saveButton.performClick();
             }
@@ -90,19 +70,17 @@ public class BankController extends BaseController {
 
         this.saveButton.setOnClickListener(v -> {
             FloozRestClient.getInstance().showLoadView();
-            Map<String, Object> sepa = new HashMap<>();
-            sepa.put("iban", ibanTextfield.getText());
 
-            Map<String, Object> settings = new HashMap<>();
-            settings.put("sepa", sepa);
+            Map<String, Object> params = new HashMap<>();
 
-            Map<String, Object> user = new HashMap<>();
-            user.put("settings", settings);
+            params.put("password", oldPassword.getText().toString());
+            params.put("newPassword", newPassword.getText().toString());
+            params.put("confirm", confirmPassword.getText().toString());
 
-            FloozRestClient.getInstance().updateUser(user, new FloozHttpResponseHandler() {
+            FloozRestClient.getInstance().updateUserPassword(params, new FloozHttpResponseHandler() {
                 @Override
                 public void success(Object response) {
-
+                    headerBackButton.performClick();
                 }
 
                 @Override
@@ -113,10 +91,14 @@ public class BankController extends BaseController {
         });
     }
 
-    private void reloadView() {
-        if (FloozRestClient.getInstance().currentUser.sepa != null) {
-            this.ibanTextfield.setText((String)FloozRestClient.getInstance().currentUser.sepa.get("iban"));
-        }
+    @Override
+    public void onResume() {
+        this.oldPassword.setText("");
+        this.newPassword.setText("");
+        this.confirmPassword.setText("");
+        this.oldPassword.requestFocus();
+        InputMethodManager imm = (InputMethodManager) this.parentActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(this.oldPassword, InputMethodManager.SHOW_IMPLICIT);
     }
 
     @Override

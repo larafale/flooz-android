@@ -150,6 +150,7 @@ public class ProfileFragment extends TabBarFragment implements ProfileListAdapte
                             tabBarActivity.pushFragmentInCurrentTab(new PreferencesFragment());
                             break;
                         case "security":
+                            tabBarActivity.pushFragmentInCurrentTab(new SecurityFragment());
                             break;
                         case "rate":
                             final String appPackageName = tabBarActivity.getPackageName();

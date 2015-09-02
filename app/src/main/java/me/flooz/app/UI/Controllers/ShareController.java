@@ -119,13 +119,13 @@ public class ShareController extends BaseController {
         twitterImage.setColorFilter(this.parentActivity.getResources().getColor(R.color.blue));
         mailImage.setColorFilter(this.parentActivity.getResources().getColor(R.color.blue));
 
+        if (this.currentKind == BaseController.ControllerKind.FRAGMENT_CONTROLLER)
+            this.headerBackButton.setVisibility(View.GONE);
+
         this.headerBackButton.setOnClickListener(view -> {
             parentActivity.finish();
             parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
         });
-
-        if (this.currentKind == BaseController.ControllerKind.FRAGMENT_CONTROLLER)
-            this.headerBackButton.setVisibility(View.GONE);
 
         this.tipContainer.dismiss();
         this.toolTip = null;

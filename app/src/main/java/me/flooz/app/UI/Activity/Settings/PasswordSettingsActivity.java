@@ -2,6 +2,7 @@ package me.flooz.app.UI.Activity.Settings;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,6 +23,9 @@ import me.flooz.app.Model.FLError;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Controllers.BaseController;
+import me.flooz.app.UI.Controllers.PasswordController;
+import me.flooz.app.UI.Controllers.SecurityController;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.ViewServer;
@@ -31,15 +35,8 @@ import me.flooz.app.Utils.ViewServer;
  */
 public class PasswordSettingsActivity extends Activity {
 
+    private PasswordController controller;
     private FloozApplication floozApp;
-    private Boolean modal;
-
-    private ImageView headerBackButton;
-
-    private EditText oldPassword;
-    private EditText newPassword;
-    private EditText confirmPassword;
-    private Button saveButton;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -48,61 +45,12 @@ public class PasswordSettingsActivity extends Activity {
         if (FLHelper.isDebuggable())
             ViewServer.get(this).addWindow(this);
 
-        this.floozApp = (FloozApplication) this.getApplicationContext();
-        this.modal = getIntent().getBooleanExtra("modal", false);
+        floozApp = (FloozApplication) this.getApplicationContext();
 
         this.setContentView(R.layout.settings_password_fragment);
 
-        this.headerBackButton = (ImageView) this.findViewById(R.id.settings_password_header_back);
-        TextView headerTitle = (TextView) this.findViewById(R.id.settings_password_header_title);
-        this.oldPassword = (EditText) this.findViewById(R.id.settings_password_old_pass);
-        this.newPassword = (EditText) this.findViewById(R.id.settings_password_new_pass);
-        this.confirmPassword = (EditText) this.findViewById(R.id.settings_password_new_pass_confirm);
-        this.saveButton = (Button) this.findViewById(R.id.settings_password_save);
-
-        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
-        this.oldPassword.setTypeface(CustomFonts.customContentRegular(this));
-        this.newPassword.setTypeface(CustomFonts.customContentRegular(this));
-        this.confirmPassword.setTypeface(CustomFonts.customContentRegular(this));
-
-        this.headerBackButton.setOnClickListener(view -> {
-            finish();
-            if (modal)
-                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-            else
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-        });
-
-        this.confirmPassword.setOnEditorActionListener((v, actionId, event) -> {
-            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                saveButton.performClick();
-            }
-            return false;
-        });
-
-        this.saveButton.setOnClickListener(v -> {
-            FloozRestClient.getInstance().showLoadView();
-
-            Map<String, Object> params = new HashMap<>();
-
-            params.put("password", oldPassword.getText().toString());
-            params.put("newPassword", newPassword.getText().toString());
-            params.put("confirm", confirmPassword.getText().toString());
-
-            FloozRestClient.getInstance().updateUserPassword(params, new FloozHttpResponseHandler() {
-                @Override
-                public void success(Object response) {
-                    headerBackButton.performClick();
-                }
-
-                @Override
-                public void failure(int statusCode, FLError error) {
-
-                }
-            });
-        });
+        this.controller = new PasswordController(this.findViewById(android.R.id.content), this, BaseController.ControllerKind.ACTIVITY_CONTROLLER);
     }
-
 
     @Override
     public void onResume() {
@@ -112,18 +60,15 @@ public class PasswordSettingsActivity extends Activity {
         if (FLHelper.isDebuggable())
             ViewServer.get(this).setFocusedWindow(this);
 
-        this.oldPassword.setText("");
-        this.newPassword.setText("");
-        this.confirmPassword.setText("");
-        this.oldPassword.requestFocus();
-        InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.showSoftInput(this.oldPassword, InputMethodManager.SHOW_IMPLICIT);
+        this.controller.onResume();
     }
 
     @Override
     public void onPause() {
         clearReferences();
         super.onPause();
+
+        this.controller.onPause();
     }
 
     @Override
@@ -134,17 +79,22 @@ public class PasswordSettingsActivity extends Activity {
             ViewServer.get(this).removeWindow(this);
 
         super.onDestroy();
+
+        this.controller.onDestroy();
     }
 
-
-    private void clearReferences(){
+    private void clearReferences() {
         Activity currActivity = floozApp.getCurrentActivity();
         if (currActivity != null && currActivity.equals(this))
             floozApp.setCurrentActivity(null);
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        this.controller.onActivityResult(requestCode, resultCode, data);
+    }
+
     @Override
     public void onBackPressed() {
-        this.headerBackButton.performClick();
+        this.controller.onBackPressed();
     }
 }

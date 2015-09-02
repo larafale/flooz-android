@@ -20,6 +20,9 @@ import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.AuthenticationActivity;
+import me.flooz.app.UI.Controllers.BaseController;
+import me.flooz.app.UI.Controllers.PrivacyController;
+import me.flooz.app.UI.Controllers.SecurityController;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.JSONHelper;
@@ -30,14 +33,8 @@ import me.flooz.app.Utils.ViewServer;
  */
 public class SecuritySettingsActivity extends Activity {
 
-    private SecuritySettingsActivity instance;
+    private SecurityController controller;
     private FloozApplication floozApp;
-    private Boolean modal;
-
-    private ImageView headerBackButton;
-    private TextView headerTitle;
-    private ListView contentList;
-    private SettingsListAdapter listAdapter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,71 +43,30 @@ public class SecuritySettingsActivity extends Activity {
         if (FLHelper.isDebuggable())
             ViewServer.get(this).addWindow(this);
 
-        this.instance = this;
-        this.floozApp = (FloozApplication) this.getApplicationContext();
-        this.modal = getIntent().getBooleanExtra("modal", false);
+        floozApp = (FloozApplication) this.getApplicationContext();
 
         this.setContentView(R.layout.settings_security_fragment);
 
-        this.headerBackButton = (ImageView) this.findViewById(R.id.settings_security_header_back);
-        this.headerTitle = (TextView) this.findViewById(R.id.settings_security_header_title);
-        this.contentList = (ListView) this.findViewById(R.id.settings_security_list);
-
-        this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
-
-        this.headerBackButton.setOnClickListener(view -> {
-            finish();
-            if (modal)
-                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-            else
-                overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_right);
-        });
-   }
-
+        this.controller = new SecurityController(this.findViewById(android.R.id.content), this, BaseController.ControllerKind.ACTIVITY_CONTROLLER);
+    }
 
     @Override
     public void onResume() {
         super.onResume();
+        floozApp.setCurrentActivity(this);
 
         if (FLHelper.isDebuggable())
             ViewServer.get(this).setFocusedWindow(this);
 
-        floozApp.setCurrentActivity(this);
-
-        int securityNotif = 0;
-
-        List missingFields;
-        try {
-            missingFields = JSONHelper.toList(FloozRestClient.getInstance().currentUser.json.optJSONArray("missingFields"));
-
-            if (missingFields.contains("secret"))
-                ++securityNotif;
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        List<SettingsListItem> itemList = new ArrayList<>();
-
-        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_CODE), (parent, view, position, id) -> {
-            Intent intent = new Intent(instance, AuthenticationActivity.class);
-            intent.putExtra("changeSecureCode", true);
-            instance.startActivity(intent);
-            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
-        }));
-
-        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_PASSWORD), (parent, view, position, id) -> {
-            Intent intent = new Intent(instance, PasswordSettingsActivity.class);
-            instance.startActivity(intent);
-            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
-        }));
-
-        this.listAdapter = new SettingsListAdapter(this, itemList, this.contentList);
+        this.controller.onResume();
     }
 
     @Override
     public void onPause() {
         clearReferences();
         super.onPause();
+
+        this.controller.onPause();
     }
 
     @Override
@@ -121,17 +77,23 @@ public class SecuritySettingsActivity extends Activity {
             ViewServer.get(this).removeWindow(this);
 
         super.onDestroy();
+
+        this.controller.onDestroy();
     }
 
-
-    private void clearReferences(){
+    private void clearReferences() {
         Activity currActivity = floozApp.getCurrentActivity();
         if (currActivity != null && currActivity.equals(this))
             floozApp.setCurrentActivity(null);
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        this.controller.onActivityResult(requestCode, resultCode, data);
+    }
+
     @Override
     public void onBackPressed() {
-        this.headerBackButton.performClick();
+        this.controller.onBackPressed();
     }
+
 }
