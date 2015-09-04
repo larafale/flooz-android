@@ -228,6 +228,10 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         this.demoContainer = (ToolTipLayout) this.findViewById(R.id.new_transac_demo_container);
         RelativeLayout contentContainer = (RelativeLayout) this.findViewById(R.id.new_transac_content);
 
+        this.scopePic.setColorFilter(this.getResources().getColor(android.R.color.white));
+        this.captureAlbumButton.setColorFilter(this.getResources().getColor(android.R.color.white));
+        this.capturePicButton.setColorFilter(this.getResources().getColor(android.R.color.white));
+
         if (this.preset == null || !this.preset.blockBack) {
             this.closeButton.setVisibility(View.VISIBLE);
             this.closeButton.setOnClickListener(v -> {
@@ -259,7 +263,7 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         this.toPicker.setPrefix(this.getResources().getString(R.string.TRANSACTION_CONTACT_PICKER_PREFIX));
         this.toPicker.setTokenClickStyle(TokenCompleteTextView.TokenClickStyle.Select);
         this.toPicker.setDeletionStyle(TokenCompleteTextView.TokenDeleteStyle.Clear);
-        this.toPicker.allowCollapse(true);
+        this.toPicker.allowCollapse(false);
         this.toPicker.setTokenLimit(1);
         this.toPicker.setAdapter(new ArrayAdapter<>(this, 0));
 
@@ -1002,8 +1006,7 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
 
         if (this.currentReceiver != null) {
             this.toPicker.clear();
-            this.toPicker.clearComposingText();
-            this.toPicker.setText(getResources().getString(R.string.TRANSACTION_CONTACT_PICKER_PREFIX));
+            this.toPicker.clearText();
             this.toPicker.addObject(this.currentReceiver);
             this.contactListAdapter.searchUser("");
             if (this.contentTextfield.getText().length() > 0)
@@ -1093,7 +1096,6 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
                 params.put("to", currentReceiver.phone.replace("+33", "0"));
 
             if (currentReceiver.userKind == FLUser.UserKind.PhoneUser) {
-
                 currentReceiver = ContactsManager.fillUserInformations(currentReceiver);
 
                 Map<String, Object> contact = new HashMap<>();
@@ -1111,6 +1113,9 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
             }
         } else
             params.put("to", "");
+
+        if (havePicture)
+            params.put("hasImage", true);
 
         params.put("random", random);
         params.put("method", FLTransaction.transactionTypeToParams(this.currentType));

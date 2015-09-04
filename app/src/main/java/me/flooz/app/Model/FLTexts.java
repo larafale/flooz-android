@@ -13,6 +13,7 @@ public class FLTexts {
     public JSONObject json;
     public FLSlider slider;
     public JSONObject couponButton;
+    public JSONObject menu;
     public JSONArray secretQuestions;
 
     public FLTexts(JSONObject json) {
@@ -27,5 +28,6 @@ public class FLTexts {
         this.couponButton = json.optJSONObject("couponButton");
         this.secretQuestions = json.optJSONArray("secretQuestions");
         this.cardInfos = json.optString("card");
+        this.menu = json.optJSONObject("menu");
     }
 }

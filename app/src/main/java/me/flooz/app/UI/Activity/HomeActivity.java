@@ -433,22 +433,35 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
             int clearColor = this.getResources().getColor(R.color.placeholder);
             int selectedColor = this.getResources().getColor(R.color.blue);
 
+            TextView oldItemText = null;
+            ImageView oldItemIcon = null;
+            TextView newItemText = null;
+            ImageView newItemIcon = null;
+
             if (tabID != this.currentTabID) {
                 if (this.currentTabID != null) {
                     switch (this.currentTabID) {
                         case HOME_TAB:
+                            oldItemText = this.homeTabText;
+                            oldItemIcon = this.homeTabImage;
                             this.homeTabText.setTextColor(clearColor);
                             this.homeTabImage.setColorFilter(clearColor);
                             break;
                         case NOTIF_TAB:
+                            oldItemText = this.notifTabText;
+                            oldItemIcon = this.notifTabImage;
                             this.notifTabText.setTextColor(clearColor);
                             this.notifTabImage.setColorFilter(clearColor);
                             break;
                         case SHARE_TAB:
+                            oldItemText = this.shareTabText;
+                            oldItemIcon = this.shareTabImage;
                             this.shareTabText.setTextColor(clearColor);
                             this.shareTabImage.setColorFilter(clearColor);
                             break;
                         case ACCOUNT_TAB:
+                            oldItemText = this.accountTabText;
+                            oldItemIcon = this.accountTabImage;
                             this.accountTabText.setTextColor(clearColor);
                             this.accountTabImage.setColorFilter(clearColor);
                             break;
@@ -466,26 +479,26 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
 
                 switch (this.currentTabID) {
                     case HOME_TAB:
-                        this.homeTabText.setTextColor(selectedColor);
-                        this.homeTabImage.setColorFilter(selectedColor);
+                        newItemText = this.homeTabText;
+                        newItemIcon = this.homeTabImage;
                         fragment = this.homeTabHistory.get(this.homeTabHistory.size() - 1);
                         this.currentTabHistory = this.homeTabHistory;
                         break;
                     case NOTIF_TAB:
-                        this.notifTabText.setTextColor(selectedColor);
-                        this.notifTabImage.setColorFilter(selectedColor);
+                        newItemText = this.notifTabText;
+                        newItemIcon = this.notifTabImage;
                         fragment = this.notifsTabHistory.get(this.notifsTabHistory.size() - 1);
                         this.currentTabHistory = this.notifsTabHistory;
                         break;
                     case SHARE_TAB:
-                        this.shareTabText.setTextColor(selectedColor);
-                        this.shareTabImage.setColorFilter(selectedColor);
+                        newItemText = this.shareTabText;
+                        newItemIcon = this.shareTabImage;
                         fragment = this.shareTabHistory.get(this.shareTabHistory.size() - 1);
                         this.currentTabHistory = this.shareTabHistory;
                         break;
                     case ACCOUNT_TAB:
-                        this.accountTabText.setTextColor(selectedColor);
-                        this.accountTabImage.setColorFilter(selectedColor);
+                        newItemText = this.accountTabText;
+                        newItemIcon = this.accountTabImage;
                         fragment = this.accountTabHistory.get(this.accountTabHistory.size() - 1);
                         this.currentTabHistory = this.accountTabHistory;
                         break;
@@ -496,7 +509,17 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
                     FragmentTransaction ft = this.fragmentManager.beginTransaction();
                     ft.replace(R.id.fragment_container, fragment);
                     ft.addToBackStack(null).commit();
+                    this.fragmentManager.executePendingTransactions();
                 }
+
+                if (oldItemText != null) {
+                    oldItemText.setTextColor(clearColor);
+                    oldItemIcon.setColorFilter(clearColor);
+                }
+
+                newItemText.setTextColor(selectedColor);
+                newItemIcon.setColorFilter(selectedColor);
+
             }
         } else if (this.currentTabHistory.size() > 1) {
             while (this.currentTabHistory.size() > 2)

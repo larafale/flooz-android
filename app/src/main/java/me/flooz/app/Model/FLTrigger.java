@@ -22,28 +22,26 @@ public class FLTrigger {
         TriggerShowProfile,
         TriggerShowFriend,
         TriggerReloadLine,
-        TriggerShowLogin,
         TriggerShowSignup,
-        TriggerShowSignupCode,
         TriggerLogout,
         TriggerAppUpdate,
         TriggerShowContactInfo,
-        TriggerShowUserIdentity,
+        TriggerShowUserDocuments,
         TriggerShow3DSecure,
         TriggerComplete3DSecure,
-        TriggerResetPassword,
         TriggerFail3DSecure,
         TriggerSecureCodeClear,
         TriggerSecureCodeCheck,
         TriggerPresetLine,
         TriggerFeedRead,
         TriggerShowInvitation,
-        TriggerFeedReload,
-        TriggerShowPopup,
         TriggerHttpCall,
+        TriggerShowPopup,
         TriggerShowHome,
         TriggerShowIban,
-        TriggerCloseView
+        TriggerResetTuto,
+        TriggerCloseView,
+        TriggerSendContacts
     }
 
     public FLTriggerType type;
@@ -101,24 +99,18 @@ public class FLTrigger {
             return TriggerShowProfile;
         else if (param.contentEquals("signup:show"))
             return TriggerShowSignup;
-        else if (param.contentEquals("login:show"))
-            return TriggerShowLogin;
-        else if (param.contentEquals("signup:invitation"))
-            return TriggerShowSignupCode;
         else if (param.contentEquals("logout"))
             return TriggerLogout;
         else if (param.contentEquals("app:update"))
             return TriggerAppUpdate;
         else if (param.contentEquals("contactInfo:show"))
             return TriggerShowContactInfo;
-        else if (param.contentEquals("identity:show"))
-            return TriggerShowUserIdentity;
+        else if (param.contentEquals("documents:show"))
+            return TriggerShowUserDocuments;
         else if (param.contentEquals("3dSecure:show"))
             return TriggerShow3DSecure;
         else if (param.contentEquals("3dSecure:complete"))
             return TriggerComplete3DSecure;
-        else if (param.contentEquals("password:change"))
-            return TriggerResetPassword;
         else if (param.contentEquals("3dSecure:fail"))
             return TriggerFail3DSecure;
         else if (param.contentEquals("secureCode:clear"))
@@ -131,8 +123,6 @@ public class FLTrigger {
             return TriggerFeedRead;
         else if (param.contentEquals("invitation:show"))
             return TriggerShowInvitation;
-        else if (param.contentEquals("feed:reload"))
-            return TriggerFeedReload;
         else if (param.contentEquals("popup:show"))
             return TriggerShowPopup;
         else if (param.contentEquals("home:show"))

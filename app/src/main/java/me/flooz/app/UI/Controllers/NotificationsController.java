@@ -79,6 +79,7 @@ public class NotificationsController extends BaseController {
     public void onPause() {
         if (this.listAdapter != null)
             this.listAdapter.unloadBroadcastReceivers();
+        FloozRestClient.getInstance().readAllNotifications(null);
     }
 
     public void onBackPressed() {

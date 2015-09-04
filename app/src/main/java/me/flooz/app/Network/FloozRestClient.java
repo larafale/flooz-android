@@ -547,6 +547,14 @@ public class FloozRestClient
     /********  USERS  **********/
     /***************************/
 
+    public void sendDiscountCode(String code, final FloozHttpResponseHandler responseHandler) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("code", code);
+
+        this.request("/users/promo", HttpRequestType.POST, params, responseHandler);
+    }
+
+
     public void sendInvitationMetric(String channel) {
         Map<String, Object> params = new HashMap<>();
         params.put("canal", channel);
@@ -1793,10 +1801,6 @@ public class FloozRestClient
         FloozApplication.performLocalNotification(CustomNotificationIntents.reloadTimeline());
     }
 
-    private void handleTriggerLoginShow() {
-        handleTriggerLogout();
-    }
-
     private void handleTriggerSignupShow(JSONObject data) {
         if (floozApp.getCurrentActivity() instanceof StartActivity) {
             StartActivity activity = (StartActivity) floozApp.getCurrentActivity();
@@ -1829,10 +1833,6 @@ public class FloozRestClient
         }
     }
 
-    private void handleTriggerSignupCodeShow(final JSONObject data) {
-
-    }
-
     private void handleTriggerLogout() {
         this.logout();
     }
@@ -1862,7 +1862,7 @@ public class FloozRestClient
         }
     }
 
-    private void handleTriggerUserIdentityShow() {
+    private void handleTriggerUserDocumentsShow() {
         if (!(floozApp.getCurrentActivity() instanceof DocumentsSettingsActivity)) {
             Activity tmpActivity = floozApp.getCurrentActivity();
             Intent intent = new Intent(tmpActivity, DocumentsSettingsActivity.class);
@@ -1906,10 +1906,6 @@ public class FloozRestClient
         }
     }
 
-    private void handleTriggerResetPassword() {
-
-    }
-
     private void handleTriggerClearSecureCode() {
         this.clearSecureCode();
     }
@@ -1937,10 +1933,6 @@ public class FloozRestClient
             tmpActivity.startActivity(intent);
             tmpActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
         }
-    }
-
-    private void handleTriggerFeedReload() {
-        FloozApplication.performLocalNotification(CustomNotificationIntents.reloadNotifications());
     }
 
     private void handleTriggerHttpCall(JSONObject data) {
@@ -2067,14 +2059,8 @@ public class FloozRestClient
             case TriggerReloadLine:
                 handleTriggerTransactionReload();
                 break;
-            case TriggerShowLogin:
-                handleTriggerLoginShow();
-                break;
             case TriggerShowSignup:
                 handleTriggerSignupShow(trigger.data);
-                break;
-            case TriggerShowSignupCode:
-                handleTriggerSignupCodeShow(trigger.data);
                 break;
             case TriggerLogout:
                 handleTriggerLogout();
@@ -2085,17 +2071,14 @@ public class FloozRestClient
             case TriggerShowContactInfo:
                 handleTriggerContactInfoShow();
                 break;
-            case TriggerShowUserIdentity:
-                handleTriggerUserIdentityShow();
+            case TriggerShowUserDocuments:
+                handleTriggerUserDocumentsShow();
                 break;
             case TriggerShow3DSecure:
                 handleTrigger3DSecureShow(trigger.data);
                 break;
             case TriggerComplete3DSecure:
                 handleTrigger3DSecureComplete();
-                break;
-            case TriggerResetPassword:
-                handleTriggerResetPassword();
                 break;
             case TriggerFail3DSecure:
                 handleTrigger3DSecureFail();
@@ -2114,9 +2097,6 @@ public class FloozRestClient
                 break;
             case TriggerShowInvitation:
                 handleTriggerInvitationShow();
-                break;
-            case TriggerFeedReload:
-                handleTriggerFeedReload();
                 break;
             case TriggerShowPopup:
                 handleTriggerPopupShow(trigger.data);

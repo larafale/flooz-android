@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="FloozFilterTabItem">
-        <attr name="tab_type" format="enum">
-            <enum name="tab_public" value="0"/>
-            <enum name="tab_private" value="1"/>
-            <enum name="tab_friends" value="2"/>
-        </attr>
-    </declare-styleable>
-
     <!-- default style for theme -->
     <attr name="ttlm_defaultStyle" format="reference" />
 

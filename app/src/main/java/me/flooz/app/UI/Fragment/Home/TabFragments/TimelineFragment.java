@@ -1,9 +1,11 @@
 package me.flooz.app.UI.Fragment.Home.TabFragments;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
@@ -11,6 +13,8 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -115,6 +119,7 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
             @Override
             public void onPositionChanged(TimelineListView listView, int position, View scrollBarPanel) {
                 ((ImageView) scrollBarPanel.findViewById(R.id.timeline_scrollbar_panel_scope)).setImageDrawable(FLTransaction.transactionScopeToImage(transactions.get(position).scope));
+                ((ImageView) scrollBarPanel.findViewById(R.id.timeline_scrollbar_panel_scope)).setColorFilter(tabBarActivity.getResources().getColor(android.R.color.white));
                 ((TextView) scrollBarPanel.findViewById(R.id.timeline_scrollbar_panel_when)).setText(transactions.get(position).when);
             }
 
@@ -169,6 +174,29 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
             }
         });
 
+        this.headerBalanceIndicator.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Dialog dialog = new Dialog(tabBarActivity);
+
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.custom_dialog_balance);
+
+                TextView title = (TextView) dialog.findViewById(R.id.dialog_wallet_title);
+                title.setTypeface(CustomFonts.customContentRegular(tabBarActivity), Typeface.BOLD);
+
+                TextView text = (TextView) dialog.findViewById(R.id.dialog_wallet_msg);
+                text.setTypeface(CustomFonts.customContentRegular(tabBarActivity));
+
+                Button close = (Button) dialog.findViewById(R.id.dialog_wallet_btn);
+
+                close.setOnClickListener(v1 -> dialog.dismiss());
+
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
+            }
+        });
+
         this.tipContainer.setOnClickListener(v -> filterChanged(currentFilter));
 
         return view;
@@ -201,9 +229,14 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
         this.tipContainer.dismiss(true);
         this.tipContainer.setVisibility(View.GONE);
         this.toolTipFilter = null;
-        this.currentFilter = filter;
-
-        refreshTransactions();
+        this.tooltipFilterView.changeFilter(filter);
+        if (filter != this.currentFilter) {
+            this.currentFilter = filter;
+            this.transactions.clear();
+            this.timelineAdapter.notifyDataSetChanged();
+            this.refreshContainer.setRefreshing(true);
+            refreshTransactions();
+        }
     }
 
     @Override

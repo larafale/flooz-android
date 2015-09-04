@@ -145,6 +145,7 @@ public class ProfileFragment extends TabBarFragment implements ProfileListAdapte
                             tabBarActivity.pushFragmentInCurrentTab(new DocumentsFragment());
                             break;
                         case "sponsor":
+                            tabBarActivity.pushFragmentInCurrentTab(new SponsorFragment());
                             break;
                         case "preferences":
                             tabBarActivity.pushFragmentInCurrentTab(new PreferencesFragment());

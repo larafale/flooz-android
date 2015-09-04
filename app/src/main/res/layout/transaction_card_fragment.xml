@@ -30,8 +30,8 @@
 
             <ImageView
                 android:id="@+id/transac_card_header_scope"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
                 android:layout_marginRight="@dimen/dimen_medium"/>
 
             <TextView
@@ -39,6 +39,7 @@
                 android:layout_width="wrap_content"
                 android:paddingTop="@dimen/dimen_xsmall"
                 android:textSize="@dimen/card_header_date"
+                android:layout_marginLeft="@dimen/dimen_small"
                 android:layout_height="wrap_content"/>
 
         </LinearLayout>

@@ -252,7 +252,7 @@
                                 android:id="@+id/new_transac_pic_button"
                                 android:layout_width="wrap_content"
                                 android:layout_height="@dimen/new_flooz_main_social_icn"
-                                android:src="@drawable/camera_grey"/>
+                                android:src="@drawable/camera"/>
                         </RelativeLayout>
                     </LinearLayout>
 

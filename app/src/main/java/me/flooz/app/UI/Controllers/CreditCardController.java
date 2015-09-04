@@ -258,7 +258,7 @@ public class CreditCardController extends BaseController {
         });
 
         if (FloozRestClient.getInstance().currentTexts != null && FloozRestClient.getInstance().currentTexts.cardInfos != null && !FloozRestClient.getInstance().currentTexts.cardInfos.isEmpty())
-            cardInfos.setText(FloozRestClient.getInstance().currentTexts.cardInfos);
+            cardInfosText = FloozRestClient.getInstance().currentTexts.cardInfos;
 
         if (this.currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
             if (parentActivity.getIntent().getStringExtra("label") != null && !parentActivity.getIntent().getStringExtra("label").isEmpty()) {

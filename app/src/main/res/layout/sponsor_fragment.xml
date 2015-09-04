@@ -2,60 +2,60 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center_horizontal"
     android:clickable="true"
     android:background="@color/background_header">
 
     <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:orientation="vertical"
-        android:layout_marginTop="@dimen/header_size">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/header_size"
+        android:orientation="vertical">
 
-
-        <TextView
-            android:id="@+id/settings_privacy_infos"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
+        <EditText
+            android:id="@+id/sponsor_field"
             android:layout_marginTop="@dimen/dimen_xlarge"
-            android:layout_marginLeft="@dimen/dimen_xlarge"
-            android:layout_marginRight="@dimen/dimen_xlarge"
-            android:textColor="@android:color/white"
-            android:gravity="center"
-            android:textSize="16sp"
-            android:text="@string/SETTINGS_PRIVACY_INFOS"/>
-
-        <info.hoang8f.android.segmented.SegmentedGroup
-            android:id="@+id/settings_privacy_segment"
             android:layout_width="fill_parent"
+            android:layout_marginRight="@dimen/dimen_xlarge"
+            android:layout_marginLeft="@dimen/dimen_xlarge"
             android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dimen_xlarge"
-            android:orientation="horizontal">
+            android:gravity="bottom"
+            android:inputType="textNoSuggestions"
+            android:singleLine="true"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:textColor="@android:color/white"
+            android:textColorHint="@color/placeholder"/>
 
-            <RadioButton
-                android:id="@+id/settings_privacy_segment_public"
-                android:layout_width="0dp"
+        <Button
+            android:id="@+id/sponsor_save"
+            android:layout_marginTop="@dimen/dimen_xlarge"
+            android:layout_width="fill_parent"
+            android:layout_marginRight="@dimen/dimen_xlarge"
+            android:layout_marginLeft="@dimen/dimen_xlarge"
+            android:layout_height="@dimen/signup_button_height"
+            android:gravity="center"
+            android:background="@drawable/background_action_button"
+            android:text="@string/GLOBAL_SAVE"
+            android:textSize="20sp"
+            android:textColor="@drawable/text_color_action_button"/>
+
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="bottom|center_horizontal"
+            android:paddingTop="@dimen/dimen_xxlarge">
+
+            <TextView
+                android:id="@+id/sponsor_infos"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/TRANSACTION_SCOPE_PUBLIC_MIN"
-                style="@style/RadioButton" />
+                android:gravity="center"
+                android:textColor="@color/placeholder"
+                android:layout_marginTop="@dimen/dimen_xlarge"/>
 
-            <RadioButton
-                android:id="@+id/settings_privacy_segment_friend"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/TRANSACTION_SCOPE_FRIEND_MIN"
-                style="@style/RadioButton" />
+        </LinearLayout>
 
-            <RadioButton
-                android:id="@+id/settings_privacy_segment_private"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/TRANSACTION_SCOPE_PRIVATE_MIN"
-                style="@style/RadioButton" />
-
-        </info.hoang8f.android.segmented.SegmentedGroup>
     </LinearLayout>
 
     <RelativeLayout
@@ -83,7 +83,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="@string/SETTINGS_PRIVACY"
                 android:textColor="@color/blue"
                 android:textSize="@dimen/header_title"/>
 

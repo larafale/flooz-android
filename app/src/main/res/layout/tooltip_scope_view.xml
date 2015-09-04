@@ -7,22 +7,33 @@
     android:paddingLeft="@dimen/dimen_medium">
 
     <LinearLayout
-        android:orientation="vertical" android:layout_width="120dp"
+        android:orientation="vertical"
+        android:layout_width="200dp"
         android:layout_height="wrap_content"
         android:padding="@dimen/dimen_large"
         android:background="@drawable/tooltip_scope_view">
+
+        <TextView
+            android:id="@+id/tooltip_filter_title"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/TRANSACTION_SCOPE_TITLE"
+            android:textColor="@color/placeholder"/>
 
         <RelativeLayout
             android:id="@+id/tooltip_scope_public"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:paddingTop="@dimen/dimen_small"
+            android:paddingBottom="@dimen/dimen_small"
+            android:layout_marginTop="@dimen/dimen_small">
 
             <ImageView
                 android:id="@+id/tooltip_scope_public_img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/public_filter_scope"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/scope_public"
                 android:layout_centerVertical="true"/>
 
             <TextView
@@ -51,13 +62,15 @@
             android:id="@+id/tooltip_scope_friends"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:paddingTop="@dimen/dimen_small"
+            android:paddingBottom="@dimen/dimen_small">
 
             <ImageView
                 android:id="@+id/tooltip_scope_friends_img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/friend_filter_scope"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/scope_friend"
                 android:layout_centerVertical="true"/>
 
             <TextView
@@ -86,13 +99,15 @@
             android:id="@+id/tooltip_scope_private"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical">
+            android:gravity="center_vertical"
+            android:paddingTop="@dimen/dimen_small"
+            android:paddingBottom="@dimen/dimen_small">
 
             <ImageView
                 android:id="@+id/tooltip_scope_private_img"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/private_filter_scope"
+                android:layout_width="15dp"
+                android:layout_height="15dp"
+                android:src="@drawable/scope_private"
                 android:layout_centerVertical="true"/>
 
             <TextView

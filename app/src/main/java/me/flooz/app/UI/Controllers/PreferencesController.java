@@ -27,8 +27,6 @@ import me.flooz.app.UI.Fragment.Home.TabFragments.NotifsSettingsFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.PrivacyFragment;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
-import me.flooz.app.Utils.FLHelper;
-import me.flooz.app.Utils.ViewServer;
 
 /**
  * Created by Flooz on 9/1/15.
@@ -64,7 +62,7 @@ public class PreferencesController extends BaseController {
             if (this.currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
                 Intent intent = new Intent(this.parentActivity, NotificationsSettingsActivity.class);
                 this.parentActivity.startActivity(intent);
-                this.parentActivity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+                this.parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
             } else {
                 ((HomeActivity)this.parentActivity).pushFragmentInCurrentTab(new NotifsSettingsFragment());
             }
@@ -74,7 +72,7 @@ public class PreferencesController extends BaseController {
             if (this.currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
                 Intent intent = new Intent(this.parentActivity, PrivacySettingsActivity.class);
                 this.parentActivity.startActivity(intent);
-                this.parentActivity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+                this.parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
             } else {
                 ((HomeActivity)this.parentActivity).pushFragmentInCurrentTab(new PrivacyFragment());
             }

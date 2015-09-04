@@ -1,59 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:paddingTop="@dimen/dimen_large"
-    android:paddingBottom="@dimen/dimen_large"
-    android:paddingLeft="@dimen/dimen_large"
-    android:paddingRight="@dimen/dimen_xlarge">
+    android:layout_height="wrap_content">
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="fill_parent"
+    <RelativeLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:paddingBottom="@dimen/dimen_large">
+        android:paddingTop="@dimen/dimen_large"
+        android:paddingBottom="@dimen/dimen_large"
+        android:paddingLeft="@dimen/dimen_large"
+        android:paddingRight="@dimen/dimen_xlarge">
 
-        <ImageView
-            android:id="@+id/notification_row_read_indicator"
-            android:layout_width="@dimen/dimen_medium"
-            android:layout_height="@dimen/dimen_medium"
-            android:background="@drawable/notification_read_indicator"
-            android:layout_margin="@dimen/dimen_medium"/>
-
-        <com.makeramen.RoundedImageView
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/notification_row_img"
-            android:scaleType="centerCrop"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_marginLeft="@dimen/dimen_large"
-            android:layout_marginRight="@dimen/dimen_large"
-            android:layout_marginTop="@dimen/dimen_xsmall"
-            android:layout_marginBottom="@dimen/dimen_xsmall"
-            android:layout_gravity="center_vertical"
-            android:src="@drawable/avatar_default"
-            app:corner_radius="30dip"
-            app:mutate_background="true"
-            app:oval="true"/>
-
-        <TextView
-            android:id="@+id/notification_row_content"
+        <LinearLayout
+            android:id="@+id/notification_content"
+            android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/notification_content"
-            android:textColor="@android:color/white"/>
+            android:gravity="center_vertical"
+            android:paddingBottom="@dimen/dimen_large">
 
-    </LinearLayout>
+            <com.makeramen.RoundedImageView
+                xmlns:app="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/notification_row_img"
+                android:scaleType="centerCrop"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_marginRight="@dimen/dimen_large"
+                android:layout_marginTop="@dimen/dimen_xsmall"
+                android:layout_marginBottom="@dimen/dimen_xsmall"
+                android:layout_gravity="center_vertical"
+                android:src="@drawable/avatar_default"
+                app:corner_radius="30dip"
+                app:mutate_background="true"
+                app:oval="true"/>
 
-    <TextView
-        android:id="@+id/notification_row_date"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
+            <TextView
+                android:id="@+id/notification_row_content"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/notification_content"
+                android:textColor="@android:color/white"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical|right"
+            android:layout_marginTop="@dimen/dimen_medium"
+            android:layout_below="@id/notification_content">
+
+            <TextView
+                android:id="@+id/notification_row_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/placeholder"
+                android:textSize="@dimen/notification_date"
+                android:layout_marginRight="@dimen/dimen_medium"
+                />
+
+            <ImageView
+                android:id="@+id/notification_row_read_indicator"
+                android:layout_width="@dimen/dimen_medium"
+                android:layout_height="@dimen/dimen_medium"
+                android:background="@drawable/notification_read_indicator"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:background="@color/background"
         android:layout_alignParentBottom="true"
-        android:textColor="@color/placeholder"
-        android:textSize="@dimen/notification_date"
         />
 
 </RelativeLayout>

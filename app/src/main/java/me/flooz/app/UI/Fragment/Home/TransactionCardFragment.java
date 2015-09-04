@@ -175,6 +175,8 @@ public class TransactionCardFragment extends HomeBaseFragment {
 
         this.cardHeaderReportButton.setOnClickListener(v -> FloozApplication.getInstance().showReportActionMenu(transaction));
 
+        this.cardHeaderScope.setColorFilter(context.getResources().getColor(android.R.color.white));
+
         this.cardActionBarDecline.setOnClickListener(v -> FloozRestClient.getInstance().updateTransaction(transaction, FLTransaction.TransactionStatus.TransactionStatusRefused, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {

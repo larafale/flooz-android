@@ -199,11 +199,11 @@
     <string name="ACCOUNT_MENU_SCANNER">Scanner un code</string>
 
     <string name="SETTINGS_NOTIFICATIONS">Notifications</string>
-    <string name="SETTINGS_CODE">Code de sécurité</string>
+    <string name="SETTINGS_CODE">Changer mon code secret</string>
     <string name="SETTINGS_CARD">Carte bancaire</string>
     <string name="SETTINGS_RIB">Compte bancaire</string>
     <string name="SETTINGS_DOCUMENTS">Mes documents</string>
-    <string name="SETTINGS_PASSWORD">Mot de passe</string>
+    <string name="SETTINGS_PASSWORD">Changer mon mot de passe</string>
     <string name="SETTINGS_IDENTITY">Identité</string>
     <string name="SETTINGS_COORD">Mes informations</string>
     <string name="SETTINGS_SECURITY">Sécurité</string>
@@ -252,9 +252,13 @@
     <string name="TRANSACTION_TYPE_PAYMENT">PAYMENT</string>
     <string name="TRANSACTION_TYPE_COLLECTION">COLLECTION</string>
 
-    <string name="TRANSACTION_SCOPE_PUBLIC">Public</string>
-    <string name="TRANSACTION_SCOPE_FRIEND">Amis</string>
-    <string name="TRANSACTION_SCOPE_PRIVATE">Privé</string>
+    <string name="TRANSACTION_SCOPE_TITLE">Qui peut voir ce Flooz:</string>
+    <string name="TRANSACTION_SCOPE_PUBLIC">Tout le monde</string>
+    <string name="TRANSACTION_SCOPE_FRIEND">Mes amis &amp; moi</string>
+    <string name="TRANSACTION_SCOPE_PRIVATE">Moi uniquement</string>
+    <string name="TRANSACTION_SCOPE_PUBLIC_MIN">Public</string>
+    <string name="TRANSACTION_SCOPE_FRIEND_MIN">Amis</string>
+    <string name="TRANSACTION_SCOPE_PRIVATE_MIN">Privé</string>
 
     <string name="TRANSACTION_FILTER_TITLE">Filtrer les paiements :</string>
     <string name="TRANSACTION_FILTER_ALL">Tous</string>
@@ -354,8 +358,8 @@
 
     <string name="SIGNUP_FRIENDS_MESSAGE">Pour envoyer de l\'argent à vos amis, Flooz a besoin d\'accéder à votre carnet de contact.</string>
 
-    <string name="POPUP_WALLET_TITLE">Ceci est votre porte-monnaie.</string>
-    <string name="POPUP_WALLET_MSG">Quand vous payez, Flooz utilise votre porte-monnaie si vous disposez des fonds suffisants pour couvrir la totalité du paiement, sinon, c\'est votre CB qui sera utilisée.</string>
+    <string name="POPUP_WALLET_TITLE">Solde</string>
+    <string name="POPUP_WALLET_MSG">Quand vous payez, Flooz utilise votre solde si les fonds sont suffisants pour couvrir la totalité du paiement, sinon, c\'est votre CB qui est utilisée.</string>
 
     <string name="Send_Button_Mobile">Suivant</string>
     <string name="Invite_Friends_Button">Inviter</string>

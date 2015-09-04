@@ -242,6 +242,10 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
         updateHint();
     }
 
+    public String getPrefix() {
+        return prefix;
+    }
+
     /**
      * Get the list of Tokens
      *
@@ -292,7 +296,7 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
 
     /**
      * Sets whether to allow duplicate objects. If false, when the user selects
-     * an object that's already in the view, the current text is just cleared.
+     * an object that's already in the view, the current text is just clearComposingTexted.
      *
      * Defaults to true. Requires that the objects implement equals() correctly.
      *
@@ -710,8 +714,35 @@ public abstract class TokenCompleteTextView extends MultiAutoCompleteTextView im
         return new TokenImageSpan(tokenView, obj, (int)maxTextWidth());
     }
 
+    public void clearText() {
+        clearComposingText();
+
+        SpannableStringBuilder ssb = buildSpannableForText("");
+        TokenImageSpan tokenSpan = buildSpanForObject(selectedObject);
+
+        Editable editable = getText();
+        int end = getSelectionEnd();
+        int start = tokenizer.findTokenStart(editable, end);
+        if (start < prefix.length()) {
+            start = prefix.length();
+        }
+        String original = TextUtils.substring(editable, start, end);
+
+        if (editable != null) {
+            if (tokenSpan == null) {
+                editable.replace(start, end, "");
+            } else if (!allowDuplicates && objects.contains(tokenSpan.getToken())) {
+                editable.replace(start, end, "");
+            } else {
+                QwertyKeyListener.markAsReplaced(editable, start, end, original);
+                editable.replace(start, end, ssb);
+                editable.setSpan(tokenSpan, start, start + ssb.length() - 1, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
+        }
+    }
+
     @Override
-    protected void replaceText(CharSequence text) {
+    public void replaceText(CharSequence text) {
         clearComposingText();
 
         // Don't build a token for an empty String

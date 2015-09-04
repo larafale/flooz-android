@@ -140,7 +140,7 @@
                 android:id="@+id/settings_credit_card_create_scanpay"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/camera_grey"
+                android:src="@drawable/camera"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="@dimen/dimen_large"
                 android:layout_centerVertical="true"

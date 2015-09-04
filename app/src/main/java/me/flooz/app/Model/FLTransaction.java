@@ -283,13 +283,13 @@ public class FLTransaction {
 
         switch (scope) {
             case TransactionScopePublic:
-                imgId = R.drawable.public_filter_scope;
+                imgId = R.drawable.scope_public;
                 break;
             case TransactionScopeFriend:
-                imgId = R.drawable.friend_filter_scope;
+                imgId = R.drawable.scope_friend;
                 break;
             case TransactionScopePrivate:
-                imgId = R.drawable.private_filter_scope;
+                imgId = R.drawable.scope_private;
                 break;
             default:
                 break;

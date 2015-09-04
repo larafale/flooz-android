@@ -18,6 +18,7 @@ import me.flooz.app.UI.Activity.AuthenticationActivity;
 import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.Settings.PasswordSettingsActivity;
 import me.flooz.app.UI.Fragment.Home.TabFragments.NotifsSettingsFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.PasswordFragment;
 import me.flooz.app.Utils.CustomFonts;
 
 /**
@@ -57,16 +58,16 @@ public class SecurityController extends BaseController {
                 Intent intent = new Intent(this.parentActivity, AuthenticationActivity.class);
                 intent.putExtra("changeSecureCode", true);
                 this.parentActivity.startActivity(intent);
-                this.parentActivity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+                this.parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
         }));
 
         itemList.add(new SettingsListItem(this.parentActivity.getResources().getString(R.string.SETTINGS_PASSWORD), (parent, view, position, id) -> {
             if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
                 Intent intent = new Intent(this.parentActivity, PasswordSettingsActivity.class);
                 this.parentActivity.startActivity(intent);
-                this.parentActivity.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+                this.parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
             } else {
-                ((HomeActivity)this.parentActivity).pushFragmentInCurrentTab(new NotifsSettingsFragment());
+                ((HomeActivity)this.parentActivity).pushFragmentInCurrentTab(new PasswordFragment());
             }
         }));
 
