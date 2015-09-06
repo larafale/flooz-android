@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -65,6 +66,7 @@ import me.flooz.app.Utils.CustomNotificationIntents;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.ImageHelper;
 import me.flooz.app.Utils.ViewServer;
+import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 /**
  * Created by Flooz on 3/13/15.
@@ -99,7 +101,7 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
     private ImageView headerCB;
     private ImageView closeButton;
     private ContactPickerView toPicker;
-    private ListView contactList;
+    private StickyListHeadersListView contactList;
     private SelectUserListAdapter contactListAdapter;
     private EditText amountTextfield;
     private EditText contentTextfield;
@@ -211,7 +213,7 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         this.headerBalance = (TextView) this.findViewById(R.id.new_transac_header_balance);
         this.headerCB = (ImageView) this.findViewById(R.id.new_transac_header_card);
         this.toPicker = (ContactPickerView) this.findViewById(R.id.new_transac_to_container);
-        this.contactList = (ListView) this.findViewById(R.id.new_transac_contact_list);
+        this.contactList = (StickyListHeadersListView) this.findViewById(R.id.new_transac_contact_list);
         this.amountTextfield = (EditText) this.findViewById(R.id.new_transac_amount_textfield);
         LinearLayout amountContainer = (LinearLayout) this.findViewById(R.id.new_transac_amount_container);
         TextView currencySymbol = (TextView) this.findViewById(R.id.new_transac_currency_symbol);
@@ -294,6 +296,19 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         this.contactList.setOnItemClickListener((parent, view, position, id) -> {
             if (contactListAdapter.getItem(position) != null) {
                 changeUser(contactListAdapter.getItem(position));
+            }
+        });
+
+        this.contactList.setOnScrollListener(new AbsListView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                if (scrollState != SCROLL_STATE_IDLE)
+                    hideKeyboard();
+            }
+
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+
             }
         });
 
@@ -527,12 +542,10 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
             if (requestCode == SELECT_PICTURE || requestCode == TAKE_PICTURE) {
 
                 Uri imageUri;
-                if (data == null || data.getData() == null)
+                if (data == null || data.getData() == null) {
                     imageUri = this.tmpUriImage;
-                else
+                } else
                     imageUri = data.getData();
-
-                this.tmpUriImage = null;
 
                 final Uri selectedImageUri = imageUri;
                 if (selectedImageUri != null) {
@@ -641,18 +654,20 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
             this.preset.triggers = null;
         }
 
+        final InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
         if (!this.isDemo) {
-            final InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-
-            if (this.amountTextfield.getText().length() == 0) {
+            if (this.amountTextfield.getText().length() == 0 && ((this.preset != null && !this.preset.blockAmount) || this.preset == null)) {
                 this.amountTextfield.requestFocus();
                 imm.showSoftInput(amountTextfield, InputMethodManager.SHOW_FORCED);
-            } else if (this.contentTextfield.getText().length() == 0) {
+            } else if (this.contentTextfield.getText().length() == 0 && ((this.preset != null && !this.preset.blockWhy) || this.preset == null)) {
                 this.contentTextfield.requestFocus();
                 imm.showSoftInput(contentTextfield, InputMethodManager.SHOW_FORCED);
-            } else
+            } else {
                 this.baseLayout.requestFocus();
+                imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+            }
         } else {
+            imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
             if (this.preset != null && this.preset.popup != null && popupDialog == null) {
                 popupDialog = new Dialog(this);
 
@@ -978,9 +993,8 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
             saveData();
             Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-            Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
-            tmpUriImage = fileUri;
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+            tmpUriImage = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUriImage);
 
             try {
                 startActivityForResult(intent, TAKE_PICTURE);
@@ -1030,7 +1044,6 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
             pic.setImageBitmap(scaled);
 
             currentPicture = photo;
-
         };
         mainHandler.post(myRunnable);
     }
@@ -1146,6 +1159,10 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         super.onDestroy();
     }
 
+    public void hideKeyboard() {
+        InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+    }
 
     private void clearReferences(){
         Activity currActivity = floozApp.getCurrentActivity();

@@ -119,6 +119,18 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
     private ImageView imageViewerImage;
     private PhotoViewAttacher imageViewerAttacher;
 
+    private Handler tabBarVisibilityHandler = new Handler(Looper.getMainLooper());
+    private Runnable tabBarShowRunnable = new Runnable() {
+        @Override
+        public void run() {
+            ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) fragmentContainer.getLayoutParams();
+            layoutParams.setMargins(layoutParams.leftMargin, layoutParams.topMargin, layoutParams.rightMargin, fragmentContainerTabBarMargin);
+            fragmentContainer.setLayoutParams(layoutParams);
+
+            tabBar.setVisibility(View.VISIBLE);
+        }
+    };
+
     private RelativeLayout transactionCardContainer;
 
     private TransactionCardFragment transactionCardFragment;
@@ -129,6 +141,13 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         @Override
         public void onReceive(Context context, Intent intent) {
             changeTabBadgeValue(TabID.NOTIF_TAB, FloozRestClient.getInstance().notificationsManager.nbUnreadNotifications);
+        }
+    };
+
+    private BroadcastReceiver reloadUserReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            changeTabBadgeValue(TabID.ACCOUNT_TAB, FloozRestClient.getInstance().currentUser.json.optJSONObject("metrics").optInt("accountMissing"));
         }
     };
 
@@ -356,6 +375,10 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadNotificationsReceiver,
                 CustomNotificationIntents.filterReloadNotifications());
 
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadUserReceiver,
+                CustomNotificationIntents.filterReloadCurrentUser());
+
+
         if (FloozApplication.getInstance().pendingTriggers != null) {
             Handler handlerIntent = new Handler(Looper.getMainLooper());
             final boolean b = handlerIntent.postDelayed(() -> {
@@ -378,6 +401,7 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         super.onPause();
 
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadNotificationsReceiver);
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadUserReceiver);
     }
 
     protected void onDestroy() {
@@ -572,17 +596,11 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
     }
 
     public void showTabBar() {
-        Handler handler = new Handler(Looper.getMainLooper());
-        handler.postDelayed(() -> {
-            ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) fragmentContainer.getLayoutParams();
-            layoutParams.setMargins(layoutParams.leftMargin, layoutParams.topMargin, layoutParams.rightMargin, fragmentContainerTabBarMargin);
-            fragmentContainer.setLayoutParams(layoutParams);
-
-            tabBar.setVisibility(View.VISIBLE);
-        }, 100);
+        this.tabBarVisibilityHandler.postDelayed(this.tabBarShowRunnable, 100);
     }
 
     public void hideTabBar() {
+        this.tabBarVisibilityHandler.removeCallbacks(this.tabBarShowRunnable);
         this.tabBar.setVisibility(View.GONE);
 
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams)this.fragmentContainer.getLayoutParams();

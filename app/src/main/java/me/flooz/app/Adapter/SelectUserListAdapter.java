@@ -10,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.makeramen.RoundedImageView;
@@ -26,20 +27,23 @@ import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.ContactsManager;
 import me.flooz.app.Utils.CustomFonts;
+import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 /**
  * Created by Flooz on 10/2/14.
  */
-public class SelectUserListAdapter extends BaseAdapter {
+public class SelectUserListAdapter extends BaseAdapter implements StickyListHeadersAdapter {
 
     private Context context;
     private LayoutInflater inflater;
 
-    private List<FLUser> contactList;
+    private List<FLUser> contactsFromAdressBook;
+    private List<FLUser> contactsFiltered;
 
-    private List<FLUser> recentFriendList;
-    private List<FLUser> phoneContactList;
-    private List<FLUser> fullPhoneContactList;
+    private List<FLUser> friends;
+    private List<FLUser> friendsRecent;
+
+    private List<FLUser> filteredContacts;
 
     private Handler searchHandler;
 
@@ -49,10 +53,10 @@ public class SelectUserListAdapter extends BaseAdapter {
         @Override
         public void run() {
             if (!searchData.isEmpty()) {
-                phoneContactList = ContactsManager.searchContacts(searchData, 20);
-                final List<FLUser> contactsFiltered = new ArrayList<>();
+                final List<FLUser> searchContacts = ContactsManager.searchContacts(searchData, 20);
+                contactsFiltered = new ArrayList<>();
 
-                for (FLUser contact : phoneContactList) {
+                for (FLUser contact : searchContacts) {
                     if (contact.fullname != null && contact.fullname.toLowerCase().indexOf(searchData.toLowerCase()) == 0)
                         contactsFiltered.add(contact);
                     else if (contact.firstname != null && contact.firstname.toLowerCase().indexOf(searchData.toLowerCase()) == 0)
@@ -76,23 +80,36 @@ public class SelectUserListAdapter extends BaseAdapter {
                     @Override
                     public void success(Object response) {
                         @SuppressWarnings("unchecked")
-                        List<FLUser> searchList = (List<FLUser>)response;
+                        List<FLUser> searchList = (List<FLUser>) response;
 
-                        contactList = new ArrayList<>();
-                        List<FLUser> clearList = new ArrayList<>();
+                        filteredContacts = new ArrayList<>();
+                        List<FLUser> clearSearchList = new ArrayList<>();
+                        List<FLUser> clearContactList = new ArrayList<>();
+                        List<FLUser> commonUsers = new ArrayList<>();
 
                         for (FLUser floozer : searchList) {
                             for (FLUser contact : contactsFiltered) {
-                                if (contact.phone.contentEquals(floozer.phone)) {
-                                    clearList.add(contact);
-                                }
+                                Boolean common = false;
+                                if (contact.phone.contentEquals(floozer.phone))
+                                    common = true;
+
+                                if (common && !commonUsers.contains(floozer))
+                                    commonUsers.add(floozer);
+
+                                if (common && !clearSearchList.contains(floozer))
+                                    clearSearchList.add(contact);
+
+                                if (common && !clearContactList.contains(floozer))
+                                    clearContactList.add(contact);
                             }
-                            contactsFiltered.removeAll(clearList);
-                            clearList.clear();
                         }
 
-                        contactList.addAll(contactsFiltered);
-                        contactList.addAll(searchList);
+                        contactsFiltered.removeAll(clearContactList);
+                        searchList.removeAll(clearSearchList);
+
+                        filteredContacts.addAll(commonUsers);
+                        filteredContacts.addAll(contactsFiltered);
+                        filteredContacts.addAll(searchList);
 
                         notifyDataSetChanged();
                     }
@@ -111,24 +128,29 @@ public class SelectUserListAdapter extends BaseAdapter {
         this.context = context2;
         this.searchHandler = new Handler(Looper.getMainLooper());
 
-        this.recentFriendList = FloozRestClient.getInstance().currentUser.friendsRecent;
-        this.contactList = this.recentFriendList;
-        this.fullPhoneContactList = new ArrayList<>();
-        this.fullPhoneContactList = ContactsManager.getAllContacts();
+        this.friends = FloozRestClient.getInstance().currentUser.friends;
+        this.friendsRecent = FloozRestClient.getInstance().currentUser.friendsRecent;
+        this.contactsFromAdressBook = ContactsManager.getAllContacts();
 
-        if (this.contactList.isEmpty())
-            this.contactList = this.fullPhoneContactList;
+        this.filteredContacts = new ArrayList<>();
+
+        if (this.friendsRecent.size() == 0 && this.contactsFromAdressBook.size() == 0)
+            this.filteredContacts.addAll(this.friends);
+        else {
+            this.filteredContacts.addAll(this.friendsRecent);
+            this.filteredContacts.addAll(this.contactsFromAdressBook);
+        }
     }
 
     @Override
     public int getCount() {
-        return this.contactList.size() > 0 ? this.contactList.size() : 1;
+        return this.filteredContacts.size() > 0 ? this.filteredContacts.size() : 1;
     }
 
     @Override
     public FLUser getItem(int position) {
-        if (this.contactList.size() > 0)
-            return this.contactList.get(position);
+        if (this.filteredContacts.size() > 0)
+            return this.filteredContacts.get(position);
         else
             return null;
     }
@@ -140,17 +162,17 @@ public class SelectUserListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        if (this.contactList.size() > 0) {
+        if (this.filteredContacts.size() > 0) {
             ViewHolder holder;
 
             if (convertView == null || !(convertView.getTag() instanceof ViewHolder)) {
                 holder = new ViewHolder();
-                convertView = inflater.inflate(R.layout.user_picker_row, parent, false);
+                convertView = inflater.inflate(R.layout.user_list_row, parent, false);
                 holder.username = (TextView) convertView.findViewById(R.id.user_list_row_username);
                 holder.fullname = (TextView) convertView.findViewById(R.id.user_list_row_fullname);
                 holder.pic = (RoundedImageView) convertView.findViewById(R.id.user_list_row_pic);
 
-                holder.username.setTypeface(CustomFonts.customContentBold(this.context));
+                holder.username.setTypeface(CustomFonts.customTitleExtraLight(this.context), Typeface.BOLD);
                 holder.fullname.setTypeface(CustomFonts.customContentRegular(this.context));
 
                 convertView.setTag(holder);
@@ -185,13 +207,77 @@ public class SelectUserListAdapter extends BaseAdapter {
         this.searchHandler.removeCallbacks(searchRunnable);
         this.searchData = searchString;
         if (searchString.length() == 0) {
-            this.contactList = this.recentFriendList;
-            if (this.contactList.isEmpty())
-                this.contactList = this.fullPhoneContactList;
+            this.filteredContacts = new ArrayList<>();
+
+            if (this.friendsRecent.size() == 0 && this.contactsFromAdressBook.size() == 0)
+                this.filteredContacts.addAll(this.friends);
+            else {
+                this.filteredContacts.addAll(this.friendsRecent);
+                this.filteredContacts.addAll(this.contactsFromAdressBook);
+            }
             this.notifyDataSetChanged();
         } else {
             this.searchHandler.postDelayed(searchRunnable, 500);
         }
+    }
+
+    @Override
+    public View getHeaderView(int position, View convertView, ViewGroup parent) {
+        HeaderViewHolder holder;
+
+        if (convertView == null || convertView.getTag() == null) {
+            holder = new HeaderViewHolder();
+            convertView = inflater.inflate(R.layout.account_menu_header, parent, false);
+            holder.text = (TextView) convertView.findViewById(R.id.account_menu_header_title);
+
+            holder.text.setTypeface(CustomFonts.customContentBold(this.context));
+
+            convertView.setTag(holder);
+        } else {
+            holder = (HeaderViewHolder) convertView.getTag();
+        }
+
+        if (this.searchData.isEmpty()) {
+            if (this.friendsRecent.size() == 0 && this.contactsFromAdressBook.size() == 0) {
+                if (this.friends.size() == 0)
+                    return new View(this.context);
+                else
+                    holder.text.setText(this.context.getResources().getString(R.string.FRIEND_PICKER_FRIENDS));
+
+            } else {
+                if (position < this.friendsRecent.size())
+                    holder.text.setText(this.context.getResources().getString(R.string.FRIEND_PICKER_FRIENDS_RECENT));
+                else
+                    holder.text.setText(this.context.getResources().getString(R.string.FRIEND_PICKER_ADDRESS_BOOK));
+            }
+        }
+        else
+            holder.text.setText(this.context.getResources().getString(R.string.FRIEND_PICKER_RESULT));
+
+        return convertView;
+    }
+
+    @Override
+    public long getHeaderId(int i) {
+        if (this.searchData.isEmpty()) {
+            if (this.friendsRecent.size() == 0 && this.contactsFromAdressBook.size() == 0) {
+                if (this.friends.size() == 0)
+                    return 0;
+                else
+                    return 1;
+            } else {
+                if (i < this.friendsRecent.size())
+                    return 2;
+                else
+                    return 3;
+            }
+        }
+        else
+            return 4;
+    }
+
+    class HeaderViewHolder {
+        TextView text;
     }
 
     class ViewHolder {

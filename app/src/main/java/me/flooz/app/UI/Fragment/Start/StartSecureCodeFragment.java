@@ -79,6 +79,12 @@ public class StartSecureCodeFragment extends StartBaseFragment implements Numeri
         return view;
     }
 
+    public void onResume() {
+        super.onResume();
+
+        parentActivity.hideKeyboard();
+    }
+
     private void refreshCodeContainer() {
 
         if (this.currentCode.length() >= 1)

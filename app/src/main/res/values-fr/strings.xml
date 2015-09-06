@@ -279,10 +279,11 @@
     <string name="FRIENDS_FRIENDS_SUGGESTION">Vous connaissez peut-être…</string>
     <string name="FRIENDS_FRIENDS">Mes amis</string>
 
-    <string name="FRIEND_PIKER_PLACEHOLDER">Chercher un contact / Entrer un 06</string>
+    <string name="FRIEND_PICKER_PLACEHOLDER">Chercher un contact / Entrer un 06</string>
     <string name="FRIEND_PICKER_FRIENDS_RECENT">Contacts Récents</string>
     <string name="FRIEND_PICKER_FRIENDS">Mes amis</string>
     <string name="FRIEND_PICKER_ADDRESS_BOOK">Carnet d\'adresse</string>
+    <string name="FRIEND_PICKER_RESULT">Résultats</string>
 
     <string name="SECORE_CODE_TEXT_FIRST_TIME">Ce code vous permet de sécuriser vos paiements en cas de perte/vol de votre mobile.</string>
     <string name="SECORE_CODE_TEXT_CURRENT">Entrez votre code secret :</string>

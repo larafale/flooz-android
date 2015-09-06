@@ -3,6 +3,8 @@ package me.flooz.app.UI.Fragment.Start;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,11 +25,10 @@ import me.flooz.app.Utils.CustomFonts;
 /**
  * Created by Flooz on 6/15/15.
  */
-public class StartSMSFragment extends StartBaseFragment implements NumericKeyboard.NumericKeyboardDelegate {
+public class StartSMSFragment extends StartBaseFragment {
 
     private Button nextButton;
     private EditText codeTextfield;
-    private NumericKeyboard keyboard;
     private Handler timer;
     private int countdown;
     private int maxCountdown = 60;
@@ -45,21 +46,43 @@ public class StartSMSFragment extends StartBaseFragment implements NumericKeyboa
         TextView title = (TextView) view.findViewById(R.id.start_sms_title);
         codeTextfield = (EditText) view.findViewById(R.id.start_sms_textfield);
         nextButton = (Button) view.findViewById(R.id.start_sms_next);
-        keyboard = (NumericKeyboard) view.findViewById(R.id.start_sms_keypad);
-
-        keyboard.delegate = this;
 
         codeTextfield.requestFocus();
         title.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
         codeTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
 
-        codeTextfield.setOnTouchListener((v, event) -> {
-            v.onTouchEvent(event);
-            InputMethodManager imm = (InputMethodManager)v.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
-            if (imm != null) {
-                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+        codeTextfield.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
-            return true;
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (s.length() > 0) {
+                    nextButton.setText(R.string.GLOBAL_VALIDATE);
+                    if (!nextButton.isEnabled())
+                        nextButton.setEnabled(true);
+                } else {
+                    String countDownValue;
+
+                    if (countdown > 0)
+                        countDownValue = String.format(parentActivity.getResources().getString(R.string.SIGNUP_SMS_RESEND), countdown);
+                    else
+                        countDownValue = parentActivity.getResources().getString(R.string.SIGNUP_SMS_RESEND_EMPTY);
+
+                    nextButton.setText(countDownValue);
+                    if (countdown > 0)
+                        nextButton.setEnabled(false);
+                    else
+                        nextButton.setEnabled(true);
+                }
+            }
         });
 
         nextButton.setOnClickListener(view1 -> {
@@ -90,15 +113,13 @@ public class StartSMSFragment extends StartBaseFragment implements NumericKeyboa
 
         if (parentActivity.signupData.get("smscode") != null && !((String)parentActivity.signupData.get("smscode")).isEmpty()) {
             codeTextfield.setText((String)parentActivity.signupData.get("smscode"));
-            keyboard.value = (String)parentActivity.signupData.get("smscode");
-            codeTextfield.setSelection(keyboard.value.length());
+            codeTextfield.setSelection(codeTextfield.getText().length());
 
-            if (keyboard.value.length() > 0) {
+            if (codeTextfield.getText().length() > 0) {
                 nextButton.setText(R.string.GLOBAL_VALIDATE);
                 nextButton.setEnabled(true);
             }
         }
-
 
         FloozRestClient.getInstance().sendSignupSMS((String)parentActivity.signupData.get("phone"));
         countdown = maxCountdown;
@@ -135,29 +156,5 @@ public class StartSMSFragment extends StartBaseFragment implements NumericKeyboa
         }, 1000);
 
         return view;
-    }
-
-    @Override
-    public void keyPressed() {
-        codeTextfield.setText(keyboard.value);
-        if (keyboard.value.length() > 0) {
-            nextButton.setText(R.string.GLOBAL_VALIDATE);
-            if (!nextButton.isEnabled())
-                nextButton.setEnabled(true);
-        } else {
-            String countDownValue;
-
-            if (countdown > 0)
-                countDownValue = String.format(parentActivity.getResources().getString(R.string.SIGNUP_SMS_RESEND), countdown);
-            else
-                countDownValue = parentActivity.getResources().getString(R.string.SIGNUP_SMS_RESEND_EMPTY);
-
-            nextButton.setText(countDownValue);
-            if (countdown > 0)
-                nextButton.setEnabled(false);
-            else
-                nextButton.setEnabled(true);
-        }
-        codeTextfield.setSelection(keyboard.value.length());
     }
 }
