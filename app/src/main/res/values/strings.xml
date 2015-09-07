@@ -178,7 +178,7 @@
     <string name="MENU_BLOCK_USER">Bloquer</string>
     <string name="MENU_REPORT_USER">Signaler</string>
     <string name="MENU_REPORT_LINE">Signaler ce contenu</string>
-    <string name="MENU_SAVE_PICTURE">Enregister l\'image</string>
+    <string name="MENU_SAVE_PICTURE">Enregistrer l\'image</string>
     <string name="MENU_QR_CODE">Afficher le QR Code</string>
 
     <string name="BLOCK_USER_ALERT_MESSAGE">Êtes-vous sûr de vouloir bloquer cet utilisateur ?</string>
@@ -252,7 +252,7 @@
     <string name="TRANSACTION_TYPE_PAYMENT">PAYMENT</string>
     <string name="TRANSACTION_TYPE_COLLECTION">COLLECTION</string>
 
-    <string name="TRANSACTION_SCOPE_TITLE">Qui peut voir ce Flooz:</string>
+    <string name="TRANSACTION_SCOPE_TITLE">Qui peut voir ce Flooz :</string>
     <string name="TRANSACTION_SCOPE_PUBLIC">Tout le monde</string>
     <string name="TRANSACTION_SCOPE_FRIEND">Mes amis &amp; moi</string>
     <string name="TRANSACTION_SCOPE_PRIVATE">Moi uniquement</string>

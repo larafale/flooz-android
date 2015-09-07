@@ -67,6 +67,7 @@ public class ShareController extends BaseController {
     private ToolTip toolTip;
     private ToolTipLayout tipContainer;
 
+    private LinearLayout mailButton;
     private LinearLayout fbButton;
 
     private String _code;
@@ -94,7 +95,7 @@ public class ShareController extends BaseController {
         this.h1 = (TextView) currentView.findViewById(R.id.invite_h1);
         this.content = (TextView) currentView.findViewById(R.id.invite_content);
         LinearLayout smsButton = (LinearLayout) currentView.findViewById(R.id.invite_sms);
-        LinearLayout mailButton = (LinearLayout) currentView.findViewById(R.id.invite_mail);
+        this.mailButton = (LinearLayout) currentView.findViewById(R.id.invite_mail);
         this.fbButton = (LinearLayout) currentView.findViewById(R.id.invite_fb);
         TextView smsText = (TextView) currentView.findViewById(R.id.invite_sms_text);
         TextView fbText = (TextView) currentView.findViewById(R.id.invite_fb_text);
@@ -246,6 +247,9 @@ public class ShareController extends BaseController {
 
         if (_fbData == null || _fbData.length() == 0)
             this.fbButton.setVisibility(View.GONE);
+
+        if (_mailData == null || _mailData.length() == 0)
+            this.mailButton.setVisibility(View.GONE);
     }
 
     private void shareFacebook() {

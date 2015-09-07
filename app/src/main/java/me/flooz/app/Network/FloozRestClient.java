@@ -70,6 +70,7 @@ import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Model.FLTrigger;
 import me.flooz.app.Model.FLUser;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.FriendsActivity;
 import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.NewTransactionActivity;
 import me.flooz.app.UI.Activity.Secure3DActivity;
@@ -315,7 +316,7 @@ public class FloozRestClient
             this.request("/users/logout", HttpRequestType.GET, param, null);
         }
 
-        this.closeSockets();
+        this.socketSendSessionEnd();
         this.clearLogin();
         FloozApplication.getInstance().didDisconnected();
     }
@@ -1397,6 +1398,13 @@ public class FloozRestClient
     /*******  REQUEST  *********/
     /***************************/
 
+    public boolean isConnected() {
+        ConnectivityManager conMgr = (ConnectivityManager) floozApp.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = conMgr.getActiveNetworkInfo();
+
+        return (activeNetwork != null && activeNetwork.isConnected());
+    }
+
     private void request(String path, HttpRequestType type, Map<String, Object> params, final FloozHttpResponseHandler responseHandler) {
 
         ConnectivityManager conMgr = (ConnectivityManager) floozApp.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -1784,16 +1792,18 @@ public class FloozRestClient
     }
 
     private void handleTriggerFriendShow() {
-        FloozApplication.performLocalNotification(CustomNotificationIntents.showSlidingRightMenu());
-    }
-
-    private void handleTriggerProfileShow() {
-        if (!(floozApp.getCurrentActivity() instanceof ProfileSettingsActivity)) {
+        if (!(floozApp.getCurrentActivity() instanceof FriendsActivity)) {
             FloozRestClient.getInstance().updateCurrentUser(null);
-            Intent intent = new Intent(floozApp.getCurrentActivity(), ProfileSettingsActivity.class);
+            Intent intent = new Intent(floozApp.getCurrentActivity(), FriendsActivity.class);
             Activity tmpActivity = floozApp.getCurrentActivity();
             tmpActivity.startActivity(intent);
             tmpActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+        }
+    }
+
+    private void handleTriggerProfileShow() {
+        if (floozApp.getCurrentActivity() instanceof HomeActivity) {
+            ((HomeActivity)floozApp.getCurrentActivity()).changeCurrentTab(HomeActivity.TabID.ACCOUNT_TAB);
         }
     }
 
@@ -1855,7 +1865,6 @@ public class FloozRestClient
     private void handleTriggerContactInfoShow() {
         if (!(floozApp.getCurrentActivity() instanceof IdentitySettingsActivity)) {
             Intent intent = new Intent(floozApp.getCurrentActivity(), IdentitySettingsActivity.class);
-            intent.putExtra("modal", true);
             Activity tmpActivity = floozApp.getCurrentActivity();
             tmpActivity.startActivity(intent);
             tmpActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
@@ -1866,7 +1875,6 @@ public class FloozRestClient
         if (!(floozApp.getCurrentActivity() instanceof DocumentsSettingsActivity)) {
             Activity tmpActivity = floozApp.getCurrentActivity();
             Intent intent = new Intent(tmpActivity, DocumentsSettingsActivity.class);
-            intent.putExtra("modal", true);
             tmpActivity.startActivity(intent);
             tmpActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
         }
@@ -2236,12 +2244,14 @@ public class FloozRestClient
                             CustomToast.show(FloozApplication.getAppContext(), errorContent);
                         }
                         handleRequestTriggers(data);
-                    }).on("session end", args -> socket.disconnect()).on("feed", args -> {
-                        JSONObject data = (JSONObject) args[0];
+                    }).on("session end", args -> {
+                        socket.disconnect();
+                    }).on("feed", args -> {
+                                JSONObject data = (JSONObject) args[0];
 
-                        FloozRestClient.getInstance().notificationsManager.nbUnreadNotifications = data.optInt("total");
-                        FloozApplication.performLocalNotification(CustomNotificationIntents.reloadNotifications());
-                    }).on(Socket.EVENT_DISCONNECT, args -> Log.d("SocketIO", "Socket Disconnected")).on(Socket.EVENT_CONNECT_ERROR, args -> {
+                                FloozRestClient.getInstance().notificationsManager.nbUnreadNotifications = data.optInt("total");
+                                FloozApplication.performLocalNotification(CustomNotificationIntents.reloadNotifications());
+                            }).on(Socket.EVENT_DISCONNECT, args -> Log.d("SocketIO", "Socket Disconnected")).on(Socket.EVENT_CONNECT_ERROR, args -> {
                         Log.d("SocketIO", "error: " + args[0].toString());
                     }).on(Socket.EVENT_CONNECT_TIMEOUT, args -> {
                         Log.d("SocketIO", "Socket Timeout");

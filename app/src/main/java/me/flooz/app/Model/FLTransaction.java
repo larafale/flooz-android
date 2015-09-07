@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.flooz.app.App.FloozApplication;
+import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.MomentDate;
 
@@ -149,7 +150,10 @@ public class FLTransaction {
 
             this.date = new MomentDate(FloozApplication.getAppContext(), json.getString("cAt"));
 
-            this.when = this.date.fromNow();
+            if (FloozRestClient.getInstance().isConnected() && json.has("when"))
+                this.when = json.optString("when");
+            else
+                this.when = this.date.fromNow();
 
             this.comments = new ArrayList();
             for (int i = 0; i < json.getJSONArray("comments").length(); i++) {

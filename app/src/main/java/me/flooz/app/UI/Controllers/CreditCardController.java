@@ -248,6 +248,8 @@ public class CreditCardController extends BaseController {
                     creditCard.cvv = cardCVV.getText().toString();
 
                     FloozRestClient.getInstance().currentUser.creditCard = creditCard;
+                    reloadCreditCard();
+                    FloozRestClient.getInstance().updateCurrentUser(null);
                 }
 
                 @Override

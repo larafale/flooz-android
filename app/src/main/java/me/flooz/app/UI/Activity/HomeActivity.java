@@ -295,6 +295,13 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
             }
         });
 
+        this.transactionCardContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                hideTransactionCard();
+            }
+        });
+
         this.imageViewerAttacher.setOnLongClickListener(v -> {
             List<ActionSheetItem> items = new ArrayList<>();
             items.add(new ActionSheetItem(instance, R.string.MENU_SAVE_PICTURE, () -> {
