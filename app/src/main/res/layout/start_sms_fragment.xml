@@ -30,6 +30,7 @@
             android:layout_marginTop="@dimen/dimen_xxxlarge"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
+            android:inputType="numberSigned"
             android:gravity="bottom|center_horizontal"
             android:hint="@string/SIGNUP_SMS_PLACEHOLDER"
             android:singleLine="true"/>

@@ -157,4 +157,11 @@ public class StartSMSFragment extends StartBaseFragment {
 
         return view;
     }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        final InputMethodManager imm = (InputMethodManager) this.parentActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.showSoftInput(codeTextfield, InputMethodManager.SHOW_IMPLICIT);
+    }
 }

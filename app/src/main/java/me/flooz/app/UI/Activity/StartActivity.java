@@ -106,7 +106,7 @@ public class StartActivity extends Activity {
 
     public void hideKeyboard() {
         InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
+        imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
 
     public void changeCurrentPage(StartBaseFragment fragment, int animEnter, int animExit, int animPopEnter, int animPopExit, Boolean addToBackStack) {

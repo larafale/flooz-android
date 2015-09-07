@@ -236,7 +236,7 @@
     <string name="TRANSACTION_CONTACT_PICKER_PREFIX">À :&#160;</string>
     <string name="TRANSACTION_CONTACT_PICKER_HINT">saisir nom, pseudo ou 06</string>
     <string name="TRANSACTION_CONTACT_LIST_EMPTY_1">Sélectionnez un contact</string>
-    <string name="TRANSACTION_CONTACT_LIST_EMPTY_2">même s\'il n\'est pas encore sur Flooz</string>
+    <string name="TRANSACTION_CONTACT_LIST_EMPTY_2">ou entrez un n° de mobile</string>
 
     <string name="TRANSACTION_ACTION_ACCEPT">ACCEPTER</string>
     <string name="TRANSACTION_ACTION_REFUSE">REFUSER</string>
