@@ -344,7 +344,13 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        currentFragment.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY) {
+            if (resultCode == Activity.RESULT_OK)
+                transactionCardFragment.authenticationValidated();
+            else
+                transactionCardFragment.authenticationFailed();
+        } else
+            currentFragment.onActivityResult(requestCode, resultCode, data);
     }
 
     public void onStart() {

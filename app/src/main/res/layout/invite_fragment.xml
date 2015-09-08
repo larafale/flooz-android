@@ -18,8 +18,8 @@
             <RelativeLayout
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:gravity="center"
-                android:layout_marginTop="@dimen/dimen_xxxlarge"
                 android:padding="@dimen/dimen_large">
 
                 <TextView
@@ -37,17 +37,19 @@
                 android:id="@+id/invite_content"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
+                android:layout_weight="1"
                 android:padding="@dimen/dimen_xlarge"
                 android:gravity="center"
                 android:textSize="18sp"
-                android:layout_marginTop="@dimen/dimen_xxxlarge"
+                android:paddingTop="@dimen/dimen_xxlarge"
                 />
 
             <LinearLayout
                 android:orientation="horizontal"
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
+                android:layout_height="wrap_content"
                 android:gravity="bottom"
+                android:layout_weight="1"
                 android:paddingBottom="@dimen/dimen_xxlarge"
                 android:baselineAligned="false">
 

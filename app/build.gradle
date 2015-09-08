@@ -92,7 +92,7 @@ android {
         }
         debug {
             buildConfigField "boolean", "LOCAL_API", "false"
-            buildConfigField "boolean", "DEBUG_API", "false"
+            buildConfigField "boolean", "DEBUG_API", "true"
             applicationIdSuffix 'dev'
         }
         release {
