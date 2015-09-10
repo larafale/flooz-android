@@ -37,6 +37,7 @@ import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.R;
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.App.FloozApplication;
+import me.flooz.app.UI.Fragment.Home.TabFragments.CashoutFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.NotificationsFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.ProfileFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.ShareFragment;
@@ -345,10 +346,14 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY) {
-            if (resultCode == Activity.RESULT_OK)
-                transactionCardFragment.authenticationValidated();
-            else
-                transactionCardFragment.authenticationFailed();
+            if (this.currentFragment instanceof CashoutFragment) {
+                currentFragment.onActivityResult(requestCode, resultCode, data);
+            } else {
+                if (resultCode == Activity.RESULT_OK)
+                    transactionCardFragment.authenticationValidated();
+                else
+                    transactionCardFragment.authenticationFailed();
+            }
         } else
             currentFragment.onActivityResult(requestCode, resultCode, data);
     }
