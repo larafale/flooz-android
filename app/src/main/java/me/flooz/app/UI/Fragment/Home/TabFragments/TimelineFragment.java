@@ -85,7 +85,12 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
     };
 
     public TimelineFragment() {
-        this.currentFilter = FLTransaction.TransactionScope.TransactionScopeAll;
+        if (FloozRestClient.getInstance().appSettings.contains("defaultScope")) {
+            this.currentFilter = FLTransaction.transactionParamsToScope(FloozRestClient.getInstance().appSettings.getString("defaultScope", ""));
+        } else {
+            this.currentFilter = FLTransaction.TransactionScope.TransactionScopeAll;
+            FloozRestClient.getInstance().appSettings.edit().putString("defaultScope", FLTransaction.transactionScopeToParams(this.currentFilter)).apply();
+        }
     }
 
     @SuppressLint("ValidFragment")
@@ -205,6 +210,7 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
     @Override
     public void onResume() {
         super.onResume();
+        this.refreshContainer.setRefreshing(true);
         this.refreshTransactions();
 
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadTimelineReceiver,
@@ -232,6 +238,7 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
         this.tooltipFilterView.changeFilter(filter);
         if (filter != this.currentFilter) {
             this.currentFilter = filter;
+            FloozRestClient.getInstance().appSettings.edit().putString("defaultScope", FLTransaction.transactionScopeToParams(this.currentFilter)).apply();
             this.transactions.clear();
             this.timelineAdapter.notifyDataSetChanged();
             this.refreshContainer.setRefreshing(true);

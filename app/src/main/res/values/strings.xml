@@ -128,7 +128,7 @@
     <string name="FIELD_SECRET_QUESTION">Choisissez une question secrète</string>
     <string name="FIELD_SECRET_QUESTION_OTHER">Votre question ?</string>
     <string name="FIELD_SECRET_ANSWER">Réponse</string>
-    <string name="FIELD_SPONSOR">Core parrain (optionnel)</string>
+    <string name="FIELD_SPONSOR">Code parrain (optionnel)</string>
 
     <string name="FIELD_IBAN">Code IBAN</string>
     <string name="FIELD_IBAN_PLACEHOLDER">FR</string>

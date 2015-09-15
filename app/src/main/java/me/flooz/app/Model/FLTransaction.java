@@ -337,6 +337,25 @@ public class FLTransaction {
         return "public";
     }
 
+    public static TransactionScope transactionParamsToScope(String scope)
+    {
+        if (scope != null) {
+            switch (scope) {
+                case"public":
+                    return TransactionScope.TransactionScopePublic;
+                case "friend":
+                    return TransactionScope.TransactionScopeFriend;
+                case "private":
+                    return TransactionScope.TransactionScopePrivate;
+                case "all":
+                    return TransactionScope.TransactionScopeAll;
+                default:
+                    break;
+            }
+        }
+
+        return TransactionScope.TransactionScopeAll;
+    }
 
     public static int transactionScopeToFloozParams(TransactionScope scope)
     {
