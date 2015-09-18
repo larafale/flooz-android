@@ -132,10 +132,6 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         }
     };
 
-    private RelativeLayout transactionCardContainer;
-
-    private TransactionCardFragment transactionCardFragment;
-
     public FloozApplication floozApp;
 
     private BroadcastReceiver reloadNotificationsReceiver = new BroadcastReceiver() {
@@ -240,8 +236,6 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         this.imageViewerProgress = (ProgressBar) this.findViewById(R.id.main_image_progress);
         this.imageViewerImage = (ImageView) this.findViewById(R.id.main_image_image);
 
-        this.transactionCardContainer = (RelativeLayout) this.findViewById(R.id.main_transac_container);
-
         this.imageViewerAttacher = new PhotoViewAttacher(this.imageViewerImage);
 
         this.imageViewer.setClickable(true);
@@ -296,17 +290,10 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
             }
         });
 
-        this.transactionCardContainer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                hideTransactionCard();
-            }
-        });
-
         this.imageViewerAttacher.setOnLongClickListener(v -> {
             List<ActionSheetItem> items = new ArrayList<>();
             items.add(new ActionSheetItem(instance, R.string.MENU_SAVE_PICTURE, () -> {
-                ImageHelper.saveImageOnPhone(instance, ((BitmapDrawable)imageViewerAttacher.getImageView().getDrawable()).getBitmap());
+                ImageHelper.saveImageOnPhone(instance, ((BitmapDrawable) imageViewerAttacher.getImageView().getDrawable()).getBitmap());
             }));
             ActionSheet.showWithItems(instance, items);
 
@@ -334,28 +321,11 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
             imageViewer.startAnimation(anim);
         });
 
-        this.transactionCardFragment = new TransactionCardFragment();
-        this.transactionCardFragment.parentActivity = this;
-
-        FragmentTransaction ft = this.fragmentManager.beginTransaction();
-        ft.replace(R.id.main_transac_view, this.transactionCardFragment);
-        ft.addToBackStack(null).commit();
-
         this.changeCurrentTab(TabID.HOME_TAB);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY) {
-            if (this.currentFragment instanceof CashoutFragment) {
-                currentFragment.onActivityResult(requestCode, resultCode, data);
-            } else {
-                if (resultCode == Activity.RESULT_OK)
-                    transactionCardFragment.authenticationValidated();
-                else
-                    transactionCardFragment.authenticationFailed();
-            }
-        } else
-            currentFragment.onActivityResult(requestCode, resultCode, data);
+        currentFragment.onActivityResult(requestCode, resultCode, data);
     }
 
     public void onStart() {
@@ -632,53 +602,12 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
 
     public void showTransactionCard(FLTransaction transaction, Boolean insertComment) {
         FloozRestClient.getInstance().readNotification(transaction.transactionId, null);
+        TransactionCardFragment transactionCardFragment = new TransactionCardFragment();
 
-        this.transactionCardFragment.insertComment = insertComment;
-        this.transactionCardFragment.setTransaction(transaction);
-        this.transactionCardFragment.cardScroll.scrollTo(0, 0);
+        transactionCardFragment.insertComment = insertComment;
+        transactionCardFragment.transaction = transaction;
 
-        if (this.transactionCardContainer.getVisibility() == View.GONE) {
-            Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), android.R.anim.fade_in);
-            anim.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                    transactionCardContainer.setVisibility(View.VISIBLE);
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    transactionCardFragment.updateComment();
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-            this.transactionCardContainer.startAnimation(anim);
-        }
-    }
-
-    public void hideTransactionCard() {
-        if (this.transactionCardContainer.getVisibility() == View.VISIBLE) {
-            Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), android.R.anim.fade_out);
-            anim.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    transactionCardContainer.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-            this.transactionCardContainer.startAnimation(anim);
-        }
+        this.pushFragmentInCurrentTab(transactionCardFragment);
     }
 
     public void showImageViewer(final Bitmap image) {
@@ -791,8 +720,6 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
     public void onBackPressed() {
         if (this.imageViewer.getVisibility() == View.VISIBLE) {
             this.hideImageViewer();
-        } else if (this.transactionCardContainer.getVisibility() == View.VISIBLE) {
-            this.hideTransactionCard();
         } else if (this.currentTabHistory.size() > 1) {
             this.currentFragment.onBackPressed();
         } else if (this.tabHistory.size() > 1) {

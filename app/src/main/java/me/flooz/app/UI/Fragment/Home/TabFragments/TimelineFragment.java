@@ -334,8 +334,9 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
                     } else {
                         backgroundImage.setVisibility(View.GONE);
                     }
-                } else
+                } else {
                     refreshContainer.setRefreshing(false);
+                }
             }
 
             @Override
