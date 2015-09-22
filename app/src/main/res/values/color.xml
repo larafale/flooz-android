@@ -25,4 +25,5 @@
     <color name="grey_pseudo">#414F61</color>
     <color name="ttlm_default_background_color">#EE131518</color>
     <color name="ttlm_default_stroke_color">#FFE9ECEF</color>
+    <color name="semi_transparent">#7F000000</color>
 </resources>

@@ -45,6 +45,8 @@ import me.flooz.app.UI.Fragment.Home.TabFragments.TabBarFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.TimelineFragment;
 import me.flooz.app.UI.Tools.ActionSheet;
 import me.flooz.app.UI.Tools.ActionSheetItem;
+import me.flooz.app.UI.Tools.CustomDialogImageViewer;
+import me.flooz.app.UI.Tools.CustomImageViewer;
 import me.flooz.app.UI.Tools.CustomToast;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.Utils.CustomFonts;
@@ -365,7 +367,6 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
 
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadUserReceiver,
                 CustomNotificationIntents.filterReloadCurrentUser());
-
 
         if (FloozApplication.getInstance().pendingTriggers != null) {
             Handler handlerIntent = new Handler(Looper.getMainLooper());
@@ -713,7 +714,7 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
 
     @Override
     public void onItemImageSelected(String imgUrl) {
-        this.showImageViewer(imgUrl);
+        CustomImageViewer.start(this, imgUrl);
     }
 
     @Override

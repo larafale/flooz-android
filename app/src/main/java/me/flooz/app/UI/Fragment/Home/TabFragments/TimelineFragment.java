@@ -9,6 +9,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -69,6 +70,8 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
     public FLTransaction.TransactionScope currentFilter;
 
     private String nextPageUrl;
+
+    private boolean starter = true;
 
     private BroadcastReceiver reloadTimelineReceiver = new BroadcastReceiver() {
         @Override
@@ -179,30 +182,33 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
             }
         });
 
-        this.headerBalanceIndicator.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final Dialog dialog = new Dialog(tabBarActivity);
+        this.headerBalanceIndicator.setOnClickListener(v -> {
+            final Dialog dialog = new Dialog(tabBarActivity);
 
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setContentView(R.layout.custom_dialog_balance);
+            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+            dialog.setContentView(R.layout.custom_dialog_balance);
 
-                TextView title = (TextView) dialog.findViewById(R.id.dialog_wallet_title);
-                title.setTypeface(CustomFonts.customContentRegular(tabBarActivity), Typeface.BOLD);
+            TextView title = (TextView) dialog.findViewById(R.id.dialog_wallet_title);
+            title.setTypeface(CustomFonts.customContentRegular(tabBarActivity), Typeface.BOLD);
 
-                TextView text = (TextView) dialog.findViewById(R.id.dialog_wallet_msg);
-                text.setTypeface(CustomFonts.customContentRegular(tabBarActivity));
+            TextView text = (TextView) dialog.findViewById(R.id.dialog_wallet_msg);
+            text.setTypeface(CustomFonts.customContentRegular(tabBarActivity));
 
-                Button close = (Button) dialog.findViewById(R.id.dialog_wallet_btn);
+            Button close = (Button) dialog.findViewById(R.id.dialog_wallet_btn);
 
-                close.setOnClickListener(v1 -> dialog.dismiss());
+            close.setOnClickListener(v1 -> dialog.dismiss());
 
-                dialog.setCanceledOnTouchOutside(true);
-                dialog.show();
-            }
+            dialog.setCanceledOnTouchOutside(true);
+            dialog.show();
         });
 
         this.tipContainer.setOnClickListener(v -> filterChanged(currentFilter));
+
+        if (starter) {
+            starter = !starter;
+            this.refreshContainer.setRefreshing(true);
+            this.refreshTransactions();
+        }
 
         return view;
     }
@@ -210,8 +216,6 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
     @Override
     public void onResume() {
         super.onResume();
-        this.refreshContainer.setRefreshing(true);
-        this.refreshTransactions();
 
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadTimelineReceiver,
                 CustomNotificationIntents.filterReloadTimeline());
@@ -220,6 +224,10 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
                 CustomNotificationIntents.filterReloadCurrentUser());
 
         updateBalance();
+
+        if (transactions.size() != 0) {
+            backgroundImage.setVisibility(View.GONE);
+        }
     }
 
     @Override

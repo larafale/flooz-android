@@ -16,6 +16,7 @@ import android.os.Looper;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -56,6 +57,7 @@ import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Tools.CustomImageViewer;
 import me.flooz.app.UI.View.ContactPickerView;
 import me.flooz.app.UI.View.TokenPickerLibrary.TokenCompleteTextView;
 import me.flooz.app.UI.View.ToolTipScopeView;
@@ -124,6 +126,8 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
     private Boolean transactionPending = false;
 
     private Dialog popupDialog;
+
+    private String imagePath;
 
     public void init() {
         this.random = FLHelper.generateRandomString();
@@ -219,7 +223,10 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         TextView currencySymbol = (TextView) this.findViewById(R.id.new_transac_currency_symbol);
         this.contentTextfield = (EditText) this.findViewById(R.id.new_transac_content_textfield);
         this.picContainer = (RelativeLayout) this.findViewById(R.id.new_transac_pic_container);
+
         this.pic = (ImageView) this.findViewById(R.id.new_transac_pic);
+        this.pic.setOnClickListener(view -> CustomImageViewer.start(this, "file://" + imagePath));
+
         ImageView picDeleteButton = (ImageView) this.findViewById(R.id.new_transac_pic_delete);
         this.scopePic = (ImageView) this.findViewById(R.id.new_transac_scope_pic);
         this.capturePicButton = (ImageView) this.findViewById(R.id.new_transac_pic_button);
@@ -553,6 +560,7 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
                     handler.post(() -> {
                         String path = ImageHelper.getPath(instance, selectedImageUri);
                         if (path != null) {
+                            this.imagePath = path;
                             File image = new File(path);
                             BitmapFactory.Options bmOptions = new BitmapFactory.Options();
                             Bitmap photo = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);

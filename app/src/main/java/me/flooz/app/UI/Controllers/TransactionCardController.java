@@ -41,6 +41,7 @@ import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.AuthenticationActivity;
 import me.flooz.app.UI.Activity.HomeActivity;
+import me.flooz.app.UI.Tools.CustomImageViewer;
 import me.flooz.app.UI.View.LoadingImageView;
 import me.flooz.app.Utils.CustomFonts;
 
@@ -199,9 +200,7 @@ public class TransactionCardController extends BaseController {
             FloozApplication.getInstance().showUserActionMenu(transaction.to);
         });
 
-//         TODO Trouver un moyen d'afficher a la fois en activity et en fragment
-        this.cardPic.setOnClickListener(v -> ((HomeActivity)parentActivity).showImageViewer(transaction.attachmentURL));
-
+        this.cardPic.setOnClickListener(v -> CustomImageViewer.start(this.parentActivity, transaction.attachmentURL));
 
         this.cardLikesButton.setOnClickListener(v -> FloozRestClient.getInstance().likeTransaction(transaction.transactionId, new FloozHttpResponseHandler() {
             @Override
