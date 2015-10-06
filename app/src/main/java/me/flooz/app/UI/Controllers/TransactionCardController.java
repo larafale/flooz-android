@@ -41,6 +41,7 @@ import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.AuthenticationActivity;
 import me.flooz.app.UI.Activity.HomeActivity;
+import me.flooz.app.UI.Fragment.Home.ProfileCardFragment;
 import me.flooz.app.UI.Tools.CustomImageViewer;
 import me.flooz.app.UI.View.LoadingImageView;
 import me.flooz.app.Utils.CustomFonts;
@@ -164,8 +165,6 @@ public class TransactionCardController extends BaseController {
             }
         });
 
-        this.cardHeaderReportButton.setOnClickListener(v -> FloozApplication.getInstance().showReportActionMenu(transaction));
-
         this.cardHeaderScope.setColorFilter(this.parentActivity.getResources().getColor(android.R.color.white));
 
         this.cardActionBarDecline.setOnClickListener(v -> FloozRestClient.getInstance().updateTransaction(transaction, FLTransaction.TransactionStatus.TransactionStatusRefused, new FloozHttpResponseHandler() {
@@ -190,14 +189,24 @@ public class TransactionCardController extends BaseController {
             }
         }));
 
+//        this.cardFromPic.setOnClickListener(v -> {
+//            transaction.from.selectedCanal = FLUser.FLUserSelectedCanal.TimelineCanal;
+//            FloozApplication.getInstance().showUserActionMenu(transaction.from);
+//        });
+
         this.cardFromPic.setOnClickListener(v -> {
-            transaction.from.selectedCanal = FLUser.FLUserSelectedCanal.TimelineCanal;
-            FloozApplication.getInstance().showUserActionMenu(transaction.from);
+            transaction.to.selectedCanal = FLUser.FLUserSelectedCanal.TimelineCanal;
+            ProfileCardFragment profileCardFragment = new ProfileCardFragment();
+            profileCardFragment.user = transaction.from;
+            ((HomeActivity)parentActivity).pushFragmentInCurrentTab(profileCardFragment);
         });
 
         this.cardToPic.setOnClickListener(v -> {
             transaction.to.selectedCanal = FLUser.FLUserSelectedCanal.TimelineCanal;
-            FloozApplication.getInstance().showUserActionMenu(transaction.to);
+//            FloozApplication.getInstance().showUserActionMenu(transaction.to);
+            ProfileCardFragment profileCardFragment = new ProfileCardFragment();
+            profileCardFragment.user = transaction.to;
+            ((HomeActivity)parentActivity).pushFragmentInCurrentTab(profileCardFragment);
         });
 
         this.cardPic.setOnClickListener(v -> CustomImageViewer.start(this.parentActivity, transaction.attachmentURL));

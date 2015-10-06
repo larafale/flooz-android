@@ -110,7 +110,7 @@ public class FloozApplication extends BranchApp
         gcm = GoogleCloudMessaging.getInstance(this);
         regid = getRegistrationId(context);
 
-        FacebookSdk.sdkInitialize(this.getApplicationContext());
+        FacebookSdk.sdkInitialize(this);
 
         if (regid.isEmpty()) {
             registerInBackground();
@@ -282,7 +282,8 @@ public class FloozApplication extends BranchApp
                 }
 
                 @Override
-                public void failure(int statusCode, FLError error) { }
+                public void failure(int statusCode, FLError error) {
+                }
             });
         }
     };
@@ -297,7 +298,8 @@ public class FloozApplication extends BranchApp
                 }
 
                 @Override
-                public void failure(int statusCode, FLError error) { }
+                public void failure(int statusCode, FLError error) {
+                }
             });
         }
     };
@@ -306,6 +308,21 @@ public class FloozApplication extends BranchApp
         @Override
         public void onClick() {
             FloozRestClient.getInstance().performActionOnFriend(userActionMenu.userId, FloozRestClient.FriendAction.Accept, new FloozHttpResponseHandler() {
+                @Override
+                public void success(Object response) {
+                    FloozRestClient.getInstance().updateCurrentUser(null);
+                }
+
+                @Override
+                public void failure(int statusCode, FLError error) { }
+            });
+        }
+    };
+
+    private ActionSheetItem.ActionSheetItemClickListener deletePendingRequest = new ActionSheetItem.ActionSheetItemClickListener() {
+        @Override
+        public void onClick() {
+            FloozRestClient.getInstance().performActionOnFriend(userActionMenu.userId, FloozRestClient.FriendAction.Delete, new FloozHttpResponseHandler() {
                 @Override
                 public void success(Object response) {
                     FloozRestClient.getInstance().updateCurrentUser(null);
@@ -401,15 +418,48 @@ public class FloozApplication extends BranchApp
         List<ActionSheetItem> items = new ArrayList<>();
 
         items.add(new ActionSheetItem(this, String.format(this.getResources().getString(R.string.MENU_NEW_FLOOZ), user.username), createTransaction));
+        items.add(new ActionSheetItem(getAppContext(), R.string.MENU_REPORT_USER, reportUser));
+        items.add(new ActionSheetItem(getAppContext(), R.string.MENU_BLOCK_USER, blockUser));
 
-        if (!this.userActionMenu.isFriend() && !this.userActionMenu.isFriendRequest())
-            items.add(new ActionSheetItem(this, R.string.MENU_ADD_FRIENDS, addFriend));
-        else if (this.userActionMenu.isFriendRequest()) {
-            items.add(new ActionSheetItem(this, R.string.FRIEND_REQUEST_ACCEPT, acceptFriend));
-            items.add(new ActionSheetItem(this, R.string.FRIEND_REQUEST_REFUSE, declineFriend));
-        }
+        ActionSheet.showWithItems(getCurrentActivity(), items);
+    }
 
-        items.add(new ActionSheetItem(this, R.string.MENU_OTHER, showOtherMenu));
+    public void showActivePendingFriendActionMenu(FLUser user) {
+        if (user == null || user.userId.contentEquals(FloozRestClient.getInstance().currentUser.userId) || user.username == null || user.fullname == null)
+            return;
+
+        this.userActionMenu = user;
+
+        List<ActionSheetItem> items = new ArrayList<>();
+
+        items.add(new ActionSheetItem(this, R.string.MENU_STOP_PENDING_FRIENDS, deletePendingRequest));
+
+        ActionSheet.showWithItems(getCurrentActivity(), items);
+    }
+
+    public void showPendingFriendActionMenu(FLUser user) {
+        if (user == null || user.userId.contentEquals(FloozRestClient.getInstance().currentUser.userId) || user.username == null || user.fullname == null)
+            return;
+
+        this.userActionMenu = user;
+
+        List<ActionSheetItem> items = new ArrayList<>();
+
+        items.add(new ActionSheetItem(this, R.string.MENU_ACCEPT_FRIENDS, acceptFriend));
+        items.add(new ActionSheetItem(this, R.string.MENU_DECLINE_FRIENDS, declineFriend));
+
+        ActionSheet.showWithItems(getCurrentActivity(), items);
+    }
+
+    public void showRemoveFriendActionMenu(FLUser user) {
+        if (user == null || user.userId.contentEquals(FloozRestClient.getInstance().currentUser.userId) || user.username == null || user.fullname == null)
+            return;
+
+        this.userActionMenu = user;
+
+        List<ActionSheetItem> items = new ArrayList<>();
+
+        items.add(new ActionSheetItem(this, R.string.MENU_REMOVE_FRIENDS, removeFriend));
 
         ActionSheet.showWithItems(getCurrentActivity(), items);
     }

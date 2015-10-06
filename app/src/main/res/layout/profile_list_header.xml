@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/header_cover"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/launch_background"
+        android:adjustViewBounds="true"
+        />
+
+    <com.makeramen.RoundedImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/profile_card_pic"
+        android:scaleType="centerCrop"
+        android:layout_width="@dimen/profile_pic_large"
+        android:layout_height="@dimen/profile_pic_large"
+        android:layout_marginLeft="@dimen/dimen_large"
+        android:layout_marginBottom="-50dp"
+        android:layout_above="@+id/informations_container"
+        android:src="@drawable/avatar_default"
+        app:corner_radius="30dip"
+        app:mutate_background="true"
+        app:oval="true"/>
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:layout_below="@+id/header_cover"
+        android:orientation="horizontal">
+
+        <ImageView
+            android:id="@+id/settings_profile_button"
+            android:layout_width="40dp"
+            android:padding="@dimen/dimen_large"
+            android:layout_height="wrap_content"
+            android:src="@drawable/cog"
+            android:layout_marginTop="-7dp"
+            android:layout_below="@+id/header_cover"
+            android:layout_toLeftOf="@+id/profile_button_follow" />
+
+        <ImageView
+            android:id="@+id/unfollow_profile_button"
+            android:layout_width="33dp"
+            android:padding="7dp"
+            android:layout_height="33dp"
+            android:src="@drawable/unfollow"
+            android:layout_marginTop="5dp"
+            android:layout_below="@+id/header_cover"
+            android:layout_toLeftOf="@+id/profile_button_follow"
+            android:background="@drawable/background_action_button"/>
+
+        <LinearLayout
+            android:id="@+id/profile_button_add"
+            android:layout_width="wrap_content"
+            android:layout_height="33dp"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/header_cover"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/frame_action_button">
+            <ImageView
+                android:id="@+id/add_profile_image"
+                android:layout_width="40dp"
+                android:padding="10dp"
+                android:layout_height="40dp"
+                android:src="@drawable/follow"
+                android:layout_below="@+id/header_cover"
+                android:layout_alignParentRight="true"/>
+            <TextView
+                android:id="@+id/add_profile_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Ajouter"
+                android:layout_marginLeft="-3dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="1dp"
+                android:textColor="@color/blue"
+                android:gravity="center_vertical"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/profile_button_add_pending"
+            android:layout_width="wrap_content"
+            android:layout_height="33dp"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/header_cover"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/frame_action_button">
+            <ImageView
+                android:id="@+id/add_pending_profile_image"
+                android:layout_width="40dp"
+                android:padding="10dp"
+                android:layout_height="40dp"
+                android:src="@drawable/follow"
+                android:layout_below="@+id/header_cover"
+                android:layout_alignParentRight="true"/>
+            <TextView
+                android:id="@+id/add_pending_profile_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Requête en attente"
+                android:layout_marginLeft="-3dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="1dp"
+                android:textColor="@color/blue"
+                android:gravity="center_vertical"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/profile_button_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="33dp"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/header_cover"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/frame_action_button">
+            <TextView
+                android:id="@+id/edit_profile_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Éditer le profil"
+                android:layout_marginLeft="6dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="1dp"
+                android:textColor="@color/blue"
+                android:gravity="center_vertical"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/profile_largebutton_pending"
+            android:layout_width="wrap_content"
+            android:layout_height="33dp"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/header_cover"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/background_action_button">
+            <ImageView
+                android:id="@+id/pending_largebutton_image"
+                android:layout_width="40dp"
+                android:padding="10dp"
+                android:layout_height="40dp"
+                android:src="@drawable/unfollow"
+                android:layout_below="@+id/header_cover"
+                android:layout_alignParentRight="true"/>
+            <TextView
+                android:id="@+id/pending_largebutton_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Demande envoyée"
+                android:layout_marginLeft="-3dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="1dp"
+                android:textColor="@color/white"
+                android:gravity="center_vertical"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/informations_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/header_cover"
+        android:gravity="left"
+        android:paddingTop="50dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/profile_card_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Username"
+                android:textStyle="bold"
+                android:textSize="17sp"
+                android:layout_marginLeft="@dimen/dimen_large" />
+
+            <ImageView
+                android:id="@+id/profile_icon_certified"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="3dp"
+                android:src="@drawable/certified" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/profile_card_username"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="\@username"
+            android:textColor="#FF707070"
+            android:textSize="14sp"
+            android:layout_marginLeft="@dimen/dimen_large" />
+
+        <TextView
+            android:id="@+id/profile_card_bio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="#FF909090"
+            android:text="bio"
+            android:layout_marginLeft="@dimen/dimen_large"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_below="@+id/informations_container">
+
+        <info.hoang8f.android.segmented.SegmentedGroup
+            android:id="@+id/settings_privacy_segment"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/dimen_large"
+            android:orientation="horizontal">
+
+            <RadioButton
+                android:id="@+id/settings_segment_flooz"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Flooz"
+                style="@style/RadioButton"/>
+
+            <RadioButton
+                android:id="@+id/settings_segment_following"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Amis"
+                style="@style/RadioButton" />
+
+        </info.hoang8f.android.segmented.SegmentedGroup>
+    </LinearLayout>
+</RelativeLayout>

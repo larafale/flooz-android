@@ -1,6 +1,7 @@
 package me.flooz.app.Model;
 
 import android.graphics.Bitmap;
+import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,6 +32,10 @@ public class FLUser
     public String email;
     public String phone;
     public String avatarURL;
+    public String avatarURLFull;
+    public String coverURL;
+    public String coverURLFull;
+    public String userBio;
     public Bitmap avatarData = null;
     public String profileCompletion;
     public Number friendsCount;
@@ -38,6 +43,9 @@ public class FLUser
     public String passCode;
     public String smsCode;
     public String distinctId;
+    public List<String> actions;
+    public boolean isStar;
+    public boolean isPro;
 
     public JSONObject blockObject;
     public Map<String, String> address;
@@ -52,6 +60,9 @@ public class FLUser
     public List<FLUser> friendsRecent = new ArrayList<>(0);
     public List<FLUser> friendsRequest = new ArrayList<>(0);
 
+    public List<FLUser> followers = new ArrayList<>(0);
+    public List<FLUser> followings = new ArrayList<>(0);
+
     public Boolean isFriendWaiting;
 
     public Number record;
@@ -63,6 +74,14 @@ public class FLUser
 
     public UserKind userKind;
     public FLUserSelectedCanal selectedCanal;
+    public PublicMetrics publicMetrics = new PublicMetrics();
+
+    public class PublicMetrics {
+        public int nbFlooz;
+        public int nbFriends;
+        public int nbFollowers;
+        public int nbFollowings;
+    }
 
     public enum UserKind {
         FloozUser,
@@ -117,6 +136,33 @@ public class FLUser
             this.avatarURL = this.json.optString("pic");
             this.profileCompletion = this.json.optString("profileCompletion");
             this.hasSecureCode = this.json.optString("secureCode");
+            this.coverURL = this.json.optString("cover");
+            this.coverURLFull = this.json.optString("coverFull");
+            this.userBio = this.json.optString("bio");
+            this.avatarURLFull = this.json.optString("picFull");
+            this.isStar = this.json.optBoolean("isStar");
+            this.isPro = this.json.optBoolean("isPro");
+
+            if (this.json.has("actions")) {
+                try {
+                    this.actions = JSONHelper.toList(this.json.getJSONArray("actions"));
+                } catch (Exception e) {
+                    Log.d("JSON FAILURE", "Cannot retrieve actions");
+                    this.actions = null;
+                }
+            }
+
+            if (this.json.has("publicMetrics")) {
+                Map<String, Object> pubMetrics = JSONHelper.toMap(this.json.getJSONObject("publicMetrics"));
+                if (pubMetrics.containsKey("flooz"))
+                    this.publicMetrics.nbFlooz = (int)pubMetrics.get("flooz");
+                if (pubMetrics.containsKey("friends"))
+                    this.publicMetrics.nbFriends = (int)pubMetrics.get("friends");
+                if (pubMetrics.containsKey("followers"))
+                    this.publicMetrics.nbFollowers = (int)pubMetrics.get("followers");
+                if (pubMetrics.containsKey("followings"))
+                    this.publicMetrics.nbFollowings = (int)pubMetrics.get("followings");
+            }
 
             if (this.json.has("block"))
                 this.blockObject = this.json.optJSONObject("block");
@@ -169,6 +215,24 @@ public class FLUser
 
                 for (int i = 0; i < arrayFriends.length(); i++) {
                     friends.add(new FLUser(arrayFriends.getJSONObject(i)));
+                }
+            }
+
+            if (this.json.has("followers")) {
+                this.followers = new ArrayList<>(0);
+                JSONArray arrayFollowers = this.json.getJSONArray("followers");
+
+                for (int i = 0; i < arrayFollowers.length(); i++) {
+                    followers.add(new FLUser(arrayFollowers.getJSONObject(i)));
+                }
+            }
+
+            if (this.json.has("followings")) {
+                this.followings = new ArrayList<>(0);
+                JSONArray arrayFollowings = this.json.getJSONArray("followings");
+
+                for (int i = 0; i < arrayFollowings.length(); i++) {
+                    followings.add(new FLUser(arrayFollowings.getJSONObject(i)));
                 }
             }
 

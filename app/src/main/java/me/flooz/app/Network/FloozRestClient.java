@@ -106,7 +106,9 @@ public class FloozRestClient
         Accept,
         Decline,
         Delete,
-        Request
+        Request,
+        Follow,
+        Unfollow
     }
 
     public FloozApplication floozApp;
@@ -524,7 +526,11 @@ public class FloozRestClient
     }
 
     public void checkSecureCodeForUser(final String code, final FloozHttpResponseHandler responseHandler) {
-        this.request("/utils/asserts/secureCode/" + code, HttpRequestType.GET, null, new FloozHttpResponseHandler() {
+        Map<String, Object> params = new HashMap<>();
+        params.put("field", "secureCode");
+        params.put("value", code);
+
+        this.request("/utils/asserts", HttpRequestType.POST, params, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
                 setSecureCode(code);
@@ -946,6 +952,28 @@ public class FloozRestClient
     /*****  TRANSACTIONS  ******/
     /***************************/
 
+    public void getUserTransactions(String userId, FloozHttpResponseHandler responseHandler) {
+        this.request("/users/" + userId + "/flooz", HttpRequestType.GET, null, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                JSONObject jsonResponse = (JSONObject) response;
+
+                List<FLTransaction> transactions = createTransactionArrayFromResult(jsonResponse);
+                if (responseHandler != null) {
+                    Map<String, Object> ret = new HashMap<>();
+                    ret.put("transactions", transactions);
+                    ret.put("nextUrl", jsonResponse.optString("next"));
+                    responseHandler.success(ret);
+                }
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+
+            }
+        });
+    }
+
     public void transactionWithId(String transacId, FloozHttpResponseHandler responseHandler) {
         this.request("/flooz/" + transacId, HttpRequestType.GET, null, responseHandler);
     }
@@ -1094,6 +1122,24 @@ public class FloozRestClient
     /*******  SOCIAL  **********/
     /***************************/
 
+    public void getFullUser(String idTransaction, final FloozHttpResponseHandler responseHandler)
+    {
+        this.request("/social/profile/" + idTransaction, HttpRequestType.GET, null, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                if (responseHandler != null) {
+                    responseHandler.success(new FLUser(((JSONObject) response).optJSONObject("item")));
+                }
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+                if (responseHandler != null)
+                    responseHandler.failure(statusCode, error);
+            }
+        });
+    }
+
     public void likeTransaction(String idTransaction, final FloozHttpResponseHandler responseHandler)
     {
         this.request("/social/likes/" + idTransaction, HttpRequestType.POST, null, new FloozHttpResponseHandler() {
@@ -1158,7 +1204,7 @@ public class FloozRestClient
         Map<String, Object> param = new HashMap<>(1);
         param.put("metrics", metrics);
 
-        this.request("/friends/" + userID + "/" + this.friendActionToParams(FriendAction.Request), HttpRequestType.POST, param, new FloozHttpResponseHandler() {
+        this.request("/social/" + userID + "/" + this.friendActionToParams(FriendAction.Request), HttpRequestType.POST, param, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
                 if (canal.contentEquals("suggestion"))
@@ -1177,7 +1223,7 @@ public class FloozRestClient
     }
 
     public void performActionOnFriend(String friendID, FriendAction action, final FloozHttpResponseHandler responseHandler) {
-        this.request("/friends/" + friendID + "/" + this.friendActionToParams(action), HttpRequestType.POST, null, responseHandler);
+        this.request("/social/" + friendID + "/" + this.friendActionToParams(action), HttpRequestType.POST, null, responseHandler);
     }
 
     public void searchUser(String searchString, Boolean newFLooz, final FloozHttpResponseHandler responseHandler) {
@@ -1363,6 +1409,12 @@ public class FloozRestClient
                 break;
             case Request:
                 ret = "request";
+                break;
+            case Follow:
+                ret = "follow";
+                break;
+            case Unfollow:
+                ret = "unfollow";
                 break;
         }
         return ret;

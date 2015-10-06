@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <me.flooz.app.UI.View.TimelineListView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/profile_list_container"
+        android:orientation="vertical" android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    </me.flooz.app.UI.View.TimelineListView>
+
+    <ImageView
+        android:id="@+id/header_cover_sticky"
+        android:layout_width="match_parent"
+        android:layout_height="117dp"
+        android:layout_marginTop="-52dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/launch_background"
+        android:adjustViewBounds="true" />
+
+    <LinearLayout
+        android:id="@+id/profile_sticky_layout"
+        android:layout_width="fill_parent"
+        android:layout_height="65dp"
+        android:orientation="vertical"
+        android:gravity="center"
+        android:paddingTop="62dp">
+
+        <TextView
+            android:id="@+id/profile_card_username_sticky"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Username"
+            android:textStyle="bold"
+            android:textSize="17sp" />
+
+        <TextView
+            android:id="@+id/profile_card_subname_sticky"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:text="\@username"
+            android:textColor="#FF707070"/>
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/transac_card_header_close"
+        android:layout_width="@dimen/card_header_close"
+        android:padding="@dimen/dimen_large"
+        android:layout_height="wrap_content"
+        android:src="@drawable/nav_back"
+        android:layout_alignParentLeft="true"/>
+
+</RelativeLayout>

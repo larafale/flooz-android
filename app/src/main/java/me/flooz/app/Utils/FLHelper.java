@@ -37,4 +37,13 @@ public class FLHelper {
 
         return number.replaceAll("\\.?0*$", "");
     }
+
+    public static int numLength(int n)
+    {
+        int l;
+        n = Math.abs(n);
+        for (l = 0; n > 0; ++l)
+            n /= 10;
+        return l;
+    }
 }

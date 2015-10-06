@@ -69,6 +69,10 @@ public class TimelineListAdapter extends BaseAdapter {
         public LinearLayout transactionSocialContainer;
     }
 
+    public void setTransactions(List<FLTransaction> transactions){
+        this.transactions = transactions;
+    }
+
     @Override
     public int getCount() {
         return this.transactions.size();

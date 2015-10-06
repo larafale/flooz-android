@@ -168,7 +168,8 @@
                             android:gravity="top"
                             android:focusable="true"
                             android:focusableInTouchMode="true"
-                            android:textColor="@android:color/white"/>
+                            android:textColor="@android:color/white"
+                            android:inputType="textShortMessage"/>
 
                     </RelativeLayout>
 

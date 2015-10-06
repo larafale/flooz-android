@@ -173,6 +173,9 @@
     <string name="MENU_NEW_FLOOZ">Floozer @%s</string>
     <string name="MENU_ADD_FRIENDS">Ajouter aux amis</string>
     <string name="MENU_REMOVE_FRIENDS">Supprimer des amis</string>
+    <string name="MENU_ACCEPT_FRIENDS">Accepter la requête</string>
+    <string name="MENU_DECLINE_FRIENDS">Refuser la requête</string>
+    <string name="MENU_STOP_PENDING_FRIENDS">Annuler la requête</string>
     <string name="MENU_AVATAR">Voir la photo</string>
     <string name="MENU_OTHER">Autre…</string>
     <string name="MENU_BLOCK_USER">Bloquer</string>

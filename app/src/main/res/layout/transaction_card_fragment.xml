@@ -415,7 +415,7 @@
                 android:orientation="horizontal">
 
                 <EditText
-                    android:inputType="textLongMessage"
+                    android:inputType="textShortMessage"
                     android:id="@+id/transac_card_comments_textfield"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"

@@ -13,7 +13,6 @@ import android.content.BroadcastReceiver;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
-import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
@@ -25,7 +24,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +35,6 @@ import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.R;
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.App.FloozApplication;
-import me.flooz.app.UI.Fragment.Home.TabFragments.CashoutFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.NotificationsFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.ProfileFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.ShareFragment;
@@ -45,7 +42,6 @@ import me.flooz.app.UI.Fragment.Home.TabFragments.TabBarFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.TimelineFragment;
 import me.flooz.app.UI.Tools.ActionSheet;
 import me.flooz.app.UI.Tools.ActionSheetItem;
-import me.flooz.app.UI.Tools.CustomDialogImageViewer;
 import me.flooz.app.UI.Tools.CustomImageViewer;
 import me.flooz.app.UI.Tools.CustomToast;
 import me.flooz.app.Network.FloozRestClient;
@@ -610,6 +606,15 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
 
         this.pushFragmentInCurrentTab(transactionCardFragment);
     }
+
+//    public void showProfileCard(FLUser user) {
+//        FloozRestClient.getInstance().readNotification(transaction.transactionId, null);
+//        ProfileCardFragment profileCardFragment = new ProfileCardFragment();
+//
+//        profileCardFragment.user = user;
+//
+//        this.pushFragmentInCurrentTab(profileCardFragment);
+//    }
 
     public void showImageViewer(final Bitmap image) {
         Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), android.R.anim.fade_in);
