@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import jp.wasabeef.blurry.Blurry;
 import me.flooz.app.Adapter.TimelineListAdapter;
 import me.flooz.app.Adapter.UserListAdapter;
 import me.flooz.app.App.FloozApplication;
@@ -77,6 +78,7 @@ public class ProfileController extends BaseController implements UserListAdapter
     private RadioButton settingsFloozButton;
     private RadioButton settingsFollowingButton;
     private LinearLayout buttonRequestPending;
+    private RelativeLayout stickyCoverContainer;
 
     private TimelineListAdapter timelineAdapter;
 //    private UserListAdapter followersAdapter;
@@ -92,6 +94,7 @@ public class ProfileController extends BaseController implements UserListAdapter
     private int modCond = 0;
     private boolean isSticky = false;
     private boolean isHeaderSticky = false;
+    private boolean isBlurred = false;
 
     public TimelineListAdapter.TimelineListRowDelegate delegate;
 
@@ -104,10 +107,12 @@ public class ProfileController extends BaseController implements UserListAdapter
         this.mainListContainer.addHeaderView(listHeader);
         this.mainListContainer.setAdapter(new UserListAdapter(this.parentActivity, this.flUser, UserListAdapter.ListType.FOLLOWERS));
         this.stickyLayout = (LinearLayout) view.findViewById(R.id.profile_sticky_layout);
+        this.stickyProfileCover = (ImageView) view.findViewById(R.id.header_cover_sticky);
         this.stickyHeader = (ImageView) view.findViewById(R.id.header_cover_sticky);
         this.stickyName = (TextView) view.findViewById(R.id.profile_card_username_sticky);
         this.stickyUsername = (TextView) view.findViewById(R.id.profile_card_subname_sticky);
         this.cardHeaderCloseButton = (ImageView) view.findViewById(R.id.transac_card_header_close);
+        this.stickyCoverContainer = (RelativeLayout) view.findViewById(R.id.sticky_cover_container);
 
         this.settingsButton = (ImageView) listHeader.findViewById(R.id.settings_profile_button);
         this.addButtonImage = (ImageView) listHeader.findViewById(R.id.add_profile_image);
@@ -171,7 +176,6 @@ public class ProfileController extends BaseController implements UserListAdapter
 
         this.settingsFloozButton.setOnClickListener(v -> mainListContainer.setAdapter(timelineAdapter));
         this.settingsFollowingButton.setOnClickListener(v -> mainListContainer.setAdapter(friendAdapter));
-
         this.cardHeaderCloseButton.setOnClickListener(v -> {
             if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
                 parentActivity.finish();
@@ -180,10 +184,14 @@ public class ProfileController extends BaseController implements UserListAdapter
                 ((HomeActivity) this.parentActivity).popFragmentInCurrentTab();
             }
         });
-
         this.profileImage.setOnClickListener(v -> CustomImageViewer.start(parentActivity, profileImageFullURL));
-
-        this.mainListContainer.setOnItemClickListener((adapterView, view1, i, l) -> ListUserClick((FLUser)adapterView.getAdapter().getItem(i)));
+        this.mainListContainer.setOnItemClickListener((adapterView, view1, i, l) -> ListUserClick((FLUser) adapterView.getAdapter().getItem(i)));
+        this.editButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // TODO EDIT VIEW
+            }
+        });
 
         this.mainListContainer.setOnTimelineListViewListener(new TimelineListView.OnTimelineListViewListener() {
             @Override
@@ -233,10 +241,31 @@ public class ProfileController extends BaseController implements UserListAdapter
                 if (scrollY < 370 && this.isHeaderSticky && firstVisiblePosition == 0) {
                     this.stickyLayout.setVisibility(View.INVISIBLE);
                     this.isHeaderSticky = !this.isHeaderSticky;
+
+//                    if (isBlurred) {
+//                        if (flUser.coverURL != null && !flUser.coverURL.isEmpty() && !flUser.coverURL.contentEquals("/img/nocover.png")) {
+//                            ImageLoader.getInstance().displayImage(flUser.coverURL, this.stickyHeader);
+//                        }
+//                        else {
+//                            this.stickyHeader.setBackgroundResource(R.drawable.launch_background);
+//                        }
+//                        this.isBlurred = !isBlurred;
+//                    }
                 }
                 if (scrollY >= 370 && !this.isHeaderSticky && firstVisiblePosition == 0) {
                     this.stickyLayout.setVisibility(View.VISIBLE);
                     this.isHeaderSticky = !this.isHeaderSticky;
+
+//                    if (!isBlurred) {
+//                        Blurry.with(this.parentActivity)
+//                            .radius(15)
+//                            .sampling(1)
+//                            .async()
+//                            .animate(2000)
+//                            .capture(this.stickyHeader)
+//                            .into(this.stickyHeader);
+//                        this.isBlurred = !isBlurred;
+//                    }
                 }
             }
         });
@@ -317,6 +346,14 @@ public class ProfileController extends BaseController implements UserListAdapter
             this.userBio.setText(flUser.userBio);
             this.userBio.setVisibility(View.VISIBLE);
         }
+
+        // TODO Opti pour pas que ca prenne 10 ans
+        Blurry.with(this.parentActivity)
+                .radius(20)
+                .sampling(1)
+                .async()
+                .capture(this.stickyHeader)
+                .into(this.stickyHeader);
 
         SpannableString floozString = new SpannableString(flUser.publicMetrics.nbFlooz + "\nFlooz");
         floozString.setSpan(new StyleSpan(Typeface.BOLD), 0, FLHelper.numLength(flUser.publicMetrics.nbFlooz), 0);

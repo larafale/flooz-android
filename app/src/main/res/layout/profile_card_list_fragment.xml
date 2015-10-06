@@ -6,18 +6,23 @@
     <me.flooz.app.UI.View.TimelineListView xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/profile_list_container"
         android:orientation="vertical" android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:scrollbars="none">
     </me.flooz.app.UI.View.TimelineListView>
 
-    <ImageView
-        android:id="@+id/header_cover_sticky"
-        android:layout_width="match_parent"
-        android:layout_height="117dp"
-        android:layout_marginTop="-52dp"
-        android:scaleType="centerCrop"
-        android:src="@drawable/launch_background"
-        android:adjustViewBounds="true" />
+    <RelativeLayout
+        android:id="@+id/sticky_cover_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <ImageView
+            android:id="@+id/header_cover_sticky"
+            android:layout_width="match_parent"
+            android:layout_height="117dp"
+            android:layout_marginTop="-52dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/launch_background"
+            android:adjustViewBounds="true" />
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/profile_sticky_layout"
