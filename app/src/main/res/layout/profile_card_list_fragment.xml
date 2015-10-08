@@ -17,10 +17,10 @@
         <ImageView
             android:id="@+id/header_cover_sticky"
             android:layout_width="match_parent"
-            android:layout_height="117dp"
-            android:layout_marginTop="-52dp"
+            android:layout_height="119dp"
+            android:layout_marginTop="-54dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/launch_background"
+            android:src="@drawable/cover"
             android:adjustViewBounds="true" />
     </RelativeLayout>
 
@@ -37,8 +37,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Username"
-            android:textStyle="bold"
-            android:textSize="17sp" />
+            android:textSize="17sp"
+            android:shadowColor="#000000"
+            android:shadowRadius="1"/>
 
         <TextView
             android:id="@+id/profile_card_subname_sticky"

@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.makeramen.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import me.flooz.app.Model.FLError;
@@ -50,6 +51,8 @@ public class TimelineListAdapter extends BaseAdapter {
     public TimelineListAdapter(Context context, List<FLTransaction> values) {
         this.context = context;
         this.transactions = values;
+        if (this.transactions == null)
+            this.transactions = new ArrayList<>();
     }
 
     private static class ViewHolder {

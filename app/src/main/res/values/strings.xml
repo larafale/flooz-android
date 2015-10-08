@@ -183,6 +183,9 @@
     <string name="MENU_REPORT_LINE">Signaler ce contenu</string>
     <string name="MENU_SAVE_PICTURE">Enregistrer l\'image</string>
     <string name="MENU_QR_CODE">Afficher le QR Code</string>
+    <string name="MENU_TAKE_PICTURE">Prendre une photo</string>
+    <string name="MENU_UPLOAD_PICTURE">Album Photo</string>
+    <string name="MENU_DELETE_COVER">Supprimer la bannière</string>
 
     <string name="BLOCK_USER_ALERT_MESSAGE">Êtes-vous sûr de vouloir bloquer cet utilisateur ?</string>
     <string name="REPORT_USER_ALERT_MESSAGE">Êtes-vous sûr de vouloir signaler cet utilisateur ?</string>

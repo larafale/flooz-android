@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <RelativeLayout
+        android:id="@+id/edit_profile_header"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:background="@color/background_header"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/edit_profile_headername"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Mon Profil"
+            android:textSize="19sp"/>
+
+        <ImageView
+            android:id="@+id/edit_profile_save"
+            android:layout_width="@dimen/card_header_close"
+            android:padding="13dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginRight="4dp"
+            android:layout_height="fill_parent"
+            android:src="@drawable/nav_check"
+            android:layout_alignParentRight="true"/>
+
+        <ImageView
+            android:id="@+id/edit_profile_back"
+            android:layout_width="@dimen/card_header_close"
+            android:padding="@dimen/dimen_large"
+            android:layout_height="fill_parent"
+            android:src="@drawable/nav_back"
+            android:layout_alignParentLeft="true"/>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/header_shadow"
+            android:background="@drawable/header_background_shadow"
+            android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/edit_profile_cover_container"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/edit_profile_header">
+
+        <ImageView
+            android:id="@+id/edit_profile_cover"
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/launch_background"
+            android:adjustViewBounds="true" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="120dp"
+            android:background="@color/light_black_alpha"/>
+
+        <ImageView
+            android:id="@+id/edit_profile_camera1"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+                android:layout_centerInParent="true"
+            android:src="@drawable/camera_black"/>
+    </RelativeLayout>
+
+    <com.makeramen.RoundedImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/edit_profile_avatar"
+        android:scaleType="centerCrop"
+        android:layout_width="@dimen/profile_pic_large"
+        android:layout_height="@dimen/profile_pic_large"
+        android:layout_marginLeft="@dimen/dimen_large"
+        android:layout_marginTop="-25dp"
+        android:src="@drawable/avatar_default"
+        app:corner_radius="30dip"
+        app:mutate_background="true"
+        android:layout_below="@+id/edit_profile_cover_container"
+        app:oval="true"/>
+
+    <com.makeramen.RoundedImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/background_view"
+        android:scaleType="centerCrop"
+        android:layout_width="@dimen/profile_pic_large"
+        android:layout_height="@dimen/profile_pic_large"
+        android:layout_marginLeft="@dimen/dimen_large"
+        android:layout_marginTop="-25dp"
+        android:src="@color/light_black_alpha"
+        app:corner_radius="30dip"
+        app:mutate_background="true"
+        android:layout_below="@+id/edit_profile_cover_container"
+        app:oval="true"/>
+
+    <RelativeLayout
+        android:id="@+id/edit_profile_camera_container"
+        android:layout_width="@dimen/profile_pic_large"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="@dimen/dimen_large"
+        android:layout_below="@+id/edit_profile_cover_container">
+        <ImageView
+            android:id="@+id/edit_profile_camera2"
+            android:scaleType="centerCrop"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:layout_marginTop="-6dp"
+            android:layout_centerInParent="true"
+            android:src="@drawable/camera_black"/>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_marginLeft="13dp"
+        android:layout_marginRight="13dp"
+        android:layout_marginTop="10dp"
+        android:layout_below="@+id/edit_profile_avatar"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/edit_profile_bio_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="7dp"
+            android:text="Biographie"
+            android:textSize="15sp"/>
+
+        <EditText
+            android:id="@+id/edit_profile_bio"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

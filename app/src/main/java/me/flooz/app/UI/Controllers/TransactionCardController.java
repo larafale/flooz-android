@@ -189,23 +189,23 @@ public class TransactionCardController extends BaseController {
             }
         }));
 
-//        this.cardFromPic.setOnClickListener(v -> {
-//            transaction.from.selectedCanal = FLUser.FLUserSelectedCanal.TimelineCanal;
-//            FloozApplication.getInstance().showUserActionMenu(transaction.from);
-//        });
-
         this.cardFromPic.setOnClickListener(v -> {
             transaction.to.selectedCanal = FLUser.FLUserSelectedCanal.TimelineCanal;
             ProfileCardFragment profileCardFragment = new ProfileCardFragment();
-            profileCardFragment.user = transaction.from;
+            if (this.cardFromUsername.getText().toString().contentEquals("@" + FloozRestClient.getInstance().currentUser.username))
+                profileCardFragment.user = FloozRestClient.getInstance().currentUser;
+            else
+                profileCardFragment.user = transaction.from;
             ((HomeActivity)parentActivity).pushFragmentInCurrentTab(profileCardFragment);
         });
 
         this.cardToPic.setOnClickListener(v -> {
             transaction.to.selectedCanal = FLUser.FLUserSelectedCanal.TimelineCanal;
-//            FloozApplication.getInstance().showUserActionMenu(transaction.to);
             ProfileCardFragment profileCardFragment = new ProfileCardFragment();
-            profileCardFragment.user = transaction.to;
+            if (this.cardToUsername.getText().toString().contentEquals("@" + FloozRestClient.getInstance().currentUser.username))
+                profileCardFragment.user = FloozRestClient.getInstance().currentUser;
+            else
+                profileCardFragment.user = transaction.to;
             ((HomeActivity)parentActivity).pushFragmentInCurrentTab(profileCardFragment);
         });
 
@@ -276,6 +276,14 @@ public class TransactionCardController extends BaseController {
             InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(cardCommentsTextfield, InputMethodManager.SHOW_IMPLICIT);
         }
+
+        // TODO Check plutot URL ?
+        FLUser self = FloozRestClient.getInstance().currentUser;
+        if (this.cardToUsername.getText().toString().contentEquals("@" + self.username) && self.avatarURL != null && !self.avatarURL.isEmpty())
+            ImageLoader.getInstance().displayImage(self.avatarURL, this.cardToPic);
+        if (this.cardFromUsername.getText().toString().contentEquals("@" + self.username) && self.avatarURL != null && !self.avatarURL.isEmpty())
+            ImageLoader.getInstance().displayImage(self.avatarURL, this.cardFromPic);
+
     }
 
     @Override
@@ -286,7 +294,6 @@ public class TransactionCardController extends BaseController {
             InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(cardCommentsTextfield, InputMethodManager.SHOW_IMPLICIT);
         }
-
         if (this.transactionPending)
             FloozRestClient.getInstance().showLoadView();
     }
