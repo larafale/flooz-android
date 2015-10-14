@@ -54,6 +54,7 @@ public class ProfileCardFragment extends TabBarFragment implements TimelineListA
     @Override
     public void onStart() {
         super.onStart();
+//        this.setRetainInstance(true);
         this.controller.onStart();
     }
 

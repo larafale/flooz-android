@@ -140,32 +140,27 @@ public class ProfileListAdapter extends BaseAdapter implements StickyListHeaders
         menuHeader.add(this.context.getResources().getString(R.string.ACCOUNT_MENU_SETTINGS));
         menuHeader.add(this.context.getResources().getString(R.string.MENU_OTHER));
 
-        Map<String, Object> item1 = new HashMap<>();
-        item1.put("title", this.context.getResources().getString(R.string.NAV_FRIENDS));
-        item1.put("action", "friends");
-        item1.put("notif", friendsNotifs);
-        item1.put("headerID", 1);
-        menuData.add(item1);
+        Map<String, Object> item0 = new HashMap<>();
+        item0.put("title", this.context.getResources().getString(R.string.NAV_PROFILE));
+        item0.put("action", "profile");
+        item0.put("headerID", 1);
+        menuData.add(item0);
+
+        // TODO Changer la vue pour passer sur demande en attente
+        if (friendsNotifs > 0) {
+            Map<String, Object> item1 = new HashMap<>();
+            item1.put("title", this.context.getResources().getString(R.string.NAV_FRIENDS));
+            item1.put("action", "friends");
+            item1.put("notif", friendsNotifs);
+            item1.put("headerID", 1);
+            menuData.add(item1);
+        }
 
         Map<String, Object> item2 = new HashMap<>();
         item2.put("title", this.context.getResources().getString(R.string.ACCOUNT_MENU_CASHOUT));
         item2.put("action", "cashout");
         item2.put("headerID", 1);
         menuData.add(item2);
-
-        Map<String, Object> item3 = new HashMap<>();
-        item3.put("title", this.context.getResources().getString(R.string.SETTINGS_CARD));
-        item3.put("action", "card");
-        item3.put("notif", cardNotifs);
-        item3.put("headerID", 1);
-        menuData.add(item3);
-
-        Map<String, Object> item4 = new HashMap<>();
-        item4.put("title", this.context.getResources().getString(R.string.SETTINGS_RIB));
-        item4.put("action", "bank");
-        item4.put("notif", bankNotifs);
-        item4.put("headerID", 1);
-        menuData.add(item4);
 
         Map<String, Object> item5 = new HashMap<>();
         item5.put("title", this.context.getResources().getString(R.string.SETTINGS_COORD));
@@ -186,6 +181,20 @@ public class ProfileListAdapter extends BaseAdapter implements StickyListHeaders
         item7.put("action", "sponsor");
         item7.put("headerID", 1);
         menuData.add(item7);
+
+        Map<String, Object> item3 = new HashMap<>();
+        item3.put("title", this.context.getResources().getString(R.string.SETTINGS_CARD));
+        item3.put("action", "card");
+        item3.put("notif", cardNotifs);
+        item3.put("headerID", 2);
+        menuData.add(item3);
+
+        Map<String, Object> item4 = new HashMap<>();
+        item4.put("title", this.context.getResources().getString(R.string.SETTINGS_RIB));
+        item4.put("action", "bank");
+        item4.put("notif", bankNotifs);
+        item4.put("headerID", 2);
+        menuData.add(item4);
 
         Map<String, Object> item8 = new HashMap<>();
         item8.put("title", this.context.getResources().getString(R.string.SETTINGS_PREFERENCES));

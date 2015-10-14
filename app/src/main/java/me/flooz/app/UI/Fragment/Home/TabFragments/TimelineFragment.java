@@ -5,7 +5,14 @@ import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
@@ -17,6 +24,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.baoyz.widget.PullRefreshLayout;
@@ -34,6 +42,8 @@ import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.HomeActivity;
+import me.flooz.app.UI.Fragment.Home.SearchFragment;
 import me.flooz.app.UI.View.TimelineListView;
 import me.flooz.app.UI.View.ToolTipFilterView;
 import me.flooz.app.UI.View.ToolTipFilterViewDelegate;
@@ -56,7 +66,7 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
     private ToolTipLayout tipContainer;
     private ToolTipFilterView tooltipFilterView;
 
-    private TextView headerTitle;
+//    private TextView headerTitle;
     private TextView headerBalanceIndicator;
     private ImageView headerFilter;
 
@@ -65,6 +75,13 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
     public TimelineListView timelineListView;
     private TimelineListAdapter timelineAdapter;
     private ImageView backgroundImage;
+    private RadioButton settingsFilterAll;
+    private RadioButton settingsFilterFriends;
+    private RadioButton settingsFilterSelf;
+    private Drawable scopeAll;
+    private Drawable scopeFriend;
+    private Drawable scopePrivate;
+    private ImageView searchButton;
 
     public List<FLTransaction> transactions = null;
     public FLTransaction.TransactionScope currentFilter;
@@ -106,22 +123,64 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
     {
         View view = inflater.inflate(R.layout.timeline_fragment, null);
 
-        this.headerTitle = (TextView) view.findViewById(R.id.header_title);
-        this.headerBalanceIndicator = (TextView) view.findViewById(R.id.header_item_right);
-        this.headerFilter = (ImageView) view.findViewById(R.id.header_item_left);
+//        this.headerTitle = (TextView) view.findViewById(R.id.header_title);
+        // TODO SEARCH
+//        this.headerBalanceIndicator = (TextView) view.findViewById(R.id.header_item_right);
+//        this.headerFilter = (ImageView) view.findViewById(R.id.header_item_left);
 
-        this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this.tabBarActivity));
-        this.headerBalanceIndicator.setTypeface(CustomFonts.customContentLight(this.tabBarActivity));
-        this.headerFilter.setColorFilter(this.tabBarActivity.getResources().getColor(R.color.blue));
+//        this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this.tabBarActivity));
+//        this.headerBalanceIndicator.setTypeface(CustomFonts.customContentLight(this.tabBarActivity));
+//        this.headerFilter.setColorFilter(this.tabBarActivity.getResources().getColor(R.color.blue));
+
+        this.searchButton = (ImageView) view.findViewById(R.id.header_item_right);
+        this.searchButton.setColorFilter(getResources().getColor(R.color.blue));
+
+        this.settingsFilterAll = (RadioButton) view.findViewById(R.id.settings_segment_all);
+        this.settingsFilterFriends = (RadioButton) view.findViewById(R.id.settings_segment_friends);
+        this.settingsFilterSelf = (RadioButton) view.findViewById(R.id.settings_segment_private);
+        prepareBitmaps();
 
         this.refreshContainer = (PullRefreshLayout) view.findViewById(R.id.timeline_refresh_container);
         this.timelineListView = (TimelineListView) view.findViewById(R.id.timeline_list);
         ((TextView)this.timelineListView.getScrollBarPanel().findViewById(R.id.timeline_scrollbar_panel_when)).setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
         this.backgroundImage  = (ImageView) view.findViewById(R.id.timeline_background);
-
         this.tipContainer = (ToolTipLayout) view.findViewById(R.id.timeline_tooltip_container);
 
+        switch (this.currentFilter) {
+            case TransactionScopeFriend:
+                resetFilterColor();
+                this.scopeFriend.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+                this.settingsFilterFriends.setChecked(true);
+                break;
+            case TransactionScopePrivate:
+                resetFilterColor();
+                this.scopePrivate.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+                this.settingsFilterSelf.setChecked(true);
+                break;
+            default:
+                resetFilterColor();
+                this.scopeAll.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+                this.settingsFilterAll.setChecked(true);
+                break;
+        }
+
         this.refreshContainer.setOnRefreshListener(TimelineFragment.this::refreshTransactions);
+        this.settingsFilterAll.setOnClickListener(v -> {
+            filterChanged(FLTransaction.TransactionScope.TransactionScopeAll);
+            resetFilterColor();
+            this.scopeAll.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+        });
+        this.settingsFilterFriends.setOnClickListener(v -> {
+            filterChanged(FLTransaction.TransactionScope.TransactionScopeFriend);
+            resetFilterColor();
+            this.scopeFriend.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+        });
+        this.settingsFilterSelf.setOnClickListener(v -> {
+            filterChanged(FLTransaction.TransactionScope.TransactionScopePrivate);
+            resetFilterColor();
+            this.scopePrivate.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+        });
+        this.searchButton.setOnClickListener(v -> tabBarActivity.pushFragmentInCurrentTab(new SearchFragment()));
 
         this.timelineListView.setOnTimelineListViewListener(new TimelineListView.OnTimelineListViewListener() {
             @Override
@@ -161,46 +220,46 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
         this.tooltipFilterView.changeFilter(this.currentFilter);
         this.tooltipFilterView.delegate = this;
 
-        this.headerFilter.setOnClickListener(v -> {
-            if (toolTipFilter != null) {
-                filterChanged(currentFilter);
-            } else {
-                if (tooltipFilterView.view.getParent() != null)
-                    ((ViewGroup)tooltipFilterView.view.getParent()).removeView(tooltipFilterView.view);
+//        this.headerFilter.setOnClickListener(v -> {
+//            if (toolTipFilter != null) {
+//                filterChanged(currentFilter);
+//            } else {
+//                if (tooltipFilterView.view.getParent() != null)
+//                    ((ViewGroup)tooltipFilterView.view.getParent()).removeView(tooltipFilterView.view);
+//
+//                toolTipFilter = new ToolTip.Builder(tabBarActivity)
+//                        .anchor(headerFilter)
+//                        .gravity(Gravity.BOTTOM)
+//                        .color(tabBarActivity.getResources().getColor(android.R.color.white))
+//                        .pointerSize(25)
+//                        .contentView(tooltipFilterView.view)
+//                        .dismissOnTouch(false)
+//                        .build();
+//
+//                tipContainer.setVisibility(View.VISIBLE);
+//                tipContainer.addTooltip(toolTipFilter, true);
+//            }
+//        });
 
-                toolTipFilter = new ToolTip.Builder(tabBarActivity)
-                        .anchor(headerFilter)
-                        .gravity(Gravity.BOTTOM)
-                        .color(tabBarActivity.getResources().getColor(android.R.color.white))
-                        .pointerSize(25)
-                        .contentView(tooltipFilterView.view)
-                        .dismissOnTouch(false)
-                        .build();
-
-                tipContainer.setVisibility(View.VISIBLE);
-                tipContainer.addTooltip(toolTipFilter, true);
-            }
-        });
-
-        this.headerBalanceIndicator.setOnClickListener(v -> {
-            final Dialog dialog = new Dialog(tabBarActivity);
-
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setContentView(R.layout.custom_dialog_balance);
-
-            TextView title = (TextView) dialog.findViewById(R.id.dialog_wallet_title);
-            title.setTypeface(CustomFonts.customContentRegular(tabBarActivity), Typeface.BOLD);
-
-            TextView text = (TextView) dialog.findViewById(R.id.dialog_wallet_msg);
-            text.setTypeface(CustomFonts.customContentRegular(tabBarActivity));
-
-            Button close = (Button) dialog.findViewById(R.id.dialog_wallet_btn);
-
-            close.setOnClickListener(v1 -> dialog.dismiss());
-
-            dialog.setCanceledOnTouchOutside(true);
-            dialog.show();
-        });
+//        this.headerBalanceIndicator.setOnClickListener(v -> {
+//            final Dialog dialog = new Dialog(tabBarActivity);
+//
+//            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//            dialog.setContentView(R.layout.custom_dialog_balance);
+//
+//            TextView title = (TextView) dialog.findViewById(R.id.dialog_wallet_title);
+//            title.setTypeface(CustomFonts.customContentRegular(tabBarActivity), Typeface.BOLD);
+//
+//            TextView text = (TextView) dialog.findViewById(R.id.dialog_wallet_msg);
+//            text.setTypeface(CustomFonts.customContentRegular(tabBarActivity));
+//
+//            Button close = (Button) dialog.findViewById(R.id.dialog_wallet_btn);
+//
+//            close.setOnClickListener(v1 -> dialog.dismiss());
+//
+//            dialog.setCanceledOnTouchOutside(true);
+//            dialog.show();
+//        });
 
         this.tipContainer.setOnClickListener(v -> filterChanged(currentFilter));
 
@@ -251,6 +310,7 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
             this.timelineAdapter.notifyDataSetChanged();
             this.refreshContainer.setRefreshing(true);
             refreshTransactions();
+            // TODO Refresh ne fonctionne pas
         }
     }
 
@@ -270,6 +330,33 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
     public void ListItemImageClick(String imgUrl) {
         if (delegate != null)
             delegate.onItemImageSelected(imgUrl);
+    }
+
+    private void resetFilterColor() {
+        this.scopeAll.setColorFilter(getResources().getColor(R.color.blue), PorterDuff.Mode.SRC_IN);
+        this.scopeFriend.setColorFilter(getResources().getColor(R.color.blue), PorterDuff.Mode.SRC_IN);
+        this.scopePrivate.setColorFilter(getResources().getColor(R.color.blue), PorterDuff.Mode.SRC_IN);
+    }
+
+    private void prepareBitmaps() {
+        int imgWidth = 55;
+        int imgHeight = 55;
+
+        Bitmap scopeAllBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.scope_public), imgWidth, imgHeight, true);
+        Bitmap scopeFriendBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.scope_friend),imgWidth, imgHeight, true);
+        Bitmap scopePrivateBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.scope_private), imgWidth, imgHeight, true);
+
+        this.scopeAll = new BitmapDrawable(getResources(), scopeAllBitmap);
+        this.scopeFriend = new BitmapDrawable(getResources(), scopeFriendBitmap);
+        this.scopePrivate = new BitmapDrawable(getResources(), scopePrivateBitmap);
+        resetFilterColor();
+
+        this.settingsFilterAll.setCompoundDrawablesWithIntrinsicBounds(null, scopeAll, null, null);
+        this.settingsFilterFriends.setCompoundDrawablesWithIntrinsicBounds(null, scopeFriend, null, null);
+        this.settingsFilterSelf.setCompoundDrawablesWithIntrinsicBounds(null, scopePrivate, null, null);
+//        this.settingsFilterAll.setButtonDrawable(new BitmapDrawable(getResources(), scopeAllBitmap));
+//        this.settingsFilterFriends.setButtonDrawable(new BitmapDrawable(getResources(), scopeFriendBitmap));
+//        this.settingsFilterSelf.setButtonDrawable(new BitmapDrawable(getResources(), scopePrivateBitmap));
     }
 
     private void loadNextPage() {
@@ -296,7 +383,7 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
 
     public void updateBalance() {
         float amount = FloozRestClient.getInstance().currentUser.amount.floatValue();
-        headerBalanceIndicator.setText(FLHelper.trimTrailingZeros(String.format("%.2f", amount)) + " €");
+//        headerBalanceIndicator.setText(FLHelper.trimTrailingZeros(String.format("%.2f", amount)) + " €");
     }
 
     public void refreshTransactions() {

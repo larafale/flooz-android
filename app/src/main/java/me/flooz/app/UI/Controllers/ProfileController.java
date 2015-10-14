@@ -96,7 +96,7 @@ public class ProfileController extends BaseController implements UserListAdapter
 
     private TimelineListView mainListContainer;
 
-    private List<FLTransaction> transactions;
+    private List<FLTransaction> transactions = new ArrayList<>(0);
     private String nextPageUrl;
 
     private Typeface regContent;
@@ -172,7 +172,10 @@ public class ProfileController extends BaseController implements UserListAdapter
         this.largePendingImage.setColorFilter(Color.WHITE);
         this.largePendingText.setTextColor(Color.WHITE);
         this.removeButton.setColorFilter(Color.WHITE);
-        this.addPendingImage.setColorFilter(Color.WHITE);
+        this.addPendingImage.setColorFilter(parentActivity.getResources().getColor(R.color.blue));
+        this.stickyName.setTextColor(Color.WHITE);
+        this.profileName.setTextColor(Color.WHITE);
+        this.userBio.setTextColor(Color.WHITE);
 
         if (timelineAdapter == null) {
             timelineAdapter = new TimelineListAdapter(FloozApplication.getAppContext(), transactions);
@@ -231,7 +234,13 @@ public class ProfileController extends BaseController implements UserListAdapter
                 ((HomeActivity) this.parentActivity).popFragmentInCurrentTab();
             }
         });
-        this.profileImage.setOnClickListener(v -> CustomImageViewer.start(parentActivity, profileImageFullURL));
+
+        this.profileImage.setOnClickListener(v -> {
+            if (user.avatarURL != null && !user.avatarURL.isEmpty()) {
+                CustomImageViewer.start(parentActivity, profileImageFullURL);
+            }
+        });
+        // TODO Sur photo ouvrir profile, si current -> shake
         this.mainListContainer.setOnItemClickListener((adapterView, view1, i, l) -> ListUserClick((FLUser) adapterView.getAdapter().getItem(i)));
         this.editButton.setOnClickListener(view1 -> EditProfileActivity.start(parentActivity, flUser.json.toString()));
 
@@ -290,13 +299,13 @@ public class ProfileController extends BaseController implements UserListAdapter
                     this.isHeaderSticky = !this.isHeaderSticky;
 
                     if (!isBlurred) {
-                        Blurry.with(this.parentActivity)
-                            .radius(20)
-                            .sampling(1)
-                            .async()
-                            .animate(2000)
-                            .capture(this.stickyHeader)
-                            .into(this.stickyHeader);
+//                        Blurry.with(this.parentActivity)
+//                            .radius(20)
+//                            .sampling(1)
+//                            .async()
+//                            .animate(2000)
+//                            .capture(this.stickyHeader)
+//                            .into(this.stickyHeader);
                         this.isBlurred = !isBlurred;
                     }
                 }
@@ -350,9 +359,12 @@ public class ProfileController extends BaseController implements UserListAdapter
             @Override
             public void success(Object response) {
                 HashMap<String, Object> resp = (HashMap<String, Object>) response;
-                transactions = (List<FLTransaction>) resp.get("transactions");
+                transactions.clear();
+                transactions.addAll((List<FLTransaction>) resp.get("transactions"));
                 nextPageUrl = (String) resp.get("nextUrl");
                 timelineAdapter.setTransactions(transactions);
+                if (settingsFloozButton.isChecked())
+                    mainListContainer.setAdapter(timelineAdapter);
                 if (isStart) {
                     settingsFloozButton.performClick();
                     isStart = false;
@@ -449,7 +461,11 @@ public class ProfileController extends BaseController implements UserListAdapter
         this.largePendingButton.setOnClickListener(v -> this.showActivePendingFriendActionMenu(flUser));
         this.removeButton.setOnClickListener(v -> this.showRemoveFriendActionMenu(flUser));
         this.buttonRequestPending.setOnClickListener(v -> this.showPendingFriendActionMenu(flUser));
-        this.profileCover.setOnClickListener(v -> CustomImageViewer.start(parentActivity, coverURLFull));
+        this.profileCover.setOnClickListener(v -> {
+            if (flUser.coverURL != null && !flUser.coverURL.isEmpty() && !flUser.coverURL.contentEquals("/img/nocover.png")) {
+                CustomImageViewer.start(parentActivity, coverURLFull);
+            }
+        });
 
         this.addButton.setOnClickListener(v -> FloozRestClient.getInstance().sendFriendRequest(flUser.userId, flUser.getSelectedCanal(), new FloozHttpResponseHandler() {
             @Override
@@ -636,9 +652,12 @@ public class ProfileController extends BaseController implements UserListAdapter
 
         List<ActionSheetItem> items = new ArrayList<>();
 
-        items.add(new ActionSheetItem(parentActivity, String.format(parentActivity.getResources().getString(R.string.MENU_NEW_FLOOZ), user.username), createTransaction));
-        items.add(new ActionSheetItem(parentActivity, R.string.MENU_REPORT_USER, reportUser));
-        items.add(new ActionSheetItem(parentActivity, R.string.MENU_BLOCK_USER, blockUser));
+        if (this.flUser.actions.contains("flooz"))
+            items.add(new ActionSheetItem(parentActivity, String.format(parentActivity.getResources().getString(R.string.MENU_NEW_FLOOZ), user.username), createTransaction));
+        if (this.flUser.actions.contains("report"))
+            items.add(new ActionSheetItem(parentActivity, R.string.MENU_REPORT_USER, reportUser));
+        if (this.flUser.actions.contains("block"))
+            items.add(new ActionSheetItem(parentActivity, R.string.MENU_BLOCK_USER, blockUser));
 
         ActionSheet.showWithItems(parentActivity, items);
     }

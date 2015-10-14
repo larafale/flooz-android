@@ -160,7 +160,8 @@ public class FriendsController extends BaseController implements FriendsListAdap
         resultList.setOnItemClickListener((adapterView, view1, position, l) -> {
             FLUser user = listAdapter.getItem(position);
             user.selectedCanal = FLUser.FLUserSelectedCanal.values()[(int) listAdapter.getHeaderId(position)];
-            FloozApplication.getInstance().showUserActionMenu(user);
+//            FloozApplication.getInstance().showUserActionMenu(user);
+            // TODO USERACTIONMENU PLUS LA
         });
     }
 

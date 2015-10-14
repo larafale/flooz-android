@@ -527,7 +527,9 @@ public class TransactionCardController extends BaseController {
 
         commentPic.setOnClickListener(v -> {
             comment.user.selectedCanal = FLUser.FLUserSelectedCanal.TimelineCanal;
-            FloozApplication.getInstance().showUserActionMenu(comment.user);
+            ProfileCardFragment profileCardFragment = new ProfileCardFragment();
+            profileCardFragment.user = comment.user;
+            ((HomeActivity)parentActivity).pushFragmentInCurrentTab(profileCardFragment);
         });
 
         return commentRow;

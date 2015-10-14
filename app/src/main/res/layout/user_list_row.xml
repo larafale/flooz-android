@@ -9,6 +9,7 @@
     android:gravity="center_vertical">
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/user_list_row_layout"
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -65,11 +66,21 @@
 
         <ImageView
             android:id="@+id/user_list_row_button"
-            android:layout_width="40dp"
-            android:layout_height="fill_parent"
-            android:src="@drawable/friends_add"
-            android:padding="@dimen/dimen_medium"
+            android:layout_width="33dp"
+            android:padding="7dp"
+            android:layout_marginRight="5dp"
+            android:layout_height="33dp"
+            android:src="@drawable/follow"
+            android:background="@drawable/frame_action_button"
             android:visibility="gone"/>
+
+        <!--<ImageView-->
+            <!--android:id="@+id/user_list_row_button"-->
+            <!--android:layout_width="40dp"-->
+            <!--android:layout_height="fill_parent"-->
+            <!--android:src="@drawable/friends_add"-->
+            <!--android:padding="@dimen/dimen_medium"-->
+            <!--android:visibility="gone"/>-->
 
     </LinearLayout>
 

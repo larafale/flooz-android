@@ -409,20 +409,21 @@ public class FloozApplication extends BranchApp
         }
     };
 
-    public void showUserActionMenu(FLUser user) {
-        if (user == null || user.userId.contentEquals(FloozRestClient.getInstance().currentUser.userId) || user.username == null || user.fullname == null)
-            return;
-
-        this.userActionMenu = user;
-
-        List<ActionSheetItem> items = new ArrayList<>();
-
-        items.add(new ActionSheetItem(this, String.format(this.getResources().getString(R.string.MENU_NEW_FLOOZ), user.username), createTransaction));
-        items.add(new ActionSheetItem(getAppContext(), R.string.MENU_REPORT_USER, reportUser));
-        items.add(new ActionSheetItem(getAppContext(), R.string.MENU_BLOCK_USER, blockUser));
-
-        ActionSheet.showWithItems(getCurrentActivity(), items);
-    }
+    // TODO DECOMMENT PASQUE UTILISE
+//    public void showUserActionMenu(FLUser user) {
+//        if (user == null || user.userId.contentEquals(FloozRestClient.getInstance().currentUser.userId) || user.username == null || user.fullname == null)
+//            return;
+//
+//        this.userActionMenu = user;
+//
+//        List<ActionSheetItem> items = new ArrayList<>();
+//
+//        items.add(new ActionSheetItem(this, String.format(this.getResources().getString(R.string.MENU_NEW_FLOOZ), user.username), createTransaction));
+//        items.add(new ActionSheetItem(getAppContext(), R.string.MENU_REPORT_USER, reportUser));
+//        items.add(new ActionSheetItem(getAppContext(), R.string.MENU_BLOCK_USER, blockUser));
+//
+//        ActionSheet.showWithItems(getCurrentActivity(), items);
+//    }
 
     public void showActivePendingFriendActionMenu(FLUser user) {
         if (user == null || user.userId.contentEquals(FloozRestClient.getInstance().currentUser.userId) || user.username == null || user.fullname == null)

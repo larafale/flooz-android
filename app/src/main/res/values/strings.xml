@@ -47,6 +47,7 @@
     <string name="SEND_COMMENT">Ajouter un commentaire…</string>
 
     <string name="NAV_HOME">Fil d\'actualité</string>
+    <string name="NAV_PROFILE">Mon profil</string>
     <string name="NAV_PUBLIC">Explorer</string>
     <string name="NAV_LOGIN">Se connecter</string>
     <string name="NAV_SIGNUP">S\'inscrire</string>

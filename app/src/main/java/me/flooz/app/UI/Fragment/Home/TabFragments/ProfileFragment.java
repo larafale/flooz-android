@@ -56,6 +56,7 @@ import me.flooz.app.UI.Activity.Settings.ProfileSettingsActivity;
 import me.flooz.app.UI.Activity.ShareAppActivity;
 import me.flooz.app.UI.Activity.WebContentActivity;
 import me.flooz.app.UI.Controllers.WebController;
+import me.flooz.app.UI.Fragment.Home.ProfileCardFragment;
 import me.flooz.app.UI.Tools.ActionSheet;
 import me.flooz.app.UI.Tools.ActionSheetItem;
 import me.flooz.app.Utils.CustomFonts;
@@ -114,6 +115,11 @@ public class ProfileFragment extends TabBarFragment implements ProfileListAdapte
                     String action  = (String) item.get("action");
 
                     switch (action) {
+                        case "profile":
+                            ProfileCardFragment controller = new ProfileCardFragment();
+                            controller.user = FloozRestClient.getInstance().currentUser;
+                            tabBarActivity.pushFragmentInCurrentTab(controller);
+                            break;
                         case "friends":
                             tabBarActivity.pushFragmentInCurrentTab(new FriendsFragment());
                             break;
@@ -246,33 +252,36 @@ public class ProfileFragment extends TabBarFragment implements ProfileListAdapte
 
     @Override
     public void userImageClicked() {
-        List<ActionSheetItem> items = new ArrayList<>();
-
-        items.add(new ActionSheetItem(this.context, R.string.SIGNUP_IMAGE_BUTTON_TAKE, () -> {
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-            Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
-            tmpUriImage = fileUri;
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-
-            try {
-                tabBarActivity.startActivityForResult(intent, TAKE_PICTURE);
-            } catch (ActivityNotFoundException e) {
-
-            }
-        }));
-
-        items.add(new ActionSheetItem(this.context, R.string.SIGNUP_IMAGE_BUTTON_CHOOSE, () -> {
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setType("image/*");
-            try {
-                tabBarActivity.startActivityForResult(Intent.createChooser(intent, ""), SELECT_PICTURE);
-            } catch (ActivityNotFoundException e) {
-
-            }
-        }));
-
-        ActionSheet.showWithItems(tabBarActivity, items);
+        ProfileCardFragment controller = new ProfileCardFragment();
+        controller.user = FloozRestClient.getInstance().currentUser;
+        tabBarActivity.pushFragmentInCurrentTab(controller);
+//        List<ActionSheetItem> items = new ArrayList<>();
+//
+//        items.add(new ActionSheetItem(this.context, R.string.SIGNUP_IMAGE_BUTTON_TAKE, () -> {
+//            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//
+//            Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
+//            tmpUriImage = fileUri;
+//            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+//
+//            try {
+//                tabBarActivity.startActivityForResult(intent, TAKE_PICTURE);
+//            } catch (ActivityNotFoundException e) {
+//
+//            }
+//        }));
+//
+//        items.add(new ActionSheetItem(this.context, R.string.SIGNUP_IMAGE_BUTTON_CHOOSE, () -> {
+//            Intent intent = new Intent(Intent.ACTION_PICK);
+//            intent.setType("image/*");
+//            try {
+//                tabBarActivity.startActivityForResult(Intent.createChooser(intent, ""), SELECT_PICTURE);
+//            } catch (ActivityNotFoundException e) {
+//
+//            }
+//        }));
+//
+//        ActionSheet.showWithItems(tabBarActivity, items);
     }
 
     @Override
