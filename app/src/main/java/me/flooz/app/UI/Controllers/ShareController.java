@@ -86,7 +86,7 @@ public class ShareController extends BaseController {
         }
     };
 
-    public ShareController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull BaseController.ControllerKind kind) {
+    public ShareController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull BaseController.ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
         this.headerBackButton = (ImageView) currentView.findViewById(R.id.header_item_left);
@@ -123,37 +123,46 @@ public class ShareController extends BaseController {
         if (this.currentKind == BaseController.ControllerKind.FRAGMENT_CONTROLLER)
             this.headerBackButton.setVisibility(View.GONE);
 
-        this.headerBackButton.setOnClickListener(view -> {
-            parentActivity.finish();
-            parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                parentActivity.finish();
+                parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+            }
         });
 
         this.tipContainer.dismiss();
         this.toolTip = null;
 
-        this.content.setOnClickListener(v -> {
-            if (toolTip != null) {
-                tipContainer.dismiss();
-                toolTip = null;
-            } else if (_code != null && !_code.isEmpty() && !_code.replace(" ", "").isEmpty()) {
-                View contentTooltip = this.parentActivity.getLayoutInflater().inflate(R.layout.invite_tooltip_code, null);
-
-                contentTooltip.setOnClickListener(v1 -> {
-                    ClipboardManager _clipboard = (ClipboardManager) this.parentActivity.getSystemService(Context.CLIPBOARD_SERVICE);
-                    _clipboard.setPrimaryClip(ClipData.newPlainText("FloozCode", _code));
+        this.content.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (toolTip != null) {
                     tipContainer.dismiss();
                     toolTip = null;
-                });
+                } else if (_code != null && !_code.isEmpty() && !_code.replace(" ", "").isEmpty()) {
+                    View contentTooltip = parentActivity.getLayoutInflater().inflate(R.layout.invite_tooltip_code, null);
 
-                toolTip = new ToolTip.Builder(this.parentActivity)
-                        .anchor(content)
-                        .gravity(Gravity.TOP)
-                        .color(this.parentActivity.getResources().getColor(R.color.black_alpha))
-                        .pointerSize(25)
-                        .contentView(contentTooltip)
-                        .build();
+                    contentTooltip.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            ClipboardManager _clipboard = (ClipboardManager) parentActivity.getSystemService(Context.CLIPBOARD_SERVICE);
+                            _clipboard.setPrimaryClip(ClipData.newPlainText("FloozCode", _code));
+                            tipContainer.dismiss();
+                            toolTip = null;
+                        }
+                    });
 
-                tipContainer.addTooltip(toolTip, true);
+                    toolTip = new ToolTip.Builder(parentActivity)
+                            .anchor(content)
+                            .gravity(Gravity.TOP)
+                            .color(parentActivity.getResources().getColor(R.color.black_alpha))
+                            .pointerSize(25)
+                            .contentView(contentTooltip)
+                            .build();
+
+                    tipContainer.addTooltip(toolTip, true);
+                }
             }
         });
 
@@ -201,30 +210,39 @@ public class ShareController extends BaseController {
             reloadView();
         }
 
-        smsButton.setOnClickListener(v -> {
-            Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-            sendIntent.setData(Uri.parse("sms:"));
-            sendIntent.putExtra("sms_body", _smsText);
-            if (sendIntent.resolveActivity(parentActivity.getPackageManager()) != null) {
-                parentActivity.startActivity(sendIntent);
+        smsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+                sendIntent.setData(Uri.parse("sms:"));
+                sendIntent.putExtra("sms_body", _smsText);
+                if (sendIntent.resolveActivity(parentActivity.getPackageManager()) != null) {
+                    parentActivity.startActivity(sendIntent);
+                }
             }
         });
 
-        mailButton.setOnClickListener(v -> {
-            Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
-            sendIntent.setData(Uri.parse("mailto:"));
-            sendIntent.putExtra(Intent.EXTRA_TEXT, _mailData.optString("content"));
-            sendIntent.putExtra(Intent.EXTRA_SUBJECT, _mailData.optString("title"));
-            if (sendIntent.resolveActivity(parentActivity.getPackageManager()) != null) {
-                parentActivity.startActivity(Intent.createChooser(sendIntent, "Partager par mail..."));
+        mailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
+                sendIntent.setData(Uri.parse("mailto:"));
+                sendIntent.putExtra(Intent.EXTRA_TEXT, _mailData.optString("content"));
+                sendIntent.putExtra(Intent.EXTRA_SUBJECT, _mailData.optString("title"));
+                if (sendIntent.resolveActivity(parentActivity.getPackageManager()) != null) {
+                    parentActivity.startActivity(Intent.createChooser(sendIntent, "Partager par mail..."));
+                }
             }
         });
 
-        fbButton.setOnClickListener(v -> {
-            if (FloozRestClient.getInstance().isConnectedToFacebook())
-                shareFacebook();
-            else
-                FloozRestClient.getInstance().connectFacebook();
+        fbButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (FloozRestClient.getInstance().isConnectedToFacebook())
+                    shareFacebook();
+                else
+                    FloozRestClient.getInstance().connectFacebook();
+            }
         });
     }
 
@@ -330,24 +348,30 @@ public class ShareController extends BaseController {
         text.setText(_fbData.optString("title"));
         text.setTypeface(CustomFonts.customContentRegular(parentActivity));
 
-        EditText textArea = (EditText) fbDialog.findViewById(R.id.dialog_share_field);
+        final EditText textArea = (EditText) fbDialog.findViewById(R.id.dialog_share_field);
         textArea.setHint(_fbData.optString("placeholder"));
         textArea.setTypeface(CustomFonts.customContentRegular(parentActivity));
 
         Button decline = (Button) fbDialog.findViewById(R.id.dialog_share_decline);
         Button accept = (Button) fbDialog.findViewById(R.id.dialog_share_accept);
 
-        decline.setOnClickListener(v -> {
-            if (fbDialog != null)
-                fbDialog.dismiss();
+        decline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (fbDialog != null)
+                    fbDialog.dismiss();
+            }
         });
 
-        accept.setOnClickListener(v -> {
-            FloozRestClient.getInstance().showLoadView();
-            FloozRestClient.getInstance().invitationFacebook(textArea.getText().toString(), null);
+        accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FloozRestClient.getInstance().showLoadView();
+                FloozRestClient.getInstance().invitationFacebook(textArea.getText().toString(), null);
 
-            if (fbDialog != null)
-                fbDialog.dismiss();
+                if (fbDialog != null)
+                    fbDialog.dismiss();
+            }
         });
 
         fbDialog.setCanceledOnTouchOutside(true);

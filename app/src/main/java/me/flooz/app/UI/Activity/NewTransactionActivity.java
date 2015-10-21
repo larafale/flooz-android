@@ -25,6 +25,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AbsListView;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -225,7 +226,12 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         this.picContainer = (RelativeLayout) this.findViewById(R.id.new_transac_pic_container);
 
         this.pic = (ImageView) this.findViewById(R.id.new_transac_pic);
-        this.pic.setOnClickListener(view -> CustomImageViewer.start(this, "file://" + imagePath));
+        this.pic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CustomImageViewer.start(NewTransactionActivity.this, "file://" + imagePath);
+            }
+        });
 
         ImageView picDeleteButton = (ImageView) this.findViewById(R.id.new_transac_pic_delete);
         this.scopePic = (ImageView) this.findViewById(R.id.new_transac_scope_pic);
@@ -243,11 +249,14 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
 
         if (this.preset == null || !this.preset.blockBack) {
             this.closeButton.setVisibility(View.VISIBLE);
-            this.closeButton.setOnClickListener(v -> {
-                transactionPending = false;
-                currentReceiver = null;
-                finish();
-                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+            this.closeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    transactionPending = false;
+                    currentReceiver = null;
+                    finish();
+                    overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+                }
             });
         } else {
             this.closeButton.setVisibility(View.GONE);
@@ -265,9 +274,19 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         this.headerCB.setColorFilter(this.getResources().getColor(R.color.blue));
         capturePicButton.setColorFilter(this.getResources().getColor(android.R.color.white));
 
-        this.headerCB.setOnClickListener(v -> showBalanceDialog());
+        this.headerCB.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBalanceDialog();
+            }
+        });
 
-        this.headerBalance.setOnClickListener(v -> showBalanceDialog());
+        this.headerBalance.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showBalanceDialog();
+            }
+        });
 
         this.toPicker.setPrefix(this.getResources().getString(R.string.TRANSACTION_CONTACT_PICKER_PREFIX));
         this.toPicker.setTokenClickStyle(TokenCompleteTextView.TokenClickStyle.Select);
@@ -300,9 +319,12 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         this.contactListAdapter = new SelectUserListAdapter(this);
         this.contactList.setAdapter(this.contactListAdapter);
 
-        this.contactList.setOnItemClickListener((parent, view, position, id) -> {
-            if (contactListAdapter.getItem(position) != null) {
-                changeUser(contactListAdapter.getItem(position));
+        this.contactList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (contactListAdapter.getItem(position) != null) {
+                    changeUser(contactListAdapter.getItem(position));
+                }
             }
         });
 
@@ -319,27 +341,33 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
             }
         });
 
-        this.toPicker.setOnFocusChangeListener((v, hasFocus) -> {
-            if (hasFocus)
-                contactList.setVisibility(View.VISIBLE);
-            else {
-                if (currentReceiver == null) {
-                    toPicker.clear();
-                    toPicker.clearComposingText();
-                    toPicker.setText(getResources().getString(R.string.TRANSACTION_CONTACT_PICKER_PREFIX));
-                    contactListAdapter.searchUser("");
-                }
-                contactList.setVisibility(View.GONE);
+        this.toPicker.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus)
+                    contactList.setVisibility(View.VISIBLE);
+                else {
+                    if (currentReceiver == null) {
+                        toPicker.clear();
+                        toPicker.clearComposingText();
+                        toPicker.setText(getResources().getString(R.string.TRANSACTION_CONTACT_PICKER_PREFIX));
+                        contactListAdapter.searchUser("");
+                    }
+                    contactList.setVisibility(View.GONE);
 
-                if (isDemo && demoCurrentStep < preset.steps.length()) {
-                    NewTransactionActivity.this.showDemoStepPopover(NewTransactionActivity.this.preset.steps.optJSONObject(demoCurrentStep));
+                    if (isDemo && demoCurrentStep < preset.steps.length()) {
+                        NewTransactionActivity.this.showDemoStepPopover(NewTransactionActivity.this.preset.steps.optJSONObject(demoCurrentStep));
+                    }
                 }
             }
         });
 
-        this.amountTextfield.setOnFocusChangeListener((v, hasFocus) -> {
-            if (!hasFocus && isDemo && demoCurrentStep < preset.steps.length()) {
-                NewTransactionActivity.this.showDemoStepPopover(NewTransactionActivity.this.preset.steps.optJSONObject(demoCurrentStep));
+        this.amountTextfield.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (!hasFocus && isDemo && demoCurrentStep < preset.steps.length()) {
+                    NewTransactionActivity.this.showDemoStepPopover(NewTransactionActivity.this.preset.steps.optJSONObject(demoCurrentStep));
+                }
             }
         });
 
@@ -367,10 +395,13 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         if (this.preset == null || !this.preset.blockAmount) {
             this.amountTextfield.setFocusable(true);
             this.amountTextfield.setFocusableInTouchMode(true);
-            amountContainer.setOnClickListener(v -> {
-                amountTextfield.requestFocus();
-                InputMethodManager imm = (InputMethodManager) instance.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.showSoftInput(amountTextfield, InputMethodManager.SHOW_FORCED);
+            amountContainer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    amountTextfield.requestFocus();
+                    InputMethodManager imm = (InputMethodManager) instance.getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(amountTextfield, InputMethodManager.SHOW_FORCED);
+                }
             });
         } else if (preset != null) {
             this.amountTextfield.setFocusable(false);
@@ -407,28 +438,36 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
 
         this.updateScopeField();
 
-        this.scopePic.setOnClickListener(v -> {
-            if (toolTipScope != null) {
-                scopeChanged(currentScope);
-            } else {
-                if (tooltipScopeView.view.getParent() != null)
-                    ((ViewGroup)tooltipScopeView.view.getParent()).removeView(tooltipScopeView.view);
+        this.scopePic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (toolTipScope != null) {
+                    scopeChanged(currentScope);
+                } else {
+                    if (tooltipScopeView.view.getParent() != null)
+                        ((ViewGroup) tooltipScopeView.view.getParent()).removeView(tooltipScopeView.view);
 
-                toolTipScope = new ToolTip.Builder(instance)
-                        .anchor(scopePic)
-                        .gravity(Gravity.TOP)
-                        .color(instance.getResources().getColor(android.R.color.white))
-                        .pointerSize(25)
-                        .contentView(tooltipScopeView.view)
-                        .dismissOnTouch(false)
-                        .build();
+                    toolTipScope = new ToolTip.Builder(instance)
+                            .anchor(scopePic)
+                            .gravity(Gravity.TOP)
+                            .color(instance.getResources().getColor(android.R.color.white))
+                            .pointerSize(25)
+                            .contentView(tooltipScopeView.view)
+                            .dismissOnTouch(false)
+                            .build();
 
-                tipContainer.setVisibility(View.VISIBLE);
-                tipContainer.addTooltip(toolTipScope, true);
+                    tipContainer.setVisibility(View.VISIBLE);
+                    tipContainer.addTooltip(toolTipScope, true);
+                }
             }
         });
 
-        this.tipContainer.setOnClickListener(v -> scopeChanged(currentScope));
+        this.tipContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scopeChanged(currentScope);
+            }
+        });
 
         if (getIntent() != null && getIntent().hasExtra("user"))
             try {
@@ -442,11 +481,15 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
             this.pic.setImageBitmap(currentPicture);
         }
 
-        picDeleteButton.setOnClickListener(view -> {
-            picContainer.setVisibility(View.GONE);
-            havePicture = false;
-            currentPicture = null;
+        picDeleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                picContainer.setVisibility(View.GONE);
+                havePicture = false;
+                currentPicture = null;
+            }
         });
+
         this.payButton.setVisibility(View.VISIBLE);
         this.chargeButton.setVisibility(View.VISIBLE);
 
@@ -473,10 +516,13 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
             }
         });
 
-        contentContainer.setOnClickListener(v -> {
-            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-            contentTextfield.requestFocus();
-            imm.showSoftInput(contentTextfield, InputMethodManager.SHOW_FORCED);
+        contentContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                contentTextfield.requestFocus();
+                imm.showSoftInput(contentTextfield, InputMethodManager.SHOW_FORCED);
+            }
         });
 
         if (this.preset != null) {
@@ -499,40 +545,40 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
             }
         }
 
-        this.demoContainer.setOnTouchListener((v, event) -> {
-            if (event.getAction() == MotionEvent.ACTION_DOWN){
-                if (demoPassthroughView != null) {
-                    Rect viewRect = new Rect();
-                    Rect containerRect = new Rect();
-                    if (demoPassthroughView.getGlobalVisibleRect(viewRect) && demoContainer.getGlobalVisibleRect(containerRect)) {
-                        int eventX = (int)event.getX() + containerRect.left;
-                        int eventY = (int)event.getY() + containerRect.top;
-                        if (viewRect.contains(eventX, eventY)) {
-                            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-                            String focus = preset.steps.optJSONObject(demoCurrentStep - 1).optString("focus");
-                            NewTransactionActivity.this.demoContainer.dismiss(true);
-                            NewTransactionActivity.this.demoContainer.setVisibility(View.GONE);
+        this.demoContainer.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (demoPassthroughView != null) {
+                        Rect viewRect = new Rect();
+                        Rect containerRect = new Rect();
+                        if (demoPassthroughView.getGlobalVisibleRect(viewRect) && demoContainer.getGlobalVisibleRect(containerRect)) {
+                            int eventX = (int) event.getX() + containerRect.left;
+                            int eventY = (int) event.getY() + containerRect.top;
+                            if (viewRect.contains(eventX, eventY)) {
+                                InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                                String focus = preset.steps.optJSONObject(demoCurrentStep - 1).optString("focus");
+                                NewTransactionActivity.this.demoContainer.dismiss(true);
+                                NewTransactionActivity.this.demoContainer.setVisibility(View.GONE);
 
-                            if (focus.contentEquals("why") && !preset.blockWhy) {
-                                contentTextfield.requestFocus();
-                                imm.showSoftInput(contentTextfield, InputMethodManager.SHOW_FORCED);
-                            }
-                            else if (focus.contentEquals("to") && !preset.blockTo) {
-                                toPicker.requestFocus();
-                                imm.showSoftInput(toPicker, InputMethodManager.SHOW_FORCED);
-                            }
-                            else if (focus.contentEquals("amount") && !preset.blockAmount) {
-                                amountTextfield.requestFocus();
-                                imm.showSoftInput(amountTextfield, InputMethodManager.SHOW_FORCED);
-                            }
-                            else if (focus.contentEquals("scope")) {
-                                scopePic.performClick();
+                                if (focus.contentEquals("why") && !preset.blockWhy) {
+                                    contentTextfield.requestFocus();
+                                    imm.showSoftInput(contentTextfield, InputMethodManager.SHOW_FORCED);
+                                } else if (focus.contentEquals("to") && !preset.blockTo) {
+                                    toPicker.requestFocus();
+                                    imm.showSoftInput(toPicker, InputMethodManager.SHOW_FORCED);
+                                } else if (focus.contentEquals("amount") && !preset.blockAmount) {
+                                    amountTextfield.requestFocus();
+                                    imm.showSoftInput(amountTextfield, InputMethodManager.SHOW_FORCED);
+                                } else if (focus.contentEquals("scope")) {
+                                    scopePic.performClick();
+                                }
                             }
                         }
                     }
                 }
+                return true;
             }
-            return true;
         });
 
 
@@ -557,20 +603,23 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
                 final Uri selectedImageUri = imageUri;
                 if (selectedImageUri != null) {
                     Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(() -> {
-                        String path = ImageHelper.getPath(instance, selectedImageUri);
-                        if (path != null) {
-                            this.imagePath = path;
-                            File image = new File(path);
-                            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                            Bitmap photo = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            String path = ImageHelper.getPath(instance, selectedImageUri);
+                            if (path != null) {
+                                imagePath = path;
+                                File image = new File(path);
+                                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                                Bitmap photo = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
 
-                            int rotation = ImageHelper.getRotation(instance, selectedImageUri);
-                            if (rotation != 0) {
-                                photo = ImageHelper.rotateBitmap(photo, rotation);
+                                int rotation = ImageHelper.getRotation(instance, selectedImageUri);
+                                if (rotation != 0) {
+                                    photo = ImageHelper.rotateBitmap(photo, rotation);
+                                }
+
+                                photoTaken(photo);
                             }
-
-                            photoTaken(photo);
                         }
                     });
                 }
@@ -649,14 +698,24 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
 
         if (this.preset != null && this.preset.triggers != null) {
             for (int i = 0; i < this.preset.triggers.length(); i++) {
-                FLTrigger trigger = new FLTrigger(this.preset.triggers.optJSONObject(i));
+                final FLTrigger trigger = new FLTrigger(this.preset.triggers.optJSONObject(i));
                 if (trigger.delay.doubleValue() > 0) {
                     double delay = trigger.delay.doubleValue() * 1000;
                     Handler handler = new Handler(Looper.getMainLooper());
-                    handler.postDelayed(() -> FloozRestClient.getInstance().handleTrigger(trigger), (int) delay);
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            FloozRestClient.getInstance().handleTrigger(trigger);
+                        }
+                    }, (int) delay);
                 } else {
                     Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(() -> FloozRestClient.getInstance().handleTrigger(trigger));
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            FloozRestClient.getInstance().handleTrigger(trigger);
+                        }
+                    });
                 }
             }
             this.preset.triggers = null;
@@ -697,11 +756,14 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
                 if (this.preset.popup.has("button") && !this.preset.popup.optString("button").isEmpty())
                     close.setText(this.preset.popup.optString("button"));
 
-                close.setOnClickListener(v -> {
-                    popupDialog.dismiss();
-                    popupDialog = null;
-                    if (preset.steps != null)
-                        showDemoStepPopover(preset.steps.optJSONObject(demoCurrentStep));
+                close.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        popupDialog.dismiss();
+                        popupDialog = null;
+                        if (preset.steps != null)
+                            showDemoStepPopover(preset.steps.optJSONObject(demoCurrentStep));
+                    }
                 });
 
                 preset.popup = null;
@@ -747,27 +809,26 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         content.setText(stepData.optString("desc"));
         button.setText(stepData.optString("btn"));
 
-        button.setOnClickListener(v -> {
-            NewTransactionActivity.this.demoContainer.dismiss(true);
-            NewTransactionActivity.this.demoContainer.setVisibility(View.GONE);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NewTransactionActivity.this.demoContainer.dismiss(true);
+                NewTransactionActivity.this.demoContainer.setVisibility(View.GONE);
 
-            if (stepData.optString("focus").contentEquals("why") && !preset.blockWhy) {
-                contentTextfield.requestFocus();
-                imm.showSoftInput(contentTextfield, InputMethodManager.SHOW_FORCED);
-            }
-            else if (stepData.optString("focus").contentEquals("to") && !preset.blockTo) {
-                toPicker.requestFocus();
-                imm.showSoftInput(toPicker, InputMethodManager.SHOW_FORCED);
-            }
-            else if (stepData.optString("focus").contentEquals("amount") && !preset.blockAmount) {
-                amountTextfield.requestFocus();
-                imm.showSoftInput(amountTextfield, InputMethodManager.SHOW_FORCED);
-            }
-            else if (stepData.optString("focus").contentEquals("scope")) {
-                scopePic.performClick();
-            }
-            else if (demoCurrentStep < preset.steps.length()) {
-                NewTransactionActivity.this.showDemoStepPopover(NewTransactionActivity.this.preset.steps.optJSONObject(demoCurrentStep));
+                if (stepData.optString("focus").contentEquals("why") && !preset.blockWhy) {
+                    contentTextfield.requestFocus();
+                    imm.showSoftInput(contentTextfield, InputMethodManager.SHOW_FORCED);
+                } else if (stepData.optString("focus").contentEquals("to") && !preset.blockTo) {
+                    toPicker.requestFocus();
+                    imm.showSoftInput(toPicker, InputMethodManager.SHOW_FORCED);
+                } else if (stepData.optString("focus").contentEquals("amount") && !preset.blockAmount) {
+                    amountTextfield.requestFocus();
+                    imm.showSoftInput(amountTextfield, InputMethodManager.SHOW_FORCED);
+                } else if (stepData.optString("focus").contentEquals("scope")) {
+                    scopePic.performClick();
+                } else if (demoCurrentStep < preset.steps.length()) {
+                    NewTransactionActivity.this.showDemoStepPopover(NewTransactionActivity.this.preset.steps.optJSONObject(demoCurrentStep));
+                }
             }
         });
 
@@ -919,7 +980,12 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
 
         Button close = (Button) dialog.findViewById(R.id.dialog_wallet_btn);
 
-        close.setOnClickListener(v -> dialog.dismiss());
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
 
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
@@ -970,20 +1036,26 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         Button decline = (Button) this.validationDialog.findViewById(R.id.dialog_validate_flooz_decline);
         Button accept = (Button) this.validationDialog.findViewById(R.id.dialog_validate_flooz_accept);
 
-        decline.setOnClickListener(v -> {
-            if (validationDialog != null)
-                validationDialog.dismiss();
-            validationDialog = null;
+        decline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (validationDialog != null)
+                    validationDialog.dismiss();
+                validationDialog = null;
+            }
         });
 
-        accept.setOnClickListener(v -> {
-            saveData();
-            if (validationDialog != null)
-                validationDialog.dismiss();
-            validationDialog = null;
-            Intent intentNotifs = new Intent(instance, AuthenticationActivity.class);
-            instance.startActivityForResult(intentNotifs, AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY);
-            instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+        accept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveData();
+                if (validationDialog != null)
+                    validationDialog.dismiss();
+                validationDialog = null;
+                Intent intentNotifs = new Intent(instance, AuthenticationActivity.class);
+                instance.startActivityForResult(intentNotifs, AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY);
+                instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+            }
         });
 
         this.validationDialog.setCanceledOnTouchOutside(false);
@@ -991,9 +1063,19 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         this.validationDialog.show();
     }
 
-    private View.OnClickListener payTransaction = view -> performTransaction(FLTransaction.TransactionType.TransactionTypePayment);
+    private View.OnClickListener payTransaction = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            performTransaction(FLTransaction.TransactionType.TransactionTypePayment);
+        }
+    };
 
-    private View.OnClickListener chargeTransaction = view -> performTransaction(FLTransaction.TransactionType.TransactionTypeCharge);
+    private View.OnClickListener chargeTransaction = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            performTransaction(FLTransaction.TransactionType.TransactionTypeCharge);
+        }
+    };
 
     private View.OnClickListener showCamera = new View.OnClickListener() {
         @Override
@@ -1012,14 +1094,17 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         }
     };
 
-    private View.OnClickListener showAlbum = view -> {
-        saveData();
-        Intent intent = new Intent(Intent.ACTION_PICK);
-        intent.setType("image/*");
-        try {
-            startActivityForResult(Intent.createChooser(intent, ""), SELECT_PICTURE);
-        } catch (ActivityNotFoundException e) {
+    private View.OnClickListener showAlbum = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            saveData();
+            Intent intent = new Intent(Intent.ACTION_PICK);
+            intent.setType("image/*");
+            try {
+                startActivityForResult(Intent.createChooser(intent, ""), SELECT_PICTURE);
+            } catch (ActivityNotFoundException e) {
 
+            }
         }
     };
 
@@ -1041,18 +1126,22 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
 
     public void photoTaken(final Bitmap photo) {
         Handler mainHandler = new Handler(this.getMainLooper());
-        Runnable myRunnable = () -> {
-            if (currentPicture != null)
-                currentPicture.recycle();
-            havePicture = true;
-            picContainer.setVisibility(View.VISIBLE);
+        Runnable myRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (currentPicture != null)
+                    currentPicture.recycle();
+                havePicture = true;
+                picContainer.setVisibility(View.VISIBLE);
 
-            int nh = (int) ( photo.getHeight() * (256.0 / photo.getWidth()) );
-            Bitmap scaled = Bitmap.createScaledBitmap(photo, 256, nh, true);
-            pic.setImageBitmap(scaled);
+                int nh = (int) (photo.getHeight() * (256.0 / photo.getWidth()));
+                Bitmap scaled = Bitmap.createScaledBitmap(photo, 256, nh, true);
+                pic.setImageBitmap(scaled);
 
-            currentPicture = photo;
+                currentPicture = photo;
+            }
         };
+
         mainHandler.post(myRunnable);
     }
 
@@ -1064,19 +1153,22 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
                 final JSONObject jsonObject = (JSONObject) response;
                 if (havePicture) {
                     Handler handler = new Handler();
-                    handler.post(() -> {
-                        String transacId = jsonObject.optJSONObject("item").optString("_id");
-                        FloozRestClient.getInstance().uploadTransactionPic(transacId, ImageHelper.convertBitmapInFile(currentPicture), new FloozHttpResponseHandler() {
-                            @Override
-                            public void success(Object response) {
-                                FloozApplication.performLocalNotification(CustomNotificationIntents.reloadTimeline());
-                            }
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            String transacId = jsonObject.optJSONObject("item").optString("_id");
+                            FloozRestClient.getInstance().uploadTransactionPic(transacId, ImageHelper.convertBitmapInFile(currentPicture), new FloozHttpResponseHandler() {
+                                @Override
+                                public void success(Object response) {
+                                    FloozApplication.performLocalNotification(CustomNotificationIntents.reloadTimeline());
+                                }
 
-                            @Override
-                            public void failure(int statusCode, FLError error) {
+                                @Override
+                                public void failure(int statusCode, FLError error) {
 
-                            }
-                        });
+                                }
+                            });
+                        }
                     });
                 }
                 if (jsonObject.has("sms")) {

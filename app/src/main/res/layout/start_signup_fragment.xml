@@ -104,16 +104,16 @@
                     android:layout_height="wrap_content"
                     android:visibility="gone">
 
-                    <com.makeramen.RoundedImageView
+                    <com.makeramen.roundedimageview.RoundedImageView
                         xmlns:app="http://schemas.android.com/apk/res-auto"
                         android:id="@+id/start_signup_fb_pic"
                         android:scaleType="centerCrop"
                         android:layout_width="60dp"
                         android:layout_height="60dp"
                         android:layout_centerHorizontal="true"
-                        app:corner_radius="30dip"
+                        app:riv_corner_radius="30dip"
                         android:src="@drawable/avatar_default"
-                        app:oval="true"/>
+                        app:riv_oval="true"/>
 
                 </RelativeLayout>
 

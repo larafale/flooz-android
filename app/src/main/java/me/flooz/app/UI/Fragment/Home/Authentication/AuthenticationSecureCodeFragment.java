@@ -87,21 +87,37 @@ public class AuthenticationSecureCodeFragment extends AuthenticationBaseFragment
         codeKey8.setOnClickListener(keyClickListener);
         codeKey9.setOnClickListener(keyClickListener);
 
-        this.clearCode.setOnClickListener(view1 -> {
-            currentCode = "";
-            refreshCodeContainer();
+        this.clearCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                currentCode = "";
+                refreshCodeContainer();
+            }
         });
 
-        this.headerBack.setOnClickListener(view1 -> parentActivity.dismissView(false));
+        this.headerBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                parentActivity.dismissView(false);
+            }
+        });
 
-        forgetCode.setOnClickListener(v -> parentActivity.gotToNextPage());
+        forgetCode.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                parentActivity.gotToNextPage();
+            }
+        });
 
         return view;
     }
 
-    private View.OnClickListener keyClickListener = view -> {
-        TextView key = (TextView) view;
-        addKeyToCode(key.getText().toString());
+    private View.OnClickListener keyClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            TextView key = (TextView) v;
+            addKeyToCode(key.getText().toString());
+        }
     };
 
     private void refreshCodeContainer() {

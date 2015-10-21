@@ -68,7 +68,12 @@ public class AuthenticationActivity extends Activity {
         this.headerTitleImg = (ImageView)this.findViewById(R.id.authentication_header_title_img);
 
         this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
-        this.headerBackButton.setOnClickListener(view -> backToPreviousPage());
+        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                backToPreviousPage();
+            }
+        });
 
         this.currentPage = AuthenticationPageIdentifier.AuthenticationSecureCode;
 

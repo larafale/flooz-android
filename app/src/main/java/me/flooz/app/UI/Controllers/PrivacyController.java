@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.util.HashMap;
@@ -23,7 +24,7 @@ public class PrivacyController extends BaseController {
 
     private ImageView headerBackButton;
 
-    public PrivacyController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
+    public PrivacyController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
         this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
@@ -37,12 +38,15 @@ public class PrivacyController extends BaseController {
         if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
             this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
 
-        this.headerBackButton.setOnClickListener(view -> {
-            if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                parentActivity.finish();
-                parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-            } else {
-                ((HomeActivity)this.parentActivity).popFragmentInCurrentTab();
+        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
+                    parentActivity.finish();
+                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+                } else {
+                    ((HomeActivity) parentActivity).popFragmentInCurrentTab();
+                }
             }
         });
 
@@ -63,29 +67,31 @@ public class PrivacyController extends BaseController {
                 break;
         }
 
-        segmentedGroup.setOnCheckedChangeListener((group, checkedId) -> {
+        segmentedGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                Map<String, Object> settings = new HashMap<>(FloozRestClient.getInstance().currentUser.settings);
+                Map<String, Object> def = (Map<String, Object>) settings.get("def");
 
-            Map<String, Object> settings = new HashMap<>(FloozRestClient.getInstance().currentUser.settings);
-            Map<String, Object> def = (Map<String, Object>) settings.get("def");
+                switch (checkedId) {
+                    case R.id.settings_privacy_segment_public:
+                        def.put("scope", FLTransaction.transactionScopeToParams(FLTransaction.TransactionScope.TransactionScopePublic));
+                        break;
+                    case R.id.settings_privacy_segment_friend:
+                        def.put("scope", FLTransaction.transactionScopeToParams(FLTransaction.TransactionScope.TransactionScopeFriend));
+                        break;
+                    case R.id.settings_privacy_segment_private:
+                        def.put("scope", FLTransaction.transactionScopeToParams(FLTransaction.TransactionScope.TransactionScopePrivate));
+                        break;
+                    default:
+                        break;
+                }
 
-            switch (checkedId) {
-                case R.id.settings_privacy_segment_public:
-                    def.put("scope", FLTransaction.transactionScopeToParams(FLTransaction.TransactionScope.TransactionScopePublic));
-                    break;
-                case R.id.settings_privacy_segment_friend:
-                    def.put("scope", FLTransaction.transactionScopeToParams(FLTransaction.TransactionScope.TransactionScopeFriend));
-                    break;
-                case R.id.settings_privacy_segment_private:
-                    def.put("scope", FLTransaction.transactionScopeToParams(FLTransaction.TransactionScope.TransactionScopePrivate));
-                    break;
-                default:
-                    break;
+                Map<String, Object> params = new HashMap<>();
+                params.put("settings", settings);
+
+                FloozRestClient.getInstance().updateUser(params, null);
             }
-
-            Map<String, Object> params = new HashMap<>();
-            params.put("settings", settings);
-
-            FloozRestClient.getInstance().updateUser(params, null);
         });
     }
 

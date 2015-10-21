@@ -14,7 +14,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.makeramen.RoundedImageView;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
@@ -292,24 +292,28 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
             holder.button.setImageResource(R.drawable.friends_add);
             holder.button.setVisibility(View.VISIBLE);
 
-            holder.button.setOnClickListener(view -> {
-                holder.button.setOnClickListener(null);
-                holder.button.setImageResource(R.drawable.friends_accepted);
-                user.selectedCanal = FLUser.FLUserSelectedCanal.SuggestionCanal;
-                FloozRestClient.getInstance().sendFriendRequest(user.userId, user.getSelectedCanal(), new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
-                        reloadSuggestions();
-                        FloozRestClient.getInstance().updateCurrentUser(null);
-                    }
+            holder.button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.button.setOnClickListener(null);
+                    holder.button.setImageResource(R.drawable.friends_accepted);
+                    user.selectedCanal = FLUser.FLUserSelectedCanal.SuggestionCanal;
+                    FloozRestClient.getInstance().sendFriendRequest(user.userId, user.getSelectedCanal(), new FloozHttpResponseHandler() {
+                        @Override
+                        public void success(Object response) {
+                            reloadSuggestions();
+                            FloozRestClient.getInstance().updateCurrentUser(null);
+                        }
 
-                    @Override
-                    public void failure(int statusCode, FLError error) {
+                        @Override
+                        public void failure(int statusCode, FLError error) {
 
-                    }
-                });
+                        }
+                    });
+                }
             });
         }
+
         else if (this.isSearchActive && FloozRestClient.getInstance().currentUser.userIsAFriend(user)) {
             holder.button.setImageResource(R.drawable.friends_accepted);
             holder.button.setVisibility(View.VISIBLE);
@@ -319,21 +323,24 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
             holder.button.setImageResource(R.drawable.friends_add);
             holder.button.setVisibility(View.VISIBLE);
 
-            holder.button.setOnClickListener(view -> {
-                holder.button.setOnClickListener(null);
-                holder.button.setImageResource(R.drawable.friends_accepted);
-                user.selectedCanal = FLUser.FLUserSelectedCanal.SearchCanal;
-                FloozRestClient.getInstance().sendFriendRequest(user.userId, user.getSelectedCanal(), new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
-                        FloozRestClient.getInstance().updateCurrentUser(null);
-                    }
+            holder.button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    holder.button.setOnClickListener(null);
+                    holder.button.setImageResource(R.drawable.friends_accepted);
+                    user.selectedCanal = FLUser.FLUserSelectedCanal.SearchCanal;
+                    FloozRestClient.getInstance().sendFriendRequest(user.userId, user.getSelectedCanal(), new FloozHttpResponseHandler() {
+                        @Override
+                        public void success(Object response) {
+                            FloozRestClient.getInstance().updateCurrentUser(null);
+                        }
 
-                    @Override
-                    public void failure(int statusCode, FLError error) {
+                        @Override
+                        public void failure(int statusCode, FLError error) {
 
-                    }
-                });
+                        }
+                    });
+                }
             });
         }
         else

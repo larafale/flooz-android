@@ -44,8 +44,14 @@ public class FLUser
     public String smsCode;
     public String distinctId;
     public List<String> actions;
-    public boolean isStar;
-    public boolean isPro;
+    public Boolean isStar;
+    public Boolean isPro;
+
+    public Boolean isComplete;
+    public Boolean isFriendable;
+
+    public Boolean isIdentified;
+    public Boolean isFloozer;
 
     public JSONObject blockObject;
     public Map<String, String> address;
@@ -103,6 +109,8 @@ public class FLUser
     {
         super();
         this.userKind = UserKind.FloozUser;
+        this.isIdentified = true;
+        this.isFloozer = true;
         this.setJson(data);
     }
 
@@ -110,6 +118,9 @@ public class FLUser
     {
         super();
         this.userKind = UserKind.PhoneUser;
+
+        this.isIdentified = false;
+        this.isFloozer = false;
     }
 
     public void setJson(JSONObject data)
@@ -142,6 +153,12 @@ public class FLUser
             this.avatarURLFull = this.json.optString("picFull");
             this.isStar = this.json.optBoolean("isStar");
             this.isPro = this.json.optBoolean("isPro");
+            this.isComplete = this.json.optBoolean("isComplete");
+
+            if (this.json.has("isFriendable"))
+                isFriendable = this.json.optBoolean("isFriendable");
+            else
+                isFriendable = true;
 
             if (this.json.has("actions")) {
                 try {
@@ -172,8 +189,15 @@ public class FLUser
                 this.birthdate = String.format("%s/%s/%s", array[2].substring(0, 2), array[1], array[0]);
             }
 
-            if (this.avatarURL.equals("/img/nopic.png"))
+            if (this.avatarURL.equals("/img/nopic.png")) {
                 this.avatarURL = null;
+                this.avatarURLFull = null;
+            }
+
+            if (this.coverURL.equals("/img/nocover.png")) {
+                this.coverURL = null;
+                this.coverURLFull = null;
+            }
 
             if (this.json.has("device"))
                 this.device = this.json.getString("device");

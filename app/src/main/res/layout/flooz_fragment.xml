@@ -92,7 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="fill_parent"/>
 
-        <com.makeramen.RoundedImageView
+        <com.makeramen.roundedimageview.RoundedImageView
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/new_transac_button"
             android:scaleType="centerCrop"
@@ -102,8 +102,8 @@
             android:layout_height="@dimen/timeline_new_flooz_button"
             android:layout_marginBottom="@dimen/dimen_xlarge"
             android:src="@drawable/new_flooz"
-            app:corner_radius="30dip"
-            app:oval="true"/>
+            app:riv_corner_radius="30dip"
+            app:riv_oval="true"/>
 
     </RelativeLayout>
 

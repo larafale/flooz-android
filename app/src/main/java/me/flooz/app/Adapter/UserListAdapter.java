@@ -11,7 +11,7 @@ import android.widget.BaseAdapter;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.makeramen.RoundedImageView;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
@@ -34,31 +34,15 @@ public class UserListAdapter extends BaseAdapter {
     private LayoutInflater inflater;
 
     private FLUser currentUser;
-    private List<FLUser> userList = new ArrayList<>(0);
-    private ListType adapterType;
-    public UserListDelegate delegate;
+    public List<FLUser> userList = new ArrayList<>(0);
 
-    public interface UserListDelegate {
-        void ListUserClick(FLUser user);
-    }
-
-    public enum ListType {
-        FOLLOWERS,
-        FOLLOWINGS
-    }
-
-    public UserListAdapter(Context ctx, FLUser user, ListType type) {
+    public UserListAdapter(Context ctx, FLUser user) {
         this.inflater = LayoutInflater.from(ctx);
         this.context = ctx;
-        this.adapterType = type;
 
         this.currentUser = user;
         if (this.currentUser != null)
             this.userList = currentUser.friends;
-//        if (this.adapterType == ListType.FOLLOWERS && this.currentUser != null)
-//            this.userList = currentUser.followers;
-//        else if (this.adapterType == ListType.FOLLOWINGS && this.currentUser != null)
-//            this.userList = currentUser.followings;
 
         if (this.userList == null)
             this.userList = new ArrayList<>(0);
@@ -70,15 +54,13 @@ public class UserListAdapter extends BaseAdapter {
         this.currentUser = currentUser;
         if (this.currentUser != null)
             this.userList = currentUser.friends;
-//        if (this.adapterType == ListType.FOLLOWERS && this.currentUser != null)
-//            this.userList = currentUser.followers;
-//        else if (this.adapterType == ListType.FOLLOWINGS && this.currentUser != null)
-//            this.userList = currentUser.followings;
     }
 
     @Override
     public int getCount() {
-        return userList.size();
+        if (userList.size() > 0)
+            return userList.size();
+        return 1;
     }
 
     @Override
@@ -101,10 +83,20 @@ public class UserListAdapter extends BaseAdapter {
         return i;
     }
 
-    // TODO Le i ná pas la bonne valeur du coup hack dans le clicklistener
     @Override
     public View getView(int i, View convertView, ViewGroup parent) {
         final ViewHolder holder;
+
+        if (this.userList.size() == 0) {
+            View empty = LayoutInflater.from(context).inflate(R.layout.empty_row, parent, false);
+
+            TextView emptyText = (TextView) empty.findViewById(R.id.empty_row_text);
+
+            emptyText.setTypeface(CustomFonts.customContentRegular(context));
+            emptyText.setText(context.getResources().getString(R.string.EMPTY_FRIEND_CELL));
+
+            return empty;
+        }
 
         if (convertView == null) {
             holder = new ViewHolder();
@@ -115,12 +107,6 @@ public class UserListAdapter extends BaseAdapter {
             holder.username.setTypeface(CustomFonts.customTitleExtraLight(this.context), Typeface.BOLD);
             holder.fullname.setTypeface(CustomFonts.customContentRegular(this.context));
 
-//            RelativeLayout container = (RelativeLayout) convertView.findViewById(R.id.user_list_row_container);
-//            container.setOnClickListener(v -> {
-//                if (delegate != null)
-//                    delegate.ListUserClick(getItem(holder.fullname.getText().toString()));
-//                    delegate.ListUserClick(userList.get(i));
-//            });
             convertView.setTag(holder);
         }
         else {

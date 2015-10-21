@@ -3,6 +3,7 @@ package me.flooz.app.UI.Controllers;
 import android.app.Activity;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -27,7 +28,7 @@ public class NotificationsController extends BaseController {
     private PullRefreshLayout contentContainer;
     private NotificationListAdapter listAdapter;
 
-    public NotificationsController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull BaseController.ControllerKind kind) {
+    public NotificationsController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull BaseController.ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
         this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
@@ -37,10 +38,13 @@ public class NotificationsController extends BaseController {
 
         headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
 
-        this.headerBackButton.setOnClickListener(view -> {
-            FloozRestClient.getInstance().readAllNotifications(null);
-            parentActivity.finish();
-            parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FloozRestClient.getInstance().readAllNotifications(null);
+                parentActivity.finish();
+                parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+            }
         });
 
         if (this.currentKind == ControllerKind.FRAGMENT_CONTROLLER)
@@ -49,24 +53,32 @@ public class NotificationsController extends BaseController {
         this.listAdapter = new NotificationListAdapter(parentActivity);
         contentList.setAdapter(this.listAdapter);
 
-        this.contentContainer.setOnRefreshListener(() -> FloozRestClient.getInstance().updateNotificationFeed(new FloozHttpResponseHandler() {
+        this.contentContainer.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
-            public void success(Object response) {
-                contentContainer.setRefreshing(false);
-            }
+            public void onRefresh() {
+                FloozRestClient.getInstance().updateNotificationFeed(new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        contentContainer.setRefreshing(false);
+                    }
 
+                    @Override
+                    public void failure(int statusCode, FLError error) {
+                        contentContainer.setRefreshing(false);
+                    }
+                });
+            }
+        });
+
+        contentList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public void failure(int statusCode, FLError error) {
-                contentContainer.setRefreshing(false);
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                FLNotification notif = (FLNotification) listAdapter.getItem(position);
+                notif.isRead = true;
+                if (notif.triggers.size() > 0)
+                    FloozRestClient.getInstance().handleRequestTriggers(notif.data);
+                listAdapter.notifyDataSetChanged();
             }
-        }));
-
-        contentList.setOnItemClickListener((parent, view, position, id) -> {
-            FLNotification notif = (FLNotification) listAdapter.getItem(position);
-            notif.isRead = true;
-            if (notif.triggers.size() > 0)
-                FloozRestClient.getInstance().handleRequestTriggers(notif.data);
-            listAdapter.notifyDataSetChanged();
         });
     }
 

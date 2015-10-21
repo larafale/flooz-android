@@ -47,7 +47,7 @@ public class StartBaseFragment extends Fragment {
         return ret;
     }
 
-    public static void handleStepResponse(JSONObject response, StartActivity activity) {
+    public static void handleStepResponse(JSONObject response, final StartActivity activity) {
         if (response.has("step") && response.optJSONObject("step").has("next")) {
             if (response.optJSONObject("step").optString("next").contentEquals("signup")) {
                 FloozRestClient.getInstance().showLoadView();

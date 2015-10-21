@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.support.multidex.MultiDex;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.inputmethod.InputMethodManager;
 
@@ -41,6 +42,7 @@ import me.flooz.app.R;
 import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.NewTransactionActivity;
 import me.flooz.app.UI.Activity.StartActivity;
+import me.flooz.app.UI.Fragment.Home.ProfileCardFragment;
 import me.flooz.app.UI.Tools.ActionSheet;
 import me.flooz.app.UI.Tools.ActionSheetItem;
 import me.flooz.app.Utils.FLHelper;
@@ -117,6 +119,12 @@ public class FloozApplication extends BranchApp
         }
 
         SafeLooper.install();
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
     private String getRegistrationId(Context context) {
@@ -260,6 +268,30 @@ public class FloozApplication extends BranchApp
         }
 
         this.currentActivity = activity;
+    }
+
+    public void showUserProfile(FLUser user) {
+        if (this.currentActivity instanceof HomeActivity) {
+            HomeActivity homeActivity = (HomeActivity)this.currentActivity;
+            if (homeActivity.currentFragment instanceof ProfileCardFragment) {
+                ProfileCardFragment userProfileFragment = (ProfileCardFragment)homeActivity.currentFragment;
+                if (userProfileFragment.user.userId.contentEquals(user.userId)) {
+
+                } else {
+                    ProfileCardFragment controller = new ProfileCardFragment();
+                    controller.user = user;
+                    homeActivity.pushFragmentInCurrentTab(controller);                }
+            } else {
+                ProfileCardFragment controller = new ProfileCardFragment();
+                controller.user = user;
+                homeActivity.pushFragmentInCurrentTab(controller);
+            }
+        } else {
+            Intent intent = new Intent(getAppContext(), NewTransactionActivity.class);
+            intent.putExtra("user", user.json.toString());
+            currentActivity.startActivity(intent);
+            currentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+        }
     }
 
     private ActionSheetItem.ActionSheetItemClickListener createTransaction = new ActionSheetItem.ActionSheetItemClickListener() {
@@ -490,16 +522,23 @@ public class FloozApplication extends BranchApp
 //            }
 //        }));
 
-        items.add(new ActionSheetItem(this, R.string.MENU_REPORT_LINE, () -> {
-            new AlertDialog.Builder(getCurrentActivity())
-                    .setTitle(R.string.MENU_REPORT_USER)
-                    .setMessage(R.string.REPORT_LINE_ALERT_MESSAGE)
-                    .setPositiveButton(R.string.GLOBAL_YES, (dialog, which) -> {
-                        FloozRestClient.getInstance().reportContent(new FLReport(FLReport.ReportType.Transaction, transac.transactionId), null);
-                    })
-                    .setNegativeButton(R.string.GLOBAL_NO, null)
-                    .show();
+        items.add(new ActionSheetItem(this, R.string.MENU_REPORT_LINE, new ActionSheetItem.ActionSheetItemClickListener() {
+            @Override
+            public void onClick() {
+                new AlertDialog.Builder(getCurrentActivity())
+                        .setTitle(R.string.MENU_REPORT_USER)
+                        .setMessage(R.string.REPORT_LINE_ALERT_MESSAGE)
+                        .setPositiveButton(R.string.GLOBAL_YES, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                FloozRestClient.getInstance().reportContent(new FLReport(FLReport.ReportType.Transaction, transac.transactionId), null);
+                            }
+                        })
+                        .setNegativeButton(R.string.GLOBAL_NO, null)
+                        .show();
+            }
         }));
+
         ActionSheet.showWithItems(getCurrentActivity(), items);
     }
 }

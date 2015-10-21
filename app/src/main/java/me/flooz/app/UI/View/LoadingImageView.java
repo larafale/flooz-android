@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-import com.makeramen.RoundedImageView;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -86,12 +86,15 @@ public class LoadingImageView extends RelativeLayout {
                 public void onLoadingCancelled(String imageUri, View view) {
 
                 }
-            }, (imageUri, view, current, total) -> {
-                float tmp = current;
-                tmp /= total;
-                tmp *= 100;
+            }, new ImageLoadingProgressListener() {
+                @Override
+                public void onProgressUpdate(String imageUri, View view, int current, int total) {
+                    float tmp = current;
+                    tmp /= total;
+                    tmp *= 100;
 
-                progressBar.setProgress((int) tmp);
+                    progressBar.setProgress((int) tmp);
+                }
             });
         }
     }

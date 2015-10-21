@@ -12,4 +12,9 @@
         <attr name="ttlm_cornerRadius" format="dimension" />
         <attr name="ttlm_arrowRatio" format="float" />
     </declare-styleable>
+
+    <declare-styleable name="CompoundButton">
+        <attr name="android:button" />
+    </declare-styleable>
+
 </resources>

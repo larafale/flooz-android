@@ -61,7 +61,7 @@ public class StartCardFragment extends StartBaseFragment {
         this.cardExpires = (EditText) view.findViewById(R.id.start_card_expires);
         this.cardCVV = (EditText) view.findViewById(R.id.start_card_cvv);
         ImageView scanpayButton = (ImageView) view.findViewById(R.id.start_card_scanpay);
-        Button addCardButton = (Button) view.findViewById(R.id.start_card_add);
+        final Button addCardButton = (Button) view.findViewById(R.id.start_card_add);
         Button skipButton = (Button) view.findViewById(R.id.start_card_skip);
         TextView cardInfo = (TextView) view.findViewById(R.id.start_card_infos);
 
@@ -165,92 +165,103 @@ public class StartCardFragment extends StartBaseFragment {
             }
         });
 
-        this.cardCVV.setOnEditorActionListener((v, actionId, event) -> {
-            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                addCardButton.performClick();
+        this.cardCVV.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    addCardButton.performClick();
+                }
+                return false;
             }
-            return false;
         });
 
-        scanpayButton.setOnClickListener(v -> {
-            Intent scanActivity = new Intent(parentActivity, ScanPayActivity.class);
-            scanActivity.putExtra(ScanPay.EXTRA_TOKEN, "be38035037ed6ca3cba7089b");
+        scanpayButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent scanActivity = new Intent(parentActivity, ScanPayActivity.class);
+                scanActivity.putExtra(ScanPay.EXTRA_TOKEN, "be38035037ed6ca3cba7089b");
 
-            scanActivity.putExtra(ScanPay.EXTRA_SHOULD_SHOW_CONFIRMATION_VIEW, false);
-            scanActivity.putExtra(ScanPay.EXTRA_SHOULD_SHOW_MANUAL_ENTRY_BUTTON, false);
+                scanActivity.putExtra(ScanPay.EXTRA_SHOULD_SHOW_CONFIRMATION_VIEW, false);
+                scanActivity.putExtra(ScanPay.EXTRA_SHOULD_SHOW_MANUAL_ENTRY_BUTTON, false);
 
-            parentActivity.startActivityForResult(scanActivity, RESULT_SCANPAY_ACTIVITY);
+                parentActivity.startActivityForResult(scanActivity, RESULT_SCANPAY_ACTIVITY);
+            }
         });
 
-        addCardButton.setOnClickListener(v -> {
+        addCardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map<String, Object> params = new HashMap<>();
+                params.put("holder", cardOwner.getText().toString());
+                params.put("number", cardNumber.getText().toString());
+                params.put("expires", cardExpires.getText().toString());
+                params.put("cvv", cardCVV.getText().toString());
 
-            Map<String, Object> params = new HashMap<>();
-            params.put("holder", cardOwner.getText().toString());
-            params.put("number", cardNumber.getText().toString());
-            params.put("expires", cardExpires.getText().toString());
-            params.put("cvv", cardCVV.getText().toString());
+                FloozRestClient.getInstance().showLoadView();
+                FloozRestClient.getInstance().signupPassStep("card", params, new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        JSONObject responseObject = (JSONObject) response;
+                        StartBaseFragment.handleStepResponse(responseObject, parentActivity);
+                    }
 
-            FloozRestClient.getInstance().showLoadView();
-            FloozRestClient.getInstance().signupPassStep("card", params, new FloozHttpResponseHandler() {
-                @Override
-                public void success(Object response) {
-                    JSONObject responseObject = (JSONObject) response;
-                    StartBaseFragment.handleStepResponse(responseObject, parentActivity);
-                }
+                    @Override
+                    public void failure(int statusCode, FLError error) {
 
-                @Override
-                public void failure(int statusCode, FLError error) {
-
-                }
-            });
+                    }
+                });
+            }
         });
 
-        skipButton.setOnClickListener(v -> {
-            FloozRestClient.getInstance().showLoadView();
-            FloozRestClient.getInstance().signupPassStep("cardSkip", null, new FloozHttpResponseHandler() {
-                @Override
-                public void success(Object response) {
-                    JSONObject responseObject = (JSONObject) response;
+        skipButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FloozRestClient.getInstance().showLoadView();
+                FloozRestClient.getInstance().signupPassStep("cardSkip", null, new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        JSONObject responseObject = (JSONObject) response;
 
-                    if (responseObject.has("step") && responseObject.optJSONObject("step").has("next")) {
-                        if (responseObject.optJSONObject("step").optString("next").contentEquals("signup")) {
-                            FloozRestClient.getInstance().showLoadView();
-                            FloozRestClient.getInstance().signupPassStep("signup", parentActivity.signupData, new FloozHttpResponseHandler() {
-                                @Override
-                                public void success(Object response) {
-                                    JSONObject responseObject = (JSONObject) response;
+                        if (responseObject.has("step") && responseObject.optJSONObject("step").has("next")) {
+                            if (responseObject.optJSONObject("step").optString("next").contentEquals("signup")) {
+                                FloozRestClient.getInstance().showLoadView();
+                                FloozRestClient.getInstance().signupPassStep("signup", parentActivity.signupData, new FloozHttpResponseHandler() {
+                                    @Override
+                                    public void success(Object response) {
+                                        JSONObject responseObject = (JSONObject) response;
 
-                                    FloozRestClient.getInstance().updateCurrentUserAfterSignup(responseObject);
+                                        FloozRestClient.getInstance().updateCurrentUserAfterSignup(responseObject);
 
-                                    if (responseObject.has("step") && responseObject.optJSONObject("step").has("next")) {
-                                        StartBaseFragment nextFragment = StartBaseFragment.getSignupFragmentFromId(responseObject.optJSONObject("step").optString("next"), responseObject.optJSONObject("step"));
+                                        if (responseObject.has("step") && responseObject.optJSONObject("step").has("next")) {
+                                            StartBaseFragment nextFragment = StartBaseFragment.getSignupFragmentFromId(responseObject.optJSONObject("step").optString("next"), responseObject.optJSONObject("step"));
 
-                                        if (nextFragment != null) {
-                                            parentActivity.changeCurrentPage(nextFragment, R.animator.slide_in_left, R.animator.slide_out_right, R.animator.slide_in_right, R.animator.slide_out_left, true);
+                                            if (nextFragment != null) {
+                                                parentActivity.changeCurrentPage(nextFragment, R.animator.slide_in_left, R.animator.slide_out_right, R.animator.slide_in_right, R.animator.slide_out_left, true);
+                                            }
                                         }
                                     }
+
+                                    @Override
+                                    public void failure(int statusCode, FLError error) {
+
+                                    }
+                                });
+                            } else {
+                                StartBaseFragment nextFragment = StartBaseFragment.getSignupFragmentFromId(responseObject.optJSONObject("step").optString("next"), responseObject.optJSONObject("step"));
+
+                                if (nextFragment != null) {
+                                    parentActivity.changeCurrentPage(nextFragment, R.animator.slide_in_left, R.animator.slide_out_right, R.animator.slide_in_right, R.animator.slide_out_left, true);
                                 }
-
-                                @Override
-                                public void failure(int statusCode, FLError error) {
-
-                                }
-                            });
-                        } else {
-                            StartBaseFragment nextFragment = StartBaseFragment.getSignupFragmentFromId(responseObject.optJSONObject("step").optString("next"), responseObject.optJSONObject("step"));
-
-                            if (nextFragment != null) {
-                                parentActivity.changeCurrentPage(nextFragment, R.animator.slide_in_left, R.animator.slide_out_right, R.animator.slide_in_right, R.animator.slide_out_left, true);
                             }
                         }
                     }
-                }
 
-                @Override
-                public void failure(int statusCode, FLError error) {
+                    @Override
+                    public void failure(int statusCode, FLError error) {
 
-                }
-            });
+                    }
+                });
+            }
         });
 
 

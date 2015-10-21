@@ -18,43 +18,24 @@ import me.flooz.app.UI.Fragment.Home.TabFragments.TimelineFragment;
 /**
  * Created by Wapazz on 22/09/15.
  */
-public class ProfileCardFragment extends TabBarFragment implements TimelineListAdapter.TimelineListRowDelegate {
+public class ProfileCardFragment extends TabBarFragment {
+
     public ProfileController controller;
     public FLUser user;
-    public TimelineFragment.TimelineFragmentDelegate delegate;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.profile_card_list_fragment, null);
 
-        this.delegate = this.tabBarActivity;
-        this.controller = new ProfileController(user, view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
+        if (this.controller == null)
+            this.controller = new ProfileController(user, inflater.inflate(R.layout.profile_card_list_fragment, null), tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
 
-        return view;
-    }
-
-    @Override
-    public void ListItemClick(FLTransaction transac) {
-        if (delegate != null)
-            delegate.onItemSelected(transac);
-    }
-
-    @Override
-    public void ListItemCommentClick(FLTransaction transac) {
-        if (delegate != null)
-            delegate.onItemCommentSelected(transac);
-    }
-
-    @Override
-    public void ListItemImageClick(String imgUrl) {
-        if (delegate != null)
-            delegate.onItemImageSelected(imgUrl);
+        return this.controller.currentView;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-//        this.setRetainInstance(true);
+
         this.controller.onStart();
     }
 

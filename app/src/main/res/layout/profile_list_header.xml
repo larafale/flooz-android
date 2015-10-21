@@ -12,7 +12,7 @@
         android:adjustViewBounds="true"
         />
 
-    <com.makeramen.RoundedImageView
+    <com.makeramen.roundedimageview.RoundedImageView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/profile_card_pic"
         android:scaleType="centerCrop"
@@ -22,9 +22,9 @@
         android:layout_marginBottom="-50dp"
         android:layout_above="@+id/informations_container"
         android:src="@drawable/avatar_default"
-        app:corner_radius="30dip"
-        app:mutate_background="true"
-        app:oval="true"/>
+        app:riv_corner_radius="30dip"
+        app:riv_mutate_background="true"
+        app:riv_oval="true"/>
 
 
     <LinearLayout

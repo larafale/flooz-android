@@ -36,8 +36,8 @@ public class StartLoginFragment extends StartBaseFragment {
         TextView title = (TextView) view.findViewById(R.id.start_login_title);
         LinearLayout fbButton = (LinearLayout) view.findViewById(R.id.start_login_facebook);
         TextView orLabel = (TextView) view.findViewById(R.id.start_login_or);
-        EditText phoneTextfield = (EditText) view.findViewById(R.id.start_login_phone);
-        EditText passwordTextfield = (EditText) view.findViewById(R.id.start_login_password);
+        final EditText phoneTextfield = (EditText) view.findViewById(R.id.start_login_phone);
+        final EditText passwordTextfield = (EditText) view.findViewById(R.id.start_login_password);
         Button loginButton = (Button) view.findViewById(R.id.start_login_next);
         Button forgetButton = (Button) view.findViewById(R.id.start_login_forget);
         ImageView facebookPicto = (ImageView) view.findViewById(R.id.start_login_facebook_picto);
@@ -73,29 +73,40 @@ public class StartLoginFragment extends StartBaseFragment {
             }
         });
 
-        fbButton.setOnClickListener(v -> {
-            FloozRestClient.getInstance().showLoadView();
-            FloozRestClient.getInstance().connectFacebook();
+        fbButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FloozRestClient.getInstance().showLoadView();
+                FloozRestClient.getInstance().connectFacebook();
+            }
         });
 
-        loginButton.setOnClickListener(v -> {
-            parentActivity.hideKeyboard();
-            FloozRestClient.getInstance().showLoadView();
-            FloozRestClient.getInstance().loginWithPseudoAndPassword(phoneTextfield.getText().toString(), passwordTextfield.getText().toString(), new FloozHttpResponseHandler() {
-                @Override
-                public void success(Object response) {
-                    parentActivity.floozApp.didConnected();
-                    parentActivity.floozApp.displayMainView();
-                }
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                parentActivity.hideKeyboard();
+                FloozRestClient.getInstance().showLoadView();
+                FloozRestClient.getInstance().loginWithPseudoAndPassword(phoneTextfield.getText().toString(), passwordTextfield.getText().toString(), new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        parentActivity.floozApp.didConnected();
+                        parentActivity.floozApp.displayMainView();
+                    }
 
-                @Override
-                public void failure(int statusCode, FLError error) {
+                    @Override
+                    public void failure(int statusCode, FLError error) {
 
-                }
-            });
+                    }
+                });
+            }
         });
 
-        forgetButton.setOnClickListener(v -> parentActivity.changeCurrentPage(new StartForgetFragment(), android.R.animator.fade_in, android.R.animator.fade_out, true));
+        forgetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                parentActivity.changeCurrentPage(new StartForgetFragment(), android.R.animator.fade_in, android.R.animator.fade_out, true);
+            }
+        });
 
         return view;
     }

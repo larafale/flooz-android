@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -27,7 +28,12 @@ public class SettingsListAdapter extends BaseAdapter {
         this.items = data;
 
         list.setAdapter(this);
-        list.setOnItemClickListener((parent, view, position, id) -> getItem(position).getItemClickListener().onItemClick(parent, view, position, id));
+        list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                getItem(position).getItemClickListener().onItemClick(parent, view, position, id);
+            }
+        });
     }
 
     @Override

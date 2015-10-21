@@ -66,8 +66,7 @@ public class AuthenticationPassFragment extends AuthenticationBaseFragment {
             public void afterTextChanged(Editable s) {
                 if (passwordTextfield.getText().length() >= 6 && s.length() >= 8) {
                     nextButton.setEnabled(true);
-                }
-                else {
+                } else {
                     nextButton.setEnabled(false);
                 }
             }
@@ -95,43 +94,52 @@ public class AuthenticationPassFragment extends AuthenticationBaseFragment {
             }
         });
 
-        this.passwordTextfield.setOnEditorActionListener((v, actionId, event) -> {
-            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                if (nextButton.isEnabled())
-                    nextButton.performClick();
+        this.passwordTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    if (nextButton.isEnabled())
+                        nextButton.performClick();
+                }
+                return false;
             }
-            return false;
         });
 
-        this.nextButton.setOnClickListener(v -> {
-            FloozRestClient.getInstance().showLoadView();
-            FloozRestClient.getInstance().loginForSecureCode(phoneTextfield.getText().toString(), passwordTextfield.getText().toString(), new FloozHttpResponseHandler() {
-                @Override
-                public void success(Object response) {
-                    parentActivity.gotToNextPage();
-                    FloozRestClient.getInstance().clearSecureCode();
-                }
+        this.nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FloozRestClient.getInstance().showLoadView();
+                FloozRestClient.getInstance().loginForSecureCode(phoneTextfield.getText().toString(), passwordTextfield.getText().toString(), new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        parentActivity.gotToNextPage();
+                        FloozRestClient.getInstance().clearSecureCode();
+                    }
 
-                @Override
-                public void failure(int statusCode, FLError error) {
+                    @Override
+                    public void failure(int statusCode, FLError error) {
 
-                }
-            });
+                    }
+                });
+            }
         });
 
-        forgetButton.setOnClickListener(v -> {
-            FloozRestClient.getInstance().showLoadView();
-            FloozRestClient.getInstance().passwordForget(FloozRestClient.getInstance().currentUser.email, new FloozHttpResponseHandler() {
-                @Override
-                public void success(Object response) {
+        forgetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FloozRestClient.getInstance().showLoadView();
+                FloozRestClient.getInstance().passwordForget(FloozRestClient.getInstance().currentUser.email, new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
 
-                }
+                    }
 
-                @Override
-                public void failure(int statusCode, FLError error) {
+                    @Override
+                    public void failure(int statusCode, FLError error) {
 
-                }
-            });
+                    }
+                });
+            }
         });
 
         return view;

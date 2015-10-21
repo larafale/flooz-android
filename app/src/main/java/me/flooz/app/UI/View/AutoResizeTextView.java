@@ -169,17 +169,20 @@ public class AutoResizeTextView extends TextView {
     }
 
     private void adjustTextSize() {
-        post(() -> {
-            if (!_initiallized)
-                return;
-            final int startSize = (int) _minTextSize;
-            final int heightLimit = getMeasuredHeight() - getCompoundPaddingBottom() - getCompoundPaddingTop();
-            _widthLimit = getMeasuredWidth() - getCompoundPaddingLeft() - getCompoundPaddingRight();
-            if (_widthLimit <= 0)
-                return;
-            _availableSpaceRect.right = _widthLimit;
-            _availableSpaceRect.bottom = heightLimit;
-            superSetTextSize(startSize);
+        post(new Runnable() {
+            @Override
+            public void run() {
+                if (!_initiallized)
+                    return;
+                final int startSize = (int) _minTextSize;
+                final int heightLimit = getMeasuredHeight() - getCompoundPaddingBottom() - getCompoundPaddingTop();
+                _widthLimit = getMeasuredWidth() - getCompoundPaddingLeft() - getCompoundPaddingRight();
+                if (_widthLimit <= 0)
+                    return;
+                _availableSpaceRect.right = _widthLimit;
+                _availableSpaceRect.bottom = heightLimit;
+                superSetTextSize(startSize);
+            }
         });
     }
 

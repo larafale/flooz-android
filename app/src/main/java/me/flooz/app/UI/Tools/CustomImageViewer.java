@@ -15,6 +15,7 @@ import android.widget.RelativeLayout;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 
 import me.flooz.app.R;
 import uk.co.senab.photoview.PhotoViewAttacher;
@@ -67,7 +68,12 @@ public class CustomImageViewer extends Activity {
             showImageViewer(bitmap);
         }
 
-        this.imageViewerClose.setOnClickListener(view -> finish());
+        this.imageViewerClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     private void showImageViewer(final Bitmap image) {
@@ -139,12 +145,15 @@ public class CustomImageViewer extends Activity {
                         public void onLoadingCancelled(String imageUri, View view) {
 
                         }
-                    }, (imageUri, view, current, total) -> {
-                        float tmp = current;
-                        tmp /= total;
-                        tmp *= 100;
+                    }, new ImageLoadingProgressListener() {
+                        @Override
+                        public void onProgressUpdate(String imageUri, View view, int current, int total) {
+                            float tmp = current;
+                            tmp /= total;
+                            tmp *= 100;
 
-                        imageViewerProgress.setProgress((int) tmp);
+                            imageViewerProgress.setProgress((int) tmp);
+                        }
                     });
                 }
 

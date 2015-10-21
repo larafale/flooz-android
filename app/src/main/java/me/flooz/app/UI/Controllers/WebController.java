@@ -33,7 +33,7 @@ public class WebController extends BaseController {
     public String title;
     public String url;
 
-    public WebController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
+    public WebController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
         this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
@@ -44,12 +44,15 @@ public class WebController extends BaseController {
         if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
             this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
 
-        this.headerBackButton.setOnClickListener(view -> {
-            if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                parentActivity.finish();
-                parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-            } else {
-                ((HomeActivity)this.parentActivity).popFragmentInCurrentTab();
+        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
+                    parentActivity.finish();
+                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+                } else {
+                    ((HomeActivity) parentActivity).popFragmentInCurrentTab();
+                }
             }
         });
 

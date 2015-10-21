@@ -2,7 +2,7 @@ package me.flooz.app.Adapter;
 
 import android.widget.TextView;
 
-import com.makeramen.RoundedImageView;
+import com.makeramen.roundedimageview.RoundedImageView;
 
 public class UserView {
     public RoundedImageView imageView;

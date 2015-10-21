@@ -19,7 +19,7 @@
             android:gravity="center_vertical"
             android:paddingBottom="@dimen/dimen_large">
 
-            <com.makeramen.RoundedImageView
+            <com.makeramen.roundedimageview.RoundedImageView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/notification_row_img"
                 android:scaleType="centerCrop"
@@ -30,9 +30,9 @@
                 android:layout_marginBottom="@dimen/dimen_xsmall"
                 android:layout_gravity="center_vertical"
                 android:src="@drawable/avatar_default"
-                app:corner_radius="30dip"
-                app:mutate_background="true"
-                app:oval="true"/>
+                app:riv_corner_radius="30dip"
+                app:riv_mutate_background="true"
+                app:riv_oval="true"/>
 
             <TextView
                 android:id="@+id/notification_row_content"

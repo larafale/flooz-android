@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -44,7 +45,7 @@ public class FriendsController extends BaseController implements FriendsListAdap
 
     private FriendsListAdapter listAdapter;
 
-    public FriendsController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
+    public FriendsController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
         this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
@@ -57,70 +58,79 @@ public class FriendsController extends BaseController implements FriendsListAdap
         if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
             this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
 
-        this.headerBackButton.setOnClickListener(view -> {
-            if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                parentActivity.finish();
-                parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-            } else {
-                ((HomeActivity)this.parentActivity).popFragmentInCurrentTab();
+        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
+                    parentActivity.finish();
+                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+                } else {
+                    ((HomeActivity) parentActivity).popFragmentInCurrentTab();
+                }
             }
         });
 
-        inviteFriends.setOnClickListener(v -> {
-            if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                Intent intentShare = new Intent(parentActivity, ShareAppActivity.class);
-                parentActivity.startActivity(intentShare);
-                parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-            } else
-                ((HomeActivity) parentActivity).changeCurrentTab(HomeActivity.TabID.SHARE_TAB);
+        inviteFriends.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
+                    Intent intentShare = new Intent(parentActivity, ShareAppActivity.class);
+                    parentActivity.startActivity(intentShare);
+                    parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                } else
+                    ((HomeActivity) parentActivity).changeCurrentTab(HomeActivity.TabID.SHARE_TAB);
+            }
         });
 
         searchTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
 
-        this.refreshContainer.setOnRefreshListener(() -> {
-            final Boolean[] validate = {false};
+        this.refreshContainer.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                final Boolean[] validate = {false};
 
-            FloozRestClient.getInstance().updateCurrentUser(new FloozHttpResponseHandler() {
-                @Override
-                public void success(Object response) {
+                FloozRestClient.getInstance().updateCurrentUser(new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
 
-                    listAdapter.reloadFriends();
+                        listAdapter.reloadFriends();
 
-                    if (validate[0])
-                        refreshContainer.setRefreshing(false);
-                    else
-                        validate[0] = true;
-                }
+                        if (validate[0])
+                            refreshContainer.setRefreshing(false);
+                        else
+                            validate[0] = true;
+                    }
 
-                @Override
-                public void failure(int statusCode, FLError error) {
-                    if (validate[0])
-                        refreshContainer.setRefreshing(false);
-                    else
-                        validate[0] = true;
-                }
-            });
+                    @Override
+                    public void failure(int statusCode, FLError error) {
+                        if (validate[0])
+                            refreshContainer.setRefreshing(false);
+                        else
+                            validate[0] = true;
+                    }
+                });
 
-            FloozRestClient.getInstance().loadFriendSuggestions(new FloozHttpResponseHandler() {
-                @Override
-                public void success(Object response) {
+                FloozRestClient.getInstance().loadFriendSuggestions(new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
 
-                    listAdapter.reloadSuggestions((List<FLUser>) response);
+                        listAdapter.reloadSuggestions((List<FLUser>) response);
 
-                    if (validate[0])
-                        refreshContainer.setRefreshing(false);
-                    else
-                        validate[0] = true;
-                }
+                        if (validate[0])
+                            refreshContainer.setRefreshing(false);
+                        else
+                            validate[0] = true;
+                    }
 
-                @Override
-                public void failure(int statusCode, FLError error) {
-                    if (validate[0])
-                        refreshContainer.setRefreshing(false);
-                    else
-                        validate[0] = true;
-                }
-            });
+                    @Override
+                    public void failure(int statusCode, FLError error) {
+                        if (validate[0])
+                            refreshContainer.setRefreshing(false);
+                        else
+                            validate[0] = true;
+                    }
+                });
+            }
         });
 
         this.searchTextfield.addTextChangedListener(new TextWatcher() {
@@ -139,7 +149,12 @@ public class FriendsController extends BaseController implements FriendsListAdap
                 if (editable.length() > 0) {
                     clearSearchTextfieldButton.setVisibility(View.VISIBLE);
                     Handler handler = new Handler(Looper.getMainLooper());
-                    handler.postDelayed(() -> listAdapter.searchUser(searchTextfield.getText().toString()), 300);
+                    handler.postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            listAdapter.searchUser(searchTextfield.getText().toString());
+                        }
+                    }, 300);
                 } else {
                     clearSearchTextfieldButton.setVisibility(View.GONE);
                     listAdapter.searchUser(editable.toString());
@@ -147,9 +162,12 @@ public class FriendsController extends BaseController implements FriendsListAdap
             }
         });
 
-        this.clearSearchTextfieldButton.setOnClickListener(view1 -> {
-            searchTextfield.setText("");
-            listAdapter.searchUser("");
+        this.clearSearchTextfieldButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchTextfield.setText("");
+                listAdapter.searchUser("");
+            }
         });
 
         StickyListHeadersListView resultList = (StickyListHeadersListView) this.currentView.findViewById(R.id.friends_result_list);
@@ -157,11 +175,14 @@ public class FriendsController extends BaseController implements FriendsListAdap
         this.listAdapter.delegate = this;
         resultList.setAdapter(this.listAdapter);
 
-        resultList.setOnItemClickListener((adapterView, view1, position, l) -> {
-            FLUser user = listAdapter.getItem(position);
-            user.selectedCanal = FLUser.FLUserSelectedCanal.values()[(int) listAdapter.getHeaderId(position)];
+        resultList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                FLUser user = listAdapter.getItem(position);
+                user.selectedCanal = FLUser.FLUserSelectedCanal.values()[(int) listAdapter.getHeaderId(position)];
 //            FloozApplication.getInstance().showUserActionMenu(user);
-            // TODO USERACTIONMENU PLUS LA
+                // TODO USERACTIONMENU PLUS LA
+            }
         });
     }
 

@@ -32,7 +32,7 @@ public class CashoutController extends BaseController {
     private EditText amountTextfield;
     private TextView cashoutButton;
 
-    public CashoutController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull BaseController.ControllerKind kind) {
+    public CashoutController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull BaseController.ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
         this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
@@ -61,12 +61,15 @@ public class CashoutController extends BaseController {
         if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
             this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
 
-        this.headerBackButton.setOnClickListener(view -> {
-            if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                parentActivity.finish();
-                parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-            } else {
-                ((HomeActivity)this.parentActivity).popFragmentInCurrentTab();
+        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
+                    parentActivity.finish();
+                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+                } else {
+                    ((HomeActivity) parentActivity).popFragmentInCurrentTab();
+                }
             }
         });
 
@@ -90,41 +93,46 @@ public class CashoutController extends BaseController {
 
                 if (s.length() > 0) {
                     cashoutButton.setText(String.format(parentActivity.getResources().getString(R.string.CASHOUT_BUTTON), FLHelper.trimTrailingZeros(s.toString()) + " €"));
-                }
-                else {
+                } else {
                     cashoutButton.setText(String.format(parentActivity.getResources().getString(R.string.CASHOUT_BUTTON), ""));
                 }
             }
         });
 
-        this.amountTextfield.setOnEditorActionListener((v, actionId, event) -> {
-            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                if (cashoutButton.isEnabled())
-                    cashoutButton.performClick();
+        this.amountTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    if (cashoutButton.isEnabled())
+                        cashoutButton.performClick();
+                }
+                return false;
             }
-            return false;
         });
 
-        this.cashoutButton.setOnClickListener(v -> {
-            String amount = amountTextfield.getText().toString();
+        this.cashoutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String amount = amountTextfield.getText().toString();
 
-            if (amount.isEmpty())
-                amount = "0";
+                if (amount.isEmpty())
+                    amount = "0";
 
-            FloozRestClient.getInstance().showLoadView();
-            FloozRestClient.getInstance().cashoutValidate(Float.parseFloat(amount), new FloozHttpResponseHandler() {
-                @Override
-                public void success(Object response) {
-                    Intent intentNotifs = new Intent(parentActivity, AuthenticationActivity.class);
-                    parentActivity.startActivityForResult(intentNotifs, AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY);
-                    parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-                }
+                FloozRestClient.getInstance().showLoadView();
+                FloozRestClient.getInstance().cashoutValidate(Float.parseFloat(amount), new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        Intent intentNotifs = new Intent(parentActivity, AuthenticationActivity.class);
+                        parentActivity.startActivityForResult(intentNotifs, AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY);
+                        parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                    }
 
-                @Override
-                public void failure(int statusCode, FLError error) {
+                    @Override
+                    public void failure(int statusCode, FLError error) {
 
-                }
-            });
+                    }
+                });
+            }
         });
     }
 

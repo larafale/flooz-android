@@ -36,17 +36,25 @@ public class ActionSheet {
 
             final int pos = i;
 
-            items.get(i).itemLayout.setOnClickListener(view -> {
-                if (items.get(pos).clickListener != null)
-                    items.get(pos).clickListener.onClick();
-                dialog.dismiss();
+            items.get(i).itemLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (items.get(pos).clickListener != null)
+                        items.get(pos).clickListener.onClick();
+                    dialog.dismiss();
+                }
             });
             actionList.addView(items.get(i).itemLayout);
         }
 
         TextView cancelButton = (TextView) dialog.findViewById(R.id.action_sheet_cancel);
         cancelButton.setTypeface(CustomFonts.customTitleExtraLight(context), Typeface.BOLD);
-        cancelButton.setOnClickListener(view -> dialog.dismiss());
+        cancelButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
 
         dialog.show();
 

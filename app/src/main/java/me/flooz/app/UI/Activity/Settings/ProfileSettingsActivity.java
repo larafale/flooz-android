@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.Window;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -73,9 +74,12 @@ public class ProfileSettingsActivity extends Activity {
         infosText.setTypeface(CustomFonts.customTitleLight(this));
         infosNotifsText.setTypeface(CustomFonts.customContentBold(this));
 
-        this.headerBackButton.setOnClickListener(view -> {
-            instance.finish();
-            instance.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                instance.finish();
+                instance.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+            }
         });
 
         this.updateList();
@@ -117,64 +121,93 @@ public class ProfileSettingsActivity extends Activity {
         else
             this.infosContainer.setVisibility(View.GONE);
 
-        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_CARD), cardNotif, (parent, view, position, id) -> {
-            Intent intent = new Intent(instance, CreditCardSettingsActivity.class);
-            instance.startActivity(intent);
-            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_CARD), cardNotif, new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(instance, CreditCardSettingsActivity.class);
+                instance.startActivity(intent);
+                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+            }
         }));
 
-        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_RIB), bankNotif, (parent, view, position, id) -> {
-            Intent intent = new Intent(instance, BankSettingsActivity.class);
-            instance.startActivity(intent);
-            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_RIB), bankNotif, new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(instance, BankSettingsActivity.class);
+                instance.startActivity(intent);
+                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+            }
         }));
 
-        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_IDENTITY), indentityNotif, (parent, view, position, id) -> {
-            Intent intent = new Intent(instance, DocumentsSettingsActivity.class);
-            instance.startActivity(intent);
-            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_IDENTITY), indentityNotif, new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(instance, DocumentsSettingsActivity.class);
+                instance.startActivity(intent);
+                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+            }
         }));
 
-        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_COORD), coordsNotif, (parent, view, position, id) -> {
-            Intent intent = new Intent(instance, IdentitySettingsActivity.class);
-            instance.startActivity(intent);
-            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_COORD), coordsNotif, new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(instance, IdentitySettingsActivity.class);
+                instance.startActivity(intent);
+                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+            }
         }));
 
-        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_SECURITY), securityNotif, (parent, view, position, id) -> {
-            Intent intent = new Intent(instance, SecuritySettingsActivity.class);
-            instance.startActivity(intent);
-            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_SECURITY), securityNotif, new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(instance, SecuritySettingsActivity.class);
+                instance.startActivity(intent);
+                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+            }
         }));
 
-        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_PREFERENCES), (parent, view, position, id) -> {
-            Intent intent = new Intent(instance, PreferencesSettingsActivity.class);
-            instance.startActivity(intent);
-            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_PREFERENCES), new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(instance, PreferencesSettingsActivity.class);
+                instance.startActivity(intent);
+                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+            }
         }));
 
-        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_LOGOUT), (parent, view, position, id) -> {
-            final Dialog validationDialog = new Dialog(instance);
+        itemList.add(new SettingsListItem(this.getResources().getString(R.string.SETTINGS_LOGOUT), new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final Dialog validationDialog = new Dialog(instance);
 
-            validationDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            validationDialog.setContentView(R.layout.custom_dialog_validate_transaction);
+                validationDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                validationDialog.setContentView(R.layout.custom_dialog_validate_transaction);
 
-            TextView text = (TextView) validationDialog.findViewById(R.id.dialog_validate_flooz_text);
-            text.setText(instance.getResources().getString(R.string.LOGOUT_INFO));
-            text.setTypeface(CustomFonts.customContentRegular(instance));
+                TextView text = (TextView) validationDialog.findViewById(R.id.dialog_validate_flooz_text);
+                text.setText(instance.getResources().getString(R.string.LOGOUT_INFO));
+                text.setTypeface(CustomFonts.customContentRegular(instance));
 
-            Button decline = (Button) validationDialog.findViewById(R.id.dialog_validate_flooz_decline);
-            Button accept = (Button) validationDialog.findViewById(R.id.dialog_validate_flooz_accept);
+                Button decline = (Button) validationDialog.findViewById(R.id.dialog_validate_flooz_decline);
+                Button accept = (Button) validationDialog.findViewById(R.id.dialog_validate_flooz_accept);
 
-            decline.setOnClickListener(v -> validationDialog.dismiss());
+                decline.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        validationDialog.dismiss();
+                    }
+                });
 
-            accept.setOnClickListener(v -> {
-                validationDialog.dismiss();
-                FloozRestClient.getInstance().logout();
-            });
+                accept.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        validationDialog.dismiss();
+                        FloozRestClient.getInstance().logout();
+                    }
+                });
 
-            validationDialog.setCanceledOnTouchOutside(false);
-            validationDialog.show();
+                validationDialog.setCanceledOnTouchOutside(false);
+                validationDialog.show();
+            }
         }));
 
         new SettingsListAdapter(this, itemList, this.contentList);

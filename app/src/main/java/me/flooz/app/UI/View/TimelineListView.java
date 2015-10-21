@@ -43,9 +43,12 @@ public class TimelineListView extends ListView implements OnScrollListener {
 
     private final Handler handler = new Handler();
 
-    private final Runnable scrollBarPanelFadeRunnable = () -> {
-        if (outAnimation != null) {
-            scrollBarPanel.startAnimation(outAnimation);
+    private final Runnable scrollBarPanelFadeRunnable = new Runnable() {
+        @Override
+        public void run() {
+            if (outAnimation != null) {
+                scrollBarPanel.startAnimation(outAnimation);
+            }
         }
     };
 

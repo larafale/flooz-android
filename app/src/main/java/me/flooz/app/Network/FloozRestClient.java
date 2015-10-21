@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Typeface;
@@ -17,16 +18,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
+import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
 
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
+import cz.msebera.android.httpclient.HttpEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.message.BasicHeader;
 import org.apache.http.protocol.HTTP;
 import org.json.*;
+import cz.msebera.android.httpclient.Header;
+import cz.msebera.android.httpclient.HttpStatus;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -37,9 +40,6 @@ import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
-import com.github.nkzawa.engineio.client.transports.WebSocket;
-import com.github.nkzawa.socketio.client.IO;
-import com.github.nkzawa.socketio.client.Socket;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
@@ -57,6 +57,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import io.socket.client.IO;
+import io.socket.client.Socket;
+import io.socket.emitter.Emitter;
+import io.socket.engineio.client.transports.WebSocket;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.BuildConfig;
 import me.flooz.app.Model.FLComment;
@@ -70,6 +74,7 @@ import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Model.FLTrigger;
 import me.flooz.app.Model.FLUser;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.EditProfileActivity;
 import me.flooz.app.UI.Activity.FriendsActivity;
 import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.NewTransactionActivity;
@@ -78,7 +83,6 @@ import me.flooz.app.UI.Activity.Settings.BankSettingsActivity;
 import me.flooz.app.UI.Activity.Settings.IdentitySettingsActivity;
 import me.flooz.app.UI.Activity.Settings.CreditCardSettingsActivity;
 import me.flooz.app.UI.Activity.Settings.DocumentsSettingsActivity;
-import me.flooz.app.UI.Activity.Settings.ProfileSettingsActivity;
 import me.flooz.app.UI.Activity.ShareAppActivity;
 import me.flooz.app.UI.Activity.StartActivity;
 import me.flooz.app.UI.Tools.CustomToast;
@@ -952,7 +956,7 @@ public class FloozRestClient
     /*****  TRANSACTIONS  ******/
     /***************************/
 
-    public void getUserTransactions(String userId, FloozHttpResponseHandler responseHandler) {
+    public void getUserTransactions(String userId, final FloozHttpResponseHandler responseHandler) {
         this.request("/users/" + userId + "/flooz", HttpRequestType.GET, null, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
@@ -1122,9 +1126,9 @@ public class FloozRestClient
     /*******  SOCIAL  **********/
     /***************************/
 
-    public void getFullUser(String idTransaction, final FloozHttpResponseHandler responseHandler)
+    public void getFullUser(String userId, final FloozHttpResponseHandler responseHandler)
     {
-        this.request("/social/profile/" + idTransaction, HttpRequestType.GET, null, new FloozHttpResponseHandler() {
+        this.request("/social/profile/" + userId, HttpRequestType.GET, null, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
                 if (responseHandler != null) {
@@ -1506,47 +1510,53 @@ public class FloozRestClient
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, final JSONObject response) {
                     Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(() -> {
-                        hideLoadView();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            hideLoadView();
 
-                        if (responseHandler != null)
-                            responseHandler.success(response);
+                            if (responseHandler != null)
+                                responseHandler.success(response);
 
-                        if(response.has("popup"))
+                            if (response.has("popup"))
 
-                        {
-                            FLError errorContent = new FLError(response.optJSONObject("popup"));
-                            CustomToast.show(FloozApplication.getAppContext(), errorContent);
+                            {
+                                FLError errorContent = new FLError(response.optJSONObject("popup"));
+                                CustomToast.show(FloozApplication.getAppContext(), errorContent);
+                            }
+
+                            handleRequestTriggers(response);
                         }
-
-                        handleRequestTriggers(response);
                     });
                 }
 
                 @Override
                 public void onFailure(final int statusCode, Header[] headers, Throwable throwable, final JSONObject errorResponse) {
                     Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(() -> {
-                        hideLoadView();
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            hideLoadView();
 
-                        if (errorResponse != null) {
-                            handleRequestTriggers(errorResponse);
-
-                            if (statusCode != 426) {
-                                if (errorResponse.has("popup")) {
-                                    FLError errorContent = new FLError(errorResponse.optJSONObject("popup"));
-                                    CustomToast.show(FloozApplication.getAppContext(), errorContent);
-
-                                    if (responseHandler != null)
-                                        responseHandler.failure(statusCode, errorContent);
-                                } else if (responseHandler != null)
-                                    responseHandler.failure(statusCode, null);
-                            } else {
+                            if (errorResponse != null) {
                                 handleRequestTriggers(errorResponse);
 
-                                if (errorResponse.has("popup")) {
-                                    FLError errorContent = new FLError(errorResponse.optJSONObject("popup"));
-                                    CustomToast.show(FloozApplication.getAppContext(), errorContent);
+                                if (statusCode != 426) {
+                                    if (errorResponse.has("popup")) {
+                                        FLError errorContent = new FLError(errorResponse.optJSONObject("popup"));
+                                        CustomToast.show(FloozApplication.getAppContext(), errorContent);
+
+                                        if (responseHandler != null)
+                                            responseHandler.failure(statusCode, errorContent);
+                                    } else if (responseHandler != null)
+                                        responseHandler.failure(statusCode, null);
+                                } else {
+                                    handleRequestTriggers(errorResponse);
+
+                                    if (errorResponse.has("popup")) {
+                                        FLError errorContent = new FLError(errorResponse.optJSONObject("popup"));
+                                        CustomToast.show(FloozApplication.getAppContext(), errorContent);
+                                    }
                                 }
                             }
                         }
@@ -1577,37 +1587,32 @@ public class FloozRestClient
                 }
             }
 
-            HttpEntity entity = null;
-            try {
-                entity = new StringEntity("");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-
-            if (params != null) {
-                if (!fileUpload) {
-                    JSONObject jsonParams;
-                    try {
-                        jsonParams = (JSONObject) JSONHelper.toJSON(params);
-                        StringEntity sEntity = null;
-                        try {
-                            sEntity = new StringEntity(jsonParams.toString(), HTTP.UTF_8);
-                            sEntity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json; charset=UTF-8"));
-                        } catch (UnsupportedEncodingException e) {
-                            e.printStackTrace();
-                        }
-                        entity = sEntity;
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } else {
-                    try {
-                        entity = requestParams.getEntity(null);
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
+//            HttpEntity entity = null;
+//            try {
+//                entity = new StringEntity("");
+//            } catch (UnsupportedEncodingException e) {
+//                e.printStackTrace();
+//            }
+//
+//            if (params != null) {
+//                if (!fileUpload) {
+//                    JSONObject jsonParams;
+//                    try {
+//                        jsonParams = (JSONObject) JSONHelper.toJSON(params);
+//                        StringEntity sEntity = new StringEntity(jsonParams.toString(), "UTF-8");
+//                        sEntity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json; charset=UTF-8"));
+//                        entity = sEntity;
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                } else {
+//                    try {
+//                        entity = requestParams.getEntity(null);
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            }
 
             AsyncHttpClient httpClient;
 
@@ -1625,8 +1630,7 @@ public class FloozRestClient
                     if (fileUpload)
                         httpClient.post(floozApp.getCurrentActivity(), this.getAbsoluteUrl(path), requestParams, jsonHttpResponseHandler);
                     else {
-                        assert entity != null;
-                        httpClient.post(floozApp.getCurrentActivity(), this.getAbsoluteUrl(path), entity, entity.getContentType().getValue(), jsonHttpResponseHandler);
+                        httpClient.post(floozApp.getCurrentActivity(), this.getAbsoluteUrl(path), requestParams, jsonHttpResponseHandler);
                     }
                     break;
                 case DELETE:
@@ -1636,8 +1640,7 @@ public class FloozRestClient
                     if (fileUpload)
                         httpClient.put(floozApp.getCurrentActivity(), this.getAbsoluteUrl(path), requestParams, jsonHttpResponseHandler);
                     else {
-                        assert entity != null;
-                        httpClient.put(floozApp.getCurrentActivity(), this.getAbsoluteUrl(path), entity, entity.getContentType().getValue(), jsonHttpResponseHandler);
+                        httpClient.put(floozApp.getCurrentActivity(), this.getAbsoluteUrl(path), requestParams, jsonHttpResponseHandler);
                     }
                     break;
             }
@@ -1706,7 +1709,7 @@ public class FloozRestClient
         this.fbAccessToken = null;
 
         Map<String, Object> data = new HashMap<>(1);
-        data.put("fb", "");
+        data.put("fb", false);
 
         this.updateUser(data, null);
     }
@@ -1715,69 +1718,29 @@ public class FloozRestClient
         this.fbAccessToken =  AccessToken.getCurrentAccessToken().getToken();
 
         if (this.currentUser != null) {
-            Bundle params = new Bundle();
-            params.putString("fields", "id,email,first_name,last_name,name");
 
-            GraphRequest request = GraphRequest.newMeRequest(
-                    AccessToken.getCurrentAccessToken(),
-                    new GraphRequest.GraphJSONObjectCallback() {
-                        @Override
-                        public void onCompleted(JSONObject object, GraphResponse response) {
-                            hideLoadView();
+            Map<String, Object> data = new HashMap<>();
 
-                            if (response.getError() == null) {
-                                Map<String, Object> data = new HashMap<>();
-                                response.getJSONObject().optString("email");
+            data.put("token", (fbAccessToken != null ? fbAccessToken : ""));
 
-                                data.put("email", response.getJSONObject().optString("email"));
-                                data.put("id", response.getJSONObject().optString("id"));
-                                data.put("firstName", response.getJSONObject().optString("first_name"));
-                                data.put("lastName", response.getJSONObject().optString("last_name"));
-                                data.put("name", response.getJSONObject().optString("name"));
-                                data.put("token", (fbAccessToken != null ? fbAccessToken : ""));
+            Map<String, Object> tmp = new HashMap<>();
+            tmp.put("fb", data);
 
-                                Map<String, Object> tmp = new HashMap<>();
-                                tmp.put("fb", data);
+            showLoadView();
+            updateUser(tmp, new FloozHttpResponseHandler() {
+                @Override
+                public void success(Object response) {
+                    FloozApplication.performLocalNotification(CustomNotificationIntents.connectFacebook());
+                }
 
-                                showLoadView();
-                                updateUser(tmp, new FloozHttpResponseHandler() {
-                                    @Override
-                                    public void success(Object response) {
-                                        FloozApplication.performLocalNotification(CustomNotificationIntents.connectFacebook());
-                                    }
+                @Override
+                public void failure(int statusCode, FLError error) {
 
-                                    @Override
-                                    public void failure(int statusCode, FLError error) {
-
-                                    }
-                                });
-
-                            }
-                        }
-                    });
-
-            request.setParameters(params);
-            request.executeAsync();
+                }
+            });
         }
         else {
-            Bundle params = new Bundle();
-            params.putString("fields", "id,email,first_name,last_name,name");
-
-            GraphRequest request = GraphRequest.newMeRequest(
-                    AccessToken.getCurrentAccessToken(),
-                    new GraphRequest.GraphJSONObjectCallback() {
-                        @Override
-                        public void onCompleted(JSONObject object, GraphResponse response) {
-                            hideLoadView();
-
-                            if (response.getError() == null) {
-                                loginWithFacebook(fbAccessToken);
-                            }
-                        }
-                    });
-
-            request.setParameters(params);
-            request.executeAsync();
+            loginWithFacebook(fbAccessToken);
         }
     }
 
@@ -1903,12 +1866,15 @@ public class FloozRestClient
         AlertDialog.Builder builder = new AlertDialog.Builder(floozApp.getCurrentActivity());
         builder.setTitle(R.string.GLOBAL_UPDATE);
         builder.setMessage(R.string.MSG_UPDATE);
-        builder.setPositiveButton(R.string.BTN_UPDATE, (dialog, which) -> {
-            Activity tmp = floozApp.getCurrentActivity();
-            Intent i = new Intent(Intent.ACTION_VIEW);
-            i.setData(Uri.parse(data.optString("uri")));
-            tmp.startActivity(i);
-            tmp.finish();
+        builder.setPositiveButton(R.string.BTN_UPDATE, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Activity tmp = floozApp.getCurrentActivity();
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(data.optString("uri")));
+                tmp.startActivity(i);
+                tmp.finish();
+            }
         });
         builder.setCancelable(false);
         builder.show();
@@ -1948,7 +1914,12 @@ public class FloozRestClient
 
     private void handleTrigger3DSecureComplete() {
         Handler handler = new Handler(floozApp.getMainLooper());
-        handler.post(() -> updateCurrentUser(null));
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                updateCurrentUser(null);
+            }
+        });
 
         if (floozApp.getCurrentActivity() instanceof Secure3DActivity) {
             floozApp.getCurrentActivity().finish();
@@ -1958,7 +1929,12 @@ public class FloozRestClient
 
     private void handleTrigger3DSecureFail() {
         Handler handler = new Handler(floozApp.getMainLooper());
-        handler.post(() -> updateCurrentUser(null));
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                updateCurrentUser(null);
+            }
+        });
 
         if (floozApp.getCurrentActivity() instanceof Secure3DActivity) {
             floozApp.getCurrentActivity().finish();
@@ -1996,77 +1972,92 @@ public class FloozRestClient
     }
 
     private void handleTriggerHttpCall(JSONObject data) {
-        HttpRequestType method;
+        if (data.has("src") && data.optString("src").contentEquals("ext")) {
+            floozApp.getCurrentActivity().startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(data.optString("url"))));
+        } else if (!data.has("src") || data.optString("src").contentEquals("int")) {
+            HttpRequestType method;
 
-        switch (data.optString("method")) {
-            case "GET":
-                method = HttpRequestType.GET;
-                break;
-            case "POST":
-                method = HttpRequestType.POST;
-                break;
-            case "PUT":
-                method = HttpRequestType.PUT;
-                break;
-            case "DELETE":
-                method = HttpRequestType.DELETE;
-                break;
-            default:
-                method = HttpRequestType.GET;
-                break;
-        }
-
-        Map param = null;
-
-        if (data.has("body")) {
-            try {
-                param = JSONHelper.toMap(data.optJSONObject("body"));
-            } catch (JSONException e) {
-                e.printStackTrace();
+            switch (data.optString("method")) {
+                case "GET":
+                    method = HttpRequestType.GET;
+                    break;
+                case "POST":
+                    method = HttpRequestType.POST;
+                    break;
+                case "PUT":
+                    method = HttpRequestType.PUT;
+                    break;
+                case "DELETE":
+                    method = HttpRequestType.DELETE;
+                    break;
+                default:
+                    method = HttpRequestType.GET;
+                    break;
             }
+
+            Map param = null;
+
+            if (data.has("body")) {
+                try {
+                    param = JSONHelper.toMap(data.optJSONObject("body"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            String url = data.optString("url");
+
+            if (url.charAt(0) != '/')
+                url = "/" + url;
+
+            this.request(url, method, param, null);
         }
-
-        String url = data.optString("url");
-
-        if (url.charAt(0) != '/')
-            url = "/" + url;
-
-        this.request(url, method, param, null);
     }
 
-    private void handleTriggerPopupShow(JSONObject data) {
+    private void handleTriggerPopupShow(final JSONObject data) {
         Handler handler = new Handler(floozApp.getMainLooper());
-        handler.post(() -> {
-            final Dialog dialog = new Dialog(floozApp.getCurrentActivity());
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                final Dialog dialog = new Dialog(floozApp.getCurrentActivity());
 
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setContentView(R.layout.custom_dialog_balance);
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.custom_dialog_balance);
 
-            TextView title = (TextView) dialog.findViewById(R.id.dialog_wallet_title);
-            title.setTypeface(CustomFonts.customContentRegular(floozApp.getCurrentActivity()), Typeface.BOLD);
-            title.setText(data.optString("title"));
+                TextView title = (TextView) dialog.findViewById(R.id.dialog_wallet_title);
+                title.setTypeface(CustomFonts.customContentRegular(floozApp.getCurrentActivity()), Typeface.BOLD);
+                title.setText(data.optString("title"));
 
-            TextView text = (TextView) dialog.findViewById(R.id.dialog_wallet_msg);
-            text.setTypeface(CustomFonts.customContentRegular(floozApp.getCurrentActivity()));
-            text.setText(data.optString("content"));
+                TextView text = (TextView) dialog.findViewById(R.id.dialog_wallet_msg);
+                text.setTypeface(CustomFonts.customContentRegular(floozApp.getCurrentActivity()));
+                text.setText(data.optString("content"));
 
-            Button close = (Button) dialog.findViewById(R.id.dialog_wallet_btn);
-            if (data.has("button") && !data.optString("button").isEmpty())
-                close.setText(data.optString("button"));
+                Button close = (Button) dialog.findViewById(R.id.dialog_wallet_btn);
+                if (data.has("button") && !data.optString("button").isEmpty())
+                    close.setText(data.optString("button"));
 
-            close.setOnClickListener(v -> {
-                dialog.dismiss();
-                handleRequestTriggers(data);
-            });
+                close.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                        handleRequestTriggers(data);
+                    }
+                });
 
-            dialog.setCanceledOnTouchOutside(false);
-            dialog.show();
+                dialog.setCanceledOnTouchOutside(false);
+                dialog.show();
+            }
         });
     }
 
     private void handleTriggerHomeShow() {
         Handler handler = new Handler(floozApp.getMainLooper());
-        handler.post(floozApp::displayMainView);
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                floozApp.displayMainView();
+            }
+        });
     }
 
     private void handleTriggerIbanShow() {
@@ -2083,6 +2074,53 @@ public class FloozRestClient
         Activity tmpActivity = floozApp.getCurrentActivity();
         if (tmpActivity != null)
             tmpActivity.finish();
+    }
+
+    private void handleTriggerSendContact() {
+        this.sendUserContacts();
+    }
+
+    private void handleTriggerUserShow(JSONObject data) {
+        if (data.has("nick")) {
+            FLUser user = new FLUser(data);
+            floozApp.showUserProfile(user);
+        } else if (data.has("_id")) {
+            this.showLoadView();
+            this.getFullUser(data.optString("_id"), new FloozHttpResponseHandler() {
+                @Override
+                public void success(Object response) {
+                    FLUser user = (FLUser) response;
+                    floozApp.showUserProfile(user);
+                }
+
+                @Override
+                public void failure(int statusCode, FLError error) {
+
+                }
+            });
+        }
+    }
+
+    private void handleTriggerInvitationSMSShow() {
+
+    }
+
+    private void handleTriggerSMSValidate() {
+
+    }
+
+    private void handleTriggerSecureCodeValidate() {
+
+    }
+
+    private void handleTriggerEditProfile() {
+        if (!(floozApp.getCurrentActivity() instanceof EditProfileActivity)) {
+            Intent intent = new Intent(floozApp.getCurrentActivity(), EditProfileActivity.class);
+            intent.putExtra("modal", true);
+            Activity tmpActivity = floozApp.getCurrentActivity();
+            tmpActivity.startActivity(intent);
+            tmpActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+        }
     }
 
     public void handleTrigger(final FLTrigger trigger) {
@@ -2170,8 +2208,28 @@ public class FloozRestClient
             case TriggerShowHome:
                 handleTriggerHomeShow();
                 break;
+            case TriggerResetTuto:
+                break;
             case TriggerCloseView:
                 handleTriggerViewClose();
+                break;
+            case TriggerSendContacts:
+                handleTriggerSendContact();
+                break;
+            case TriggerUserShow:
+                handleTriggerUserShow(trigger.data);
+                break;
+            case TriggerInvitationSMSShow:
+                handleTriggerInvitationSMSShow();
+                break;
+            case TriggerSMSValidate:
+                handleTriggerSMSValidate();
+                break;
+            case TriggerSecureCodeValidate:
+                handleTriggerSecureCodeValidate();
+                break;
+            case TriggerEditProfile:
+                handleTriggerEditProfile();
                 break;
             default:
                 break;
@@ -2200,10 +2258,20 @@ public class FloozRestClient
                         final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
                         if (trigger.delay.doubleValue() > 0) {
                             Handler handler = new Handler(Looper.getMainLooper());
-                            handler.postDelayed(() -> handleTrigger(trigger), (int) (trigger.delay.doubleValue() * 1000));
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    handleTrigger(trigger);
+                                }
+                            }, (int) (trigger.delay.doubleValue() * 1000));
                         } else {
                             Handler handler = new Handler(Looper.getMainLooper());
-                            handler.post(() -> handleTrigger(trigger));
+                            handler.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                    handleTrigger(trigger);
+                                }
+                            });
                         }
                     }
                 } else {
@@ -2238,10 +2306,20 @@ public class FloozRestClient
                     final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
                     if (trigger.delay.doubleValue() > 0) {
                         Handler handler = new Handler(Looper.getMainLooper());
-                        handler.postDelayed(() -> handleTrigger(trigger), (int) (trigger.delay.doubleValue() * 1000));
+                        handler.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                handleTrigger(trigger);
+                            }
+                        }, (int)(trigger.delay.doubleValue()*1000));
                     } else {
                         Handler handler = new Handler(Looper.getMainLooper());
-                        handler.post(() -> handleTrigger(trigger));
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                handleTrigger(trigger);
+                            }
+                        });
                     }
                 }
             } else {
@@ -2280,35 +2358,61 @@ public class FloozRestClient
                         url = "http://api.flooz.me";
 
                     this.socket = IO.socket(url, options);
-                    this.socket.on(Socket.EVENT_CONNECT, args -> {
-                        try {
-                            JSONObject obj = new JSONObject();
-                            obj.put("nick", currentUser.username);
-                            obj.put("token", accessToken);
-                            socket.emit("session start", obj);
-                        } catch (JSONException e) {
-                            e.printStackTrace();
+                    this.socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
+                        @Override
+                        public void call(Object... args) {
+                            try {
+                                JSONObject obj = new JSONObject();
+                                obj.put("nick", currentUser.username);
+                                obj.put("token", accessToken);
+                                socket.emit("session start", obj);
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }).on("event", args -> {
-                        JSONObject data = (JSONObject) args[0];
-                        if (data.has("popup")) {
-                            FLError errorContent = new FLError(data.optJSONObject("popup"));
-                            CustomToast.show(FloozApplication.getAppContext(), errorContent);
-                        }
-                        handleRequestTriggers(data);
-                    }).on("session end", args -> {
-                        socket.disconnect();
-                    }).on("feed", args -> {
-                                JSONObject data = (JSONObject) args[0];
+                    }).on("event", new Emitter.Listener() {
+                        @Override
+                        public void call(Object... args) {
 
-                                FloozRestClient.getInstance().notificationsManager.nbUnreadNotifications = data.optInt("total");
-                                FloozApplication.performLocalNotification(CustomNotificationIntents.reloadNotifications());
-                            }).on(Socket.EVENT_DISCONNECT, args -> Log.d("SocketIO", "Socket Disconnected")).on(Socket.EVENT_CONNECT_ERROR, args -> {
-                        Log.d("SocketIO", "error: " + args[0].toString());
-                    }).on(Socket.EVENT_CONNECT_TIMEOUT, args -> {
-                        Log.d("SocketIO", "Socket Timeout");
-                        socket.off();
-                        socket = null;
+                            JSONObject data = (JSONObject) args[0];
+                            if (data.has("popup")) {
+                                FLError errorContent = new FLError(data.optJSONObject("popup"));
+                                CustomToast.show(FloozApplication.getAppContext(), errorContent);
+                            }
+                            handleRequestTriggers(data);
+                        }
+                    }).on("session end", new Emitter.Listener() {
+                        @Override
+                        public void call(Object... args) {
+
+                            socket.disconnect();
+                        }
+                    }).on("feed", new Emitter.Listener() {
+                        @Override
+                        public void call(Object... args) {
+
+                            JSONObject data = (JSONObject) args[0];
+
+                            FloozRestClient.getInstance().notificationsManager.nbUnreadNotifications = data.optInt("total");
+                            FloozApplication.performLocalNotification(CustomNotificationIntents.reloadNotifications());
+                        }
+                    }).on(Socket.EVENT_DISCONNECT,  new Emitter.Listener() {
+                        @Override
+                        public void call(Object... args) {
+                            Log.d("SocketIO", "Socket Disconnected");
+                        }
+                    }).on(Socket.EVENT_CONNECT_ERROR,  new Emitter.Listener() {
+                        @Override
+                        public void call(Object... args) {
+                            Log.d("SocketIO", "error: " + args[0].toString());
+                        }
+                    }).on(Socket.EVENT_CONNECT_TIMEOUT,  new Emitter.Listener() {
+                        @Override
+                        public void call(Object... args) {
+                            Log.d("SocketIO", "Socket Timeout");
+                            socket.off();
+                            socket = null;
+                        }
                     });
                 }
                 if (!this.socket.connected())

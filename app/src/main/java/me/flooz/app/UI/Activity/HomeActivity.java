@@ -57,6 +57,7 @@ import uk.co.senab.photoview.PhotoViewAttacher;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 
 import org.json.JSONArray;
 
@@ -79,8 +80,8 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
     private ArrayList<TabBarFragment> shareTabHistory;
     private ArrayList<TabBarFragment> accountTabHistory;
 
-    private TabID currentTabID;
-    private TabBarFragment currentFragment;
+    public TabID currentTabID;
+    public TabBarFragment currentFragment;
     private ArrayList<TabBarFragment> currentTabHistory;
 
     private SoftKeyboardHandledRelativeLayout mainView;
@@ -238,10 +239,32 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
 
         this.imageViewer.setClickable(true);
 
-        this.homeTab.setOnClickListener(v -> changeCurrentTab(TabID.HOME_TAB));
-        this.notifTab.setOnClickListener(v -> changeCurrentTab(TabID.NOTIF_TAB));
-        this.shareTab.setOnClickListener(v -> changeCurrentTab(TabID.SHARE_TAB));
-        this.accountTab.setOnClickListener(v -> changeCurrentTab(TabID.ACCOUNT_TAB));
+        this.homeTab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeCurrentTab(TabID.HOME_TAB);
+            }
+        });
+        this.notifTab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeCurrentTab(TabID.NOTIF_TAB);
+            }
+        });
+
+        this.shareTab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeCurrentTab(TabID.SHARE_TAB);
+            }
+        });
+
+        this.accountTab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                changeCurrentTab(TabID.ACCOUNT_TAB);
+            }
+        });
 
         this.tabHistory = new ArrayList<>();
 
@@ -265,58 +288,76 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         this.shareTabHistory.add(shareFragment);
         this.accountTabHistory.add(accountFragment);
 
-        this.floozTabImage.setOnClickListener(v -> {
-            if (FloozRestClient.getInstance().currentUser.ux != null
-                    && FloozRestClient.getInstance().currentUser.ux.has("homeButton")
-                    && FloozRestClient.getInstance().currentUser.ux.optJSONArray("homeButton").length() > 0) {
+        this.floozTabImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (FloozRestClient.getInstance().currentUser.ux != null
+                        && FloozRestClient.getInstance().currentUser.ux.has("homeButton")
+                        && FloozRestClient.getInstance().currentUser.ux.optJSONArray("homeButton").length() > 0) {
 
-                JSONArray t = FloozRestClient.getInstance().currentUser.ux.optJSONArray("homeButton");
+                    JSONArray t = FloozRestClient.getInstance().currentUser.ux.optJSONArray("homeButton");
 
-                for (int i = 0; i < t.length(); i++) {
-                    final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
-                    if (trigger.delay.doubleValue() > 0) {
-                        Handler handler = new Handler(Looper.getMainLooper());
-                        handler.postDelayed(() -> FloozRestClient.getInstance().handleTrigger(trigger), (int) (trigger.delay.doubleValue() * 1000));
-                    } else {
-                        FloozRestClient.getInstance().handleTrigger(trigger);
+                    for (int i = 0; i < t.length(); i++) {
+                        final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
+                        if (trigger.delay.doubleValue() > 0) {
+                            Handler handler = new Handler(Looper.getMainLooper());
+                            handler.postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    FloozRestClient.getInstance().handleTrigger(trigger);
+                                }
+                            }, (int) (trigger.delay.doubleValue() * 1000));
+                        } else {
+                            FloozRestClient.getInstance().handleTrigger(trigger);
+                        }
                     }
+                } else {
+                    Intent intent = new Intent(instance, NewTransactionActivity.class);
+                    instance.startActivity(intent);
+                    instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
                 }
-            } else {
-                Intent intent = new Intent(instance, NewTransactionActivity.class);
-                instance.startActivity(intent);
-                instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
             }
         });
 
-        this.imageViewerAttacher.setOnLongClickListener(v -> {
-            List<ActionSheetItem> items = new ArrayList<>();
-            items.add(new ActionSheetItem(instance, R.string.MENU_SAVE_PICTURE, () -> {
-                ImageHelper.saveImageOnPhone(instance, ((BitmapDrawable) imageViewerAttacher.getImageView().getDrawable()).getBitmap());
-            }));
-            ActionSheet.showWithItems(instance, items);
+        this.imageViewerAttacher.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                List<ActionSheetItem> items = new ArrayList<>();
+                items.add(new ActionSheetItem(instance, R.string.MENU_SAVE_PICTURE, new ActionSheetItem.ActionSheetItemClickListener() {
+                    @Override
+                    public void onClick() {
+                        ImageHelper.saveImageOnPhone(instance, ((BitmapDrawable) imageViewerAttacher.getImageView().getDrawable()).getBitmap());
+                    }
+                }));
 
-            return false;
+                ActionSheet.showWithItems(instance, items);
+
+                return false;
+            }
         });
 
-        this.imageViewerClose.setOnClickListener(v -> {
-            Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), android.R.anim.fade_out);
-            anim.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
+        this.imageViewerClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), android.R.anim.fade_out);
+                anim.setAnimationListener(new Animation.AnimationListener() {
+                    @Override
+                    public void onAnimationStart(Animation animation) {
 
-                }
+                    }
 
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    imageViewer.setVisibility(View.GONE);
-                }
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        imageViewer.setVisibility(View.GONE);
+                    }
 
-                @Override
-                public void onAnimationRepeat(Animation animation) {
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
 
-                }
-            });
-            imageViewer.startAnimation(anim);
+                    }
+                });
+                imageViewer.startAnimation(anim);
+            }
         });
 
         this.changeCurrentTab(TabID.HOME_TAB);
@@ -366,17 +407,23 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
 
         if (FloozApplication.getInstance().pendingTriggers != null) {
             Handler handlerIntent = new Handler(Looper.getMainLooper());
-            final boolean b = handlerIntent.postDelayed(() -> {
-                FloozRestClient.getInstance().handleTriggerArray(FloozApplication.getInstance().pendingTriggers);
-                FloozApplication.getInstance().pendingTriggers = null;
+            final boolean b = handlerIntent.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    FloozRestClient.getInstance().handleTriggerArray(FloozApplication.getInstance().pendingTriggers);
+                    FloozApplication.getInstance().pendingTriggers = null;
+                }
             }, 100);
         }
 
         if (FloozApplication.getInstance().pendingPopup != null) {
             Handler handlerIntent = new Handler(Looper.getMainLooper());
-            final boolean b = handlerIntent.postDelayed(() -> {
-                CustomToast.show(this, new FLError(FloozApplication.getInstance().pendingPopup));
-                FloozApplication.getInstance().pendingPopup = null;
+            final boolean b = handlerIntent.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    CustomToast.show(HomeActivity.this, new FLError(FloozApplication.getInstance().pendingPopup));
+                    FloozApplication.getInstance().pendingPopup = null;
+                }
             }, 100);
         }
     }
@@ -593,55 +640,22 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         this.fragmentContainer.setLayoutParams(layoutParams);
     }
 
-    public void showTransactionCard(FLTransaction transaction) {
-        this.showTransactionCard(transaction, false);
+    public static void showTransactionCard(FLTransaction transaction) {
+        HomeActivity.showTransactionCard(transaction, false);
     }
 
-    public void showTransactionCard(FLTransaction transaction, Boolean insertComment) {
+    public static void showTransactionCard(FLTransaction transaction, Boolean insertComment) {
         FloozRestClient.getInstance().readNotification(transaction.transactionId, null);
         TransactionCardFragment transactionCardFragment = new TransactionCardFragment();
 
         transactionCardFragment.insertComment = insertComment;
         transactionCardFragment.transaction = transaction;
 
-        this.pushFragmentInCurrentTab(transactionCardFragment);
-    }
+        Activity activity = FloozApplication.getInstance().getCurrentActivity();
 
-//    public void showProfileCard(FLUser user) {
-//        FloozRestClient.getInstance().readNotification(transaction.transactionId, null);
-//        ProfileCardFragment profileCardFragment = new ProfileCardFragment();
-//
-//        profileCardFragment.user = user;
-//
-//        this.pushFragmentInCurrentTab(profileCardFragment);
-//    }
-
-    public void showImageViewer(final Bitmap image) {
-        Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), android.R.anim.fade_in);
-        anim.setAnimationListener(new Animation.AnimationListener() {
-            @Override
-            public void onAnimationStart(Animation animation) {
-                imageViewer.setVisibility(View.VISIBLE);
-                imageViewerProgress.setMax(100);
-                imageViewerProgress.setProgress(0);
-                imageViewerImage.setVisibility(View.GONE);
-                imageViewerProgress.setVisibility(View.GONE);
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation) {
-                imageViewerImage.setImageBitmap(image);
-                imageViewerImage.setVisibility(View.VISIBLE);
-                imageViewerProgress.setVisibility(View.GONE);
-                imageViewerAttacher.update();
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation) {
-
-            }
-        });
-        this.imageViewer.startAnimation(anim);
+        if (activity instanceof HomeActivity) {
+            ((HomeActivity)activity).pushFragmentInCurrentTab(transactionCardFragment);
+        }
     }
 
     public void showImageViewer(final String url) {
@@ -685,12 +699,15 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
                         public void onLoadingCancelled(String imageUri, View view) {
 
                         }
-                    }, (imageUri, view, current, total) -> {
-                        float tmp = current;
-                        tmp /= total;
-                        tmp *= 100;
+                    }, new ImageLoadingProgressListener() {
+                        @Override
+                        public void onProgressUpdate(String imageUri, View view, int current, int total) {
+                            float tmp = current;
+                            tmp /= total;
+                            tmp *= 100;
 
-                        imageViewerProgress.setProgress((int) tmp);
+                            imageViewerProgress.setProgress((int) tmp);
+                        }
                     });
                 }
 
@@ -714,7 +731,7 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
 
     @Override
     public void onItemCommentSelected(FLTransaction transac) {
-        this.showTransactionCard(transac, true);
+        HomeActivity.showTransactionCard(transac, true);
     }
 
     @Override

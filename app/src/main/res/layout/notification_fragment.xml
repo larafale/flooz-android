@@ -11,8 +11,8 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_marginTop="@dimen/header_size"
-        app:colors="@array/refresh_scheme_color"
-        app:type="material">
+        app:refreshColors="@array/refresh_scheme_color"
+        app:refreshType="material">
 
         <ListView
             android:id="@+id/notification_list"

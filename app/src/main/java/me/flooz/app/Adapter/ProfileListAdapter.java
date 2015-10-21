@@ -17,7 +17,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.makeramen.RoundedImageView;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONException;
@@ -70,9 +70,12 @@ public class ProfileListAdapter extends BaseAdapter implements StickyListHeaders
 
         this.userViewHolder.balance.setTypeface(CustomFonts.customContentRegular(this.context));
 
-        this.userViewHolder.imageView.setOnClickListener(v -> {
-            if (delegate != null)
-                delegate.userImageClicked();
+        this.userViewHolder.imageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (delegate != null)
+                    delegate.userImageClicked();
+            }
         });
 
         this.userViewHolder.balance.setOnClickListener(new View.OnClickListener() {

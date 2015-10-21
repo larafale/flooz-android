@@ -7,7 +7,9 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -44,7 +46,7 @@ public class PreferencesController extends BaseController {
         }
     };
 
-    public PreferencesController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
+    public PreferencesController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
         this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
@@ -58,23 +60,29 @@ public class PreferencesController extends BaseController {
 
         List<SettingsListItem> itemList = new ArrayList<>();
 
-        itemList.add(new SettingsListItem(this.parentActivity.getResources().getString(R.string.SETTINGS_NOTIFICATIONS), (parent, view, position, id) -> {
-            if (this.currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                Intent intent = new Intent(this.parentActivity, NotificationsSettingsActivity.class);
-                this.parentActivity.startActivity(intent);
-                this.parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-            } else {
-                ((HomeActivity)this.parentActivity).pushFragmentInCurrentTab(new NotifsSettingsFragment());
+        itemList.add(new SettingsListItem(this.parentActivity.getResources().getString(R.string.SETTINGS_NOTIFICATIONS), new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
+                    Intent intent = new Intent(parentActivity, NotificationsSettingsActivity.class);
+                    parentActivity.startActivity(intent);
+                    parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                } else {
+                    ((HomeActivity)parentActivity).pushFragmentInCurrentTab(new NotifsSettingsFragment());
+                }
             }
         }));
 
-        itemList.add(new SettingsListItem(this.parentActivity.getResources().getString(R.string.SETTINGS_PRIVACY), (parent, view, position, id) -> {
-            if (this.currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                Intent intent = new Intent(this.parentActivity, PrivacySettingsActivity.class);
-                this.parentActivity.startActivity(intent);
-                this.parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-            } else {
-                ((HomeActivity)this.parentActivity).pushFragmentInCurrentTab(new PrivacyFragment());
+        itemList.add(new SettingsListItem(this.parentActivity.getResources().getString(R.string.SETTINGS_PRIVACY), new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
+                    Intent intent = new Intent(parentActivity, PrivacySettingsActivity.class);
+                    parentActivity.startActivity(intent);
+                    parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                } else {
+                    ((HomeActivity) parentActivity).pushFragmentInCurrentTab(new PrivacyFragment());
+                }
             }
         }));
 
@@ -82,26 +90,32 @@ public class PreferencesController extends BaseController {
 
         this.reloadView();
 
-        this.fbSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            if (isChecked) {
-                if (!FloozRestClient.getInstance().isConnectedToFacebook()) {
-                    FloozRestClient.getInstance().connectFacebook();
-                    fbSwitch.setChecked(false);
+        this.fbSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    if (!FloozRestClient.getInstance().isConnectedToFacebook()) {
+                        FloozRestClient.getInstance().connectFacebook();
+                        fbSwitch.setChecked(false);
+                    }
+                } else {
+                    FloozRestClient.getInstance().disconnectFacebook();
                 }
-            } else {
-                FloozRestClient.getInstance().disconnectFacebook();
             }
         });
 
         if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
             this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
 
-        this.headerBackButton.setOnClickListener(view -> {
-            if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                parentActivity.finish();
-                parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-            } else {
-                ((HomeActivity)this.parentActivity).popFragmentInCurrentTab(R.animator.slide_in_right, R.animator.slide_out_left);
+        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
+                    parentActivity.finish();
+                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+                } else {
+                    ((HomeActivity) parentActivity).popFragmentInCurrentTab(R.animator.slide_in_right, R.animator.slide_out_left);
+                }
             }
         });
     }

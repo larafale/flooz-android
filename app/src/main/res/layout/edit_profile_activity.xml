@@ -71,7 +71,7 @@
             android:src="@drawable/camera_black"/>
     </RelativeLayout>
 
-    <com.makeramen.RoundedImageView
+    <com.makeramen.roundedimageview.RoundedImageView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/edit_profile_avatar"
         android:scaleType="centerCrop"
@@ -80,12 +80,12 @@
         android:layout_marginLeft="@dimen/dimen_large"
         android:layout_marginTop="-25dp"
         android:src="@drawable/avatar_default"
-        app:corner_radius="30dip"
-        app:mutate_background="true"
+        app:riv_corner_radius="30dip"
+        app:riv_mutate_background="true"
         android:layout_below="@+id/edit_profile_cover_container"
-        app:oval="true"/>
+        app:riv_oval="true"/>
 
-    <com.makeramen.RoundedImageView
+    <com.makeramen.roundedimageview.RoundedImageView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/background_view"
         android:scaleType="centerCrop"
@@ -94,10 +94,10 @@
         android:layout_marginLeft="@dimen/dimen_large"
         android:layout_marginTop="-25dp"
         android:src="@color/light_black_alpha"
-        app:corner_radius="30dip"
-        app:mutate_background="true"
+        app:riv_corner_radius="30dip"
+        app:riv_mutate_background="true"
         android:layout_below="@+id/edit_profile_cover_container"
-        app:oval="true"/>
+        app:riv_oval="true"/>
 
     <RelativeLayout
         android:id="@+id/edit_profile_camera_container"

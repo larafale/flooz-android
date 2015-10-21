@@ -73,6 +73,7 @@ public class FLTransaction {
 
     public FLUser from;
     public FLUser to;
+    public FLUser starter;
 
     public FLSocial social;
 
@@ -147,6 +148,13 @@ public class FLTransaction {
 
             this.from = new FLUser(json.getJSONObject("from"));
             this.to = new FLUser(json.getJSONObject("to"));
+
+            String starterId = json.optJSONObject("starter").optString("_id");
+
+            if (starterId.contentEquals(this.from.userId))
+                this.starter = this.from;
+            else
+                this.starter = this.to;
 
             this.date = new MomentDate(FloozApplication.getAppContext(), json.getString("cAt"));
 

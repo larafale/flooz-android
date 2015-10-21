@@ -10,16 +10,16 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
-    <com.makeramen.RoundedImageView
+    <com.makeramen.roundedimageview.RoundedImageView
         xmlns:app="http://schemas.android.com/apk/res-auto"
         android:id="@+id/account_menu_user_view_img"
         android:scaleType="centerCrop"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:src="@drawable/avatar_default"
-        app:corner_radius="30dip"
-        app:mutate_background="true"
-        app:oval="true"/>
+        app:riv_corner_radius="30dip"
+        app:riv_mutate_background="true"
+        app:riv_oval="true"/>
 
     <TextView
         android:id="@+id/account_menu_user_view_balance"

@@ -14,6 +14,7 @@ import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -122,12 +123,28 @@ public class EditProfileActivity extends Activity {
             ImageLoader.getInstance().displayImage(this.currentUser.coverURL, this.profileCover);
         }
 
-        this.profileAvatar.setOnClickListener(v -> showPictureActionMenu(true));
-        this.profileCover.setOnClickListener(v -> showPictureActionMenu(false));
-        this.backButton.setOnClickListener(v -> {
-            finish();
-            overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+        this.profileAvatar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPictureActionMenu(true);
+            }
         });
+
+        this.profileCover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showPictureActionMenu(false);
+            }
+        });
+
+        this.backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+            }
+        });
+
         this.bioField.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -146,15 +163,18 @@ public class EditProfileActivity extends Activity {
                 }
             }
         });
-        this.saveProfile.setOnClickListener(view -> {
-            Map<String, Object> data = new HashMap<>(1);
-            String bioContent = bioField.getText().toString();
+        this.saveProfile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Map < String, Object > data = new HashMap<>(1);
+                String bioContent = bioField.getText().toString();
 
-            data.put("bio", bioContent.isEmpty() ? "" : bioContent);
+                data.put("bio", bioContent.isEmpty() ? "" : bioContent);
 
-            FloozRestClient.getInstance().updateUser(data, null);
-            finish();
-            overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+                FloozRestClient.getInstance().updateUser(data, null);
+                finish();
+                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+            }
         });
     }
 
@@ -271,10 +291,12 @@ public class EditProfileActivity extends Activity {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         int containerAvatar = 0;
         if (resultCode == Activity.RESULT_OK) {
+
             if (requestCode == SELECT_PICTURE_AVATAR || requestCode == TAKE_PICTURE_AVATAR)
                 containerAvatar = 1;
             else if (requestCode == SELECT_PICTURE_COVER || requestCode == TAKE_PICTURE_COVER)
                 containerAvatar = 2;
+
             if (containerAvatar != 0) {
                 Uri imageUri = Uri.EMPTY;
                 if (data == null || data.getData() == null)
@@ -288,60 +310,62 @@ public class EditProfileActivity extends Activity {
                 if (selectedImageUri != null) {
                     Handler handler = new Handler(Looper.getMainLooper());
                     final int finalContainerAvatar = containerAvatar;
-                    handler.post(() -> {
-                        String path = ImageHelper.getPath(this, selectedImageUri);
-                        if (path != null) {
-                            File image = new File(path);
-                            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                            Bitmap photo = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            String path = ImageHelper.getPath(EditProfileActivity.this, selectedImageUri);
+                            if (path != null) {
+                                File image = new File(path);
+                                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                                Bitmap photo = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
 
-                            if (photo != null) {
-                                int rotation = ImageHelper.getRotation(this, selectedImageUri);
-                                if (rotation != 0) {
-                                    photo = ImageHelper.rotateBitmap(photo, rotation);
-                                }
-                                int nh = (int) (photo.getHeight() * (512.0 / photo.getWidth()));
-                                Bitmap scaled = Bitmap.createScaledBitmap(photo, 512, nh, true);
+                                if (photo != null) {
+                                    int rotation = ImageHelper.getRotation(EditProfileActivity.this, selectedImageUri);
+                                    if (rotation != 0) {
+                                        photo = ImageHelper.rotateBitmap(photo, rotation);
+                                    }
+                                    int nh = (int) (photo.getHeight() * (512.0 / photo.getWidth()));
+                                    Bitmap scaled = Bitmap.createScaledBitmap(photo, 512, nh, true);
 
-                                if (finalContainerAvatar == 1) {
-                                    this.profileAvatar.setImageBitmap(scaled);
-                                    FloozRestClient.getInstance().showLoadView();
-                                    FloozRestClient.getInstance().uploadDocument("picId", image, new FloozHttpResponseHandler() {
-                                        @Override
-                                        public void success(Object response) {
-                                            FloozRestClient.getInstance().updateCurrentUser(null);
-                                        }
+                                    if (finalContainerAvatar == 1) {
+                                        profileAvatar.setImageBitmap(scaled);
+                                        FloozRestClient.getInstance().showLoadView();
+                                        FloozRestClient.getInstance().uploadDocument("picId", image, new FloozHttpResponseHandler() {
+                                            @Override
+                                            public void success(Object response) {
+                                                FloozRestClient.getInstance().updateCurrentUser(null);
+                                            }
 
-                                        @Override
-                                        public void failure(int statusCode, FLError error) {
-                                            FLUser user = FloozRestClient.getInstance().currentUser;
+                                            @Override
+                                            public void failure(int statusCode, FLError error) {
+                                                FLUser user = FloozRestClient.getInstance().currentUser;
 
-                                            if (user.avatarURL != null)
-                                                ImageLoader.getInstance().displayImage(user.avatarURL, profileAvatar);
-                                            else
-                                                profileAvatar.setImageDrawable(getResources().getDrawable(R.drawable.avatar_default));
-                                        }
-                                    });
-                                }
-                                else if (finalContainerAvatar == 2) {
-                                    this.profileCover.setImageBitmap(scaled);
-                                    FloozRestClient.getInstance().showLoadView();
-                                    FloozRestClient.getInstance().uploadDocument("coverId", image, new FloozHttpResponseHandler() {
-                                        @Override
-                                        public void success(Object response) {
-                                            FloozRestClient.getInstance().updateCurrentUser(null);
-                                        }
+                                                if (user.avatarURL != null)
+                                                    ImageLoader.getInstance().displayImage(user.avatarURL, profileAvatar);
+                                                else
+                                                    profileAvatar.setImageDrawable(getResources().getDrawable(R.drawable.avatar_default));
+                                            }
+                                        });
+                                    } else if (finalContainerAvatar == 2) {
+                                        profileCover.setImageBitmap(scaled);
+                                        FloozRestClient.getInstance().showLoadView();
+                                        FloozRestClient.getInstance().uploadDocument("coverId", image, new FloozHttpResponseHandler() {
+                                            @Override
+                                            public void success(Object response) {
+                                                FloozRestClient.getInstance().updateCurrentUser(null);
+                                            }
 
-                                        @Override
-                                        public void failure(int statusCode, FLError error) {
-                                            FLUser user = FloozRestClient.getInstance().currentUser;
+                                            @Override
+                                            public void failure(int statusCode, FLError error) {
+                                                FLUser user = FloozRestClient.getInstance().currentUser;
 
-                                            if (user.coverURL != null)
-                                                ImageLoader.getInstance().displayImage(user.coverURL, profileCover);
-                                            else
-                                                profileCover.setImageDrawable(getResources().getDrawable(R.drawable.launch_background));
-                                        }
-                                    });
+                                                if (user.coverURL != null)
+                                                    ImageLoader.getInstance().displayImage(user.coverURL, profileCover);
+                                                else
+                                                    profileCover.setImageDrawable(getResources().getDrawable(R.drawable.launch_background));
+                                            }
+                                        });
+                                    }
                                 }
                             }
                         }

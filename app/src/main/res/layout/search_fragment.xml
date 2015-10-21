@@ -80,13 +80,14 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:layout_marginTop="@dimen/header_size">
+
         <com.baoyz.widget.PullRefreshLayout
             xmlns:app="http://schemas.android.com/apk/res-auto"
             android:id="@+id/friends_refresh_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:colors="@array/refresh_scheme_color"
-            app:type="material">
+            app:refreshColors="@array/refresh_scheme_color"
+            app:refreshType="material">
 
             <se.emilsjolander.stickylistheaders.StickyListHeadersListView
                 android:id="@+id/friends_result_list"

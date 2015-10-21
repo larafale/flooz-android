@@ -86,7 +86,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_large">
 
-                    <com.makeramen.RoundedImageView
+                    <com.makeramen.roundedimageview.RoundedImageView
                         xmlns:app="http://schemas.android.com/apk/res-auto"
                         android:id="@+id/transac_card_from_pic"
                         android:scaleType="centerCrop"
@@ -94,9 +94,9 @@
                         android:layout_height="@dimen/profile_pic_large"
                         android:layout_marginRight="@dimen/dimen_large"
                         android:src="@drawable/avatar_default"
-                        app:corner_radius="30dip"
-                        app:mutate_background="true"
-                        app:oval="true"/>
+                        app:riv_corner_radius="30dip"
+                        app:riv_mutate_background="true"
+                        app:riv_oval="true"/>
 
                     <ImageView
                         android:layout_width="@dimen/card_link_arrow_width"
@@ -104,7 +104,7 @@
                         android:padding="@dimen/dimen_large"
                         android:src="@drawable/card_arrow"/>
 
-                    <com.makeramen.RoundedImageView
+                    <com.makeramen.roundedimageview.RoundedImageView
                         xmlns:app="http://schemas.android.com/apk/res-auto"
                         android:id="@+id/transac_card_to_pic"
                         android:scaleType="centerCrop"
@@ -112,9 +112,9 @@
                         android:layout_height="@dimen/profile_pic_large"
                         android:src="@drawable/avatar_default"
                         android:layout_marginLeft="@dimen/dimen_large"
-                        app:corner_radius="30dip"
-                        app:mutate_background="true"
-                        app:oval="true"/>
+                        app:riv_corner_radius="30dip"
+                        app:riv_mutate_background="true"
+                        app:riv_oval="true"/>
 
                 </LinearLayout>
 

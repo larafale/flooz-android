@@ -10,6 +10,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -23,7 +24,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import com.makeramen.RoundedImageView;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONObject;
@@ -97,7 +98,7 @@ public class TransactionCardController extends BaseController {
     private Boolean transactionPending = false;
     private Boolean dialogIsShowing = false;
 
-    public TransactionCardController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull BaseController.ControllerKind kind) {
+    public TransactionCardController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull BaseController.ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
         View view = this.currentView;
@@ -156,113 +157,143 @@ public class TransactionCardController extends BaseController {
         if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
             this.cardHeaderCloseButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
 
-        this.cardHeaderCloseButton.setOnClickListener(v -> {
-            if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                parentActivity.finish();
-                parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-            } else {
-                ((HomeActivity) this.parentActivity).popFragmentInCurrentTab();
+        this.cardHeaderCloseButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
+                    parentActivity.finish();
+                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+                } else {
+                    ((HomeActivity) parentActivity).popFragmentInCurrentTab();
+                }
             }
         });
 
         this.cardHeaderScope.setColorFilter(this.parentActivity.getResources().getColor(android.R.color.white));
 
-        this.cardActionBarDecline.setOnClickListener(v -> FloozRestClient.getInstance().updateTransaction(transaction, FLTransaction.TransactionStatus.TransactionStatusRefused, new FloozHttpResponseHandler() {
+        this.cardActionBarDecline.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void success(Object response) {
-                setTransaction(new FLTransaction(((JSONObject) response).optJSONObject("item")));
-            }
-
-            @Override
-            public void failure(int statusCode, FLError error) {
-            }
-        }));
-
-        this.cardActionBarAccept.setOnClickListener(v -> FloozRestClient.getInstance().updateTransactionValidate(transaction, FLTransaction.TransactionStatus.TransactionStatusAccepted, new FloozHttpResponseHandler() {
-            @Override
-            public void success(Object response) {
-                showValidationDialog(((JSONObject) response).optString("confirmationText"));
-            }
-
-            @Override
-            public void failure(int statusCode, FLError error) {
-            }
-        }));
-
-        this.cardFromPic.setOnClickListener(v -> {
-            transaction.to.selectedCanal = FLUser.FLUserSelectedCanal.TimelineCanal;
-            ProfileCardFragment profileCardFragment = new ProfileCardFragment();
-            if (this.cardFromUsername.getText().toString().contentEquals("@" + FloozRestClient.getInstance().currentUser.username))
-                profileCardFragment.user = FloozRestClient.getInstance().currentUser;
-            else
-                profileCardFragment.user = transaction.from;
-            ((HomeActivity)parentActivity).pushFragmentInCurrentTab(profileCardFragment);
-        });
-
-        this.cardToPic.setOnClickListener(v -> {
-            transaction.to.selectedCanal = FLUser.FLUserSelectedCanal.TimelineCanal;
-            ProfileCardFragment profileCardFragment = new ProfileCardFragment();
-            if (this.cardToUsername.getText().toString().contentEquals("@" + FloozRestClient.getInstance().currentUser.username))
-                profileCardFragment.user = FloozRestClient.getInstance().currentUser;
-            else
-                profileCardFragment.user = transaction.to;
-            ((HomeActivity)parentActivity).pushFragmentInCurrentTab(profileCardFragment);
-        });
-
-        this.cardPic.setOnClickListener(v -> CustomImageViewer.start(this.parentActivity, transaction.attachmentURL));
-
-        this.cardLikesButton.setOnClickListener(v -> FloozRestClient.getInstance().likeTransaction(transaction.transactionId, new FloozHttpResponseHandler() {
-            @Override
-            public void success(Object response) {
-                transaction.social.isLiked = !transaction.social.isLiked;
-                transaction.social.likeText = (String) response;
-
-                if (!transaction.social.likeText.isEmpty() || transaction.social.commentsCount.intValue() > 0) {
-                    cardSocialContainer.setVisibility(View.VISIBLE);
-
-                    if (transaction.social.commentsCount.intValue() > 0) {
-                        if (transaction.social.commentsCount.intValue() < 10)
-                            cardCommentsNumber.setText("0" + transaction.social.commentsCount.toString());
-                        else
-                            cardCommentsNumber.setText(transaction.social.commentsCount.toString());
-                        cardCommentsNumberContainer.setVisibility(View.VISIBLE);
-                    } else {
-                        cardCommentsNumberContainer.setVisibility(View.GONE);
+            public void onClick(View v) {
+                FloozRestClient.getInstance().updateTransaction(transaction, FLTransaction.TransactionStatus.TransactionStatusRefused, new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        setTransaction(new FLTransaction(((JSONObject) response).optJSONObject("item")));
                     }
 
-
-                    if (!transaction.social.likeText.isEmpty()) {
-                        cardLikesText.setText(transaction.social.likeText);
-                        cardLikesContainer.setVisibility(View.VISIBLE);
-                    } else {
-                        cardLikesContainer.setVisibility(View.GONE);
+                    @Override
+                    public void failure(int statusCode, FLError error) {
                     }
-                }
+                });
+            }
+        });
+
+        this.cardActionBarAccept.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FloozRestClient.getInstance().updateTransactionValidate(transaction, FLTransaction.TransactionStatus.TransactionStatusAccepted, new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        showValidationDialog(((JSONObject) response).optString("confirmationText"));
+                    }
+
+                    @Override
+                    public void failure(int statusCode, FLError error) {
+                    }
+                });
+            }
+        });
+
+        this.cardFromPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                transaction.to.selectedCanal = FLUser.FLUserSelectedCanal.TimelineCanal;
+                ProfileCardFragment profileCardFragment = new ProfileCardFragment();
+                if (cardFromUsername.getText().toString().contentEquals("@" + FloozRestClient.getInstance().currentUser.username))
+                    profileCardFragment.user = FloozRestClient.getInstance().currentUser;
                 else
-                    cardSocialContainer.setVisibility(View.GONE);
-
-                if (transaction.social.isLiked) {
-                    cardLikesButton.setBackground(parentActivity.getResources().getDrawable(R.drawable.timeline_row_action_button_background_selected));
-                    cardLikesButtonText.setTextColor(parentActivity.getResources().getColor(android.R.color.white));
-                    cardLikesButtonPicto.setImageDrawable(parentActivity.getResources().getDrawable(R.drawable.social_like_full));
-                }
-                else {
-                    cardLikesButton.setBackground(parentActivity.getResources().getDrawable(R.drawable.timeline_row_action_button_background));
-                    cardLikesButtonText.setTextColor(parentActivity.getResources().getColor(R.color.placeholder));
-                    cardLikesButtonPicto.setImageDrawable(parentActivity.getResources().getDrawable(R.drawable.social_like));
-                }
+                    profileCardFragment.user = transaction.from;
+                ((HomeActivity) parentActivity).pushFragmentInCurrentTab(profileCardFragment);
             }
+        });
 
+        this.cardToPic.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void failure(int statusCode, FLError error) {
-
+            public void onClick(View v) {
+                transaction.to.selectedCanal = FLUser.FLUserSelectedCanal.TimelineCanal;
+                ProfileCardFragment profileCardFragment = new ProfileCardFragment();
+                if (cardToUsername.getText().toString().contentEquals("@" + FloozRestClient.getInstance().currentUser.username))
+                    profileCardFragment.user = FloozRestClient.getInstance().currentUser;
+                else
+                    profileCardFragment.user = transaction.to;
+                ((HomeActivity) parentActivity).pushFragmentInCurrentTab(profileCardFragment);
             }
-        }));
+        });
 
-        this.cardCommentsButton.setOnClickListener(v -> {
-            cardCommentsTextfield.requestFocus();
-            InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(cardCommentsTextfield, InputMethodManager.SHOW_IMPLICIT);
+        this.cardPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CustomImageViewer.start(parentActivity, transaction.attachmentURL);
+            }
+        });
+
+        this.cardLikesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FloozRestClient.getInstance().likeTransaction(transaction.transactionId, new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        transaction.social.isLiked = !transaction.social.isLiked;
+                        transaction.social.likeText = (String) response;
+
+                        if (!transaction.social.likeText.isEmpty() || transaction.social.commentsCount.intValue() > 0) {
+                            cardSocialContainer.setVisibility(View.VISIBLE);
+
+                            if (transaction.social.commentsCount.intValue() > 0) {
+                                if (transaction.social.commentsCount.intValue() < 10)
+                                    cardCommentsNumber.setText("0" + transaction.social.commentsCount.toString());
+                                else
+                                    cardCommentsNumber.setText(transaction.social.commentsCount.toString());
+                                cardCommentsNumberContainer.setVisibility(View.VISIBLE);
+                            } else {
+                                cardCommentsNumberContainer.setVisibility(View.GONE);
+                            }
+
+
+                            if (!transaction.social.likeText.isEmpty()) {
+                                cardLikesText.setText(transaction.social.likeText);
+                                cardLikesContainer.setVisibility(View.VISIBLE);
+                            } else {
+                                cardLikesContainer.setVisibility(View.GONE);
+                            }
+                        } else
+                            cardSocialContainer.setVisibility(View.GONE);
+
+                        if (transaction.social.isLiked) {
+                            cardLikesButton.setBackground(parentActivity.getResources().getDrawable(R.drawable.timeline_row_action_button_background_selected));
+                            cardLikesButtonText.setTextColor(parentActivity.getResources().getColor(android.R.color.white));
+                            cardLikesButtonPicto.setImageDrawable(parentActivity.getResources().getDrawable(R.drawable.social_like_full));
+                        } else {
+                            cardLikesButton.setBackground(parentActivity.getResources().getDrawable(R.drawable.timeline_row_action_button_background));
+                            cardLikesButtonText.setTextColor(parentActivity.getResources().getColor(R.color.placeholder));
+                            cardLikesButtonPicto.setImageDrawable(parentActivity.getResources().getDrawable(R.drawable.social_like));
+                        }
+                    }
+
+                    @Override
+                    public void failure(int statusCode, FLError error) {
+
+                    }
+                });
+            }
+        });
+
+        this.cardCommentsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                cardCommentsTextfield.requestFocus();
+                InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(cardCommentsTextfield, InputMethodManager.SHOW_IMPLICIT);
+            }
         });
 
         this.viewCreated = true;
@@ -434,68 +465,78 @@ public class TransactionCardController extends BaseController {
 
         this.cardCommentsTextfield.setText("");
 
-        this.cardCommentsTextfield.setOnEditorActionListener((v, actionId, event) -> {
-            if (actionId == EditorInfo.IME_ACTION_DONE) {
-                cardCommentsSendButton.performClick();
+        this.cardCommentsTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    cardCommentsSendButton.performClick();
+                }
+                return false;
             }
-            return false;
         });
 
-        this.cardCommentsSendButton.setOnClickListener(v -> {
-            if (cardCommentsTextfield.getText().length() > 0 && cardCommentsTextfield.getText().length() < 140) {
-                FloozRestClient.getInstance().commentTransaction(transaction.transactionId, cardCommentsTextfield.getText().toString(), new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
-                        FLComment com = (FLComment) response;
+        this.cardCommentsSendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (cardCommentsTextfield.getText().length() > 0 && cardCommentsTextfield.getText().length() < 140) {
+                    FloozRestClient.getInstance().commentTransaction(transaction.transactionId, cardCommentsTextfield.getText().toString(), new FloozHttpResponseHandler() {
+                        @Override
+                        public void success(Object response) {
+                            FLComment com = (FLComment) response;
 
-                        transaction.comments.add(com);
-                        transaction.social.isCommented = true;
-                        transaction.social.commentsCount = transaction.comments.size();
+                            transaction.comments.add(com);
+                            transaction.social.isCommented = true;
+                            transaction.social.commentsCount = transaction.comments.size();
 
-                        if (!transaction.social.likeText.isEmpty() || transaction.social.commentsCount.intValue() > 0) {
-                            cardSocialContainer.setVisibility(View.VISIBLE);
+                            if (!transaction.social.likeText.isEmpty() || transaction.social.commentsCount.intValue() > 0) {
+                                cardSocialContainer.setVisibility(View.VISIBLE);
 
-                            if (transaction.social.commentsCount.intValue() > 0) {
-                                if (transaction.social.commentsCount.intValue() < 10)
-                                    cardCommentsNumber.setText("0" + transaction.social.commentsCount.toString());
-                                else
-                                    cardCommentsNumber.setText(transaction.social.commentsCount.toString());
-                                cardCommentsNumberContainer.setVisibility(View.VISIBLE);
-                            } else {
-                                cardCommentsNumberContainer.setVisibility(View.GONE);
-                            }
+                                if (transaction.social.commentsCount.intValue() > 0) {
+                                    if (transaction.social.commentsCount.intValue() < 10)
+                                        cardCommentsNumber.setText("0" + transaction.social.commentsCount.toString());
+                                    else
+                                        cardCommentsNumber.setText(transaction.social.commentsCount.toString());
+                                    cardCommentsNumberContainer.setVisibility(View.VISIBLE);
+                                } else {
+                                    cardCommentsNumberContainer.setVisibility(View.GONE);
+                                }
 
-                            if (!transaction.social.likeText.isEmpty()) {
-                                cardLikesText.setText(transaction.social.likeText);
-                                cardLikesContainer.setVisibility(View.VISIBLE);
-                            } else {
-                                cardLikesContainer.setVisibility(View.GONE);
-                            }
+                                if (!transaction.social.likeText.isEmpty()) {
+                                    cardLikesText.setText(transaction.social.likeText);
+                                    cardLikesContainer.setVisibility(View.VISIBLE);
+                                } else {
+                                    cardLikesContainer.setVisibility(View.GONE);
+                                }
+                            } else
+                                cardSocialContainer.setVisibility(View.GONE);
+
+                            cardCommentsContainer.addView(createCommentRowView(com));
                         }
-                        else
-                            cardSocialContainer.setVisibility(View.GONE);
 
-                        cardCommentsContainer.addView(createCommentRowView(com));
-                    }
+                        @Override
+                        public void failure(int statusCode, FLError error) {
 
-                    @Override
-                    public void failure(int statusCode, FLError error) {
+                        }
+                    });
 
-                    }
-                });
-
-                cardCommentsTextfield.setText("");
-                cardCommentsTextfield.clearFocus();
-                InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(
-                        Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(parentActivity.getWindow().getDecorView().getRootView().getWindowToken() , 0);
+                    cardCommentsTextfield.setText("");
+                    cardCommentsTextfield.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(
+                            Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(parentActivity.getWindow().getDecorView().getRootView().getWindowToken(), 0);
+                }
             }
         });
     }
 
     public void updateComment() {
         if (this.insertComment) {
-            this.cardScroll.post(() -> cardScroll.fullScroll(ScrollView.FOCUS_DOWN));
+            this.cardScroll.post(new Runnable() {
+                @Override
+                public void run() {
+                    cardScroll.fullScroll(ScrollView.FOCUS_DOWN);
+                }
+            });
             this.cardCommentsTextfield.requestFocus();
             InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
             imm.showSoftInput(this.cardCommentsTextfield, InputMethodManager.SHOW_IMPLICIT);
@@ -525,11 +566,14 @@ public class TransactionCardController extends BaseController {
         commentText.setText(comment.content);
         commentInfos.setText("@" + comment.user.username + " - " + comment.date.fromNow());
 
-        commentPic.setOnClickListener(v -> {
-            comment.user.selectedCanal = FLUser.FLUserSelectedCanal.TimelineCanal;
-            ProfileCardFragment profileCardFragment = new ProfileCardFragment();
-            profileCardFragment.user = comment.user;
-            ((HomeActivity)parentActivity).pushFragmentInCurrentTab(profileCardFragment);
+        commentPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                comment.user.selectedCanal = FLUser.FLUserSelectedCanal.TimelineCanal;
+                ProfileCardFragment profileCardFragment = new ProfileCardFragment();
+                profileCardFragment.user = comment.user;
+                ((HomeActivity) parentActivity).pushFragmentInCurrentTab(profileCardFragment);
+            }
         });
 
         return commentRow;
@@ -556,17 +600,23 @@ public class TransactionCardController extends BaseController {
             Button decline = (Button) dialog.findViewById(R.id.dialog_validate_flooz_decline);
             Button accept = (Button) dialog.findViewById(R.id.dialog_validate_flooz_accept);
 
-            decline.setOnClickListener(v -> {
-                dialog.dismiss();
-                dialogIsShowing = false;
+            decline.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    dialogIsShowing = false;
+                }
             });
 
-            accept.setOnClickListener(v -> {
-                dialogIsShowing = false;
-                dialog.dismiss();
-                Intent intentNotifs = new Intent(parentActivity, AuthenticationActivity.class);
-                parentActivity.startActivityForResult(intentNotifs, AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY);
-                parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+            accept.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialogIsShowing = false;
+                    dialog.dismiss();
+                    Intent intentNotifs = new Intent(parentActivity, AuthenticationActivity.class);
+                    parentActivity.startActivityForResult(intentNotifs, AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY);
+                    parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                }
             });
 
             dialog.show();

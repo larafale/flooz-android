@@ -85,29 +85,32 @@ public class StartSMSFragment extends StartBaseFragment {
             }
         });
 
-        nextButton.setOnClickListener(view1 -> {
-            if (codeTextfield.getText().length() > 0) {
-                parentActivity.signupData.put("smscode", codeTextfield.getText().toString());
-                FloozRestClient.getInstance().showLoadView();
-                FloozRestClient.getInstance().signupPassStep("sms", parentActivity.signupData, new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
-                        timer = null;
-                        JSONObject responseObject = (JSONObject) response;
-                        StartBaseFragment.handleStepResponse(responseObject, parentActivity);
-                    }
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (codeTextfield.getText().length() > 0) {
+                    parentActivity.signupData.put("smscode", codeTextfield.getText().toString());
+                    FloozRestClient.getInstance().showLoadView();
+                    FloozRestClient.getInstance().signupPassStep("sms", parentActivity.signupData, new FloozHttpResponseHandler() {
+                        @Override
+                        public void success(Object response) {
+                            timer = null;
+                            JSONObject responseObject = (JSONObject) response;
+                            StartBaseFragment.handleStepResponse(responseObject, parentActivity);
+                        }
 
-                    @Override
-                    public void failure(int statusCode, FLError error) {
+                        @Override
+                        public void failure(int statusCode, FLError error) {
 
-                    }
-                });
-            } else {
-                FloozRestClient.getInstance().sendSignupSMS((String)parentActivity.signupData.get("phone"));
-                countdown = maxCountdown;
-                String countDownValue = String.format(inflater.getContext().getResources().getString(R.string.SIGNUP_SMS_RESEND), countdown);
-                nextButton.setText(countDownValue);
-                nextButton.setEnabled(false);
+                        }
+                    });
+                } else {
+                    FloozRestClient.getInstance().sendSignupSMS((String) parentActivity.signupData.get("phone"));
+                    countdown = maxCountdown;
+                    String countDownValue = String.format(inflater.getContext().getResources().getString(R.string.SIGNUP_SMS_RESEND), countdown);
+                    nextButton.setText(countDownValue);
+                    nextButton.setEnabled(false);
+                }
             }
         });
 

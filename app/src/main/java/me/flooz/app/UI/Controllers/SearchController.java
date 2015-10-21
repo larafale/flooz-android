@@ -39,7 +39,7 @@ public class SearchController extends BaseController implements FriendsListAdapt
     private SearchListAdapter listAdapter;
     private StickyListHeadersListView resultList;
 
-    public SearchController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
+    public SearchController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
         this.headerBackButton = (ImageView) mainView.findViewById(R.id.header_item_left);
@@ -51,8 +51,19 @@ public class SearchController extends BaseController implements FriendsListAdapt
         this.listAdapter = new SearchListAdapter(this.parentActivity);
         resultList.setAdapter(this.listAdapter);
 
-        this.headerBackButton.setOnClickListener(v -> ((HomeActivity)parentActivity).popFragmentInCurrentTab());
-        this.clearSearchButton.setOnClickListener(v -> searchTextField.setText(""));
+        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((HomeActivity) parentActivity).popFragmentInCurrentTab();
+            }
+        });
+
+        this.clearSearchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                searchTextField.setText("");
+            }
+        });
 
         this.searchTextField.addTextChangedListener(new TextWatcher() {
             @Override
@@ -69,8 +80,13 @@ public class SearchController extends BaseController implements FriendsListAdapt
             public void afterTextChanged(Editable editable) {
                 if (editable.length() > 0) {
                     clearSearchButton.setVisibility(View.VISIBLE);
-                    Handler handler = new Handler(Looper.getMainLooper());
-                    handler.postDelayed(() -> listAdapter.searchUser(searchTextField.getText().toString()), 300);
+//                    Handler handler = new Handler(Looper.getMainLooper());
+//                    handler.postDelayed(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            listAdapter.searchUser(searchTextField.getText().toString());
+//                        }
+//                    }, 300);
                 } else {
                     clearSearchButton.setVisibility(View.GONE);
                     listAdapter.searchUser(editable.toString());
@@ -78,18 +94,23 @@ public class SearchController extends BaseController implements FriendsListAdapt
             }
         });
 
-        this.refreshContainer.setOnRefreshListener(() -> FloozRestClient.getInstance().loadFriendSuggestions(new FloozHttpResponseHandler() {
+        this.refreshContainer.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
-            public void success(Object response) {
-                listAdapter.reloadSuggestions((List<FLUser>) response);
-                refreshContainer.setRefreshing(false);
-            }
+            public void onRefresh() {
+                FloozRestClient.getInstance().loadFriendSuggestions(new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        listAdapter.reloadSuggestions((List<FLUser>) response);
+                        refreshContainer.setRefreshing(false);
+                    }
 
-            @Override
-            public void failure(int statusCode, FLError error) {
-                refreshContainer.setRefreshing(false);
+                    @Override
+                    public void failure(int statusCode, FLError error) {
+                        refreshContainer.setRefreshing(false);
+                    }
+                });
             }
-        }));
+        });
     }
 
     @Override

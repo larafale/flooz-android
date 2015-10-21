@@ -64,24 +64,30 @@ public class ScannerActivity extends Activity {
 
         headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
 
-        this.headerBackButton.setOnClickListener(view -> {
-            finish();
-            overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+            }
         });
 
-        this.scannerView.setResultHandler(result -> {
-            String codeValue = result.getText();
+        this.scannerView.setResultHandler(new ZXingScannerView.ResultHandler() {
+            @Override
+            public void handleResult(Result result) {
+                String codeValue = result.getText();
 
-            if (codeValue.contains("flooz://")) {
-                String code = codeValue.replace("flooz://", "");
-                if (NumberUtils.isDigits(code)) {
-                    FloozRestClient.getInstance().showLoadView();
-                    vibrator.vibrate(300);
+                if (codeValue.contains("flooz://")) {
+                    String code = codeValue.replace("flooz://", "");
+                    if (NumberUtils.isDigits(code)) {
+                        FloozRestClient.getInstance().showLoadView();
+                        vibrator.vibrate(300);
+                    } else {
+                        handleScanError();
+                    }
                 } else {
                     handleScanError();
                 }
-            } else {
-                handleScanError();
             }
         });
 

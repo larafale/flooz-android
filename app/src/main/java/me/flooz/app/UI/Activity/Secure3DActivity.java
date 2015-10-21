@@ -2,6 +2,7 @@ package me.flooz.app.UI.Activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
@@ -37,9 +38,12 @@ public class Secure3DActivity extends Activity {
 
         ((TextView)this.findViewById(R.id.settings_3ds_header_title)).setTypeface(CustomFonts.customTitleLight(this));
 
-        this.findViewById(R.id.settings_3ds_header_back).setOnClickListener(v -> {
-            FloozRestClient.getInstance().showLoadView();
-            FloozRestClient.getInstance().abort3DSecure();
+        this.findViewById(R.id.settings_3ds_header_back).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FloozRestClient.getInstance().showLoadView();
+                FloozRestClient.getInstance().abort3DSecure();
+            }
         });
 
         webView = (WebView) this.findViewById(R.id.settings_3ds_webview);

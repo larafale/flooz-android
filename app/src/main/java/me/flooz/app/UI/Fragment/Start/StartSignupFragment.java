@@ -17,7 +17,7 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.makeramen.RoundedImageView;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONObject;
@@ -90,11 +90,14 @@ public class StartSignupFragment extends StartBaseFragment {
 
         facebookPicto.setColorFilter(inflater.getContext().getResources().getColor(android.R.color.white));
 
-        lastnameTextfield.setOnEditorActionListener((v, actionId, event) -> {
-            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                firstnameTextfield.requestFocus();
+        lastnameTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    firstnameTextfield.requestFocus();
+                }
+                return false;
             }
-            return false;
         });
 
         phoneTextfield.addTextChangedListener(new TextWatcher() {
@@ -117,58 +120,67 @@ public class StartSignupFragment extends StartBaseFragment {
             }
         });
 
-        fbButton.setOnClickListener(v -> {
-            FloozRestClient.getInstance().showLoadView();
-            FloozRestClient.getInstance().connectFacebook();
-        });
-
-        signupButton.setOnClickListener(v -> {
-            parentActivity.hideKeyboard();
-
-
-            if (FloozApplication.getInstance().branchParams != null && FloozApplication.getInstance().branchParams.has("referrer"))
-                parentActivity.signupData.put("referrer",  FloozApplication.getInstance().branchParams.optString("referrer"));
-
-            parentActivity.signupData.put("distinctId", FloozApplication.mixpanelAPI.getPeople().getDistinctId());
-
-            if (TextUtils.isEmpty((String)parentActivity.signupData.get("distinctId"))) {
-                String newId = FLHelper.generateRandomString();
-                FloozApplication.mixpanelAPI.getPeople().identify(newId);
-                parentActivity.signupData.put("distinctId", newId);
+        fbButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FloozRestClient.getInstance().showLoadView();
+                FloozRestClient.getInstance().connectFacebook();
             }
-
-            parentActivity.signupData.put("firstName", firstnameTextfield.getText().toString());
-            parentActivity.signupData.put("lastName", lastnameTextfield.getText().toString());
-            parentActivity.signupData.put("nick", nicknameTextfield.getText().toString());
-            parentActivity.signupData.put("email", emailTextfield.getText().toString());
-            parentActivity.signupData.put("phone", phoneTextfield.getText().toString());
-            parentActivity.signupData.put("password", passwordTextfield.getText().toString());
-            parentActivity.signupData.put("sponsor", sponsorTextfield.getText().toString());
-
-            FloozRestClient.getInstance().showLoadView();
-            FloozRestClient.getInstance().signupPassStep("profile", parentActivity.signupData, new FloozHttpResponseHandler() {
-                @Override
-                public void success(Object response) {
-                    JSONObject responseObject = (JSONObject) response;
-
-                    StartBaseFragment.handleStepResponse(responseObject, parentActivity);
-                }
-
-                @Override
-                public void failure(int statusCode, FLError error) {
-
-                }
-            });
         });
 
-        cguButton.setOnClickListener(v -> {
-            Intent intent = new Intent();
-            intent.putExtra("title", inflater.getContext().getResources().getString(R.string.INFORMATIONS_TERMS));
-            intent.putExtra("url", "https://www.flooz.me/cgu?layout=webview");
-            intent.putExtra("modal", true);
-            intent.setClass(parentActivity, WebContentActivity.class);
-            parentActivity.startActivity(intent);
-            parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+        signupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                parentActivity.hideKeyboard();
+
+
+                if (FloozApplication.getInstance().branchParams != null && FloozApplication.getInstance().branchParams.has("referrer"))
+                    parentActivity.signupData.put("referrer", FloozApplication.getInstance().branchParams.optString("referrer"));
+
+                parentActivity.signupData.put("distinctId", FloozApplication.mixpanelAPI.getPeople().getDistinctId());
+
+                if (TextUtils.isEmpty((String) parentActivity.signupData.get("distinctId"))) {
+                    String newId = FLHelper.generateRandomString();
+                    FloozApplication.mixpanelAPI.getPeople().identify(newId);
+                    parentActivity.signupData.put("distinctId", newId);
+                }
+
+                parentActivity.signupData.put("firstName", firstnameTextfield.getText().toString());
+                parentActivity.signupData.put("lastName", lastnameTextfield.getText().toString());
+                parentActivity.signupData.put("nick", nicknameTextfield.getText().toString());
+                parentActivity.signupData.put("email", emailTextfield.getText().toString());
+                parentActivity.signupData.put("phone", phoneTextfield.getText().toString());
+                parentActivity.signupData.put("password", passwordTextfield.getText().toString());
+                parentActivity.signupData.put("sponsor", sponsorTextfield.getText().toString());
+
+                FloozRestClient.getInstance().showLoadView();
+                FloozRestClient.getInstance().signupPassStep("profile", parentActivity.signupData, new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        JSONObject responseObject = (JSONObject) response;
+
+                        StartBaseFragment.handleStepResponse(responseObject, parentActivity);
+                    }
+
+                    @Override
+                    public void failure(int statusCode, FLError error) {
+
+                    }
+                });
+            }
+        });
+
+        cguButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent();
+                intent.putExtra("title", inflater.getContext().getResources().getString(R.string.INFORMATIONS_TERMS));
+                intent.putExtra("url", "https://www.flooz.me/cgu?layout=webview");
+                intent.putExtra("modal", true);
+                intent.setClass(parentActivity, WebContentActivity.class);
+                parentActivity.startActivity(intent);
+                parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+            }
         });
 
         this.refreshView();

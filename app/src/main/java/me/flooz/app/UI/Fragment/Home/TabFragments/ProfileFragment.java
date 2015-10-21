@@ -28,7 +28,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.makeramen.RoundedImageView;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONException;
@@ -202,11 +202,19 @@ public class ProfileFragment extends TabBarFragment implements ProfileListAdapte
                             Button decline = (Button) validationDialog.findViewById(R.id.dialog_validate_flooz_decline);
                             Button accept = (Button) validationDialog.findViewById(R.id.dialog_validate_flooz_accept);
 
-                            decline.setOnClickListener(v -> validationDialog.dismiss());
+                            decline.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    validationDialog.dismiss();
+                                }
+                            });
 
-                            accept.setOnClickListener(v -> {
-                                validationDialog.dismiss();
-                                FloozRestClient.getInstance().logout();
+                            accept.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    validationDialog.dismiss();
+                                    FloozRestClient.getInstance().logout();
+                                }
                             });
 
                             validationDialog.setCanceledOnTouchOutside(false);
@@ -299,7 +307,12 @@ public class ProfileFragment extends TabBarFragment implements ProfileListAdapte
 
         Button close = (Button) dialog.findViewById(R.id.dialog_wallet_btn);
 
-        close.setOnClickListener(v1 -> dialog.dismiss());
+        close.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
 
         dialog.setCanceledOnTouchOutside(true);
         dialog.show();
@@ -319,38 +332,41 @@ public class ProfileFragment extends TabBarFragment implements ProfileListAdapte
                 final Uri selectedImageUri = imageUri;
                 if (selectedImageUri != null) {
                     Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(() -> {
-                        String path = ImageHelper.getPath(this.context, selectedImageUri);
-                        if (path != null) {
-                            File image = new File(path);
-                            BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                            Bitmap photo = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            String path = ImageHelper.getPath(context, selectedImageUri);
+                            if (path != null) {
+                                File image = new File(path);
+                                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                                Bitmap photo = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
 
-                            if (photo != null) {
-                                int rotation = ImageHelper.getRotation(this.context, selectedImageUri);
-                                if (rotation != 0) {
-                                    photo = ImageHelper.rotateBitmap(photo, rotation);
+                                if (photo != null) {
+                                    int rotation = ImageHelper.getRotation(context, selectedImageUri);
+                                    if (rotation != 0) {
+                                        photo = ImageHelper.rotateBitmap(photo, rotation);
+                                    }
+
+                                    int nh = (int) (photo.getHeight() * (512.0 / photo.getWidth()));
+                                    Bitmap scaled = Bitmap.createScaledBitmap(photo, 512, nh, true);
+                                    listAdapter.userViewHolder.imageView.setImageBitmap(scaled);
+                                    FloozRestClient.getInstance().uploadDocument("picId", image, new FloozHttpResponseHandler() {
+                                        @Override
+                                        public void success(Object response) {
+                                            FloozRestClient.getInstance().updateCurrentUser(null);
+                                        }
+
+                                        @Override
+                                        public void failure(int statusCode, FLError error) {
+                                            FLUser user = FloozRestClient.getInstance().currentUser;
+
+                                            if (user.avatarURL != null)
+                                                ImageLoader.getInstance().displayImage(user.avatarURL, listAdapter.userViewHolder.imageView);
+                                            else
+                                                listAdapter.userViewHolder.imageView.setImageDrawable(getResources().getDrawable(R.drawable.avatar_default));
+                                        }
+                                    });
                                 }
-
-                                int nh = (int) (photo.getHeight() * (512.0 / photo.getWidth()));
-                                Bitmap scaled = Bitmap.createScaledBitmap(photo, 512, nh, true);
-                                this.listAdapter.userViewHolder.imageView.setImageBitmap(scaled);
-                                FloozRestClient.getInstance().uploadDocument("picId", image, new FloozHttpResponseHandler() {
-                                    @Override
-                                    public void success(Object response) {
-                                        FloozRestClient.getInstance().updateCurrentUser(null);
-                                    }
-
-                                    @Override
-                                    public void failure(int statusCode, FLError error) {
-                                        FLUser user = FloozRestClient.getInstance().currentUser;
-
-                                        if (user.avatarURL != null)
-                                            ImageLoader.getInstance().displayImage(user.avatarURL, listAdapter.userViewHolder.imageView);
-                                        else
-                                            listAdapter.userViewHolder.imageView.setImageDrawable(getResources().getDrawable(R.drawable.avatar_default));
-                                    }
-                                });
                             }
                         }
                     });

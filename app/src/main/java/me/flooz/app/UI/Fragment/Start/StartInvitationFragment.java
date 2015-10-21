@@ -45,23 +45,26 @@ public class StartInvitationFragment extends StartBaseFragment {
 
         nextButton = (Button) view.findViewById(R.id.start_invitation_next);
 
-        nextButton.setOnClickListener(v -> {
-            parentActivity.signupData.put("coupon", couponTextfield.getText().toString());
-            FloozRestClient.getInstance().showLoadView();
-            FloozRestClient.getInstance().signupPassStep("invitation", parentActivity.signupData, new FloozHttpResponseHandler() {
-                @Override
-                public void success(Object response) {
-                    JSONObject responseObject = (JSONObject) response;
-                    StartBaseFragment.handleStepResponse(responseObject, parentActivity);
+        nextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                parentActivity.signupData.put("coupon", couponTextfield.getText().toString());
+                FloozRestClient.getInstance().showLoadView();
+                FloozRestClient.getInstance().signupPassStep("invitation", parentActivity.signupData, new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        JSONObject responseObject = (JSONObject) response;
+                        StartBaseFragment.handleStepResponse(responseObject, parentActivity);
 
-                }
+                    }
 
-                @Override
-                public void failure(int statusCode, FLError error) {
+                    @Override
+                    public void failure(int statusCode, FLError error) {
 
-                }
-            });
+                    }
+                });
 
+            }
         });
 
         if (this.parentActivity.signupData.containsKey("coupon") && !this.parentActivity.signupData.get("coupon").toString().isEmpty())

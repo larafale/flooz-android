@@ -53,22 +53,31 @@ public class ToolTipScopeView {
         friendText.setTypeface(CustomFonts.customContentRegular(context));
         privateText.setTypeface(CustomFonts.customContentRegular(context));
 
-        publicLayout.setOnClickListener(v -> {
-            if (delegate != null)
-                delegate.scopeChanged(FLTransaction.TransactionScope.TransactionScopePublic);
-            changeScope(FLTransaction.TransactionScope.TransactionScopePublic);
+        publicLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (delegate != null)
+                    delegate.scopeChanged(FLTransaction.TransactionScope.TransactionScopePublic);
+                changeScope(FLTransaction.TransactionScope.TransactionScopePublic);
+            }
         });
 
-        friendLayout.setOnClickListener(v -> {
-            if (delegate != null)
-                delegate.scopeChanged(FLTransaction.TransactionScope.TransactionScopeFriend);
-            changeScope(FLTransaction.TransactionScope.TransactionScopeFriend);
+        friendLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (delegate != null)
+                    delegate.scopeChanged(FLTransaction.TransactionScope.TransactionScopeFriend);
+                changeScope(FLTransaction.TransactionScope.TransactionScopeFriend);
+            }
         });
 
-        privateLayout.setOnClickListener(v -> {
-            if (delegate != null)
-                delegate.scopeChanged(FLTransaction.TransactionScope.TransactionScopePrivate);
-            changeScope(FLTransaction.TransactionScope.TransactionScopePrivate);
+        privateLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (delegate != null)
+                    delegate.scopeChanged(FLTransaction.TransactionScope.TransactionScopePrivate);
+                changeScope(FLTransaction.TransactionScope.TransactionScopePrivate);
+            }
         });
     }
 

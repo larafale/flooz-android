@@ -30,26 +30,29 @@ public class StartForgetFragment extends StartBaseFragment {
         View view = inflater.inflate(R.layout.start_forget_fragment, null);
 
         TextView title = (TextView) view.findViewById(R.id.start_forget_title);
-        EditText emailTextfield = (EditText) view.findViewById(R.id.start_forget_email);
+        final EditText emailTextfield = (EditText) view.findViewById(R.id.start_forget_email);
         Button forgetButton = (Button) view.findViewById(R.id.start_forget_next);
 
         title.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
         emailTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
 
-        forgetButton.setOnClickListener(v -> {
-            FloozRestClient.getInstance().showLoadView();
-            FloozRestClient.getInstance().passwordForget(emailTextfield.getText().toString(), new FloozHttpResponseHandler() {
-                @Override
-                public void success(Object response) {
-                    parentActivity.hideKeyboard();
-                    parentActivity.onBackPressed();
-                }
+        forgetButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FloozRestClient.getInstance().showLoadView();
+                FloozRestClient.getInstance().passwordForget(emailTextfield.getText().toString(), new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        parentActivity.hideKeyboard();
+                        parentActivity.onBackPressed();
+                    }
 
-                @Override
-                public void failure(int statusCode, FLError error) {
+                    @Override
+                    public void failure(int statusCode, FLError error) {
 
-                }
-            });
+                    }
+                });
+            }
         });
 
         return view;

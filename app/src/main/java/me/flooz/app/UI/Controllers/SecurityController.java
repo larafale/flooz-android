@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -31,7 +32,7 @@ public class SecurityController extends BaseController {
     private ListView contentList;
     private SettingsListAdapter listAdapter;
 
-    public SecurityController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
+    public SecurityController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
         this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
@@ -43,31 +44,40 @@ public class SecurityController extends BaseController {
         if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
             this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
 
-        this.headerBackButton.setOnClickListener(view -> {
-            if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                parentActivity.finish();
-                parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-            } else {
-                ((HomeActivity)this.parentActivity).popFragmentInCurrentTab();
+        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
+                    parentActivity.finish();
+                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+                } else {
+                    ((HomeActivity) parentActivity).popFragmentInCurrentTab();
+                }
             }
         });
 
         List<SettingsListItem> itemList = new ArrayList<>();
 
-        itemList.add(new SettingsListItem(this.parentActivity.getResources().getString(R.string.SETTINGS_CODE), (parent, view, position, id) -> {
-                Intent intent = new Intent(this.parentActivity, AuthenticationActivity.class);
+        itemList.add(new SettingsListItem(this.parentActivity.getResources().getString(R.string.SETTINGS_CODE), new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                Intent intent = new Intent(parentActivity, AuthenticationActivity.class);
                 intent.putExtra("changeSecureCode", true);
-                this.parentActivity.startActivity(intent);
-                this.parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                parentActivity.startActivity(intent);
+                parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+            }
         }));
 
-        itemList.add(new SettingsListItem(this.parentActivity.getResources().getString(R.string.SETTINGS_PASSWORD), (parent, view, position, id) -> {
-            if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                Intent intent = new Intent(this.parentActivity, PasswordSettingsActivity.class);
-                this.parentActivity.startActivity(intent);
-                this.parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-            } else {
-                ((HomeActivity)this.parentActivity).pushFragmentInCurrentTab(new PasswordFragment());
+        itemList.add(new SettingsListItem(this.parentActivity.getResources().getString(R.string.SETTINGS_PASSWORD), new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
+                    Intent intent = new Intent(parentActivity, PasswordSettingsActivity.class);
+                    parentActivity.startActivity(intent);
+                    parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                } else {
+                    ((HomeActivity) parentActivity).pushFragmentInCurrentTab(new PasswordFragment());
+                }
             }
         }));
 

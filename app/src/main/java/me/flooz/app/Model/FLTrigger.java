@@ -41,7 +41,12 @@ public class FLTrigger {
         TriggerShowIban,
         TriggerResetTuto,
         TriggerCloseView,
-        TriggerSendContacts
+        TriggerSendContacts,
+        TriggerUserShow,
+        TriggerInvitationSMSShow,
+        TriggerSMSValidate,
+        TriggerSecureCodeValidate,
+        TriggerEditProfile
     }
 
     public FLTriggerType type;
@@ -133,6 +138,18 @@ public class FLTrigger {
             return TriggerHttpCall;
         else if (param.contentEquals("view:close"))
             return TriggerCloseView;
+        else if (param.contentEquals("contacts:send"))
+            return TriggerSendContacts;
+        else if (param.contentEquals("user:show"))
+            return TriggerUserShow;
+        else if (param.contentEquals("invitation:sms:show"))
+            return TriggerInvitationSMSShow;
+        else if (param.contentEquals("profile:edit"))
+            return TriggerEditProfile;
+        else if (param.contentEquals("phone:validate"))
+            return TriggerSMSValidate;
+        else if (param.contentEquals("secureCode:set"))
+            return TriggerSecureCodeValidate;
         else
             return TriggerNone;
     }

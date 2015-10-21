@@ -56,7 +56,7 @@ public class IdentityController extends BaseController {
         }
     };
 
-    public IdentityController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
+    public IdentityController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
         this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
@@ -88,23 +88,32 @@ public class IdentityController extends BaseController {
         if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
             this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
 
-        this.headerBackButton.setOnClickListener(view -> {
-            if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                parentActivity.finish();
-                parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-            } else {
-                ((HomeActivity)this.parentActivity).popFragmentInCurrentTab();
+        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
+                    parentActivity.finish();
+                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+                } else {
+                    ((HomeActivity) parentActivity).popFragmentInCurrentTab();
+                }
             }
         });
 
-        this.sendVerifyPhone.setOnClickListener(v -> {
-            FloozRestClient.getInstance().sendSMSValidation();
-            v.setVisibility(View.GONE);
+        this.sendVerifyPhone.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FloozRestClient.getInstance().sendSMSValidation();
+                v.setVisibility(View.GONE);
+            }
         });
 
-        this.sendVerifyMail.setOnClickListener(v -> {
-            FloozRestClient.getInstance().sendEmailValidation();
-            v.setVisibility(View.GONE);
+        this.sendVerifyMail.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FloozRestClient.getInstance().sendEmailValidation();
+                v.setVisibility(View.GONE);
+            }
         });
 
 
@@ -144,63 +153,69 @@ public class IdentityController extends BaseController {
             }
         });
 
-        this.cityTextfield.setOnEditorActionListener((v, actionId, event) -> {
-            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                saveButton.performClick();
+        this.cityTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    saveButton.performClick();
+                }
+                return false;
             }
-            return false;
         });
 
-        this.saveButton.setOnClickListener(v -> {
-            FLUser currentUser = FloozRestClient.getInstance().currentUser;
+        this.saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FLUser currentUser = FloozRestClient.getInstance().currentUser;
 
-            Map<String, Object> param = new HashMap<>();
-            Map<String, Object> settings = new HashMap<>();
-            Map<String, Object> address = new HashMap<>();
+                Map<String, Object> param = new HashMap<>();
+                Map<String, Object> settings = new HashMap<>();
+                Map<String, Object> address = new HashMap<>();
 
-            if (!firstnameTextfield.getText().toString().contentEquals(currentUser.firstname))
-                param.put("firstName", firstnameTextfield.getText().toString());
+                if (!firstnameTextfield.getText().toString().contentEquals(currentUser.firstname))
+                    param.put("firstName", firstnameTextfield.getText().toString());
 
-            if (!lastnameTextfield.getText().toString().contentEquals(currentUser.lastname))
-                param.put("lastName", lastnameTextfield.getText().toString());
+                if (!lastnameTextfield.getText().toString().contentEquals(currentUser.lastname))
+                    param.put("lastName", lastnameTextfield.getText().toString());
 
-            if (!phoneTextfield.getText().toString().contentEquals(currentUser.phone.replace("+33", "0")))
-                param.put("phone", phoneTextfield.getText().toString());
+                if (!phoneTextfield.getText().toString().contentEquals(currentUser.phone.replace("+33", "0")))
+                    param.put("phone", phoneTextfield.getText().toString());
 
-            if (!emailTextfield.getText().toString().contentEquals(currentUser.email))
-                param.put("email", emailTextfield.getText().toString());
+                if (!emailTextfield.getText().toString().contentEquals(currentUser.email))
+                    param.put("email", emailTextfield.getText().toString());
 
-            if (((currentUser.address.get("address") == null || (currentUser.address.get("address") != null && currentUser.address.get("address").isEmpty())) && addressTextfield.getText().length() > 0)
-                    || (currentUser.address.get("address") != null && !currentUser.address.get("address").isEmpty() && !addressTextfield.getText().toString().contentEquals(currentUser.address.get("address"))))
-                address.put("address", addressTextfield.getText().toString());
+                if (((currentUser.address.get("address") == null || (currentUser.address.get("address") != null && currentUser.address.get("address").isEmpty())) && addressTextfield.getText().length() > 0)
+                        || (currentUser.address.get("address") != null && !currentUser.address.get("address").isEmpty() && !addressTextfield.getText().toString().contentEquals(currentUser.address.get("address"))))
+                    address.put("address", addressTextfield.getText().toString());
 
-            if (((currentUser.address.get("zipCode") == null || (currentUser.address.get("zipCode") != null && currentUser.address.get("zipCode").isEmpty())) && zipCodeTextfield.getText().length() > 0)
-                    || (currentUser.address.get("zipCode") != null && !currentUser.address.get("zipCode").isEmpty() && !zipCodeTextfield.getText().toString().contentEquals(currentUser.address.get("zipCode")))) {
-                address.put("zipCode", zipCodeTextfield.getText().toString());
-            }
-
-            if (((currentUser.address.get("city") == null || (currentUser.address.get("city") != null && currentUser.address.get("city").isEmpty())) && cityTextfield.getText().length() > 0)
-                    || (currentUser.address.get("city") != null && !currentUser.address.get("city").isEmpty() && !cityTextfield.getText().toString().contentEquals(currentUser.address.get("city")))) {
-                address.put("city", cityTextfield.getText().toString());
-            }
-
-            if (address.size() > 0) {
-                settings.put("address", address);
-                param.put("settings", settings);
-            }
-
-            FloozRestClient.getInstance().showLoadView();
-            FloozRestClient.getInstance().updateUser(param, new FloozHttpResponseHandler() {
-                @Override
-                public void success(Object response) {
-                    headerBackButton.performClick();
+                if (((currentUser.address.get("zipCode") == null || (currentUser.address.get("zipCode") != null && currentUser.address.get("zipCode").isEmpty())) && zipCodeTextfield.getText().length() > 0)
+                        || (currentUser.address.get("zipCode") != null && !currentUser.address.get("zipCode").isEmpty() && !zipCodeTextfield.getText().toString().contentEquals(currentUser.address.get("zipCode")))) {
+                    address.put("zipCode", zipCodeTextfield.getText().toString());
                 }
 
-                @Override
-                public void failure(int statusCode, FLError error) {
-
+                if (((currentUser.address.get("city") == null || (currentUser.address.get("city") != null && currentUser.address.get("city").isEmpty())) && cityTextfield.getText().length() > 0)
+                        || (currentUser.address.get("city") != null && !currentUser.address.get("city").isEmpty() && !cityTextfield.getText().toString().contentEquals(currentUser.address.get("city")))) {
+                    address.put("city", cityTextfield.getText().toString());
                 }
-            });
+
+                if (address.size() > 0) {
+                    settings.put("address", address);
+                    param.put("settings", settings);
+                }
+
+                FloozRestClient.getInstance().showLoadView();
+                FloozRestClient.getInstance().updateUser(param, new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        headerBackButton.performClick();
+                    }
+
+                    @Override
+                    public void failure(int statusCode, FLError error) {
+
+                    }
+                });
+            }
         });
     }
 

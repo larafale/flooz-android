@@ -2,6 +2,7 @@ package me.flooz.app.UI.Activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -147,18 +148,24 @@ public class LoadingActivity extends Activity {
             input.setText("192.168.1.");
             alert.setView(input);
 
-            alert.setPositiveButton(android.R.string.ok, (dialog, whichButton) -> {
-                FloozRestClient.customIpAdress = "http://" + input.getText().toString();
-                if (!FloozRestClient.getInstance().autologin()) {
-                    FloozApplication.getInstance().displayStartView();
-                    finish();
+            alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    FloozRestClient.customIpAdress = "http://" + input.getText().toString();
+                    if (!FloozRestClient.getInstance().autologin()) {
+                        FloozApplication.getInstance().displayStartView();
+                        finish();
+                    }
                 }
             });
 
-            alert.setNegativeButton(android.R.string.cancel, (dialog, whichButton) -> {
-                if (!FloozRestClient.getInstance().autologin()) {
-                    FloozApplication.getInstance().displayStartView();
-                    finish();
+            alert.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    if (!FloozRestClient.getInstance().autologin()) {
+                        FloozApplication.getInstance().displayStartView();
+                        finish();
+                    }
                 }
             });
 

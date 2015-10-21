@@ -17,8 +17,8 @@
             android:id="@+id/timeline_refresh_container"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            app:colors="@array/refresh_scheme_color"
-            app:type="material"
+            app:refreshColors="@array/refresh_scheme_color"
+            app:refreshType="material"
             android:background="@android:color/transparent">
 
             <me.flooz.app.UI.View.TimelineListView
@@ -51,36 +51,30 @@
 
             <info.hoang8f.android.segmented.SegmentedGroup
                 android:id="@+id/header_segmented_control"
-                android:layout_width="140dp"
-                android:layout_height="wrap_content"
-                android:layout_margin="@dimen/dimen_large"
+                android:layout_width="150dp"
+                android:layout_height="fill_parent"
+                android:layout_margin="8dp"
                 android:orientation="horizontal"
-                android:layout_centerInParent="true">
+                android:layout_centerInParent="true"
+                android:gravity="center_vertical">
 
-                <RadioButton
+                <me.flooz.app.UI.View.RadioButtonCenter
                     android:id="@+id/settings_segment_all"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:paddingTop="4dp"
-                    style="@style/RadioButton"/>
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"/>
 
-                <RadioButton
+                <me.flooz.app.UI.View.RadioButtonCenter
                     android:id="@+id/settings_segment_friends"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:layout_marginTop="-4dp"
-                    android:paddingTop="4dp"
-                    style="@style/RadioButton"/>
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"/>
 
-                <RadioButton
+                <me.flooz.app.UI.View.RadioButtonCenter
                     android:id="@+id/settings_segment_private"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:paddingTop="4dp"
-                    style="@style/RadioButton"/>
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"/>
 
             </info.hoang8f.android.segmented.SegmentedGroup>
 

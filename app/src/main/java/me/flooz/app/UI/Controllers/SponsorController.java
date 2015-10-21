@@ -25,8 +25,8 @@ public class SponsorController extends BaseController {
     private ImageView headerBackButton;
     private EditText sponsorTextfield;
     private Button saveButton;
-    
-    public SponsorController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
+
+    public SponsorController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
         this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
@@ -46,36 +46,45 @@ public class SponsorController extends BaseController {
         if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
             this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
 
-        this.headerBackButton.setOnClickListener(view -> {
-            if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                parentActivity.finish();
-                parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-            } else {
-                ((HomeActivity) this.parentActivity).popFragmentInCurrentTab();
+        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
+                    parentActivity.finish();
+                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+                } else {
+                    ((HomeActivity) parentActivity).popFragmentInCurrentTab();
+                }
             }
         });
 
-        this.sponsorTextfield.setOnEditorActionListener((v, actionId, event) -> {
-            if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                saveButton.performClick();
+        this.sponsorTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
+                    saveButton.performClick();
+                }
+                return false;
             }
-            return false;
         });
 
-        this.saveButton.setOnClickListener(v -> {
-            FloozRestClient.getInstance().showLoadView();
+        this.saveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FloozRestClient.getInstance().showLoadView();
 
-            FloozRestClient.getInstance().sendDiscountCode(sponsorTextfield.getText().toString(), new FloozHttpResponseHandler() {
-                @Override
-                public void success(Object response) {
-                    headerBackButton.performClick();
-                }
+                FloozRestClient.getInstance().sendDiscountCode(sponsorTextfield.getText().toString(), new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        headerBackButton.performClick();
+                    }
 
-                @Override
-                public void failure(int statusCode, FLError error) {
+                    @Override
+                    public void failure(int statusCode, FLError error) {
 
-                }
-            });
+                    }
+                });
+            }
         });
     }
 

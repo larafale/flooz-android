@@ -34,16 +34,19 @@ public class StartHomeFragment extends StartBaseFragment {
 
     private Handler handler = new Handler();
 
-    private Runnable runnable = () -> {
-        int newPage = pagerView.getCurrentItem();
+    private Runnable runnable = new Runnable() {
+        @Override
+        public void run() {
+            int newPage = pagerView.getCurrentItem();
 
-        if (newPage + 1 > pagerView.getAdapter().getCount() - 1)
-            newPage = 0;
-        else
-            ++newPage;
+            if (newPage + 1 > pagerView.getAdapter().getCount() - 1)
+                newPage = 0;
+            else
+                ++newPage;
 
-        pagerView.setCurrentItem(newPage, true);
-        handler.postDelayed(this.runnable, 4000);
+            pagerView.setCurrentItem(newPage, true);
+            handler.postDelayed(runnable, 4000);
+        }
     };
 
     @Override
@@ -105,8 +108,19 @@ public class StartHomeFragment extends StartBaseFragment {
             }
         });
 
-        loginButton.setOnClickListener(v -> parentActivity.changeCurrentPage(new StartLoginFragment(), android.R.animator.fade_in, android.R.animator.fade_out, true));
-        signupButton.setOnClickListener(v -> parentActivity.changeCurrentPage(new StartSignupFragment(), android.R.animator.fade_in, android.R.animator.fade_out, true));
+        loginButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                parentActivity.changeCurrentPage(new StartLoginFragment(), android.R.animator.fade_in, android.R.animator.fade_out, true);
+            }
+        });
+
+        signupButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                parentActivity.changeCurrentPage(new StartSignupFragment(), android.R.animator.fade_in, android.R.animator.fade_out, true);
+            }
+        });
 
         return view;
     }

@@ -4,6 +4,8 @@ import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -52,52 +54,74 @@ public class AboutActivity extends Activity {
 
         aboutText.setText("Flooz " + FloozApplication.getAppVersionName(this));
 
-        this.headerBackButton.setOnClickListener(view -> {
-            finish();
-            overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+            }
         });
 
         final List<SettingsListItem> list = new ArrayList<>();
 
-        list.add(new SettingsListItem(this.getResources().getString(R.string.INFORMATIONS_RATE_APP), (parent, view, position, id) -> {
-            final String appPackageName = getPackageName();
-            try {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
-            } catch (android.content.ActivityNotFoundException anfe) {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+        list.add(new SettingsListItem(this.getResources().getString(R.string.INFORMATIONS_RATE_APP), new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final String appPackageName = getPackageName();
+                try {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                } catch (android.content.ActivityNotFoundException anfe) {
+                    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                }
             }
         }));
 
-        list.add(new SettingsListItem(this.getResources().getString(R.string.INFORMATIONS_FAQ), (parent, view, position, id) -> {
-            Intent intent = new Intent();
-            intent.putExtra("title", list.get(position).getTitle());
-            intent.putExtra("url", "https://www.flooz.me/faq?layout=webview");
-            intent.setClass(instance, WebContentActivity.class);
-            instance.startActivity(intent);
-            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+        list.add(new SettingsListItem(this.getResources().getString(R.string.INFORMATIONS_FAQ), new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent intent = new Intent();
+                intent.putExtra("title", list.get(position).getTitle());
+                intent.putExtra("url", "https://www.flooz.me/faq?layout=webview");
+                intent.setClass(instance, WebContentActivity.class);
+                instance.startActivity(intent);
+                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+            }
         }));
 
-        list.add(new SettingsListItem(this.getResources().getString(R.string.INFORMATIONS_TERMS), (parent, view, position, id) -> {
-            Intent intent = new Intent();
-            intent.putExtra("title", list.get(position).getTitle());
-            intent.putExtra("url", "https://www.flooz.me/cgu?layout=webview");
-            intent.setClass(instance, WebContentActivity.class);
-            instance.startActivity(intent);
-            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+        list.add(new SettingsListItem(this.getResources().getString(R.string.INFORMATIONS_TERMS), new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent intent = new Intent();
+                intent.putExtra("title", list.get(position).getTitle());
+                intent.putExtra("url", "https://www.flooz.me/cgu?layout=webview");
+                intent.setClass(instance, WebContentActivity.class);
+                instance.startActivity(intent);
+                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+            }
         }));
 
-        list.add(new SettingsListItem(this.getResources().getString(R.string.INFORMATIONS_CONTACT), (parent, view, position, id) -> {
-            Intent intent = new Intent();
-            intent.putExtra("title", list.get(position).getTitle());
-            intent.putExtra("url", "https://www.flooz.me/contact?layout=webview");
-            intent.setClass(instance, WebContentActivity.class);
-            instance.startActivity(intent);
-            instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+        list.add(new SettingsListItem(this.getResources().getString(R.string.INFORMATIONS_CONTACT), new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent intent = new Intent();
+                intent.putExtra("title", list.get(position).getTitle());
+                intent.putExtra("url", "https://www.flooz.me/contact?layout=webview");
+                intent.setClass(instance, WebContentActivity.class);
+                instance.startActivity(intent);
+                instance.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_left);
+            }
         }));
 
-        list.add(new SettingsListItem(this.getResources().getString(R.string.INFORMATIONS_REVIEW), (parent, view, position, id) -> {
-            Intent intent = WebController.newEmailIntent("hello@flooz.me", list.get(position).getTitle(), "Voici quelques idées pour améliorer l'application : ", "");
-            startActivity(intent);
+        list.add(new SettingsListItem(this.getResources().getString(R.string.INFORMATIONS_REVIEW), new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                Intent intent = WebController.newEmailIntent("hello@flooz.me", list.get(position).getTitle(), "Voici quelques idées pour améliorer l'application : ", "");
+                startActivity(intent);
+            }
         }));
 
         new SettingsListAdapter(this, list, contentList);
