@@ -2,10 +2,12 @@ package me.flooz.app.UI.Controllers;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -42,10 +44,11 @@ import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.AuthenticationActivity;
 import me.flooz.app.UI.Activity.HomeActivity;
-import me.flooz.app.UI.Fragment.Home.ProfileCardFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.ProfileCardFragment;
 import me.flooz.app.UI.Tools.CustomImageViewer;
 import me.flooz.app.UI.View.LoadingImageView;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.CustomNotificationIntents;
 
 /**
  * Created by Wapazz on 17/09/15.
@@ -97,6 +100,24 @@ public class TransactionCardController extends BaseController {
 
     private Boolean transactionPending = false;
     private Boolean dialogIsShowing = false;
+
+    private BroadcastReceiver reloadTransactionReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            FloozRestClient.getInstance().transactionWithId(transaction.transactionId, new FloozHttpResponseHandler() {
+                @Override
+                public void success(Object response) {
+                    FLTransaction transac = new FLTransaction(((JSONObject) response).optJSONObject("item"));
+                    setTransaction(transac);
+                }
+
+                @Override
+                public void failure(int statusCode, FLError error) {
+
+                }
+            });
+        }
+    };
 
     public TransactionCardController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull BaseController.ControllerKind kind) {
         super(mainView, parentActivity, kind);
@@ -166,6 +187,13 @@ public class TransactionCardController extends BaseController {
                 } else {
                     ((HomeActivity) parentActivity).popFragmentInCurrentTab();
                 }
+            }
+        });
+
+        this.cardHeaderReportButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FloozApplication.getInstance().showReportActionMenu(transaction);
             }
         });
 
@@ -308,7 +336,6 @@ public class TransactionCardController extends BaseController {
             imm.showSoftInput(cardCommentsTextfield, InputMethodManager.SHOW_IMPLICIT);
         }
 
-        // TODO Check plutot URL ?
         FLUser self = FloozRestClient.getInstance().currentUser;
         if (this.cardToUsername.getText().toString().contentEquals("@" + self.username) && self.avatarURL != null && !self.avatarURL.isEmpty())
             ImageLoader.getInstance().displayImage(self.avatarURL, this.cardToPic);
@@ -320,6 +347,7 @@ public class TransactionCardController extends BaseController {
     @Override
     public void onResume() {
         super.onResume();
+
         if (this.insertComment) {
             cardCommentsTextfield.requestFocus();
             InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -327,6 +355,17 @@ public class TransactionCardController extends BaseController {
         }
         if (this.transactionPending)
             FloozRestClient.getInstance().showLoadView();
+
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadTransactionReceiver,
+                CustomNotificationIntents.filterReloadCurrentUser());
+
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadTransactionReceiver);
     }
 
     private void reloadView() {

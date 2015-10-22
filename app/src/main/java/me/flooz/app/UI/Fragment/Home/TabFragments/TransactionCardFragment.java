@@ -6,26 +6,32 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.R;
-import me.flooz.app.UI.Controllers.CashoutController;
+import me.flooz.app.UI.Controllers.CreditCardController;
 import me.flooz.app.UI.Controllers.NotificationsController;
-import me.flooz.app.UI.Controllers.PreferencesController;
+import me.flooz.app.UI.Controllers.TransactionCardController;
+import me.flooz.app.UI.Fragment.Home.TabFragments.TabBarFragment;
 
 /**
- * Created by Flooz on 9/1/15.
+ * Created by Flooz on 9/25/14.
  */
-public class PreferencesFragment extends TabBarFragment {
-
-    PreferencesController controller;
+public class TransactionCardFragment extends TabBarFragment {
+    public TransactionCardController controller;
+    public Boolean insertComment = false;
+    public FLTransaction transaction;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.settings_preferences_fragment, null);
+        View view = inflater.inflate(R.layout.transaction_card_fragment, null);
 
-        if (this.controller == null)
-            this.controller = new PreferencesController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
+        if (this.controller == null) {
+            this.controller = new TransactionCardController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
+            this.controller.insertComment = this.insertComment;
+            this.controller.setTransaction(this.transaction);
+        }
 
-        return this.controller.currentView;
+        return view;
     }
 
     @Override
@@ -61,5 +67,4 @@ public class PreferencesFragment extends TabBarFragment {
     public void onBackPressed() {
         this.controller.onBackPressed();
     }
-
 }

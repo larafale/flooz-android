@@ -51,10 +51,18 @@ public class SearchController extends BaseController implements FriendsListAdapt
         this.listAdapter = new SearchListAdapter(this.parentActivity);
         resultList.setAdapter(this.listAdapter);
 
+        if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
+            this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
+
         this.headerBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((HomeActivity) parentActivity).popFragmentInCurrentTab();
+                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
+                    parentActivity.finish();
+                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+                } else {
+                    ((HomeActivity) parentActivity).popFragmentInCurrentTab();
+                }
             }
         });
 
@@ -80,13 +88,7 @@ public class SearchController extends BaseController implements FriendsListAdapt
             public void afterTextChanged(Editable editable) {
                 if (editable.length() > 0) {
                     clearSearchButton.setVisibility(View.VISIBLE);
-//                    Handler handler = new Handler(Looper.getMainLooper());
-//                    handler.postDelayed(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            listAdapter.searchUser(searchTextField.getText().toString());
-//                        }
-//                    }, 300);
+                    listAdapter.searchUser(searchTextField.getText().toString());
                 } else {
                     clearSearchButton.setVisibility(View.GONE);
                     listAdapter.searchUser(editable.toString());

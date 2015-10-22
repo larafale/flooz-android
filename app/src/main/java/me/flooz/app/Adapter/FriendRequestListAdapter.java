@@ -2,10 +2,13 @@ package me.flooz.app.Adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -14,61 +17,55 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLUser;
+import me.flooz.app.Network.FloozHttpResponseHandler;
+import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
 
 /**
- * Created by Wapazz on 25/09/15.
+ * Created by Flooz on 10/22/15.
  */
-public class UserListAdapter extends BaseAdapter {
-
+public class FriendRequestListAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
 
-    private FLUser currentUser;
-    public List<FLUser> userList = new ArrayList<>(0);
+    public List<FLUser> pendingList = new ArrayList<>(0);
 
-    public UserListAdapter(Context ctx, FLUser user) {
+    public FriendRequestListAdapter(Context ctx) {
         this.inflater = LayoutInflater.from(ctx);
         this.context = ctx;
 
-        this.currentUser = user;
-        if (this.currentUser != null)
-            this.userList = currentUser.friends;
+        FLUser currentUser = FloozRestClient.getInstance().currentUser;
 
-        if (this.userList == null)
-            this.userList = new ArrayList<>(0);
+        pendingList = currentUser.friendsRequest;
+
+        if (pendingList == null)
+            pendingList = new ArrayList<>(0);
 
         notifyDataSetChanged();
     }
 
-    public void setCurrentUser(FLUser currentUser) {
-        this.currentUser = currentUser;
-        if (this.currentUser != null)
-            this.userList = currentUser.friends;
+    public void refreshFriendList() {
+        FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+        pendingList = currentUser.friendsRequest;
+
+        if (pendingList == null)
+            pendingList = new ArrayList<>(0);
+
+        notifyDataSetChanged();
     }
 
     @Override
     public int getCount() {
-        if (userList.size() > 0)
-            return userList.size();
-        return 1;
+        return this.pendingList.size();
     }
 
     @Override
     public FLUser getItem(int i) {
-        return userList.get(i);
-    }
-
-    public FLUser getItem(String name) {
-        FLUser user;
-        for (int i = 0; i < userList.size(); i++) {
-            if ((user = userList.get(i)).fullname.contentEquals(name)) {
-                return user;
-            }
-        }
-        return null;
+        return this.pendingList.get(i);
     }
 
     @Override
@@ -77,19 +74,8 @@ public class UserListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int i, View convertView, ViewGroup parent) {
+    public View getView(int position, View convertView, ViewGroup parent) {
         final ViewHolder holder;
-
-        if (this.userList.size() == 0) {
-            View empty = LayoutInflater.from(context).inflate(R.layout.empty_row, parent, false);
-
-            TextView emptyText = (TextView) empty.findViewById(R.id.empty_row_text);
-
-            emptyText.setTypeface(CustomFonts.customContentRegular(context));
-            emptyText.setText(context.getResources().getString(R.string.EMPTY_FRIEND_CELL));
-
-            return empty;
-        }
 
         if (convertView == null) {
             holder = new ViewHolder();
@@ -97,16 +83,19 @@ public class UserListAdapter extends BaseAdapter {
             holder.username = (TextView) convertView.findViewById(R.id.user_list_row_username);
             holder.fullname = (TextView) convertView.findViewById(R.id.user_list_row_fullname);
             holder.pic = (RoundedImageView) convertView.findViewById(R.id.user_list_row_pic);
+            holder.button = (ImageView) convertView.findViewById(R.id.user_list_row_button);
+
+            holder.button.setVisibility(View.GONE);
+
             holder.username.setTypeface(CustomFonts.customTitleExtraLight(this.context), Typeface.BOLD);
             holder.fullname.setTypeface(CustomFonts.customContentRegular(this.context));
 
             convertView.setTag(holder);
-        }
-        else {
+        } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        final FLUser user = (FLUser) this.getItem(i);
+        final FLUser user = this.getItem(position);
 
         holder.fullname.setText(user.fullname);
         holder.username.setText("@" + user.username);
@@ -118,11 +107,10 @@ public class UserListAdapter extends BaseAdapter {
         return convertView;
     }
 
-    public class ViewHolder {
+    class ViewHolder {
         TextView fullname;
         TextView username;
         RoundedImageView pic;
+        ImageView button;
     }
 }
-
-

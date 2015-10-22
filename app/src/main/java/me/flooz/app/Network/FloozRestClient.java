@@ -83,9 +83,12 @@ import me.flooz.app.UI.Activity.Settings.BankSettingsActivity;
 import me.flooz.app.UI.Activity.Settings.IdentitySettingsActivity;
 import me.flooz.app.UI.Activity.Settings.CreditCardSettingsActivity;
 import me.flooz.app.UI.Activity.Settings.DocumentsSettingsActivity;
+import me.flooz.app.UI.Activity.Settings.SetSecureCodeActivity;
 import me.flooz.app.UI.Activity.ShareAppActivity;
 import me.flooz.app.UI.Activity.StartActivity;
+import me.flooz.app.UI.Activity.ValidateSMSActivity;
 import me.flooz.app.UI.Tools.CustomToast;
+import me.flooz.app.UI.View.CustomDialog;
 import me.flooz.app.Utils.ContactsManager;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
@@ -529,6 +532,31 @@ public class FloozRestClient
         this.secureCode = null;
     }
 
+    public void checkSMSForUser(final String code, final FloozHttpResponseHandler responseHandler) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("field", "phone");
+        params.put("value", code);
+
+        this.request("/utils/asserts", HttpRequestType.POST, params, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                setSecureCode(code);
+
+                if (responseHandler != null)
+                    responseHandler.success(response);
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+                if (getSecureCode() != null)
+                    clearSecureCode();
+
+                if (responseHandler != null)
+                    responseHandler.failure(statusCode, error);
+            }
+        });
+    }
+
     public void checkSecureCodeForUser(final String code, final FloozHttpResponseHandler responseHandler) {
         Map<String, Object> params = new HashMap<>();
         params.put("field", "secureCode");
@@ -613,6 +641,10 @@ public class FloozRestClient
     }
 
     public void textObjectFromApi(final FloozHttpResponseHandler responseHandler) {
+        loadTextData();
+        if (currentTexts != null && responseHandler != null)
+            responseHandler.success(currentTexts);
+
         this.request("/utils/texts", HttpRequestType.GET, null, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
@@ -1754,22 +1786,19 @@ public class FloozRestClient
 
     private void handleTriggerLineShow(JSONObject data) {
         try {
-            final Activity tmp = floozApp.getCurrentActivity();
-            if (tmp instanceof HomeActivity) {
-                if (data.has("_id")) {
-                    this.showLoadView();
-                    this.transactionWithId(data.optString("_id"), new FloozHttpResponseHandler() {
-                        @Override
-                        public void success(Object response) {
-                            FLTransaction transac = new FLTransaction(((JSONObject) response).optJSONObject("item"));
-                            ((HomeActivity) tmp).showTransactionCard(transac);
-                        }
+            if (data.has("_id")) {
+                this.showLoadView();
+                this.transactionWithId(data.optString("_id"), new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        FLTransaction transac = new FLTransaction(((JSONObject) response).optJSONObject("item"));
+                        HomeActivity.showTransactionCard(transac);
+                    }
 
-                        @Override
-                        public void failure(int statusCode, FLError error) {
-                        }
-                    });
-                }
+                    @Override
+                    public void failure(int statusCode, FLError error) {
+                    }
+                });
             }
         } catch (ClassCastException e) {
 
@@ -2015,39 +2044,7 @@ public class FloozRestClient
     }
 
     private void handleTriggerPopupShow(final JSONObject data) {
-        Handler handler = new Handler(floozApp.getMainLooper());
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                final Dialog dialog = new Dialog(floozApp.getCurrentActivity());
-
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setContentView(R.layout.custom_dialog_balance);
-
-                TextView title = (TextView) dialog.findViewById(R.id.dialog_wallet_title);
-                title.setTypeface(CustomFonts.customContentRegular(floozApp.getCurrentActivity()), Typeface.BOLD);
-                title.setText(data.optString("title"));
-
-                TextView text = (TextView) dialog.findViewById(R.id.dialog_wallet_msg);
-                text.setTypeface(CustomFonts.customContentRegular(floozApp.getCurrentActivity()));
-                text.setText(data.optString("content"));
-
-                Button close = (Button) dialog.findViewById(R.id.dialog_wallet_btn);
-                if (data.has("button") && !data.optString("button").isEmpty())
-                    close.setText(data.optString("button"));
-
-                close.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        dialog.dismiss();
-                        handleRequestTriggers(data);
-                    }
-                });
-
-                dialog.setCanceledOnTouchOutside(false);
-                dialog.show();
-            }
-        });
+        CustomDialog.show(floozApp.getCurrentActivity(), data, null);
     }
 
     private void handleTriggerHomeShow() {
@@ -2106,11 +2103,21 @@ public class FloozRestClient
     }
 
     private void handleTriggerSMSValidate() {
-
+        if (!(floozApp.getCurrentActivity() instanceof ValidateSMSActivity)) {
+            Intent intent = new Intent(floozApp.getCurrentActivity(), ValidateSMSActivity.class);
+            Activity tmpActivity = floozApp.getCurrentActivity();
+            tmpActivity.startActivity(intent);
+            tmpActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+        }
     }
 
     private void handleTriggerSecureCodeValidate() {
-
+        if (!(floozApp.getCurrentActivity() instanceof SetSecureCodeActivity)) {
+            Intent intent = new Intent(floozApp.getCurrentActivity(), SetSecureCodeActivity.class);
+            Activity tmpActivity = floozApp.getCurrentActivity();
+            tmpActivity.startActivity(intent);
+            tmpActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+        }
     }
 
     private void handleTriggerEditProfile() {
@@ -2121,6 +2128,10 @@ public class FloozRestClient
             tmpActivity.startActivity(intent);
             tmpActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
         }
+    }
+
+    private void handleTriggerFbConnect() {
+        this.connectFacebook();
     }
 
     public void handleTrigger(final FLTrigger trigger) {
@@ -2230,6 +2241,9 @@ public class FloozRestClient
                 break;
             case TriggerEditProfile:
                 handleTriggerEditProfile();
+                break;
+            case TriggerFbConnect:
+                handleTriggerFbConnect();
                 break;
             default:
                 break;

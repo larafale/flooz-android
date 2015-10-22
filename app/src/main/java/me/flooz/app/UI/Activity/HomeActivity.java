@@ -35,6 +35,7 @@ import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.R;
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.App.FloozApplication;
+import me.flooz.app.UI.Activity.Settings.CreditCardSettingsActivity;
 import me.flooz.app.UI.Fragment.Home.TabFragments.NotificationsFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.ProfileFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.ShareFragment;
@@ -47,7 +48,7 @@ import me.flooz.app.UI.Tools.CustomToast;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
-import me.flooz.app.UI.Fragment.Home.TransactionCardFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.TransactionCardFragment;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.ImageHelper;
 import me.flooz.app.Utils.SoftKeyboardHandledRelativeLayout;
@@ -645,16 +646,22 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
     }
 
     public static void showTransactionCard(FLTransaction transaction, Boolean insertComment) {
-        FloozRestClient.getInstance().readNotification(transaction.transactionId, null);
-        TransactionCardFragment transactionCardFragment = new TransactionCardFragment();
-
-        transactionCardFragment.insertComment = insertComment;
-        transactionCardFragment.transaction = transaction;
-
         Activity activity = FloozApplication.getInstance().getCurrentActivity();
 
         if (activity instanceof HomeActivity) {
+            FloozRestClient.getInstance().readNotification(transaction.transactionId, null);
+            TransactionCardFragment transactionCardFragment = new TransactionCardFragment();
+
+            transactionCardFragment.insertComment = insertComment;
+            transactionCardFragment.transaction = transaction;
+
             ((HomeActivity)activity).pushFragmentInCurrentTab(transactionCardFragment);
+        } else {
+            Intent intent = new Intent(activity, Secure3DActivity.class);
+            intent.putExtra("insertComment", insertComment);
+            intent.putExtra("transaction", transaction.json.toString());
+            activity.startActivity(intent);
+            activity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
         }
     }
 

@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="250dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/tooltip_scope_view"
+    android:gravity="center_horizontal"
+    android:padding="@dimen/dimen_large">
+
+    <TextView
+        android:id="@+id/dialog_trigger_title"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/dimen_large"
+        android:textColor="@color/blue"
+        android:textSize="20sp"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:gravity="center"/>
+
+    <TextView
+        android:id="@+id/dialog_trigger_msg"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dimen_xlarge"
+        android:paddingRight="@dimen/dimen_xlarge"
+        android:paddingBottom="@dimen/dimen_xlarge"
+        android:paddingTop="@dimen/dimen_small"
+        android:textColor="@color/placeholder"
+        android:textSize="14sp"
+        android:textAlignment="center"
+        android:gravity="center"/>
+
+    <LinearLayout
+        android:id="@+id/dialog_trigger_container1"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/dialog_trigger_btn1"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="@dimen/signup_button_height"
+            android:background="@drawable/background_action_button"
+            android:textColor="@android:color/white"
+            android:text="@string/GLOBAL_OK"
+            android:textStyle="bold"/>
+        
+        <View
+            android:id="@+id/dialog_trigger_spacer1"
+            android:layout_width="@dimen/dimen_large"
+            android:layout_height="@dimen/signup_button_height"/>
+
+        <Button
+            android:id="@+id/dialog_trigger_btn2"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="@dimen/signup_button_height"
+            android:background="@drawable/background_action_button"
+            android:textColor="@android:color/white"
+            android:text="@string/GLOBAL_OK"
+            android:textStyle="bold"/>
+        
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/dialog_trigger_container2"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/dimen_large">
+
+        <Button
+            android:id="@+id/dialog_trigger_btn3"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="@dimen/signup_button_height"
+            android:background="@drawable/background_action_button"
+            android:textColor="@android:color/white"
+            android:text="@string/GLOBAL_OK"
+            android:textStyle="bold"/>
+
+        <View
+            android:id="@+id/dialog_trigger_spacer2"
+            android:layout_width="@dimen/dimen_large"
+            android:layout_height="@dimen/signup_button_height"/>
+
+        <Button
+            android:id="@+id/dialog_trigger_btn4"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="@dimen/signup_button_height"
+            android:background="@drawable/background_action_button"
+            android:textColor="@android:color/white"
+            android:text="@string/GLOBAL_OK"
+            android:textStyle="bold"/>
+
+    </LinearLayout>
+
+</LinearLayout>

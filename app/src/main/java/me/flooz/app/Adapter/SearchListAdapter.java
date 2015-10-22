@@ -7,7 +7,6 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,22 +15,22 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.makeramen.RoundedImageView;
+import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.HomeActivity;
-import me.flooz.app.UI.Fragment.Home.ProfileCardFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.ProfileCardFragment;
+import me.flooz.app.UI.Tools.ActionSheet;
+import me.flooz.app.UI.Tools.ActionSheetItem;
 import me.flooz.app.Utils.CustomFonts;
-import me.flooz.app.Utils.CustomNotificationIntents;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 /**
@@ -97,20 +96,6 @@ public class SearchListAdapter extends BaseAdapter implements StickyListHeadersA
         notifyDataSetChanged();
     }
 
-    // TODO Check quand reload
-    public void loadBroadcastReceivers() {
-        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadContent,
-                CustomNotificationIntents.filterShowSlidingRightMenu());
-
-        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadSuggest,
-                CustomNotificationIntents.filterReloadFriends());
-    }
-
-    public void unloadBroadcastReceivers() {
-        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadContent);
-        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadSuggest);
-    }
-
     public void reloadSuggestions() {
         FloozRestClient.getInstance().loadFriendSuggestions(new FloozHttpResponseHandler() {
             @Override
@@ -131,11 +116,6 @@ public class SearchListAdapter extends BaseAdapter implements StickyListHeadersA
         suggestionList.clear();
         suggestionList.addAll(suggests);
         notifyDataSetChanged();
-    }
-
-    @Override
-    public void notifyDataSetChanged() {
-        super.notifyDataSetChanged();
     }
 
     @Override
@@ -234,65 +214,63 @@ public class SearchListAdapter extends BaseAdapter implements StickyListHeadersA
         if (user.avatarURL != null && !user.avatarURL.isEmpty())
             ImageLoader.getInstance().displayImage(user.avatarURL, holder.pic);
 
-        holder.container.setOnClickListener(v -> {
-            ProfileCardFragment profileCardFragment = new ProfileCardFragment();
-            profileCardFragment.user = user;
-            ((HomeActivity)context).pushFragmentInCurrentTab(profileCardFragment);
+        holder.container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ProfileCardFragment profileCardFragment = new ProfileCardFragment();
+                profileCardFragment.user = user;
+                ((HomeActivity) context).pushFragmentInCurrentTab(profileCardFragment);
+            }
         });
 
-        if (!this.isSearchActive && position < this.suggestionList.size()) {
-            setFriendButton(holder.button, false);
-            holder.button.setVisibility(View.VISIBLE);
+        this.setFriendButton(holder.button, !user.isFriendable);
+        holder.button.setVisibility(View.VISIBLE);
 
-            holder.button.setOnClickListener(view -> {
-                // TODO CHANGE LISTENER
-                holder.button.setOnClickListener(null);
-                setFriendButton(holder.button, true);
-                user.selectedCanal = FLUser.FLUserSelectedCanal.SuggestionCanal;
-                FloozRestClient.getInstance().sendFriendRequest(user.userId, user.getSelectedCanal(), new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
-//                        reloadSuggestions();
-                        FloozRestClient.getInstance().updateCurrentUser(null);
-                    }
+        holder.button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (user.isFriendable) {
+                    user.isFriendable = false;
+                    notifyDataSetChanged();
+                    user.selectedCanal = FLUser.FLUserSelectedCanal.SuggestionCanal;
+                    FloozRestClient.getInstance().sendFriendRequest(user.userId, user.getSelectedCanal(), new FloozHttpResponseHandler() {
+                        @Override
+                        public void success(Object response) {
+                            FloozRestClient.getInstance().updateCurrentUser(null);
+                        }
 
-                    @Override
-                    public void failure(int statusCode, FLError error) {
+                        @Override
+                        public void failure(int statusCode, FLError error) {
+                            user.isFriendable = true;
+                            notifyDataSetChanged();
+                        }
+                    });
+                } else {
+                    List<ActionSheetItem> items = new ArrayList<>();
+                    items.add(new ActionSheetItem(context, R.string.MENU_REMOVE_FRIENDS, new ActionSheetItem.ActionSheetItemClickListener() {
+                        @Override
+                        public void onClick() {
+                            user.isFriendable = true;
+                            notifyDataSetChanged();
+                            FloozRestClient.getInstance().performActionOnFriend(user.userId, FloozRestClient.FriendAction.Delete, new FloozHttpResponseHandler() {
+                                @Override
+                                public void success(Object response) {
+                                    FloozRestClient.getInstance().updateCurrentUser(null);
+                                }
 
-                    }
-                });
-            });
-        }
-        else if (this.isSearchActive && FloozRestClient.getInstance().currentUser.userIsAFriend(user)) {
-            setFriendButton(holder.button, true);
-            holder.button.setVisibility(View.VISIBLE);
-            // TODO CHANGE LISTENER
-            holder.button.setOnClickListener(null);
-        }
-        else if (this.isSearchActive) {
-            setFriendButton(holder.button, false);
-            holder.button.setVisibility(View.VISIBLE);
+                                @Override
+                                public void failure(int statusCode, FLError error) {
+                                    user.isFriendable = false;
+                                    notifyDataSetChanged();
+                                }
+                            });
+                        }
+                    }));
 
-            holder.button.setOnClickListener(view -> {
-                // TODO CHANGE LISTENER
-                holder.button.setOnClickListener(null);
-                setFriendButton(holder.button, true);
-                user.selectedCanal = FLUser.FLUserSelectedCanal.SearchCanal;
-                FloozRestClient.getInstance().sendFriendRequest(user.userId, user.getSelectedCanal(), new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
-                        FloozRestClient.getInstance().updateCurrentUser(null);
-                    }
-
-                    @Override
-                    public void failure(int statusCode, FLError error) {
-
-                    }
-                });
-            });
-        }
-        else
-            holder.button.setVisibility(View.GONE);
+                    ActionSheet.showWithItems(context, items);
+                }
+            }
+        });
 
         return convertView;
     }

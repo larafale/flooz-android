@@ -21,9 +21,10 @@ public class BankFragment extends TabBarFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.settings_bank_fragment, null);
 
+        if (this.controller == null)
         this.controller = new BankController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
 
-        return view;
+        return this.controller.currentView;
     }
 
     @Override

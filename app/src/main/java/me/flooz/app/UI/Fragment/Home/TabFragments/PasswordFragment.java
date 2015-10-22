@@ -23,9 +23,10 @@ public class PasswordFragment extends TabBarFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.settings_password_fragment, null);
 
-        this.controller = new PasswordController(view, tabBarActivity, BaseController.ControllerKind.FRAGMENT_CONTROLLER);
+        if (this.controller == null)
+            this.controller = new PasswordController(view, tabBarActivity, BaseController.ControllerKind.FRAGMENT_CONTROLLER);
 
-        return view;
+        return this.controller.currentView;
     }
 
     @Override

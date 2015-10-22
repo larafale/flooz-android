@@ -2,7 +2,6 @@ package me.flooz.app.App;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Application;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -29,7 +28,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.branch.referral.Branch;
 import io.branch.referral.BranchApp;
 import me.flooz.app.BuildConfig;
 import me.flooz.app.Model.FLError;
@@ -42,7 +40,7 @@ import me.flooz.app.R;
 import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.NewTransactionActivity;
 import me.flooz.app.UI.Activity.StartActivity;
-import me.flooz.app.UI.Fragment.Home.ProfileCardFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.ProfileCardFragment;
 import me.flooz.app.UI.Tools.ActionSheet;
 import me.flooz.app.UI.Tools.ActionSheetItem;
 import me.flooz.app.Utils.FLHelper;
@@ -292,209 +290,6 @@ public class FloozApplication extends BranchApp
             currentActivity.startActivity(intent);
             currentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
         }
-    }
-
-    private ActionSheetItem.ActionSheetItemClickListener createTransaction = new ActionSheetItem.ActionSheetItemClickListener() {
-        @Override
-        public void onClick() {
-            Intent intent = new Intent(getAppContext(), NewTransactionActivity.class);
-            intent.putExtra("user", userActionMenu.json.toString());
-            currentActivity.startActivity(intent);
-            currentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-        }
-    };
-
-    private ActionSheetItem.ActionSheetItemClickListener addFriend = new ActionSheetItem.ActionSheetItemClickListener() {
-        @Override
-        public void onClick() {
-            FloozRestClient.getInstance().sendFriendRequest(userActionMenu.userId, userActionMenu.getSelectedCanal(), new FloozHttpResponseHandler() {
-                @Override
-                public void success(Object response) {
-                    FloozRestClient.getInstance().updateCurrentUser(null);
-                }
-
-                @Override
-                public void failure(int statusCode, FLError error) {
-                }
-            });
-        }
-    };
-
-    private ActionSheetItem.ActionSheetItemClickListener removeFriend = new ActionSheetItem.ActionSheetItemClickListener() {
-        @Override
-        public void onClick() {
-            FloozRestClient.getInstance().performActionOnFriend(userActionMenu.userId, FloozRestClient.FriendAction.Delete, new FloozHttpResponseHandler() {
-                @Override
-                public void success(Object response) {
-                    FloozRestClient.getInstance().updateCurrentUser(null);
-                }
-
-                @Override
-                public void failure(int statusCode, FLError error) {
-                }
-            });
-        }
-    };
-
-    private ActionSheetItem.ActionSheetItemClickListener acceptFriend = new ActionSheetItem.ActionSheetItemClickListener() {
-        @Override
-        public void onClick() {
-            FloozRestClient.getInstance().performActionOnFriend(userActionMenu.userId, FloozRestClient.FriendAction.Accept, new FloozHttpResponseHandler() {
-                @Override
-                public void success(Object response) {
-                    FloozRestClient.getInstance().updateCurrentUser(null);
-                }
-
-                @Override
-                public void failure(int statusCode, FLError error) { }
-            });
-        }
-    };
-
-    private ActionSheetItem.ActionSheetItemClickListener deletePendingRequest = new ActionSheetItem.ActionSheetItemClickListener() {
-        @Override
-        public void onClick() {
-            FloozRestClient.getInstance().performActionOnFriend(userActionMenu.userId, FloozRestClient.FriendAction.Delete, new FloozHttpResponseHandler() {
-                @Override
-                public void success(Object response) {
-                    FloozRestClient.getInstance().updateCurrentUser(null);
-                }
-
-                @Override
-                public void failure(int statusCode, FLError error) { }
-            });
-        }
-    };
-
-    private ActionSheetItem.ActionSheetItemClickListener declineFriend = new ActionSheetItem.ActionSheetItemClickListener() {
-        @Override
-        public void onClick() {
-            FloozRestClient.getInstance().performActionOnFriend(userActionMenu.userId, FloozRestClient.FriendAction.Decline, new FloozHttpResponseHandler() {
-                @Override
-                public void success(Object response) {
-                    FloozRestClient.getInstance().updateCurrentUser(null);
-                }
-
-                @Override
-                public void failure(int statusCode, FLError error) { }
-            });
-        }
-    };
-
-    private ActionSheetItem.ActionSheetItemClickListener blockUser = new ActionSheetItem.ActionSheetItemClickListener() {
-        @Override
-        public void onClick() {
-            new AlertDialog.Builder(getCurrentActivity())
-                    .setTitle(R.string.MENU_BLOCK_USER)
-                    .setMessage(R.string.BLOCK_USER_ALERT_MESSAGE)
-                    .setPositiveButton(R.string.GLOBAL_YES, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            FloozRestClient.getInstance().blockUser(userActionMenu.userId, null);
-                        }
-                    })
-                    .setNegativeButton(R.string.GLOBAL_NO, null)
-                    .show();
-        }
-    };
-
-    private ActionSheetItem.ActionSheetItemClickListener reportUser = new ActionSheetItem.ActionSheetItemClickListener() {
-        @Override
-        public void onClick() {
-            new AlertDialog.Builder(getCurrentActivity())
-                    .setTitle(R.string.MENU_REPORT_USER)
-                    .setMessage(R.string.REPORT_USER_ALERT_MESSAGE)
-                    .setPositiveButton(R.string.GLOBAL_YES, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            FloozRestClient.getInstance().reportContent(new FLReport(FLReport.ReportType.User, userActionMenu.userId), null);
-                        }
-                    })
-                    .setNegativeButton(R.string.GLOBAL_NO, null)
-                    .show();
-        }
-    };
-
-    private ActionSheetItem.ActionSheetItemClickListener showUserPicture = new ActionSheetItem.ActionSheetItemClickListener() {
-        @Override
-        public void onClick() {
-            ((HomeActivity)getCurrentActivity()).showImageViewer(userActionMenu.avatarURL);
-        }
-    };
-
-    private ActionSheetItem.ActionSheetItemClickListener showOtherMenu = new ActionSheetItem.ActionSheetItemClickListener() {
-        @Override
-        public void onClick() {
-
-            List<ActionSheetItem> items = new ArrayList<>();
-
-            if (userActionMenu.avatarURL != null && !userActionMenu.avatarURL.isEmpty())
-                items.add(new ActionSheetItem(getAppContext(), R.string.MENU_AVATAR, showUserPicture));
-
-            if (userActionMenu.isFriend())
-                items.add(new ActionSheetItem(getAppContext(), R.string.MENU_REMOVE_FRIENDS, removeFriend));
-
-            items.add(new ActionSheetItem(getAppContext(), R.string.MENU_BLOCK_USER, blockUser));
-            items.add(new ActionSheetItem(getAppContext(), R.string.MENU_REPORT_USER, reportUser));
-
-            ActionSheet.showWithItems(getCurrentActivity(), items);
-        }
-    };
-
-    // TODO DECOMMENT PASQUE UTILISE
-//    public void showUserActionMenu(FLUser user) {
-//        if (user == null || user.userId.contentEquals(FloozRestClient.getInstance().currentUser.userId) || user.username == null || user.fullname == null)
-//            return;
-//
-//        this.userActionMenu = user;
-//
-//        List<ActionSheetItem> items = new ArrayList<>();
-//
-//        items.add(new ActionSheetItem(this, String.format(this.getResources().getString(R.string.MENU_NEW_FLOOZ), user.username), createTransaction));
-//        items.add(new ActionSheetItem(getAppContext(), R.string.MENU_REPORT_USER, reportUser));
-//        items.add(new ActionSheetItem(getAppContext(), R.string.MENU_BLOCK_USER, blockUser));
-//
-//        ActionSheet.showWithItems(getCurrentActivity(), items);
-//    }
-
-    public void showActivePendingFriendActionMenu(FLUser user) {
-        if (user == null || user.userId.contentEquals(FloozRestClient.getInstance().currentUser.userId) || user.username == null || user.fullname == null)
-            return;
-
-        this.userActionMenu = user;
-
-        List<ActionSheetItem> items = new ArrayList<>();
-
-        items.add(new ActionSheetItem(this, R.string.MENU_STOP_PENDING_FRIENDS, deletePendingRequest));
-
-        ActionSheet.showWithItems(getCurrentActivity(), items);
-    }
-
-    public void showPendingFriendActionMenu(FLUser user) {
-        if (user == null || user.userId.contentEquals(FloozRestClient.getInstance().currentUser.userId) || user.username == null || user.fullname == null)
-            return;
-
-        this.userActionMenu = user;
-
-        List<ActionSheetItem> items = new ArrayList<>();
-
-        items.add(new ActionSheetItem(this, R.string.MENU_ACCEPT_FRIENDS, acceptFriend));
-        items.add(new ActionSheetItem(this, R.string.MENU_DECLINE_FRIENDS, declineFriend));
-
-        ActionSheet.showWithItems(getCurrentActivity(), items);
-    }
-
-    public void showRemoveFriendActionMenu(FLUser user) {
-        if (user == null || user.userId.contentEquals(FloozRestClient.getInstance().currentUser.userId) || user.username == null || user.fullname == null)
-            return;
-
-        this.userActionMenu = user;
-
-        List<ActionSheetItem> items = new ArrayList<>();
-
-        items.add(new ActionSheetItem(this, R.string.MENU_REMOVE_FRIENDS, removeFriend));
-
-        ActionSheet.showWithItems(getCurrentActivity(), items);
     }
 
     public void showReportActionMenu(final FLTransaction transac) {

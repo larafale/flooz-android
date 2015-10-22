@@ -1,4 +1,4 @@
-package me.flooz.app.UI.Fragment.Home;
+package me.flooz.app.UI.Fragment.Home.TabFragments;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -22,9 +22,10 @@ public class SearchFragment extends TabBarFragment  {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.search_fragment, null);
 
-        this.controller = new SearchController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
+        if (this.controller == null)
+            this.controller = new SearchController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
 
-        return view;
+        return this.controller.currentView;
     }
 
     @Override

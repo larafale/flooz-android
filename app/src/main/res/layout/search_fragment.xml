@@ -3,6 +3,24 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+        <com.baoyz.widget.PullRefreshLayout
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/friends_refresh_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:refreshColors="@array/refresh_scheme_color"
+            app:refreshType="material"
+            android:layout_marginTop="@dimen/header_size">
+
+            <se.emilsjolander.stickylistheaders.StickyListHeadersListView
+                android:id="@+id/friends_result_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:overScrollMode="never"
+                android:dividerHeight="0dp"/>
+
+        </com.baoyz.widget.PullRefreshLayout>
+
     <RelativeLayout
         android:layout_width="fill_parent"
         android:layout_height="@dimen/header_height">
@@ -74,29 +92,6 @@
             android:background="@drawable/header_background_shadow"
             android:layout_alignParentBottom="true"/>
 
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_marginTop="@dimen/header_size">
-
-        <com.baoyz.widget.PullRefreshLayout
-            xmlns:app="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/friends_refresh_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:refreshColors="@array/refresh_scheme_color"
-            app:refreshType="material">
-
-            <se.emilsjolander.stickylistheaders.StickyListHeadersListView
-                android:id="@+id/friends_result_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:overScrollMode="never"
-                android:dividerHeight="0dp"/>
-
-        </com.baoyz.widget.PullRefreshLayout>
     </RelativeLayout>
 
 </RelativeLayout>

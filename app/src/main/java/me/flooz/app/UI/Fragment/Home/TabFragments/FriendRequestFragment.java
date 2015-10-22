@@ -1,4 +1,4 @@
-package me.flooz.app.UI.Fragment.Home;
+package me.flooz.app.UI.Fragment.Home.TabFragments;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -6,30 +6,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.R;
-import me.flooz.app.UI.Controllers.CreditCardController;
-import me.flooz.app.UI.Controllers.NotificationsController;
-import me.flooz.app.UI.Controllers.TransactionCardController;
-import me.flooz.app.UI.Fragment.Home.TabFragments.TabBarFragment;
+import me.flooz.app.UI.Controllers.BaseController;
+import me.flooz.app.UI.Controllers.FriendRequestController;
 
 /**
- * Created by Flooz on 9/25/14.
+ * Created by Flooz on 10/22/15.
  */
-public class TransactionCardFragment extends TabBarFragment {
-    public TransactionCardController controller;
-    public Boolean insertComment = false;
-    public FLTransaction transaction;
+public class FriendRequestFragment extends TabBarFragment {
+
+    FriendRequestController controller;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.transaction_card_fragment, null);
+        View view = inflater.inflate(R.layout.friend_request_fragment, null);
 
-        this.controller = new TransactionCardController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
-        this.controller.insertComment = this.insertComment;
-        this.controller.setTransaction(this.transaction);
+        if (this.controller == null)
+            this.controller = new FriendRequestController(view, tabBarActivity, BaseController.ControllerKind.FRAGMENT_CONTROLLER);
 
-        return view;
+        return this.controller.currentView;
     }
 
     @Override

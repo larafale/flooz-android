@@ -25,9 +25,11 @@ public class WebFragment extends TabBarFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.custom_webview_fragment, null);
 
-        this.controller = new WebController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
-        this.controller.title = this.title;
-        this.controller.url = this.url;
+        if (this.controller == null) {
+            this.controller = new WebController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
+            this.controller.title = this.title;
+            this.controller.url = this.url;
+        }
 
         return view;
     }

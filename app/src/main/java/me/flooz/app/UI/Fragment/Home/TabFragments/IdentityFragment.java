@@ -20,9 +20,10 @@ public class IdentityFragment extends TabBarFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.settings_identity_fragment, null);
 
-        this.controller = new IdentityController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
+        if (this.controller == null)
+            this.controller = new IdentityController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
 
-        return view;
+        return this.controller.currentView;
     }
 
     @Override

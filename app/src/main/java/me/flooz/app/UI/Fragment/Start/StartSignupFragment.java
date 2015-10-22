@@ -26,6 +26,7 @@ import io.branch.referral.Branch;
 import io.branch.referral.BranchApp;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
+import me.flooz.app.Model.FLTexts;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
@@ -89,6 +90,8 @@ public class StartSignupFragment extends StartBaseFragment {
         cguButton.setTypeface(CustomFonts.customContentLight(inflater.getContext()));
 
         facebookPicto.setColorFilter(inflater.getContext().getResources().getColor(android.R.color.white));
+
+        sponsorTextfield.setVisibility(View.GONE);
 
         lastnameTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -184,6 +187,24 @@ public class StartSignupFragment extends StartBaseFragment {
         });
 
         this.refreshView();
+
+        FloozRestClient.getInstance().textObjectFromApi(new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                FLTexts textObject = (FLTexts)response;
+                if (textObject.json.has("signup") && textObject.json.optJSONObject("signup").has("promo") && !textObject.json.optJSONObject("signup").optString("promo").isEmpty()) {
+                    sponsorTextfield.setHint(textObject.json.optJSONObject("signup").optString("promo"));
+                    sponsorTextfield.setVisibility(View.VISIBLE);
+                } else {
+                    sponsorTextfield.setVisibility(View.GONE);
+                }
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+
+            }
+        });
 
         return view;
     }

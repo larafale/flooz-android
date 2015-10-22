@@ -6,7 +6,6 @@ package me.flooz.app.UI.Fragment.Home.TabFragments;
 
 import android.app.Activity;
 import android.app.Dialog;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -17,7 +16,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.MediaStore;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,21 +23,13 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import org.json.JSONException;
-
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
-import me.flooz.app.Adapter.MenuListAdapter;
 import me.flooz.app.Adapter.ProfileListAdapter;
 import me.flooz.app.Adapter.ProfileListAdapterDelegate;
 import me.flooz.app.App.FloozApplication;
@@ -48,23 +38,10 @@ import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
-import me.flooz.app.UI.Activity.AboutActivity;
-import me.flooz.app.UI.Activity.CashoutActivity;
-import me.flooz.app.UI.Activity.HomeActivity;
-import me.flooz.app.UI.Activity.NotificationActivity;
-import me.flooz.app.UI.Activity.Settings.ProfileSettingsActivity;
-import me.flooz.app.UI.Activity.ShareAppActivity;
-import me.flooz.app.UI.Activity.WebContentActivity;
 import me.flooz.app.UI.Controllers.WebController;
-import me.flooz.app.UI.Fragment.Home.ProfileCardFragment;
-import me.flooz.app.UI.Tools.ActionSheet;
-import me.flooz.app.UI.Tools.ActionSheetItem;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
-import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.ImageHelper;
-import me.flooz.app.Utils.JSONHelper;
-import me.flooz.app.Utils.MenuItem;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
 public class ProfileFragment extends TabBarFragment implements ProfileListAdapterDelegate
@@ -121,7 +98,7 @@ public class ProfileFragment extends TabBarFragment implements ProfileListAdapte
                             tabBarActivity.pushFragmentInCurrentTab(controller);
                             break;
                         case "friends":
-                            tabBarActivity.pushFragmentInCurrentTab(new FriendsFragment());
+                            tabBarActivity.pushFragmentInCurrentTab(new FriendRequestFragment());
                             break;
                         case "cashout":
                             FloozRestClient.getInstance().showLoadView();
@@ -263,33 +240,6 @@ public class ProfileFragment extends TabBarFragment implements ProfileListAdapte
         ProfileCardFragment controller = new ProfileCardFragment();
         controller.user = FloozRestClient.getInstance().currentUser;
         tabBarActivity.pushFragmentInCurrentTab(controller);
-//        List<ActionSheetItem> items = new ArrayList<>();
-//
-//        items.add(new ActionSheetItem(this.context, R.string.SIGNUP_IMAGE_BUTTON_TAKE, () -> {
-//            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//
-//            Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
-//            tmpUriImage = fileUri;
-//            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-//
-//            try {
-//                tabBarActivity.startActivityForResult(intent, TAKE_PICTURE);
-//            } catch (ActivityNotFoundException e) {
-//
-//            }
-//        }));
-//
-//        items.add(new ActionSheetItem(this.context, R.string.SIGNUP_IMAGE_BUTTON_CHOOSE, () -> {
-//            Intent intent = new Intent(Intent.ACTION_PICK);
-//            intent.setType("image/*");
-//            try {
-//                tabBarActivity.startActivityForResult(Intent.createChooser(intent, ""), SELECT_PICTURE);
-//            } catch (ActivityNotFoundException e) {
-//
-//            }
-//        }));
-//
-//        ActionSheet.showWithItems(tabBarActivity, items);
     }
 
     @Override

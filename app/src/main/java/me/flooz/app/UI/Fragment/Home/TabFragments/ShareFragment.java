@@ -22,9 +22,10 @@ public class ShareFragment extends TabBarFragment {
 
         View view = inflater.inflate(R.layout.invite_fragment, null);
 
-        this.controller = new ShareController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
+        if (this.controller == null)
+            this.controller = new ShareController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
 
-        return view;
+        return this.controller.currentView;
     }
 
     public void onStart() {

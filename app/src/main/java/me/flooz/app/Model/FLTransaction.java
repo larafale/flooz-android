@@ -81,6 +81,8 @@ public class FLTransaction {
 
     public Boolean haveAction;
 
+    public JSONObject json;
+
     public FLTransaction(JSONObject json) {
         super();
 
@@ -96,6 +98,7 @@ public class FLTransaction {
     }
 
     private void setJson(JSONObject json) {
+        this.json = json;
 
         try {
             this.transactionId = json.getString("_id");

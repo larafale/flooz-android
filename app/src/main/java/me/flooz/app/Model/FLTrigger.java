@@ -46,7 +46,8 @@ public class FLTrigger {
         TriggerInvitationSMSShow,
         TriggerSMSValidate,
         TriggerSecureCodeValidate,
-        TriggerEditProfile
+        TriggerEditProfile,
+        TriggerFbConnect
     }
 
     public FLTriggerType type;
@@ -150,6 +151,8 @@ public class FLTrigger {
             return TriggerSMSValidate;
         else if (param.contentEquals("secureCode:set"))
             return TriggerSecureCodeValidate;
+        else if (param.contentEquals("fb:connect"))
+            return TriggerFbConnect;
         else
             return TriggerNone;
     }

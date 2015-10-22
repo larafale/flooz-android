@@ -1,35 +1,26 @@
 package me.flooz.app.UI.Fragment.Home.TabFragments;
 
 import android.annotation.SuppressLint;
-import android.app.Dialog;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.ColorFilter;
 import android.graphics.PorterDuff;
-import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.baoyz.widget.PullRefreshLayout;
-import com.ryanharter.android.tooltips.ToolTip;
-import com.ryanharter.android.tooltips.ToolTipLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,15 +34,13 @@ import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
-import me.flooz.app.UI.Activity.HomeActivity;
-import me.flooz.app.UI.Fragment.Home.SearchFragment;
+import me.flooz.app.UI.Activity.Settings.IdentitySettingsActivity;
+import me.flooz.app.UI.Controllers.SearchController;
 import me.flooz.app.UI.View.RadioButtonCenter;
 import me.flooz.app.UI.View.TimelineListView;
-import me.flooz.app.UI.View.ToolTipFilterView;
 import me.flooz.app.UI.View.ToolTipFilterViewDelegate;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
-import me.flooz.app.Utils.FLHelper;
 
 /**
  * Created by Flooz on 9/23/14.
@@ -185,7 +174,9 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
         this.searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                tabBarActivity.pushFragmentInCurrentTab(new SearchFragment());
+                Intent intent = new Intent(tabBarActivity, SearchController.class);
+                tabBarActivity.startActivity(intent);
+                tabBarActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
             }
         });
 
@@ -263,6 +254,7 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
             this.currentFilter = filter;
             FloozRestClient.getInstance().appSettings.edit().putString("defaultScope", FLTransaction.transactionScopeToParams(this.currentFilter)).apply();
             this.transactions.clear();
+            this.timelineAdapter.hasNextURL = false;
             this.timelineAdapter.notifyDataSetChanged();
             this.refreshContainer.setRefreshing(true);
             refreshTransactions();
@@ -384,23 +376,23 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
                     refreshContainer.setRefreshing(false);
 
                     if (transactions.size() == 0) {
-                            Handler _timer = new Handler();
-                            _timer.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (transactions.size() == 0) {
-                                        if (currentFilter == FLTransaction.TransactionScope.TransactionScopeFriend) {
-                                            backgroundImage.setImageResource(R.drawable.empty_tl_friend);
-                                            backgroundImage.setVisibility(View.VISIBLE);
-                                        } else if (currentFilter == FLTransaction.TransactionScope.TransactionScopePrivate) {
-                                            backgroundImage.setImageResource(R.drawable.empty_tl_private);
-                                            backgroundImage.setVisibility(View.VISIBLE);
-                                        }
-                                    } else {
-                                        backgroundImage.setVisibility(View.GONE);
+                        Handler _timer = new Handler();
+                        _timer.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (transactions.size() == 0) {
+                                    if (currentFilter == FLTransaction.TransactionScope.TransactionScopeFriend) {
+                                        backgroundImage.setImageResource(R.drawable.empty_tl_friend);
+                                        backgroundImage.setVisibility(View.VISIBLE);
+                                    } else if (currentFilter == FLTransaction.TransactionScope.TransactionScopePrivate) {
+                                        backgroundImage.setImageResource(R.drawable.empty_tl_private);
+                                        backgroundImage.setVisibility(View.VISIBLE);
                                     }
+                                } else {
+                                    backgroundImage.setVisibility(View.GONE);
                                 }
-                            }, 500);
+                            }
+                        }, 500);
                     } else {
                         backgroundImage.setVisibility(View.GONE);
                     }

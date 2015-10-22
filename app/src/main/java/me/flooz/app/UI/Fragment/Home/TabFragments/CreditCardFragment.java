@@ -22,11 +22,12 @@ public class CreditCardFragment extends TabBarFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.settings_credit_card_fragment, null);
 
-        this.controller = new CreditCardController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
+        if (this.controller == null)
+            this.controller = new CreditCardController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
 
         this.controller.cardInfosText = this.cardInfosText;
 
-        return view;
+        return this.controller.currentView;
     }
 
     @Override

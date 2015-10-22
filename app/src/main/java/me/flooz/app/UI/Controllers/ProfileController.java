@@ -18,14 +18,11 @@ import android.view.ViewTreeObserver;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,11 +43,9 @@ import me.flooz.app.R;
 import me.flooz.app.UI.Activity.EditProfileActivity;
 import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.NewTransactionActivity;
-import me.flooz.app.UI.Fragment.Home.ProfileCardFragment;
 import me.flooz.app.UI.Tools.ActionSheet;
 import me.flooz.app.UI.Tools.ActionSheetItem;
 import me.flooz.app.UI.Tools.CustomImageViewer;
-import me.flooz.app.UI.View.TimelineListView;
 import me.flooz.app.UI.View.UserProfileListView;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;

@@ -149,10 +149,9 @@ public class ProfileListAdapter extends BaseAdapter implements StickyListHeaders
         item0.put("headerID", 1);
         menuData.add(item0);
 
-        // TODO Changer la vue pour passer sur demande en attente
         if (friendsNotifs > 0) {
             Map<String, Object> item1 = new HashMap<>();
-            item1.put("title", this.context.getResources().getString(R.string.NAV_FRIENDS));
+            item1.put("title", this.context.getResources().getString(R.string.NAV_FRIEND_REQUEST));
             item1.put("action", "friends");
             item1.put("notif", friendsNotifs);
             item1.put("headerID", 1);
