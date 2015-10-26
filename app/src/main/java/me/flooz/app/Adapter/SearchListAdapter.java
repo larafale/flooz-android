@@ -21,6 +21,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
@@ -213,15 +214,6 @@ public class SearchListAdapter extends BaseAdapter implements StickyListHeadersA
         holder.pic.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
         if (user.avatarURL != null && !user.avatarURL.isEmpty())
             ImageLoader.getInstance().displayImage(user.avatarURL, holder.pic);
-
-        holder.container.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                ProfileCardFragment profileCardFragment = new ProfileCardFragment();
-                profileCardFragment.user = user;
-                ((HomeActivity) context).pushFragmentInCurrentTab(profileCardFragment);
-            }
-        });
 
         this.setFriendButton(holder.button, !user.isFriendable);
         holder.button.setVisibility(View.VISIBLE);

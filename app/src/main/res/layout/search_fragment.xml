@@ -37,7 +37,7 @@
                 android:padding="@dimen/header_item_padding"
                 android:layout_centerVertical="true"
                 android:layout_alignParentLeft="true"
-                android:src="@drawable/nav_back"
+                android:src="@drawable/nav_cross"
                 android:layout_marginLeft="@dimen/header_item_margin"
                 />
 

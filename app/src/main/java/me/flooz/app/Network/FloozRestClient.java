@@ -1720,16 +1720,17 @@ public class FloozRestClient
                     @Override
                     public void onSuccess(LoginResult loginResult) {
                         didConnectFacebook();
+                        hideLoadView();
                     }
 
                     @Override
                     public void onCancel() {
-                        // App code
+                        hideLoadView();
                     }
 
                     @Override
                     public void onError(FacebookException exception) {
-                        // App code
+                        hideLoadView();
                     }
                 });
 
@@ -2123,7 +2124,6 @@ public class FloozRestClient
     private void handleTriggerEditProfile() {
         if (!(floozApp.getCurrentActivity() instanceof EditProfileActivity)) {
             Intent intent = new Intent(floozApp.getCurrentActivity(), EditProfileActivity.class);
-            intent.putExtra("modal", true);
             Activity tmpActivity = floozApp.getCurrentActivity();
             tmpActivity.startActivity(intent);
             tmpActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);

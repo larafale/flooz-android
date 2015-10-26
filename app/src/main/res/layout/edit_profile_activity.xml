@@ -33,7 +33,7 @@
             android:layout_width="@dimen/card_header_close"
             android:padding="@dimen/dimen_large"
             android:layout_height="fill_parent"
-            android:src="@drawable/nav_back"
+            android:src="@drawable/nav_cross"
             android:layout_alignParentLeft="true"/>
 
         <View
@@ -80,10 +80,9 @@
         android:layout_marginLeft="@dimen/dimen_large"
         android:layout_marginTop="-25dp"
         android:src="@drawable/avatar_default"
-        app:riv_corner_radius="30dip"
+        app:riv_corner_radius="@dimen/avatar_corner"
         app:riv_mutate_background="true"
-        android:layout_below="@+id/edit_profile_cover_container"
-        app:riv_oval="true"/>
+        android:layout_below="@+id/edit_profile_cover_container"/>
 
     <com.makeramen.roundedimageview.RoundedImageView
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -94,10 +93,9 @@
         android:layout_marginLeft="@dimen/dimen_large"
         android:layout_marginTop="-25dp"
         android:src="@color/light_black_alpha"
-        app:riv_corner_radius="30dip"
+        app:riv_corner_radius="@dimen/avatar_corner"
         app:riv_mutate_background="true"
-        android:layout_below="@+id/edit_profile_cover_container"
-        app:riv_oval="true"/>
+        android:layout_below="@+id/edit_profile_cover_container"/>
 
     <RelativeLayout
         android:id="@+id/edit_profile_camera_container"

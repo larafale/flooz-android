@@ -20,15 +20,13 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:src="@drawable/avatar_default"
-        app:riv_corner_radius="30dip"
-        app:riv_mutate_background="true"
-        app:riv_oval="true"/>
+        app:riv_corner_radius="@dimen/avatar_corner"
+        app:riv_mutate_background="true"/>
 
     <TextView
         android:id="@+id/timelineTransactionText3D"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dimen_medium"
         android:textStyle="bold"
         android:textSize="@dimen/timeline_cell_title"
         android:inputType="none"

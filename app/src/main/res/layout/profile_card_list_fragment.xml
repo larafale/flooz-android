@@ -37,7 +37,6 @@
             android:id="@+id/profile_card_username_sticky"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Username"
             android:textSize="17sp"
             android:shadowColor="#000000"
             android:shadowRadius="1"/>
@@ -47,7 +46,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="start"
-            android:text="\@username"
             android:textColor="#FF707070"/>
     </LinearLayout>
 
@@ -56,7 +54,7 @@
         android:layout_width="@dimen/card_header_close"
         android:padding="@dimen/dimen_large"
         android:layout_height="wrap_content"
-        android:src="@drawable/nav_back"
+        android:src="@drawable/nav_cross"
         android:layout_alignParentLeft="true"/>
 
 </RelativeLayout>

@@ -31,7 +31,7 @@ public class WebFragment extends TabBarFragment {
             this.controller.url = this.url;
         }
 
-        return view;
+        return this.controller.currentView;
     }
 
     @Override

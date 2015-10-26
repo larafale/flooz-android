@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <dimen name="avatar_corner">3dp</dimen>
+
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
@@ -40,7 +42,7 @@
     <dimen name="dimen_xxlarge">40dp</dimen>
     <dimen name="dimen_xxxlarge">80dp</dimen>
 
-    <dimen name="timeline_cell_img">45dp</dimen>
+    <dimen name="timeline_cell_img">40dp</dimen>
     <dimen name="timeline_cell_title">14sp</dimen>
     <dimen name="timeline_cell_social_label">12sp</dimen>
     <dimen name="timeline_cell_social_picto">15dp</dimen>

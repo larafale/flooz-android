@@ -17,9 +17,9 @@
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:src="@drawable/avatar_default"
-        app:riv_corner_radius="30dip"
-        app:riv_mutate_background="true"
-        app:riv_oval="true"/>
+        app:riv_corner_radius="@dimen/avatar_corner"
+        app:riv_mutate_background="true"/>
+
 
     <TextView
         android:id="@+id/account_menu_user_view_balance"

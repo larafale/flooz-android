@@ -14,7 +14,9 @@ import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -25,7 +27,9 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
+import java.util.Dictionary;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
@@ -59,7 +63,6 @@ public class ProfileController extends BaseController implements TimelineListAda
     private ImageView cardHeaderCloseButton;
     private ImageView profileImage;
     private ImageView profileCover;
-    private ImageView stickyProfileCover;
     private ImageView stickyHeader;
     private ImageView certifiedIcon;
     private String profileImageFullURL;
@@ -87,6 +90,7 @@ public class ProfileController extends BaseController implements TimelineListAda
     private RadioButton settingsFollowingButton;
     private LinearLayout buttonRequestPending;
     private RelativeLayout stickyCoverContainer;
+    private View listHeader;
 
     private TimelineListAdapter timelineAdapter;
     private UserListAdapter friendAdapter;
@@ -98,8 +102,6 @@ public class ProfileController extends BaseController implements TimelineListAda
 
     private Typeface regContent;
     private Typeface boldContent;
-
-    private Boolean transactionLoaded;
 
     private int imageSize = 0;
     private int stickyModifier = 0;
@@ -118,22 +120,18 @@ public class ProfileController extends BaseController implements TimelineListAda
 
     public TimelineListAdapter.TimelineListRowDelegate delegate;
 
-    public ProfileController(@NonNull final FLUser user, @NonNull View view, @NonNull final Activity parentActivity, @NonNull BaseController.ControllerKind kind) {
+    public ProfileController(@NonNull FLUser user, @NonNull View view, @NonNull final Activity parentActivity, @NonNull BaseController.ControllerKind kind) {
         super(view, parentActivity, kind);
 
-        this.transactionLoaded = false;
+        this.mainListContainer = (UserProfileListView) this.currentView.findViewById(R.id.profile_list_container);
 
-        this.mainListContainer = (UserProfileListView) view.findViewById(R.id.profile_list_container);
-
-        View listHeader =  LayoutInflater.from(this.parentActivity).inflate(R.layout.profile_list_header, null, false);
-        this.mainListContainer.addHeaderView(listHeader);
-        this.stickyLayout = (LinearLayout) view.findViewById(R.id.profile_sticky_layout);
-        this.stickyCoverContainer = (RelativeLayout) view.findViewById(R.id.sticky_cover_container);
-        this.stickyProfileCover = (ImageView) view.findViewById(R.id.header_cover_sticky);
-        this.stickyHeader = (ImageView) view.findViewById(R.id.header_cover_sticky);
-        this.cardHeaderCloseButton = (ImageView) view.findViewById(R.id.transac_card_header_close);
-        this.stickyName = (TextView) view.findViewById(R.id.profile_card_username_sticky);
-        this.stickyUsername = (TextView) view.findViewById(R.id.profile_card_subname_sticky);
+        this.listHeader =  LayoutInflater.from(this.parentActivity).inflate(R.layout.profile_list_header, null);
+        this.stickyLayout = (LinearLayout) this.currentView.findViewById(R.id.profile_sticky_layout);
+        this.stickyCoverContainer = (RelativeLayout) this.currentView.findViewById(R.id.sticky_cover_container);
+        this.stickyHeader = (ImageView) this.currentView.findViewById(R.id.header_cover_sticky);
+        this.cardHeaderCloseButton = (ImageView) this.currentView.findViewById(R.id.transac_card_header_close);
+        this.stickyName = (TextView) this.currentView.findViewById(R.id.profile_card_username_sticky);
+        this.stickyUsername = (TextView) this.currentView.findViewById(R.id.profile_card_subname_sticky);
 
         this.largePendingButton = (LinearLayout) listHeader.findViewById(R.id.profile_largebutton_pending);
         this.addButton = (LinearLayout) listHeader.findViewById(R.id.profile_button_add);
@@ -228,6 +226,9 @@ public class ProfileController extends BaseController implements TimelineListAda
             }
         });
 
+        if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
+            this.cardHeaderCloseButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
+
         this.cardHeaderCloseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -243,7 +244,7 @@ public class ProfileController extends BaseController implements TimelineListAda
         this.profileImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (user.avatarURL != null && !user.avatarURL.isEmpty()) {
+                if (flUser.avatarURL != null && !flUser.avatarURL.isEmpty()) {
                     CustomImageViewer.start(parentActivity, profileImageFullURL);
                 }
             }
@@ -252,7 +253,9 @@ public class ProfileController extends BaseController implements TimelineListAda
         this.editButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditProfileActivity.start(parentActivity, flUser.json.toString());
+                Intent intent = new Intent(parentActivity, EditProfileActivity.class);
+                parentActivity.startActivity(intent);
+                parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
             }
         });
 
@@ -329,62 +332,80 @@ public class ProfileController extends BaseController implements TimelineListAda
             }
         });
 
-        this.mainListContainer.getViewTreeObserver().addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
+        this.mainListContainer.setOnScrollListener(new AbsListView.OnScrollListener() {
             @Override
-            public void onScrollChanged() {
-                View c = mainListContainer.getChildAt(0);
-                if (c != null) {
-                    int firstVisiblePosition = mainListContainer.getFirstVisiblePosition();
-                    int scrollY = -c.getTop() + firstVisiblePosition * c.getHeight();
-                    int modifier = (scrollY / 2);
+            public void onScrollStateChanged(AbsListView view, int scrollState) {
 
-                    if (scrollY <= 180) {
-                        profileImage.getLayoutParams().height = imageSize - modifier;
-                        profileImage.getLayoutParams().width = imageSize - modifier;
-                        profileImage.requestLayout();
+            }
 
-                        RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) profileImage.getLayoutParams();
-                        params.setMargins(30 + (modifier / 2), modifier, 0, -150);
-                        profileImage.setLayoutParams(params);
-                    }
-                    if (scrollY >= 370 && (scrollY <= 580 || modCond > 1) && firstVisiblePosition == 0) {
-                        if (stickyModifier == 0)
-                            stickyModifier = modifier;
-                        modCond = 195 - (modifier - stickyModifier) * 2;
-                        if (modCond < 0)
-                            modCond = 1;
-                        stickyLayout.setPadding(0, modCond, 0, 0);
-                    }
-                    if (scrollY >= 165 && !isSticky && firstVisiblePosition == 0) {
-                        stickyHeader.setVisibility(View.VISIBLE);
-                        isSticky = !isSticky;
-                    }
-                    if (scrollY < 165 && isSticky && firstVisiblePosition == 0) {
-                        stickyHeader.setVisibility(View.INVISIBLE);
-                        isSticky = !isSticky;
-                    }
-                    if (scrollY < 370 && isHeaderSticky && firstVisiblePosition == 0) {
-                        stickyLayout.setVisibility(View.INVISIBLE);
-                        isHeaderSticky = !isHeaderSticky;
-                    }
-                    if (scrollY >= 370 && !isHeaderSticky && firstVisiblePosition == 0) {
-                        stickyLayout.setVisibility(View.VISIBLE);
-                        isHeaderSticky = !isHeaderSticky;
+            @Override
+            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                int firstVisiblePosition = mainListContainer.getFirstVisiblePosition();
+                int scrollY = (int) FLHelper.convertPixelsToDp(getScroll(), parentActivity);
+                int modifier = (scrollY / 2);
 
-                        if (!isBlurred) {
-                            Blurry.with(parentActivity)
-                                    .radius(20)
-                                    .sampling(1)
-                                    .async()
-                                    .animate(2000)
-                                    .capture(stickyHeader)
-                                    .into(stickyHeader);
-                            isBlurred = !isBlurred;
-                        }
+                if (scrollY <= 100) {
+                    profileImage.getLayoutParams().height = imageSize - (int) FLHelper.convertDpToPixel(modifier, parentActivity);
+                    profileImage.getLayoutParams().width = imageSize - (int) FLHelper.convertDpToPixel(modifier, parentActivity);
+                    profileImage.requestLayout();
+                }
+
+                if (scrollY >= 120 && (scrollY <= 200 || modCond > 1) && firstVisiblePosition == 0) {
+                    if (stickyModifier == 0)
+                        stickyModifier = modifier;
+                    modCond = 120 - (modifier - stickyModifier) * 2;
+                    if (modCond < 0)
+                        modCond = 1;
+                    stickyLayout.setPadding(0, modCond, 0, 0);
+                }
+
+                if (scrollY >= 60 && !isSticky && firstVisiblePosition == 0) {
+                    stickyHeader.setVisibility(View.VISIBLE);
+                    isSticky = !isSticky;
+                }
+                if (scrollY < 60 && isSticky && firstVisiblePosition == 0) {
+                    stickyHeader.setVisibility(View.INVISIBLE);
+                    isSticky = !isSticky;
+                }
+                if (scrollY < 100 && isHeaderSticky && firstVisiblePosition == 0) {
+                    stickyLayout.setVisibility(View.INVISIBLE);
+                    isHeaderSticky = !isHeaderSticky;
+                }
+                if (scrollY >= 100 && !isHeaderSticky && firstVisiblePosition == 0) {
+                    stickyLayout.setVisibility(View.VISIBLE);
+                    isHeaderSticky = !isHeaderSticky;
+
+                    if (!isBlurred) {
+                        Blurry.with(parentActivity)
+                                .radius(20)
+                                .sampling(1)
+                                .async()
+                                .animate(2000)
+                                .capture(stickyHeader)
+                                .into(stickyHeader);
+                        isBlurred = !isBlurred;
                     }
                 }
             }
         });
+
+        this.mainListContainer.addHeaderView(listHeader);
+        this.reloadWithUser();
+        this.settingsFloozButton.performClick();
+        this.requestUserInfos();
+    }
+
+    private Dictionary<Integer, Integer> listViewItemHeights = new Hashtable<Integer, Integer>();
+
+    private int getScroll() {
+        View c = mainListContainer.getChildAt(0); //this is the first visible row
+        int scrollY = -c.getTop();
+        listViewItemHeights.put(mainListContainer.getFirstVisiblePosition(), c.getHeight());
+        for (int i = 0; i < mainListContainer.getFirstVisiblePosition(); ++i) {
+            if (listViewItemHeights.get(i) != null) // (this is a sanity check)
+                scrollY += listViewItemHeights.get(i); //add all heights of the views that are gone
+        }
+        return scrollY;
     }
 
     @Override
@@ -394,8 +415,7 @@ public class ProfileController extends BaseController implements TimelineListAda
 
     @Override
     public void onStart() {
-        this.settingsFloozButton.performClick();
-        requestUserInfos();
+        this.requestUserInfos();
     }
 
     @Override
@@ -407,11 +427,6 @@ public class ProfileController extends BaseController implements TimelineListAda
     @Override
     public void onPause () {
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadUserReceiver);
-    }
-
-    @Override
-    public void onDestroy() {
-
     }
 
     private void requestUserInfos() {
@@ -458,7 +473,6 @@ public class ProfileController extends BaseController implements TimelineListAda
     private void reloadUserInfos() {
         if (this.flUser.userId.contentEquals(FloozRestClient.getInstance().currentUser.userId)) {
             this.flUser = FloozRestClient.getInstance().currentUser;
-
             this.reloadWithUser();
         }
         else {

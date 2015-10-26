@@ -58,7 +58,7 @@ public class SetSecureCodeActivity extends Activity implements NumericKeyboard.N
 
         this.floozApp = (FloozApplication) this.getApplicationContext();
 
-        this.setContentView(R.layout.validate_sms_activity);
+        this.setContentView(R.layout.set_secure_code_activity);
 
         this.headerBackButton = (ImageView) this.findViewById(R.id.header_item_left);
         TextView title = (TextView) this.findViewById(R.id.header_title);

@@ -66,17 +66,10 @@ public class EditProfileActivity extends Activity {
 
     private boolean isEdited = false;
 
-    public static final String USER_DATA = "userdata";
     public static final int SELECT_PICTURE_AVATAR = 1;
     public static final int TAKE_PICTURE_AVATAR = 2;
     public static final int SELECT_PICTURE_COVER = 3;
     public static final int TAKE_PICTURE_COVER = 4;
-
-    public static void start(Context context, String userData) {
-        Intent intent = new Intent(context, EditProfileActivity.class);
-        intent.putExtra(USER_DATA, userData);
-        context.startActivity(intent);
-    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -88,13 +81,7 @@ public class EditProfileActivity extends Activity {
         activity = this;
         this.setContentView(R.layout.edit_profile_activity);
 
-        Intent intent = this.getIntent();
-        String userData = intent.getStringExtra(USER_DATA);
-        try {
-            this.currentUser = new FLUser(new JSONObject(userData));
-        } catch (Exception e) {
-            // TODO
-        }
+        this.currentUser = FloozRestClient.getInstance().currentUser;
 
         this.backButton = (ImageView) this.findViewById(R.id.edit_profile_back);
         this.profileAvatar = (ImageView) this.findViewById(R.id.edit_profile_avatar);
@@ -107,7 +94,6 @@ public class EditProfileActivity extends Activity {
         this.cameraPictureCover = (ImageView) this.findViewById(R.id.edit_profile_camera1);
         this.cameraPictureAvatar.bringToFront();
 
-        this.bioField.setText(this.currentUser.userBio);
         this.bioHeader.setTypeface(CustomFonts.customContentRegular(this));
         this.bioField.setTypeface(CustomFonts.customContentRegular(this));
         this.headerName.setTypeface(CustomFonts.customContentLight(this));
@@ -116,10 +102,13 @@ public class EditProfileActivity extends Activity {
         this.cameraPictureAvatar.setColorFilter(getResources().getColor(R.color.light_white_alpha));
         this.cameraPictureCover.setColorFilter(getResources().getColor(R.color.light_white_alpha));
 
+        this.bioField.setText(this.currentUser.userBio);
+        this.bioField.setSelection(this.bioField.getText().length() - 1);
+
         if (this.currentUser.avatarURL != null && !this.currentUser.avatarURL.isEmpty()) {
             ImageLoader.getInstance().displayImage(this.currentUser.avatarURL, this.profileAvatar);
         }
-        if (this.currentUser.coverURL != null && !this.currentUser.coverURL.isEmpty() && !this.currentUser.coverURL.contentEquals("/img/nocover.png")) {
+        if (this.currentUser.coverURL != null && !this.currentUser.coverURL.isEmpty()) {
             ImageLoader.getInstance().displayImage(this.currentUser.coverURL, this.profileCover);
         }
 
@@ -158,8 +147,12 @@ public class EditProfileActivity extends Activity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (!isEdited) {
+                if (editable.toString().contentEquals(FloozRestClient.getInstance().currentUser.userBio)) {
+                    saveProfile.setColorFilter(getResources().getColor(R.color.grey_pseudo));
+                    saveProfile.setEnabled(false);
+                } else {
                     saveProfile.setColorFilter(getResources().getColor(R.color.blue));
+                    saveProfile.setEnabled(true);
                 }
             }
         });
@@ -171,9 +164,19 @@ public class EditProfileActivity extends Activity {
 
                 data.put("bio", bioContent.isEmpty() ? "" : bioContent);
 
-                FloozRestClient.getInstance().updateUser(data, null);
-                finish();
-                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+                FloozRestClient.getInstance().showLoadView();
+                FloozRestClient.getInstance().updateUser(data, new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        saveProfile.setColorFilter(getResources().getColor(R.color.grey_pseudo));
+                        saveProfile.setEnabled(false);
+                    }
+
+                    @Override
+                    public void failure(int statusCode, FLError error) {
+
+                    }
+                });
             }
         });
     }

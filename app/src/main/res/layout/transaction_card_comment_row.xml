@@ -20,9 +20,8 @@
         android:layout_marginRight="@dimen/dimen_large"
         android:layout_marginTop="@dimen/dimen_xsmall"
         android:layout_gravity="center_horizontal|top"
-        app:riv_corner_radius="30dip"
-        app:riv_mutate_background="true"
-        app:riv_oval="true"/>
+        app:riv_corner_radius="@dimen/avatar_corner"
+        app:riv_mutate_background="true"/>
 
     <LinearLayout
         android:orientation="vertical"

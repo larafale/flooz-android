@@ -31,7 +31,7 @@ public class TransactionCardFragment extends TabBarFragment {
             this.controller.setTransaction(this.transaction);
         }
 
-        return view;
+        return this.controller.currentView;
     }
 
     @Override

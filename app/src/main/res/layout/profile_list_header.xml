@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
@@ -9,23 +9,28 @@
         android:layout_height="120dp"
         android:scaleType="centerCrop"
         android:src="@drawable/cover"
-        android:adjustViewBounds="true"
         />
 
-    <com.makeramen.roundedimageview.RoundedImageView
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/profile_card_pic"
-        android:scaleType="centerCrop"
+    <RelativeLayout
+        android:id="@+id/profile_card_pic_container"
+        android:layout_below="@id/header_cover"
         android:layout_width="@dimen/profile_pic_large"
         android:layout_height="@dimen/profile_pic_large"
         android:layout_marginLeft="@dimen/dimen_large"
-        android:layout_marginBottom="-50dp"
-        android:layout_above="@+id/informations_container"
-        android:src="@drawable/avatar_default"
-        app:riv_corner_radius="30dip"
-        app:riv_mutate_background="true"
-        app:riv_oval="true"/>
+        android:layout_marginTop="-30dp">
 
+        <com.makeramen.roundedimageview.RoundedImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/profile_card_pic"
+            android:scaleType="centerCrop"
+            android:layout_width="@dimen/profile_pic_large"
+            android:layout_height="@dimen/profile_pic_large"
+            android:src="@drawable/avatar_default"
+            android:layout_alignParentBottom="true"
+            app:riv_corner_radius="@dimen/avatar_corner"
+            app:riv_mutate_background="true"/>
+
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -38,31 +43,31 @@
 
         <ImageView
             android:id="@+id/settings_profile_button"
+            android:visibility="gone"
             android:layout_width="40dp"
             android:padding="@dimen/dimen_large"
             android:layout_height="wrap_content"
             android:src="@drawable/cog"
             android:layout_marginTop="-7dp"
-            android:layout_below="@+id/header_cover"
             android:layout_toLeftOf="@+id/profile_button_follow" />
 
         <ImageView
             android:id="@+id/unfollow_profile_button"
+            android:visibility="gone"
             android:layout_width="33dp"
             android:padding="7dp"
             android:layout_height="33dp"
             android:src="@drawable/unfollow"
             android:layout_marginTop="5dp"
-            android:layout_below="@+id/header_cover"
             android:layout_toLeftOf="@+id/profile_button_follow"
             android:background="@drawable/background_action_button"/>
 
         <LinearLayout
             android:id="@+id/profile_button_add"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="33dp"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/header_cover"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:layout_marginTop="5dp"
@@ -73,7 +78,6 @@
                 android:padding="10dp"
                 android:layout_height="40dp"
                 android:src="@drawable/follow"
-                android:layout_below="@+id/header_cover"
                 android:layout_alignParentRight="true"/>
             <TextView
                 android:id="@+id/add_profile_text"
@@ -90,10 +94,10 @@
 
         <LinearLayout
             android:id="@+id/profile_button_add_pending"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="33dp"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/header_cover"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:layout_marginTop="5dp"
@@ -104,7 +108,6 @@
                 android:padding="10dp"
                 android:layout_height="40dp"
                 android:src="@drawable/follow"
-                android:layout_below="@+id/header_cover"
                 android:layout_alignParentRight="true"/>
             <TextView
                 android:id="@+id/add_pending_profile_text"
@@ -121,10 +124,10 @@
 
         <LinearLayout
             android:id="@+id/profile_button_edit"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="33dp"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/header_cover"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:layout_marginTop="5dp"
@@ -144,10 +147,10 @@
 
         <LinearLayout
             android:id="@+id/profile_largebutton_pending"
+            android:visibility="gone"
             android:layout_width="wrap_content"
             android:layout_height="33dp"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/header_cover"
             android:orientation="horizontal"
             android:gravity="center_vertical"
             android:layout_marginTop="5dp"
@@ -158,7 +161,6 @@
                 android:padding="10dp"
                 android:layout_height="40dp"
                 android:src="@drawable/unfollow"
-                android:layout_below="@+id/header_cover"
                 android:layout_alignParentRight="true"/>
             <TextView
                 android:id="@+id/pending_largebutton_text"
@@ -180,9 +182,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_below="@+id/header_cover"
-        android:gravity="left"
-        android:paddingTop="50dp">
+        android:layout_below="@+id/profile_card_pic_container"
+        android:layout_marginTop="@dimen/dimen_medium">
 
         <LinearLayout
             android:layout_width="wrap_content"
@@ -233,7 +234,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_below="@+id/informations_container">
+        android:layout_below="@id/informations_container">
 
         <info.hoang8f.android.segmented.SegmentedGroup
             android:id="@+id/settings_privacy_segment"

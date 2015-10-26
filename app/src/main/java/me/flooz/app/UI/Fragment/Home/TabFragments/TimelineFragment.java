@@ -34,6 +34,7 @@ import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.SearchActivity;
 import me.flooz.app.UI.Activity.Settings.IdentitySettingsActivity;
 import me.flooz.app.UI.Controllers.SearchController;
 import me.flooz.app.UI.View.RadioButtonCenter;
@@ -41,6 +42,7 @@ import me.flooz.app.UI.View.TimelineListView;
 import me.flooz.app.UI.View.ToolTipFilterViewDelegate;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
+import me.flooz.app.Utils.FLHelper;
 
 /**
  * Created by Flooz on 9/23/14.
@@ -174,7 +176,7 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
         this.searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(tabBarActivity, SearchController.class);
+                Intent intent = new Intent(tabBarActivity, SearchActivity.class);
                 tabBarActivity.startActivity(intent);
                 tabBarActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
             }
@@ -244,6 +246,12 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
     public void onPause() {
         super.onPause();
 
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadTimelineReceiver);
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadUserReceiver);
     }
@@ -291,8 +299,10 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
     }
 
     private void prepareBitmaps() {
-        int imgWidth = 55;
-        int imgHeight = 55;
+
+        int segmentHeight = 47 - 8;
+        int imgWidth = (int)FLHelper.convertDpToPixel(segmentHeight - 20, tabBarActivity);
+        int imgHeight = imgWidth;
 
         Bitmap scopeAllBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.scope_public), imgWidth, imgHeight, true);
         Bitmap scopeFriendBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.scope_friend),imgWidth, imgHeight, true);
@@ -302,10 +312,6 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
         this.scopeFriend = new BitmapDrawable(getResources(), scopeFriendBitmap);
         this.scopePrivate = new BitmapDrawable(getResources(), scopePrivateBitmap);
         resetFilterColor();
-
-//        this.settingsFilterAll.setCompoundDrawablesWithIntrinsicBounds(null, scopeAll, null, null);
-//        this.settingsFilterFriends.setCompoundDrawablesWithIntrinsicBounds(null, scopeFriend, null, null);
-//        this.settingsFilterSelf.setCompoundDrawablesWithIntrinsicBounds(null, scopePrivate, null, null);
 
         this.settingsFilterAll.setButtonDrawable(scopeAll);
         this.settingsFilterFriends.setButtonDrawable(scopeFriend);

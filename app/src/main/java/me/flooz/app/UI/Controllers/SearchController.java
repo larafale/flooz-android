@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ import java.util.List;
 import me.flooz.app.Adapter.FriendsListAdapter;
 import me.flooz.app.Adapter.FriendsListAdapterDelegate;
 import me.flooz.app.Adapter.SearchListAdapter;
+import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
@@ -111,6 +113,13 @@ public class SearchController extends BaseController implements FriendsListAdapt
                         refreshContainer.setRefreshing(false);
                     }
                 });
+            }
+        });
+
+        this.resultList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                FloozApplication.getInstance().showUserProfile(listAdapter.getItem(position));
             }
         });
     }

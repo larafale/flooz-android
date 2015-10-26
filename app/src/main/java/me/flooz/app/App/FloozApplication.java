@@ -40,6 +40,7 @@ import me.flooz.app.R;
 import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.NewTransactionActivity;
 import me.flooz.app.UI.Activity.StartActivity;
+import me.flooz.app.UI.Activity.UserProfileActivity;
 import me.flooz.app.UI.Fragment.Home.TabFragments.ProfileCardFragment;
 import me.flooz.app.UI.Tools.ActionSheet;
 import me.flooz.app.UI.Tools.ActionSheetItem;
@@ -285,7 +286,7 @@ public class FloozApplication extends BranchApp
                 homeActivity.pushFragmentInCurrentTab(controller);
             }
         } else {
-            Intent intent = new Intent(getAppContext(), NewTransactionActivity.class);
+            Intent intent = new Intent(getAppContext(), UserProfileActivity.class);
             intent.putExtra("user", user.json.toString());
             currentActivity.startActivity(intent);
             currentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);

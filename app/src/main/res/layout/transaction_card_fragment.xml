@@ -94,9 +94,8 @@
                         android:layout_height="@dimen/profile_pic_large"
                         android:layout_marginRight="@dimen/dimen_large"
                         android:src="@drawable/avatar_default"
-                        app:riv_corner_radius="30dip"
-                        app:riv_mutate_background="true"
-                        app:riv_oval="true"/>
+                        app:riv_corner_radius="@dimen/avatar_corner"
+                        app:riv_mutate_background="true"/>
 
                     <ImageView
                         android:layout_width="@dimen/card_link_arrow_width"
@@ -112,9 +111,8 @@
                         android:layout_height="@dimen/profile_pic_large"
                         android:src="@drawable/avatar_default"
                         android:layout_marginLeft="@dimen/dimen_large"
-                        app:riv_corner_radius="30dip"
-                        app:riv_mutate_background="true"
-                        app:riv_oval="true"/>
+                        app:riv_corner_radius="@dimen/avatar_corner"
+                        app:riv_mutate_background="true"/>
 
                 </LinearLayout>
 

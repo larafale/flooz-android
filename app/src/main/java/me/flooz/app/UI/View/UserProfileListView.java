@@ -26,15 +26,18 @@ public class UserProfileListView extends ListView implements AbsListView.OnScrol
     private OnScrollListener onScrollListener = null;
 
     private OnUserProfileListViewListener onUserProfileListViewListener;
-    private int lastPosition = -1;
     private int preLast;
 
     public UserProfileListView(Context context) {
-        this(context, null);
+        super(context);
+
+        super.setOnScrollListener(this);
     }
 
     public UserProfileListView(Context context, AttributeSet attrs) {
-        this(context, attrs, android.R.attr.listViewStyle);
+        super(context, attrs);
+
+        super.setOnScrollListener(this);
     }
 
     public UserProfileListView(Context context, AttributeSet attrs, int defStyle) {

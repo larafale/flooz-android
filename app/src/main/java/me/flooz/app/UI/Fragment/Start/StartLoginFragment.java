@@ -76,7 +76,6 @@ public class StartLoginFragment extends StartBaseFragment {
         fbButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FloozRestClient.getInstance().showLoadView();
                 FloozRestClient.getInstance().connectFacebook();
             }
         });
