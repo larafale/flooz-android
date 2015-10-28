@@ -185,9 +185,13 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
         this.timelineListView.setOnTimelineListViewListener(new TimelineListView.OnTimelineListViewListener() {
             @Override
             public void onPositionChanged(TimelineListView listView, int position, View scrollBarPanel) {
-                ((ImageView) scrollBarPanel.findViewById(R.id.timeline_scrollbar_panel_scope)).setImageDrawable(FLTransaction.transactionScopeToImage(transactions.get(position).scope));
-                ((ImageView) scrollBarPanel.findViewById(R.id.timeline_scrollbar_panel_scope)).setColorFilter(tabBarActivity.getResources().getColor(android.R.color.white));
-                ((TextView) scrollBarPanel.findViewById(R.id.timeline_scrollbar_panel_when)).setText(transactions.get(position).when);
+                FLTransaction transac = timelineAdapter.getItem(position);
+
+                if (transac != null) {
+                    ((ImageView) scrollBarPanel.findViewById(R.id.timeline_scrollbar_panel_scope)).setImageDrawable(FLTransaction.transactionScopeToImage(transac.scope));
+                    ((ImageView) scrollBarPanel.findViewById(R.id.timeline_scrollbar_panel_scope)).setColorFilter(tabBarActivity.getResources().getColor(android.R.color.white));
+                    ((TextView) scrollBarPanel.findViewById(R.id.timeline_scrollbar_panel_when)).setText(transac.when);
+                }
             }
 
             @Override

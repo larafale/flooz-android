@@ -1,5 +1,6 @@
 package me.flooz.app.Network;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -8,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -17,6 +19,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -868,6 +871,7 @@ public class FloozRestClient
     }
 
     public void sendUserContacts() {
+
         class UploadContactTask extends AsyncTask<URL, Integer, Long> {
 
             protected Long doInBackground(URL... urls) {
@@ -886,7 +890,12 @@ public class FloozRestClient
 
         }
 
-        new UploadContactTask().execute();
+        if (ActivityCompat.checkSelfPermission(floozApp.getApplicationContext(), Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+            return;
+        } else {
+            new UploadContactTask().execute();
+        }
     }
 
     /***************************/

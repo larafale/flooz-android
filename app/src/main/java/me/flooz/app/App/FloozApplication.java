@@ -270,6 +270,9 @@ public class FloozApplication extends BranchApp
     }
 
     public void showUserProfile(FLUser user) {
+        if (user == null || user.isCactus)
+            return;
+
         if (this.currentActivity instanceof HomeActivity) {
             HomeActivity homeActivity = (HomeActivity)this.currentActivity;
             if (homeActivity.currentFragment instanceof ProfileCardFragment) {

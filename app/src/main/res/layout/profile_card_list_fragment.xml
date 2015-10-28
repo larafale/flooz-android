@@ -15,6 +15,7 @@
         android:id="@+id/sticky_cover_container"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
+
         <ImageView
             android:id="@+id/header_cover_sticky"
             android:layout_width="match_parent"
@@ -23,6 +24,17 @@
             android:scaleType="centerCrop"
             android:src="@drawable/cover"
             android:adjustViewBounds="true" />
+
+        <ImageView
+            android:id="@+id/header_cover_blur"
+            android:layout_width="match_parent"
+            android:layout_height="119dp"
+            android:layout_marginTop="-54dp"
+            android:scaleType="centerCrop"
+            android:src="@drawable/cover"
+            android:adjustViewBounds="true"
+            android:visibility="invisible"/>
+
     </RelativeLayout>
 
     <LinearLayout

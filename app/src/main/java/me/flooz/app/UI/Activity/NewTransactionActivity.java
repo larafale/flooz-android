@@ -631,12 +631,12 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
     public void validateView() {
         if (this.currentReceiver != null) {
             if (this.currentReceiver.blockObject != null) {
-                if (this.currentReceiver.blockObject.has("pay") && this.currentReceiver.blockObject.optBoolean("pay")) {
-                    this.hideChargeButton(false);
-                    this.hidePayButton(true);
-                } else if (this.currentReceiver.blockObject.has("charge") && this.currentReceiver.blockObject.optBoolean("charge")) {
+                if (this.currentReceiver.blockObject.has("charge") && this.currentReceiver.blockObject.optBoolean("charge")) {
                     this.hideChargeButton(true);
                     this.hidePayButton(false);
+                } else if (this.currentReceiver.blockObject.has("pay") && this.currentReceiver.blockObject.optBoolean("pay")) {
+                    this.hideChargeButton(false);
+                    this.hidePayButton(true);
                 } else
                     this.resetPaymentButton();
             } else

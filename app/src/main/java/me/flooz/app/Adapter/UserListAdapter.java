@@ -58,6 +58,8 @@ public class UserListAdapter extends BaseAdapter {
 
     @Override
     public FLUser getItem(int i) {
+        if (i >= userList.size())
+            return null;
         return userList.get(i);
     }
 
@@ -106,14 +108,16 @@ public class UserListAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        final FLUser user = (FLUser) this.getItem(i);
+        final FLUser user = this.getItem(i);
 
-        holder.fullname.setText(user.fullname);
-        holder.username.setText("@" + user.username);
+        if (user != null) {
+            holder.fullname.setText(user.fullname);
+            holder.username.setText("@" + user.username);
 
-        holder.pic.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
-        if (user.avatarURL != null && !user.avatarURL.isEmpty())
-            ImageLoader.getInstance().displayImage(user.avatarURL, holder.pic);
+            holder.pic.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
+            if (user.avatarURL != null && !user.avatarURL.isEmpty())
+                ImageLoader.getInstance().displayImage(user.avatarURL, holder.pic);
+        }
 
         return convertView;
     }

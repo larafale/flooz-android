@@ -234,26 +234,14 @@ public class TransactionCardController extends BaseController {
         this.cardFromPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                transaction.to.selectedCanal = FLUser.FLUserSelectedCanal.TimelineCanal;
-                ProfileCardFragment profileCardFragment = new ProfileCardFragment();
-                if (cardFromUsername.getText().toString().contentEquals("@" + FloozRestClient.getInstance().currentUser.username))
-                    profileCardFragment.user = FloozRestClient.getInstance().currentUser;
-                else
-                    profileCardFragment.user = transaction.from;
-                ((HomeActivity) parentActivity).pushFragmentInCurrentTab(profileCardFragment);
+                FloozApplication.getInstance().showUserProfile(transaction.from);
             }
         });
 
         this.cardToPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                transaction.to.selectedCanal = FLUser.FLUserSelectedCanal.TimelineCanal;
-                ProfileCardFragment profileCardFragment = new ProfileCardFragment();
-                if (cardToUsername.getText().toString().contentEquals("@" + FloozRestClient.getInstance().currentUser.username))
-                    profileCardFragment.user = FloozRestClient.getInstance().currentUser;
-                else
-                    profileCardFragment.user = transaction.to;
-                ((HomeActivity) parentActivity).pushFragmentInCurrentTab(profileCardFragment);
+                FloozApplication.getInstance().showUserProfile(transaction.to);
             }
         });
 

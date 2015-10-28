@@ -3,6 +3,7 @@ package me.flooz.app.UI.Activity;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.hardware.input.InputManager;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -18,6 +19,7 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.support.v4.content.LocalBroadcastManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -120,6 +122,8 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
     private ImageView imageViewerImage;
     private PhotoViewAttacher imageViewerAttacher;
 
+    private InputMethodManager imm;
+
     private Handler tabBarVisibilityHandler = new Handler(Looper.getMainLooper());
     private Runnable tabBarShowRunnable = new Runnable() {
         @Override
@@ -161,6 +165,7 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         floozApp = (FloozApplication)this.getApplicationContext();
 
         this.fragmentManager = this.getFragmentManager();
+        this.imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
 
         this.setContentView(R.layout.activity_home);
 
@@ -487,6 +492,9 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
 
     public void changeCurrentTab(@NonNull TabID tabID) {
         if (tabID != this.currentTabID) {
+
+            imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
             int clearColor = this.getResources().getColor(R.color.placeholder);
             int selectedColor = this.getResources().getColor(R.color.blue);
 
@@ -576,7 +584,6 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
 
                 newItemText.setTextColor(selectedColor);
                 newItemIcon.setColorFilter(selectedColor);
-
             }
         } else if (this.currentTabHistory.size() > 1) {
             while (this.currentTabHistory.size() > 2)
@@ -591,6 +598,8 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
     }
 
     public void pushFragmentInCurrentTab(TabBarFragment fragment, int animIn, int animOut) {
+        imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+
         fragment.tabBarActivity = this;
 
         FragmentTransaction ft = this.getFragmentManager().beginTransaction();
@@ -611,6 +620,8 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
 
     public void popFragmentInCurrentTab(int animIn, int animOut) {
         if (this.currentTabHistory.size() > 1) {
+
+            imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
             this.currentTabHistory.remove(this.currentTabHistory.size() - 1);
 
@@ -657,7 +668,7 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
 
             ((HomeActivity)activity).pushFragmentInCurrentTab(transactionCardFragment);
         } else {
-            Intent intent = new Intent(activity, Secure3DActivity.class);
+            Intent intent = new Intent(activity, TransactionActivity.class);
             intent.putExtra("insertComment", insertComment);
             intent.putExtra("transaction", transaction.json.toString());
             activity.startActivity(intent);

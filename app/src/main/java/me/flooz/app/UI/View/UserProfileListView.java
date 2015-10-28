@@ -26,7 +26,7 @@ public class UserProfileListView extends ListView implements AbsListView.OnScrol
     private OnScrollListener onScrollListener = null;
 
     private OnUserProfileListViewListener onUserProfileListViewListener;
-    private int preLast;
+    public int preLast;
 
     public UserProfileListView(Context context) {
         super(context);

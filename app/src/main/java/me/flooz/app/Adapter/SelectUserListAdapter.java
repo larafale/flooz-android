@@ -1,11 +1,14 @@
 package me.flooz.app.Adapter;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +23,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
@@ -130,7 +134,13 @@ public class SelectUserListAdapter extends BaseAdapter implements StickyListHead
 
         this.friends = FloozRestClient.getInstance().currentUser.friends;
         this.friendsRecent = FloozRestClient.getInstance().currentUser.friendsRecent;
-        this.contactsFromAdressBook = ContactsManager.getAllContacts();
+
+        if (ActivityCompat.checkSelfPermission(FloozApplication.getAppContext(), Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+            this.contactsFromAdressBook = new ArrayList<>();
+        } else {
+            this.contactsFromAdressBook = ContactsManager.getContactsList();
+        }
 
         this.filteredContacts = new ArrayList<>();
 

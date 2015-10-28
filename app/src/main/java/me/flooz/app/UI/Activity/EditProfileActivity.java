@@ -43,7 +43,7 @@ import me.flooz.app.Utils.ImageHelper;
 import me.flooz.app.Utils.ViewServer;
 
 /**
- * Created by Wapazz on 06/10/15.
+ * Created by Flooz on 06/10/15.
  */
 
 public class EditProfileActivity extends Activity {
@@ -103,7 +103,7 @@ public class EditProfileActivity extends Activity {
         this.cameraPictureCover.setColorFilter(getResources().getColor(R.color.light_white_alpha));
 
         this.bioField.setText(this.currentUser.userBio);
-        this.bioField.setSelection(this.bioField.getText().length() - 1);
+        this.bioField.setSelection(this.bioField.getText().length());
 
         if (this.currentUser.avatarURL != null && !this.currentUser.avatarURL.isEmpty()) {
             ImageLoader.getInstance().displayImage(this.currentUser.avatarURL, this.profileAvatar);
@@ -181,8 +181,6 @@ public class EditProfileActivity extends Activity {
         });
     }
 
-    // Origin = true = click from avatar
-    // Origin = false = click from cover
     private void showPictureActionMenu(boolean origin) {
         List<ActionSheetItem> items = new ArrayList<>();
 

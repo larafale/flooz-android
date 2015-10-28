@@ -53,6 +53,8 @@ public class FLUser
     public Boolean isIdentified;
     public Boolean isFloozer;
 
+    public Boolean isCactus;
+
     public JSONObject blockObject;
     public Map<String, String> address;
     public Map<String, Object> sepa;
@@ -154,6 +156,8 @@ public class FLUser
             this.isStar = this.json.optBoolean("isStar");
             this.isPro = this.json.optBoolean("isPro");
             this.isComplete = this.json.optBoolean("isComplete");
+
+            this.isCactus = this.json.optBoolean("isCactus");
 
             if (this.json.has("isFriendable"))
                 isFriendable = this.json.optBoolean("isFriendable");

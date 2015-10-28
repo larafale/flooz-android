@@ -36,7 +36,7 @@ public class TransactionActivity  extends Activity {
 
         this.floozApp = (FloozApplication) this.getApplicationContext();
 
-        this.setContentView(R.layout.search_fragment);
+        this.setContentView(R.layout.transaction_card_fragment);
 
         Boolean insertComment = getIntent().getBooleanExtra("insertComment", false);
         String transaction = getIntent().getStringExtra("transaction");

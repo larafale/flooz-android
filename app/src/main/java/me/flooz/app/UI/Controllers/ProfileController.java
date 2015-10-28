@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.annotation.NonNull;
@@ -25,6 +26,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -64,6 +67,7 @@ public class ProfileController extends BaseController implements TimelineListAda
     private ImageView profileImage;
     private ImageView profileCover;
     private ImageView stickyHeader;
+    private ImageView stickyHeaderBlur;
     private ImageView certifiedIcon;
     private String profileImageFullURL;
     private String coverURLFull;
@@ -108,7 +112,6 @@ public class ProfileController extends BaseController implements TimelineListAda
     private int modCond = 0;
     private boolean isSticky = false;
     private boolean isHeaderSticky = false;
-    private boolean isBlurred = false;
     private boolean isSegmentDefault = true;
 
     private BroadcastReceiver reloadUserReceiver = new BroadcastReceiver() {
@@ -129,6 +132,7 @@ public class ProfileController extends BaseController implements TimelineListAda
         this.stickyLayout = (LinearLayout) this.currentView.findViewById(R.id.profile_sticky_layout);
         this.stickyCoverContainer = (RelativeLayout) this.currentView.findViewById(R.id.sticky_cover_container);
         this.stickyHeader = (ImageView) this.currentView.findViewById(R.id.header_cover_sticky);
+        this.stickyHeaderBlur = (ImageView) this.currentView.findViewById(R.id.header_cover_blur);
         this.cardHeaderCloseButton = (ImageView) this.currentView.findViewById(R.id.transac_card_header_close);
         this.stickyName = (TextView) this.currentView.findViewById(R.id.profile_card_username_sticky);
         this.stickyUsername = (TextView) this.currentView.findViewById(R.id.profile_card_subname_sticky);
@@ -213,6 +217,7 @@ public class ProfileController extends BaseController implements TimelineListAda
         this.settingsFloozButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mainListContainer.preLast = 0;
                 mainListContainer.setAdapter(timelineAdapter);
                 isSegmentDefault = true;
             }
@@ -221,6 +226,7 @@ public class ProfileController extends BaseController implements TimelineListAda
         this.settingsFollowingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                mainListContainer.preLast = 0;
                 mainListContainer.setAdapter(friendAdapter);
                 isSegmentDefault = false;
             }
@@ -264,7 +270,7 @@ public class ProfileController extends BaseController implements TimelineListAda
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 if (settingsFollowingButton.isChecked()) {
                     if (friendAdapter.userList.size() != 0) {
-                        FloozApplication.getInstance().showUserProfile(friendAdapter.getItem(position));
+                        FloozApplication.getInstance().showUserProfile(friendAdapter.getItem(position - 1));
                     }
                 }
             }
@@ -369,22 +375,14 @@ public class ProfileController extends BaseController implements TimelineListAda
                 }
                 if (scrollY < 100 && isHeaderSticky && firstVisiblePosition == 0) {
                     stickyLayout.setVisibility(View.INVISIBLE);
+                    stickyHeaderBlur.setVisibility(View.INVISIBLE);
                     isHeaderSticky = !isHeaderSticky;
                 }
                 if (scrollY >= 100 && !isHeaderSticky && firstVisiblePosition == 0) {
                     stickyLayout.setVisibility(View.VISIBLE);
-                    isHeaderSticky = !isHeaderSticky;
+                    stickyHeaderBlur.setVisibility(View.VISIBLE);
 
-                    if (!isBlurred) {
-                        Blurry.with(parentActivity)
-                                .radius(20)
-                                .sampling(1)
-                                .async()
-                                .animate(2000)
-                                .capture(stickyHeader)
-                                .into(stickyHeader);
-                        isBlurred = !isBlurred;
-                    }
+                    isHeaderSticky = !isHeaderSticky;
                 }
             }
         });
@@ -461,6 +459,8 @@ public class ProfileController extends BaseController implements TimelineListAda
 
                 if (settingsFloozButton.isChecked())
                     timelineAdapter.notifyDataSetChanged();
+
+                mainListContainer.preLast = 0;
             }
 
             @Override
@@ -490,9 +490,47 @@ public class ProfileController extends BaseController implements TimelineListAda
         this.coverURLFull = flUser.coverURL;
 
         if (flUser.coverURL != null && !flUser.coverURL.isEmpty()) {
+            ImageLoader.getInstance().displayImage(flUser.coverURL, this.stickyHeaderBlur, new ImageLoadingListener() {
+                @Override
+                public void onLoadingStarted(String imageUri, View view) {
+
+                }
+
+                @Override
+                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                }
+
+                @Override
+                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                    Blurry.with(parentActivity)
+                            .radius(20)
+                            .sampling(1)
+                            .async()
+                            .animate(2000)
+                            .capture(stickyHeaderBlur)
+                            .into(stickyHeaderBlur);
+                }
+
+                @Override
+                public void onLoadingCancelled(String imageUri, View view) {
+
+                }
+            });
+
             ImageLoader.getInstance().displayImage(flUser.coverURL, this.stickyHeader);
             ImageLoader.getInstance().displayImage(flUser.coverURL, this.profileCover);
         }  else {
+            this.stickyHeaderBlur.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.cover));
+
+            Blurry.with(parentActivity)
+                    .radius(20)
+                    .sampling(1)
+                    .async()
+                    .animate(2000)
+                    .capture(stickyHeaderBlur)
+                    .into(stickyHeaderBlur);
+
             this.stickyHeader.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.cover));
             this.profileCover.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.cover));
         }

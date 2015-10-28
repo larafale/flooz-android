@@ -98,7 +98,9 @@ public class TimelineListAdapter extends BaseAdapter {
 
     @Override
     public FLTransaction getItem(int position) {
-        return this.transactions.get(position);
+        if (position < this.transactions.size())
+            return this.transactions.get(position);
+        return null;
     }
 
     @Override
