@@ -1,10 +1,12 @@
 package me.flooz.app.UI.Activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
@@ -14,6 +16,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -76,8 +79,11 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
  * Created by Flooz on 3/13/15.
  */
 public class NewTransactionActivity extends Activity implements ToolTipScopeViewDelegate {
-    public static final int SELECT_PICTURE = 1;
-    public static final int TAKE_PICTURE = 2;
+    private static final int SELECT_PICTURE = 1;
+    private static final int TAKE_PICTURE = 2;
+    private static final int PERMISSION_CAMERA = 3;
+    private static final int PERMISSION_CONTACTS = 4;
+
 
     private NewTransactionActivity instance;
     private FloozApplication floozApp;
@@ -682,6 +688,14 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
             this.currentScope = FLTransaction.transactionScopeParamToEnum((String) ((Map) FloozRestClient.getInstance().currentUser.settings.get("def")).get("scope"));
         else
             this.currentScope = FLTransaction.TransactionScope.TransactionScopePublic;
+
+        if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.READ_CONTACTS)) {
+                // Display UI and wait for user interaction
+            } else {
+                ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.READ_CONTACTS}, PERMISSION_CAMERA);
+            }
+        }
     }
 
     @Override
@@ -1056,15 +1070,24 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         @Override
         public void onClick(View view) {
             saveData();
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-            tmpUriImage = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUriImage);
+            if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
+//                    // Display UI and wait for user interaction
+//                } else {
+                ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.CAMERA}, PERMISSION_CAMERA);
+//                }
+            } else {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-            try {
-                startActivityForResult(intent, TAKE_PICTURE);
-            } catch (ActivityNotFoundException e) {
+                tmpUriImage = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUriImage);
 
+                try {
+                    startActivityForResult(intent, TAKE_PICTURE);
+                } catch (ActivityNotFoundException e) {
+
+                }
             }
         }
     };
@@ -1082,6 +1105,28 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
             }
         }
     };
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PERMISSION_CAMERA) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                tmpUriImage = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUriImage);
+
+                try {
+                    startActivityForResult(intent, TAKE_PICTURE);
+                } catch (ActivityNotFoundException e) {
+
+                }
+            }
+        } else if (requestCode == PERMISSION_CONTACTS) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                contactListAdapter.loadContacts();
+                FloozRestClient.getInstance().sendUserContacts();
+            }
+        }
+    }
 
     public void changeUser(FLUser user) {
         this.currentReceiver = user;

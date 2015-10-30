@@ -259,15 +259,10 @@ public class FloozRestClient
 
                 setNewAccessToken(responseObject.optJSONArray("items").optJSONObject(0).optString("token"));
 
-                if (currentUser == null) {
-                    currentUser = new FLUser(responseObject.optJSONArray("items").optJSONObject(1));
-                    appSettings.edit().putString("userId", currentUser.userId).apply();
-                    initializeSockets();
-                }
-                else {
-                    currentUser.setJson(responseObject.optJSONArray("items").optJSONObject(1));
-                    appSettings.edit().putString("userId", currentUser.userId).apply();
-                }
+                currentUser = new FLUser(responseObject.optJSONArray("items").optJSONObject(1));
+                appSettings.edit().putString("userId", currentUser.userId).apply();
+                initializeSockets();
+
 
                 saveUserData();
 
@@ -297,14 +292,9 @@ public class FloozRestClient
 
                 setNewAccessToken(responseObject.optJSONArray("items").optJSONObject(0).optString("token"));
 
-                if (currentUser == null) {
-                    currentUser = new FLUser(responseObject.optJSONArray("items").optJSONObject(1));
-                    appSettings.edit().putString("userId", currentUser.userId).apply();
-                    initializeSockets();
-                } else {
-                    currentUser.setJson(responseObject.optJSONArray("items").optJSONObject(1));
-                    appSettings.edit().putString("userId", currentUser.userId).apply();
-                }
+                currentUser = new FLUser(responseObject.optJSONArray("items").optJSONObject(1));
+                appSettings.edit().putString("userId", currentUser.userId).apply();
+
 
                 saveUserData();
 
@@ -726,16 +716,9 @@ public class FloozRestClient
             public void success(Object response) {
                 JSONObject responseObject = (JSONObject)response;
 
-                if (currentUser == null) {
-                    currentUser = new FLUser(responseObject.optJSONObject("item"));
-                    appSettings.edit().putString("userId", currentUser.userId).apply();
-                    initializeSockets();
-                }
-                else {
-                    currentUser.setJson(responseObject.optJSONObject("item"));
-                    appSettings.edit().putString("userId", currentUser.userId).apply();
-                    initializeSockets();
-                }
+                currentUser = new FLUser(responseObject.optJSONObject("item"));
+                appSettings.edit().putString("userId", currentUser.userId).apply();
+                initializeSockets();
 
                 if (responseObject.optJSONObject("item").has("fb")
                         && responseObject.optJSONObject("item").optJSONObject("fb") != null
@@ -2080,7 +2063,7 @@ public class FloozRestClient
     private void handleTriggerViewClose() {
         Activity tmpActivity = floozApp.getCurrentActivity();
         if (tmpActivity != null)
-            tmpActivity.finish();
+            tmpActivity.onBackPressed();
     }
 
     private void handleTriggerSendContact() {

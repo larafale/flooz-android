@@ -314,6 +314,18 @@ public class CreditCardController extends BaseController {
     public void onResume() {
         this.reloadCreditCard();
 
+        FloozRestClient.getInstance().updateCurrentUser(new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                reloadCreditCard();
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+
+            }
+        });
+
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadCurrentUserDataReceiver,
                 CustomNotificationIntents.filterReloadCurrentUser());
     }

@@ -1,15 +1,18 @@
 package me.flooz.app.UI.Controllers;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.EditText;
@@ -40,6 +43,7 @@ public class DocumentsController extends BaseController {
 
     private static final int SELECT_PICTURE = 1;
     private static final int TAKE_PICTURE = 2;
+    private static final int PERMISSION_CAMERA = 3;
 
     private ImageView headerBackButton;
 
@@ -252,13 +256,21 @@ public class DocumentsController extends BaseController {
     private ActionSheetItem.ActionSheetItemClickListener showCamera = new ActionSheetItem.ActionSheetItemClickListener() {
         @Override
         public void onClick() {
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (ActivityCompat.checkSelfPermission(parentActivity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
+//                    // Display UI and wait for user interaction
+//                } else {
+                ActivityCompat.requestPermissions(parentActivity, new String[]{Manifest.permission.CAMERA}, PERMISSION_CAMERA);
+//                }
+            } else {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-            Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
-            tmpUriImage = fileUri;
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
+                tmpUriImage = fileUri;
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
 
-            parentActivity.startActivityForResult(intent, TAKE_PICTURE);
+                parentActivity.startActivityForResult(intent, TAKE_PICTURE);
+            }
         }
     };
 
@@ -333,6 +345,20 @@ public class DocumentsController extends BaseController {
                     };
                     mainHandler.post(myRunnable);
                 }
+            }
+        }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PERMISSION_CAMERA) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
+                tmpUriImage = fileUri;
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+
+                parentActivity.startActivityForResult(intent, TAKE_PICTURE);
             }
         }
     }

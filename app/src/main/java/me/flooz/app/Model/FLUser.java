@@ -300,6 +300,8 @@ public class FLUser
 
             if (this.json.has("cards") && this.json.getJSONArray("cards").length() > 0)
                 this.creditCard = new FLCreditCard(this.json.getJSONArray("cards").getJSONObject(0));
+            else
+                this.creditCard = null;
 
             if (this.json.has("cactus") || (this.json.has("isCactus") && this.json.optBoolean("isCactus"))) {
                 this.username = null;

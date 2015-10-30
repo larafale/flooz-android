@@ -59,4 +59,9 @@ public class DocumentsFragment extends TabBarFragment {
     public void onBackPressed() {
         this.controller.onBackPressed();
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        this.controller.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 }

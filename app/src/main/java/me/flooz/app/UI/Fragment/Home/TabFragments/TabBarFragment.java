@@ -19,4 +19,8 @@ public class TabBarFragment extends Fragment {
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
     }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+
+    }
 }

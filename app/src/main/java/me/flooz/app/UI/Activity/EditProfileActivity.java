@@ -1,9 +1,11 @@
 package me.flooz.app.UI.Activity;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -11,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
+import android.support.v4.app.ActivityCompat;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -70,6 +73,8 @@ public class EditProfileActivity extends Activity {
     public static final int TAKE_PICTURE_AVATAR = 2;
     public static final int SELECT_PICTURE_COVER = 3;
     public static final int TAKE_PICTURE_COVER = 4;
+    private static final int PERMISSION_CAMERA_AVATAR = 5;
+    private static final int PERMISSION_CAMERA_COVER = 6;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -199,16 +204,24 @@ public class EditProfileActivity extends Activity {
     private ActionSheetItem.ActionSheetItemClickListener takePictureAvatar = new ActionSheetItem.ActionSheetItemClickListener() {
         @Override
         public void onClick() {
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (ActivityCompat.checkSelfPermission(EditProfileActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
+//                    // Display UI and wait for user interaction
+//                } else {
+                ActivityCompat.requestPermissions(EditProfileActivity.this, new String[]{Manifest.permission.CAMERA}, PERMISSION_CAMERA_AVATAR);
+//                }
+            } else {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-            Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
-            tmpUriImage = fileUri;
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
+                tmpUriImage = fileUri;
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
 
-            try {
-                activity.startActivityForResult(intent, TAKE_PICTURE_AVATAR);
-            } catch (ActivityNotFoundException e) {
+                try {
+                    activity.startActivityForResult(intent, TAKE_PICTURE_AVATAR);
+                } catch (ActivityNotFoundException e) {
 
+                }
             }
         }
     };
@@ -216,16 +229,24 @@ public class EditProfileActivity extends Activity {
     private ActionSheetItem.ActionSheetItemClickListener takePictureCover = new ActionSheetItem.ActionSheetItemClickListener() {
         @Override
         public void onClick() {
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (ActivityCompat.checkSelfPermission(EditProfileActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
+//                    // Display UI and wait for user interaction
+//                } else {
+                ActivityCompat.requestPermissions(EditProfileActivity.this, new String[]{Manifest.permission.CAMERA}, PERMISSION_CAMERA_COVER);
+//                }
+            } else {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-            Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
-            tmpUriImage = fileUri;
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
+                tmpUriImage = fileUri;
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
 
-            try {
-                activity.startActivityForResult(intent, TAKE_PICTURE_COVER);
-            } catch (ActivityNotFoundException e) {
+                try {
+                    activity.startActivityForResult(intent, TAKE_PICTURE_COVER);
+                } catch (ActivityNotFoundException e) {
 
+                }
             }
         }
     };
@@ -282,6 +303,38 @@ public class EditProfileActivity extends Activity {
         Activity currActivity = floozApp.getCurrentActivity();
         if (currActivity != null && currActivity.equals(this))
             floozApp.setCurrentActivity(null);
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PERMISSION_CAMERA_AVATAR) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
+                tmpUriImage = fileUri;
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+
+                try {
+                    activity.startActivityForResult(intent, TAKE_PICTURE_AVATAR);
+                } catch (ActivityNotFoundException e) {
+
+                }
+            }
+        } else if (requestCode == PERMISSION_CAMERA_COVER) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+
+                Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
+                tmpUriImage = fileUri;
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+
+                try {
+                    activity.startActivityForResult(intent, TAKE_PICTURE_COVER);
+                } catch (ActivityNotFoundException e) {
+
+                }
+            }
+        }
     }
 
     @Override

@@ -58,6 +58,13 @@ public class CreditCardSettingsActivity extends Activity {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+
+        this.controller.onStart();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         floozApp.setCurrentActivity(this);

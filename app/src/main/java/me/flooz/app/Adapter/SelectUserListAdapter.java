@@ -135,12 +135,7 @@ public class SelectUserListAdapter extends BaseAdapter implements StickyListHead
         this.friends = FloozRestClient.getInstance().currentUser.friends;
         this.friendsRecent = FloozRestClient.getInstance().currentUser.friendsRecent;
 
-        if (ActivityCompat.checkSelfPermission(FloozApplication.getAppContext(), Manifest.permission.READ_CONTACTS)
-                != PackageManager.PERMISSION_GRANTED) {
-            this.contactsFromAdressBook = new ArrayList<>();
-        } else {
-            this.contactsFromAdressBook = ContactsManager.getContactsList();
-        }
+       this.loadContacts();
 
         this.filteredContacts = new ArrayList<>();
 
@@ -149,6 +144,30 @@ public class SelectUserListAdapter extends BaseAdapter implements StickyListHead
         else {
             this.filteredContacts.addAll(this.friendsRecent);
             this.filteredContacts.addAll(this.contactsFromAdressBook);
+        }
+    }
+
+    public void loadContacts() {
+        if (ActivityCompat.checkSelfPermission(FloozApplication.getAppContext(), Manifest.permission.READ_CONTACTS)
+                != PackageManager.PERMISSION_GRANTED) {
+            this.contactsFromAdressBook = new ArrayList<>();
+        } else {
+            this.contactsFromAdressBook = ContactsManager.getContactsList();
+
+            this.searchHandler.removeCallbacks(searchRunnable);
+            if (this.searchData.length() == 0) {
+                this.filteredContacts = new ArrayList<>();
+
+                if (this.friendsRecent.size() == 0 && this.contactsFromAdressBook.size() == 0)
+                    this.filteredContacts.addAll(this.friends);
+                else {
+                    this.filteredContacts.addAll(this.friendsRecent);
+                    this.filteredContacts.addAll(this.contactsFromAdressBook);
+                }
+                this.notifyDataSetChanged();
+            } else {
+                this.searchHandler.post(searchRunnable);
+            }
         }
     }
 

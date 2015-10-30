@@ -390,7 +390,6 @@ public class ProfileController extends BaseController implements TimelineListAda
         this.mainListContainer.addHeaderView(listHeader);
         this.reloadWithUser();
         this.settingsFloozButton.performClick();
-        this.requestUserInfos();
     }
 
     private Dictionary<Integer, Integer> listViewItemHeights = new Hashtable<Integer, Integer>();

@@ -775,4 +775,8 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
     public void onNewIntent(Intent intent) {
         this.setIntent(intent);
     }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        currentFragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
 }
