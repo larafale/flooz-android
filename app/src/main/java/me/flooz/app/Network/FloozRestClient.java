@@ -612,6 +612,8 @@ public class FloozRestClient
 
                 if (responseHandler != null)
                     responseHandler.success(currentTexts);
+
+                FloozApplication.performLocalNotification(CustomNotificationIntents.reloadInvitation());
             }
 
             @Override
@@ -647,6 +649,8 @@ public class FloozRestClient
 
                 if (responseHandler != null)
                     responseHandler.success(currentTexts);
+
+                FloozApplication.performLocalNotification(CustomNotificationIntents.reloadText());
             }
 
             @Override
@@ -732,6 +736,7 @@ public class FloozRestClient
                 checkDeviceToken();
 
                 FloozApplication.performLocalNotification(CustomNotificationIntents.reloadCurrentUser());
+
                 if (responseHandler != null)
                     responseHandler.success(response);
             }
@@ -2126,6 +2131,14 @@ public class FloozRestClient
         this.connectFacebook();
     }
 
+    private void handleTriggerTextReload() {
+        this.textObjectFromApi(null);
+    }
+
+    private void handleTriggerInvitationReload() {
+        this.getInvitationText(null);
+    }
+
     public void handleTrigger(final FLTrigger trigger) {
         if (trigger == null)
             return;
@@ -2236,6 +2249,12 @@ public class FloozRestClient
                 break;
             case TriggerFbConnect:
                 handleTriggerFbConnect();
+                break;
+            case TriggerReloadText:
+                handleTriggerTextReload();
+                break;
+            case TriggerReloadInvitation:
+                handleTriggerInvitationReload();
                 break;
             default:
                 break;
@@ -2400,6 +2419,7 @@ public class FloozRestClient
                             JSONObject data = (JSONObject) args[0];
 
                             FloozRestClient.getInstance().notificationsManager.nbUnreadNotifications = data.optInt("total");
+                            FloozRestClient.getInstance().updateNotificationFeed(null);
                             FloozApplication.performLocalNotification(CustomNotificationIntents.reloadNotifications());
                         }
                     }).on(Socket.EVENT_DISCONNECT,  new Emitter.Listener() {

@@ -152,6 +152,15 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         }
     };
 
+    private BroadcastReceiver reloadInvitationReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            FLShareText texts = FloozRestClient.getInstance().currentShareText;
+
+            shareTabText.setText(texts.shareTitle);
+        }
+    };
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -411,6 +420,9 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadUserReceiver,
                 CustomNotificationIntents.filterReloadCurrentUser());
 
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadInvitationReceiver,
+                CustomNotificationIntents.filterReloadInvitation());
+
         if (FloozApplication.getInstance().pendingTriggers != null) {
             Handler handlerIntent = new Handler(Looper.getMainLooper());
             final boolean b = handlerIntent.postDelayed(new Runnable() {
@@ -440,6 +452,7 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
 
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadNotificationsReceiver);
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadUserReceiver);
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadInvitationReceiver);
     }
 
     protected void onDestroy() {

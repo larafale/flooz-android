@@ -68,13 +68,6 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
         }
     };
 
-    private BroadcastReceiver reloadContent = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            FloozRestClient.getInstance().updateCurrentUser(null);
-        }
-    };
-
     private BroadcastReceiver reloadSuggest = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -131,16 +124,12 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadFriendsReceiver,
                 CustomNotificationIntents.filterReloadCurrentUser());
 
-        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadContent,
-                CustomNotificationIntents.filterShowSlidingRightMenu());
-
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadSuggest,
                 CustomNotificationIntents.filterReloadFriends());
     }
 
     public void unloadBroadcastReceivers() {
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadFriendsReceiver);
-        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadContent);
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadSuggest);
     }
 

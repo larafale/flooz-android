@@ -63,6 +63,8 @@ public class FLTransaction {
     public String attachmentURL;
     public String attachmentThumbURL;
     public String when;
+    public String location;
+
     public List text3d;
 
     public Boolean isPrivate;
@@ -165,6 +167,11 @@ public class FLTransaction {
                 this.when = json.optString("when");
             else
                 this.when = this.date.fromNow();
+
+            if (json.has("location"))
+                this.location = json.optString("location");
+            else
+                this.location = null;
 
             this.comments = new ArrayList();
             for (int i = 0; i < json.getJSONArray("comments").length(); i++) {

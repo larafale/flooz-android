@@ -86,6 +86,13 @@ public class ShareController extends BaseController {
         }
     };
 
+    private BroadcastReceiver reloadInviationReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            reloadData(false);
+        }
+    };
+
     public ShareController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull BaseController.ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
@@ -134,6 +141,8 @@ public class ShareController extends BaseController {
         this.tipContainer.dismiss();
         this.toolTip = null;
 
+        this.reloadData(false);
+
         this.content.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,7 +175,45 @@ public class ShareController extends BaseController {
             }
         });
 
-        if (FloozRestClient.getInstance().currentShareText == null) {
+
+        smsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent sendIntent = new Intent(Intent.ACTION_VIEW);
+                sendIntent.setData(Uri.parse("sms:"));
+                sendIntent.putExtra("sms_body", _smsText);
+                if (sendIntent.resolveActivity(parentActivity.getPackageManager()) != null) {
+                    parentActivity.startActivity(sendIntent);
+                }
+            }
+        });
+
+        mailButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
+                sendIntent.setData(Uri.parse("mailto:"));
+                sendIntent.putExtra(Intent.EXTRA_TEXT, _mailData.optString("content"));
+                sendIntent.putExtra(Intent.EXTRA_SUBJECT, _mailData.optString("title"));
+                if (sendIntent.resolveActivity(parentActivity.getPackageManager()) != null) {
+                    parentActivity.startActivity(Intent.createChooser(sendIntent, "Partager par mail..."));
+                }
+            }
+        });
+
+        fbButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (FloozRestClient.getInstance().isConnectedToFacebook())
+                    shareFacebook();
+                else
+                    FloozRestClient.getInstance().connectFacebook();
+            }
+        });
+    }
+
+    private void reloadData(Boolean forced) {
+        if (FloozRestClient.getInstance().currentShareText == null || forced) {
             FloozRestClient.getInstance().getInvitationText(new FloozHttpResponseHandler() {
                 @Override
                 public void success(Object response) {
@@ -209,41 +256,6 @@ public class ShareController extends BaseController {
 
             reloadView();
         }
-
-        smsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent sendIntent = new Intent(Intent.ACTION_VIEW);
-                sendIntent.setData(Uri.parse("sms:"));
-                sendIntent.putExtra("sms_body", _smsText);
-                if (sendIntent.resolveActivity(parentActivity.getPackageManager()) != null) {
-                    parentActivity.startActivity(sendIntent);
-                }
-            }
-        });
-
-        mailButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
-                sendIntent.setData(Uri.parse("mailto:"));
-                sendIntent.putExtra(Intent.EXTRA_TEXT, _mailData.optString("content"));
-                sendIntent.putExtra(Intent.EXTRA_SUBJECT, _mailData.optString("title"));
-                if (sendIntent.resolveActivity(parentActivity.getPackageManager()) != null) {
-                    parentActivity.startActivity(Intent.createChooser(sendIntent, "Partager par mail..."));
-                }
-            }
-        });
-
-        fbButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (FloozRestClient.getInstance().isConnectedToFacebook())
-                    shareFacebook();
-                else
-                    FloozRestClient.getInstance().connectFacebook();
-            }
-        });
     }
 
     private void reloadView() {
@@ -394,15 +406,21 @@ public class ShareController extends BaseController {
     @Override
     public void onResume() {
         super.onResume();
+        reloadData(true);
 
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(facebookConnected,
                 CustomNotificationIntents.filterFacebookConnect());
+
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadInviationReceiver,
+                CustomNotificationIntents.filterReloadInvitation());
     }
 
     @Override
     public void onPause() {
         super.onPause();
+
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(facebookConnected);
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadInviationReceiver);
     }
 
     @Override

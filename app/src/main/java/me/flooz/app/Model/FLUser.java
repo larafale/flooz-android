@@ -298,8 +298,8 @@ public class FLUser
             if (this.json.has("invitation") && this.json.getJSONObject("invitation").has("code"))
                 this.inviteCode = this.json.getJSONObject("invitation").getString("code");
 
-            if (this.json.has("cards") && this.json.getJSONArray("cards").length() > 0)
-                this.creditCard = new FLCreditCard(this.json.getJSONArray("cards").getJSONObject(0));
+            if (this.json.has("card"))
+                this.creditCard = new FLCreditCard(this.json.getJSONObject("card"));
             else
                 this.creditCard = null;
 

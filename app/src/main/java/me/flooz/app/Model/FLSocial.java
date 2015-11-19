@@ -23,6 +23,7 @@ public class FLSocial {
     public Boolean isCommented;
     public Boolean isLiked;
     public String likeText;
+    public String commentText;
     public SocialScope scope;
 
     public FLSocial(JSONObject json) {
@@ -38,6 +39,7 @@ public class FLSocial {
             this.commentsCount = comments.length();
             this.likesCount = likes.length();
             this.likeText = json.getString("likesString");
+            this.commentText = json.getString("commentsString");
 
             this.isCommented = false;
             this.isLiked = false;

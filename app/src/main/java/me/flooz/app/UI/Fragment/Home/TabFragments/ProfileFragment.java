@@ -208,8 +208,20 @@ public class ProfileFragment extends TabBarFragment implements ProfileListAdapte
     @Override
     public void onResume() {
         super.onResume();
-        if (FloozRestClient.getInstance() != null)
+        if (FloozRestClient.getInstance() != null) {
+            FloozRestClient.getInstance().updateCurrentUser(new FloozHttpResponseHandler() {
+                @Override
+                public void success(Object response) {
+                    reloadUserData();
+                }
+
+                @Override
+                public void failure(int statusCode, FLError error) {
+
+                }
+            });
             this.reloadUserData();
+        }
 
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadCurrentUserDataReceiver,
                 CustomNotificationIntents.filterReloadCurrentUser());
