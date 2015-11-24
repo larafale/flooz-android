@@ -68,17 +68,20 @@ public class TimelineListAdapter extends BaseAdapter {
         public TextView transactionText;
         public TextView transactionValue;
         public TextView transactionText3D;
+        public TextView transactionLocationText;
         public TextView transactionLikesText;
         public TextView transactionLikesButtonText;
-        public TextView transactionCommentsNumber;
+        public TextView transactionCommentsText;
         public TextView transactionCommentsButtonText;
 
+        public ImageView transactionLocationImg;
         public RoundedImageView userPic;
         public LoadingImageView transactionPic;
 
         public RelativeLayout transactionRowContent;
         public LinearLayout transactionRowActionBar;
         public LinearLayout transactionSocialContainer;
+        public LinearLayout transactionLocationLayout;
     }
 
     public void setTransactions(List<FLTransaction> transactions){
@@ -142,20 +145,26 @@ public class TimelineListAdapter extends BaseAdapter {
             holder.transactionText = (TextView) rowView.findViewById(R.id.timelineTransactionText);
             holder.transactionValue = (TextView) rowView.findViewById(R.id.timelineTransactionValue);
             holder.transactionText3D = (TextView) rowView.findViewById(R.id.timelineTransactionText3D);
+            holder.transactionLocationText = (TextView) rowView.findViewById(R.id.timelineTransactionLocationText);
             holder.transactionLikesText = (TextView) rowView.findViewById(R.id.timelineTransactionLikesText);
             holder.transactionLikesButtonText = (TextView) rowView.findViewById(R.id.timelineTransactionLikesButtonText);
             holder.transactionCommentsButtonText = (TextView) rowView.findViewById(R.id.timelineTransactionCommentsButtonText);
-            holder.transactionCommentsNumber = (TextView) rowView.findViewById(R.id.timelineTransactionCommentsNumber);
+            holder.transactionCommentsText = (TextView) rowView.findViewById(R.id.timelineTransactionCommentsText);
 
+            holder.transactionLocationImg = (ImageView) rowView.findViewById(R.id.timelineTransactionLocationImg);
             holder.userPic = (RoundedImageView) rowView.findViewById(R.id.userTimelineTransactionPic);
             holder.transactionPic = (LoadingImageView) rowView.findViewById(R.id.timelineTransactionPic);
 
+            holder.transactionLocationLayout = (LinearLayout) rowView.findViewById(R.id.timelineTransactionLocationLayout);
             holder.transactionSocialContainer = (LinearLayout) rowView.findViewById(R.id.timelineTransactionSocialLayout);
+
+            holder.transactionLocationImg.setColorFilter(context.getResources().getColor(R.color.placeholder));
 
             holder.transactionText.setTypeface(CustomFonts.customContentLight(context));
             holder.transactionValue.setTypeface(CustomFonts.customTitleExtraLight(context), Typeface.BOLD);
             holder.transactionText3D.setTypeface(CustomFonts.customContentRegular(context));
-            holder.transactionCommentsNumber.setTypeface(CustomFonts.customContentRegular(context));
+            holder.transactionCommentsText.setTypeface(CustomFonts.customContentRegular(context));
+            holder.transactionLocationText.setTypeface(CustomFonts.customContentRegular(context));
             holder.transactionLikesText.setTypeface(CustomFonts.customContentRegular(context));
             holder.transactionLikesButtonText.setTypeface(CustomFonts.customContentRegular(context));
             holder.transactionCommentsButtonText.setTypeface(CustomFonts.customContentRegular(context));
@@ -250,20 +259,23 @@ public class TimelineListAdapter extends BaseAdapter {
             holder.transactionPic.setVisibility(View.GONE);
         }
 
+        if (currentTransaction.location != null && !currentTransaction.location.isEmpty()) {
+            holder.transactionLocationText.setText(currentTransaction.location.toCharArray(), 0, currentTransaction.location.length());
+            holder.transactionLocationLayout.setVisibility(View.VISIBLE);
+        } else {
+            holder.transactionLocationLayout.setVisibility(View.GONE);
+        }
+
         if ((currentTransaction.social != null && currentTransaction.social.likeText != null && currentTransaction.social.commentsCount != null)
                 && (!currentTransaction.social.likeText.isEmpty() || currentTransaction.social.commentsCount.intValue() > 0)) {
             holder.transactionSocialContainer.setVisibility(View.VISIBLE);
 
-            if (currentTransaction.social.commentsCount.intValue() > 0) {
-                if (currentTransaction.social.commentsCount.intValue() < 10)
-                    holder.transactionCommentsNumber.setText("0" + currentTransaction.social.commentsCount.toString());
-                else
-                    holder.transactionCommentsNumber.setText(currentTransaction.social.commentsCount.toString().toCharArray(), 0, currentTransaction.social.commentsCount.toString().length());
-                holder.transactionCommentsNumber.setVisibility(View.VISIBLE);
+            if (!currentTransaction.social.commentText.isEmpty()) {
+                holder.transactionCommentsText.setText(currentTransaction.social.commentText.toCharArray(), 0, currentTransaction.social.commentText.length());
+                holder.transactionCommentsText.setVisibility(View.VISIBLE);
             } else {
-                holder.transactionCommentsNumber.setVisibility(View.GONE);
+                holder.transactionCommentsText.setVisibility(View.GONE);
             }
-
 
             if (!currentTransaction.social.likeText.isEmpty()) {
                 holder.transactionLikesText.setText(currentTransaction.social.likeText.toCharArray(), 0, currentTransaction.social.likeText.length());
@@ -290,48 +302,48 @@ public class TimelineListAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if (FloozRestClient.getInstance().currentUser != null) {
-                    FloozRestClient.getInstance().likeTransaction(currentTransaction.transactionId, new FloozHttpResponseHandler() {
-                        @Override
-                        public void success(Object response) {
-                            currentTransaction.social.isLiked = !currentTransaction.social.isLiked;
-                            currentTransaction.social.likeText = (String) response;
-
-                            if (!currentTransaction.social.likeText.isEmpty() || currentTransaction.social.commentsCount.intValue() > 0) {
-                                holder.transactionSocialContainer.setVisibility(View.VISIBLE);
-
-                                if (currentTransaction.social.commentsCount.intValue() > 0) {
-                                    holder.transactionCommentsNumber.setText(currentTransaction.social.commentsCount.toString());
-                                    holder.transactionCommentsNumber.setVisibility(View.VISIBLE);
-                                } else {
-                                    holder.transactionCommentsNumber.setVisibility(View.GONE);
-                                }
-
-
-                                if (!currentTransaction.social.likeText.isEmpty()) {
-                                    holder.transactionLikesText.setText(currentTransaction.social.likeText);
-                                    holder.transactionLikesText.setVisibility(View.VISIBLE);
-                                } else {
-                                    holder.transactionLikesText.setVisibility(View.GONE);
-                                }
-                            } else
-                                holder.transactionSocialContainer.setVisibility(View.GONE);
-
-                            if (currentTransaction.social.isLiked) {
-                                holder.transactionLikesButtonText.setBackground(context.getResources().getDrawable(R.drawable.timeline_row_action_button_background_selected));
-                                holder.transactionLikesButtonText.setTextColor(context.getResources().getColor(android.R.color.white));
-                                holder.transactionLikesButtonText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.social_like_full, 0, 0, 0);
-                            } else {
-                                holder.transactionLikesButtonText.setBackground(context.getResources().getDrawable(R.drawable.timeline_row_action_button_background));
-                                holder.transactionLikesButtonText.setTextColor(context.getResources().getColor(R.color.placeholder));
-                                holder.transactionLikesButtonText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.social_like, 0, 0, 0);
-                            }
-                        }
-
-                        @Override
-                        public void failure(int statusCode, FLError error) {
-
-                        }
-                    });
+//                    FloozRestClient.getInstance().likeTransaction(currentTransaction.transactionId, new FloozHttpResponseHandler() {
+//                        @Override
+//                        public void success(Object response) {
+//                            currentTransaction.social.isLiked = !currentTransaction.social.isLiked;
+//                            currentTransaction.social.likeText = (String) response;
+//
+//                            if (!currentTransaction.social.likeText.isEmpty() || currentTransaction.social.commentsCount.intValue() > 0) {
+//                                holder.transactionSocialContainer.setVisibility(View.VISIBLE);
+//
+//                                if (currentTransaction.social.commentsCount.intValue() > 0) {
+//                                    holder.transactionCommentsNumber.setText(currentTransaction.social.commentsCount.toString());
+//                                    holder.transactionCommentsNumber.setVisibility(View.VISIBLE);
+//                                } else {
+//                                    holder.transactionCommentsNumber.setVisibility(View.GONE);
+//                                }
+//
+//
+//                                if (!currentTransaction.social.likeText.isEmpty()) {
+//                                    holder.transactionLikesText.setText(currentTransaction.social.likeText);
+//                                    holder.transactionLikesText.setVisibility(View.VISIBLE);
+//                                } else {
+//                                    holder.transactionLikesText.setVisibility(View.GONE);
+//                                }
+//                            } else
+//                                holder.transactionSocialContainer.setVisibility(View.GONE);
+//
+//                            if (currentTransaction.social.isLiked) {
+//                                holder.transactionLikesButtonText.setBackground(context.getResources().getDrawable(R.drawable.timeline_row_action_button_background_selected));
+//                                holder.transactionLikesButtonText.setTextColor(context.getResources().getColor(android.R.color.white));
+//                                holder.transactionLikesButtonText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.social_like_full, 0, 0, 0);
+//                            } else {
+//                                holder.transactionLikesButtonText.setBackground(context.getResources().getDrawable(R.drawable.timeline_row_action_button_background));
+//                                holder.transactionLikesButtonText.setTextColor(context.getResources().getColor(R.color.placeholder));
+//                                holder.transactionLikesButtonText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.social_like, 0, 0, 0);
+//                            }
+//                        }
+//
+//                        @Override
+//                        public void failure(int statusCode, FLError error) {
+//
+//                        }
+//                    });
                 } else {
                     if (delegate != null)
                         delegate.ListItemCommentClick(currentTransaction);

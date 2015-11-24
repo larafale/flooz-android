@@ -51,7 +51,7 @@
         android:layout_below="@id/timelineTransactionText"/>
 
     <LinearLayout
-        android:id="@+id/timelineTransactionSocialLayout"
+        android:id="@+id/timelineTransactionLocationLayout"
         android:orientation="horizontal"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -60,24 +60,46 @@
         android:layout_toRightOf="@id/userTimelineTransactionPic"
         android:layout_below="@id/timelineTransactionPic">
 
+        <ImageView
+            android:id="@+id/timelineTransactionLocationImg"
+            android:layout_width="13dp"
+            android:layout_height="13dp"
+            android:src="@drawable/map"
+            android:layout_marginRight="@dimen/dimen_small"/>
+
         <TextView
-            android:id="@+id/timelineTransactionCommentsNumber"
-            android:layout_width="wrap_content"
+            android:id="@+id/timelineTransactionLocationText"
+            android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:textSize="@dimen/timeline_cell_social_label"
-            android:drawableLeft="@drawable/social_comment"
-            android:layout_marginRight="@dimen/dimen_large"
-            android:drawablePadding="@dimen/dimen_small"/>
+            android:textColor="@color/placeholder"
+            android:textSize="12sp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/timelineTransactionSocialLayout"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:paddingTop="@dimen/dimen_medium"
+        android:layout_toRightOf="@id/userTimelineTransactionPic"
+        android:layout_below="@id/timelineTransactionLocationLayout">
 
         <TextView
             android:id="@+id/timelineTransactionLikesText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
+            android:textColor="@color/placeholder"
+            android:textSize="@dimen/timeline_cell_social_label"/>
+
+        <TextView
+            android:id="@+id/timelineTransactionCommentsText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/placeholder"
             android:textSize="@dimen/timeline_cell_social_label"
-            android:drawableLeft="@drawable/social_like"
-            android:drawablePadding="@dimen/dimen_small"/>
+            android:layout_marginLeft="@dimen/dimen_large"/>
 
     </LinearLayout>
 
