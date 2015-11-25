@@ -179,18 +179,24 @@
                     android:textColor="@android:color/white"
                     android:textColorHint="@color/placeholder"/>
 
-                <EditText
+                <me.flooz.app.UI.View.FLPhoneField
                     android:id="@+id/start_signup_phone"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="@string/FIELD_PHONE"
-                    android:inputType="phone"
                     android:layout_marginTop="@dimen/dimen_large"
-                    android:singleLine="true"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:textColor="@android:color/white"
-                    android:textColorHint="@color/placeholder"/>
+                    android:layout_height="match_parent"/>
+
+                <!--<EditText-->
+                <!--android:id="@+id/start_signup_phone"-->
+                <!--android:layout_width="match_parent"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:hint="@string/FIELD_PHONE"-->
+                <!--android:inputType="phone"-->
+                <!--android:layout_marginTop="@dimen/dimen_large"-->
+                <!--android:singleLine="true"-->
+                <!--android:focusable="true"-->
+                <!--android:focusableInTouchMode="true"-->
+                <!--android:textColor="@android:color/white"-->
+                <!--android:textColorHint="@color/placeholder"/>-->
 
                 <EditText
                     android:id="@+id/start_signup_email"

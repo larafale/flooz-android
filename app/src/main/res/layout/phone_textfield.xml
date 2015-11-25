@@ -64,7 +64,7 @@
             android:inputType="phone"
             android:layout_height="match_parent"
             android:singleLine="true"
-            android:hint="@string/FIELD_PHONE"
+            android:hint="@string/SIGNUP_PHONE_PLACEHOLDER"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:textColor="@android:color/white"

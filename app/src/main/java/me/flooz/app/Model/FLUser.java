@@ -73,6 +73,8 @@ public class FLUser
 
     public Boolean isFriendWaiting;
 
+    public FLCountry country;
+
     public Number record;
     public String device;
     public Map<String, Object> settings;
@@ -221,6 +223,8 @@ public class FLUser
                 if (this.json.has("settings") && this.json.getJSONObject("settings").has("sepa")) {
                     this.sepa = JSONHelper.toMap(this.json.getJSONObject("settings").getJSONObject("sepa"));
                 }
+
+                this.country = FLCountry.countryFromIndicatif(this.json.getJSONObject("settings").getString("indicatif"));
             }
 
             if (this.json.has("ux")) {

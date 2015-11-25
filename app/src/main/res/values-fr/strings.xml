@@ -46,6 +46,8 @@
 
     <string name="SEND_COMMENT">Ajouter un commentaire…</string>
 
+    <string name="COUNTRY_PICKER_TITLE">Régions disponibles</string>
+
     <string name="NAV_HOME">Fil d\'actualité</string>
     <string name="NAV_PROFILE">Mon profil</string>
     <string name="NAV_PUBLIC">Explorer</string>

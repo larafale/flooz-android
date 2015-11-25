@@ -1,6 +1,8 @@
 package me.flooz.app.UI.View;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
@@ -14,6 +16,7 @@ import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import com.google.i18n.phonenumbers.Phonenumber;
 
+import me.flooz.app.Adapter.CountryListAdapter;
 import me.flooz.app.Model.FLCountry;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Network.FloozHttpResponseHandler;
@@ -42,6 +45,8 @@ public class FLPhoneField extends LinearLayout {
 
     public FLPhoneFieldDelegate delegate;
 
+    private CountryListAdapter countryAdapter;
+
     public FLPhoneField(Context context) {
         super(context);
         init(context);
@@ -52,11 +57,13 @@ public class FLPhoneField extends LinearLayout {
         init(context);
     }
 
-    private void init(Context context) {
+    private void init(final Context context) {
 
         this.context = context;
 
         this.currentPhone = "";
+
+        this.countryAdapter = new CountryListAdapter(context);
 
         final String locale = context.getResources().getConfiguration().locale.getCountry();
 
@@ -82,10 +89,10 @@ public class FLPhoneField extends LinearLayout {
 
             @Override
             public void afterTextChanged(Editable s) {
-                int size = 10;
+                int size = currentCountry.maxLength;
 
-                if (!s.toString().startsWith("0"))
-                    size = 9;
+                if (s.toString().startsWith("0"))
+                    size += 1;
 
                 if (s.length() > size)
                     s.delete(size, s.length() - 1);
@@ -112,7 +119,23 @@ public class FLPhoneField extends LinearLayout {
         countrySide.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                builder.setAdapter(countryAdapter, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        setCountry(countryAdapter.getItem(which));
+                    }
+                });
+                builder.setCancelable(true);
+                builder.setNeutralButton(context.getResources().getString(R.string.GLOBAL_CANCEL), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.setTitle(context.getResources().getString(R.string.COUNTRY_PICKER_TITLE));
+                builder.show();
             }
         });
 

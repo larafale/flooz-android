@@ -1,6 +1,7 @@
 package me.flooz.app.Adapter;
 
 import android.content.Context;
+import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +21,8 @@ import me.flooz.app.Model.FLTexts;
 import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
+import me.flooz.app.R;
+import me.flooz.app.Utils.CustomFonts;
 
 /**
  * Created by Flooz on 11/24/15.
@@ -74,13 +78,31 @@ public class CountryListAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        return null;
+        final ViewHolder holder;
+
+        if (convertView == null) {
+            holder = new ViewHolder();
+            convertView = inflater.inflate(R.layout.country_picker_row, parent, false);
+            holder.text = (TextView) convertView.findViewById(R.id.country_picker_row_text);
+            holder.flag = (ImageView) convertView.findViewById(R.id.country_picker_row_flag);
+
+            holder.text.setTypeface(CustomFonts.customTitleExtraLight(this.context), Typeface.BOLD);
+
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
+
+        final FLCountry country = this.getItem(position);
+
+        holder.text.setText(country.name + " (" + country.indicatif + ")");
+        holder.flag.setImageDrawable(context.getResources().getDrawable(country.imageID));
+
+        return convertView;
     }
 
     class ViewHolder {
-        TextView name;
-        TextView username;
-        RoundedImageView pic;
+        TextView text;
         ImageView flag;
     }
 }

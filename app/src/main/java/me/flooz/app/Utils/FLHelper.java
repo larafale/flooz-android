@@ -4,9 +4,14 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.util.DisplayMetrics;
 
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
+
 import java.util.Random;
 
 import me.flooz.app.BuildConfig;
+import me.flooz.app.Network.FloozRestClient;
 
 /**
  * Created by Flooz on 1/8/15.
@@ -77,5 +82,76 @@ public class FLHelper {
         for (l = 0; n > 0; ++l)
             n /= 10;
         return l;
+    }
+
+    public static String formatedPhone(String phone) {
+        String formatedPhone = phone.replace("", "").replace(".", "").replace(",", "").replace("-", "").replace(")", "").replace("(", "");
+
+        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+
+        try {
+            Phonenumber.PhoneNumber phoneNumber = phoneUtil.parse(formatedPhone, FloozRestClient.getInstance().currentUser.country.code);
+
+            formatedPhone = phoneUtil.format(phoneNumber, PhoneNumberUtil.PhoneNumberFormat.E164);
+            return formatedPhone;
+        } catch (NumberParseException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static Boolean isValidPhoneNumber(String phone) {
+        String formatedPhone = phone.replace("", "").replace(".", "").replace(",", "").replace("-", "").replace(")", "").replace("(", "");
+
+        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+
+        try {
+            Phonenumber.PhoneNumber phoneNumber = phoneUtil.parse(formatedPhone, FloozRestClient.getInstance().currentUser.country.code);
+
+            return phoneUtil.isValidNumber(phoneNumber);
+        } catch (NumberParseException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    public static String fullPhone(String phone, String country) {
+        String formatedPhone = phone.replace("", "").replace(".", "").replace(",", "").replace("-", "").replace(")", "").replace("(", "");
+
+        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+
+        try {
+            Phonenumber.PhoneNumber phoneNumber = phoneUtil.parse(formatedPhone, country);
+
+            formatedPhone = phoneUtil.format(phoneNumber, PhoneNumberUtil.PhoneNumberFormat.E164);
+            return formatedPhone;
+        } catch (NumberParseException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static Boolean phoneMatch(String phone1, String phone2) {
+        String formatedPhone1 = phone1.replace("", "").replace(".", "").replace(",", "").replace("-", "").replace(")", "").replace("(", "");
+        String formatedPhone2 = phone2.replace("", "").replace(".", "").replace(",", "").replace("-", "").replace(")", "").replace("(", "");
+
+        PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
+
+        try {
+            Phonenumber.PhoneNumber phoneNumber1 = phoneUtil.parse(formatedPhone1, FloozRestClient.getInstance().currentUser.country.code);
+            Phonenumber.PhoneNumber phoneNumber2 = phoneUtil.parse(formatedPhone2, FloozRestClient.getInstance().currentUser.country.code);
+
+            formatedPhone1 = phoneUtil.format(phoneNumber1, PhoneNumberUtil.PhoneNumberFormat.E164);
+            formatedPhone2 = phoneUtil.format(phoneNumber2, PhoneNumberUtil.PhoneNumberFormat.E164);
+
+            return formatedPhone1.contains(formatedPhone2);
+        } catch (NumberParseException e) {
+            e.printStackTrace();
+        }
+
+        return false;
     }
 }
