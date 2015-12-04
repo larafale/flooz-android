@@ -246,6 +246,12 @@
 
     <string name="FRIEND_INVITE">Inviter ses amis</string>
 
+    <string name="SEARCH_LOCATION">Rechercher un lieu</string>
+    <string name="SELECTED_LOCATION">Lieu séléctionné</string>
+    <string name="AROUND_YOU">Autour de vous</string>
+    <string name="LOCATION_RESULTS">Résultats</string>
+    <string name="EMPTY_LOCATION">Aucun lieu trouvé</string>
+
     <string name="TRANSACTION_CONTACT_PICKER_PREFIX">À :&#160;</string>
     <string name="TRANSACTION_CONTACT_PICKER_HINT">saisir nom, pseudo ou 06</string>
     <string name="TRANSACTION_CONTACT_LIST_EMPTY_1">Sélectionnez un contact</string>

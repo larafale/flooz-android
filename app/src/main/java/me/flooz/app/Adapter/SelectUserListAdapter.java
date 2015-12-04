@@ -31,6 +31,7 @@ import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.ContactsManager;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.FLHelper;
 import se.emilsjolander.stickylistheaders.StickyListHeadersAdapter;
 
 /**
@@ -67,17 +68,8 @@ public class SelectUserListAdapter extends BaseAdapter implements StickyListHead
                         contactsFiltered.add(contact);
                     else if (contact.lastname != null && contact.lastname.toLowerCase().indexOf(searchData.toLowerCase()) == 0)
                         contactsFiltered.add(contact);
-                    else if (contact.phone != null) {
-                        String clearPhone = contact.phone;
-
-                        if (clearPhone.indexOf("+33") == 0)
-                            clearPhone = clearPhone.replace("+33", "0");
-
-                        if (clearPhone.toLowerCase().contains(searchData.toLowerCase()))
-                            contactsFiltered.add(contact);
-                        else if (contact.phone.toLowerCase().contains(searchData.toLowerCase()))
-                            contactsFiltered.add(contact);
-                    }
+                    else if (contact.phone != null && FLHelper.phoneMatch(contact.phone, searchData))
+                        contactsFiltered.add(contact);
                 }
 
                 FloozRestClient.getInstance().searchUser(searchData, true, new FloozHttpResponseHandler() {
@@ -135,7 +127,7 @@ public class SelectUserListAdapter extends BaseAdapter implements StickyListHead
         this.friends = FloozRestClient.getInstance().currentUser.friends;
         this.friendsRecent = FloozRestClient.getInstance().currentUser.friendsRecent;
 
-       this.loadContacts();
+        this.loadContacts();
 
         this.filteredContacts = new ArrayList<>();
 

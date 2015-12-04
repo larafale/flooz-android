@@ -111,6 +111,7 @@ public class FloozRestClient
     public static String kTextData = "textData";
     public static String kShareData = "shareData";
     public static String kNotificationsData = "notifData";
+    public static String kLocationData = "locationData";
 
     public enum FriendAction {
         Accept,
@@ -393,6 +394,20 @@ public class FloozRestClient
             }
         }
     }
+
+    public JSONArray loadLocationData() {
+        String locationData = this.appSettings.getString(kLocationData, null);
+        if (locationData != null) {
+            try {
+                JSONArray locationJson = new JSONArray(locationData);
+                return locationJson;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        return null;
+    }
+
     public List<FLTransaction> loadTimelineData(FLTransaction.TransactionScope scope) {
         String dataKey = "";
 
@@ -449,6 +464,11 @@ public class FloozRestClient
             this.appSettings.edit().putString(kNotificationsData, notifs.toString()).apply();
     }
 
+    public void saveLocationData(JSONArray locations) {
+        if (locations != null)
+            this.appSettings.edit().putString(kLocationData, locations.toString()).apply();
+    }
+
     public void saveTimelineData(FLTransaction.TransactionScope scope, JSONArray timeline) {
         if (timeline != null) {
             String dataKey = "";
@@ -478,6 +498,14 @@ public class FloozRestClient
         tmpEditor.remove(kFriendTimelineData);
         tmpEditor.remove(kTextData);
         tmpEditor.remove(kNotificationsData);
+        tmpEditor.remove(kLocationData);
+        tmpEditor.apply();
+    }
+
+    public void clearLocationData() {
+        SharedPreferences.Editor tmpEditor = this.appSettings.edit();
+
+        tmpEditor.remove(kLocationData);
         tmpEditor.apply();
     }
 
@@ -979,6 +1007,64 @@ public class FloozRestClient
         param.put("amount", amount);
 
         this.request("/cashouts", HttpRequestType.POST, param, responseHandler);
+    }
+
+    /***************************/
+    /*********  GEOLOC  ********/
+    /***************************/
+
+    public void placesFrom(String ll, final FloozHttpResponseHandler responseHandler) {
+        JSONArray cachedPlaces = this.loadLocationData();
+
+        if (cachedPlaces != null) {
+            if (responseHandler != null)
+                responseHandler.success(cachedPlaces);
+        } else {
+            HashMap<String, Object> params = new HashMap<>();
+
+            params.put("ll", ll);
+
+            this.request("/geo/search", HttpRequestType.GET, params, new FloozHttpResponseHandler() {
+                @Override
+                public void success(Object response) {
+                    JSONArray items = ((JSONObject)response).optJSONArray("items");
+
+                    saveLocationData(items);
+
+                    if (responseHandler != null)
+                        responseHandler.success(items);
+                }
+
+                @Override
+                public void failure(int statusCode, FLError error) {
+                    if (responseHandler != null)
+                        responseHandler.failure(statusCode, error);
+                }
+            });
+        }
+    }
+
+    public void placesSearch(String search, String ll, final FloozHttpResponseHandler responseHandler) {
+        HashMap<String, Object> params = new HashMap<>();
+
+        params.put("ll", ll);
+        params.put("q", search);
+
+        this.request("/geo/suggest", HttpRequestType.GET, params, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                JSONArray items = ((JSONObject)response).optJSONArray("items");
+
+                if (responseHandler != null)
+                    responseHandler.success(items);
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+                if (responseHandler != null)
+                    responseHandler.failure(statusCode, error);
+            }
+        });
     }
 
     /***************************/

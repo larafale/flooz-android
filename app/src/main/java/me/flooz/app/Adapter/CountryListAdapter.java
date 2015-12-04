@@ -32,7 +32,6 @@ public class CountryListAdapter extends BaseAdapter {
     private Context context;
     private LayoutInflater inflater;
 
-    public FLCountry currentCountry;
     private List<FLCountry> countries;
 
     public CountryListAdapter(Context ctx) {

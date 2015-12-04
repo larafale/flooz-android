@@ -21,9 +21,9 @@ public class FLCountry {
     public int maxLength;
 
     public FLCountry(JSONObject json) {
-        if (json != null) {
-            Context context = FloozApplication.getAppContext();
+        Context context = FloozApplication.getAppContext();
 
+        if (json != null) {
             this.name = json.optString("country");
             this.code = json.optString("code");
             this.indicatif = "+" + json.optString("indicatif");
@@ -41,12 +41,17 @@ public class FLCountry {
     }
 
     public static FLCountry defaultCountry() {
-        try {
-            return new FLCountry(new JSONObject("'country':'France', 'code':'FR', 'indicatif':'+33', 'lengths':[9]"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        return null;
+        Context context = FloozApplication.getAppContext();
+
+        FLCountry defaultCountry = new FLCountry(null);
+
+        defaultCountry.indicatif = "+33";
+        defaultCountry.code = "FR";
+        defaultCountry.name = "France";
+        defaultCountry.imageID = context.getResources().getIdentifier(defaultCountry.code.toLowerCase(), "drawable", context.getPackageName());
+        defaultCountry.maxLength = 9;
+
+        return defaultCountry;
     }
 
     public static FLCountry countryFromCode(String code) {

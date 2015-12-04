@@ -48,7 +48,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import me.flooz.app.Adapter.SelectUserListAdapter;
@@ -61,6 +63,8 @@ import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Tools.ActionSheet;
+import me.flooz.app.UI.Tools.ActionSheetItem;
 import me.flooz.app.UI.Tools.CustomImageViewer;
 import me.flooz.app.UI.View.ContactPickerView;
 import me.flooz.app.UI.View.CustomDialog;
@@ -72,6 +76,7 @@ import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.ImageHelper;
+import me.flooz.app.Utils.JSONHelper;
 import me.flooz.app.Utils.ViewServer;
 import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 
@@ -83,7 +88,8 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
     private static final int TAKE_PICTURE = 2;
     private static final int PERMISSION_CAMERA = 3;
     private static final int PERMISSION_CONTACTS = 4;
-
+    private static final int PICK_LOCATION = 5;
+    private static final int PERMISSION_LOCATION = 6;
 
     private NewTransactionActivity instance;
     private FloozApplication floozApp;
@@ -121,7 +127,11 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
     private TextView chargeButton;
     private TextView payButton;
     private ImageView capturePicButton;
-    private ImageView captureAlbumButton;
+    private ImageView locationButton;
+
+    private LinearLayout locationContainer;
+    private ImageView locationPic;
+    private TextView locationText;
 
     private ToolTip toolTipScope;
     private ToolTipScopeView tooltipScopeView;
@@ -136,6 +146,8 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
     private Dialog popupDialog;
 
     private String imagePath;
+
+    private JSONObject currentGeo;
 
     public void init() {
         this.random = FLHelper.generateRandomString();
@@ -231,6 +243,9 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         TextView currencySymbol = (TextView) this.findViewById(R.id.new_transac_currency_symbol);
         this.contentTextfield = (EditText) this.findViewById(R.id.new_transac_content_textfield);
         this.picContainer = (RelativeLayout) this.findViewById(R.id.new_transac_pic_container);
+        this.locationContainer = (LinearLayout) this.findViewById(R.id.new_transac_geo);
+        this.locationPic = (ImageView) this.findViewById(R.id.new_transac_geo_pic);
+        this.locationText = (TextView) this.findViewById(R.id.new_transac_geo_text);
 
         this.pic = (ImageView) this.findViewById(R.id.new_transac_pic);
         this.pic.setOnClickListener(new View.OnClickListener() {
@@ -243,7 +258,7 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         ImageView picDeleteButton = (ImageView) this.findViewById(R.id.new_transac_pic_delete);
         this.scopePic = (ImageView) this.findViewById(R.id.new_transac_scope_pic);
         this.capturePicButton = (ImageView) this.findViewById(R.id.new_transac_pic_button);
-        this.captureAlbumButton = (ImageView) this.findViewById(R.id.new_transac_album_button);
+        this.locationButton = (ImageView) this.findViewById(R.id.new_transac_geo_button);
         this.chargeButton = (TextView) this.findViewById(R.id.new_transac_collect);
         this.payButton = (TextView) this.findViewById(R.id.new_transac_paid);
         this.tipContainer = (ToolTipLayout) this.findViewById(R.id.new_transac_tooltip_container);
@@ -251,8 +266,9 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         RelativeLayout contentContainer = (RelativeLayout) this.findViewById(R.id.new_transac_content);
 
         this.scopePic.setColorFilter(this.getResources().getColor(android.R.color.white));
-        this.captureAlbumButton.setColorFilter(this.getResources().getColor(android.R.color.white));
+        this.locationButton.setColorFilter(this.getResources().getColor(android.R.color.white));
         this.capturePicButton.setColorFilter(this.getResources().getColor(android.R.color.white));
+        this.locationPic.setColorFilter(this.getResources().getColor(android.R.color.white));
 
         if (this.preset == null || !this.preset.blockBack) {
             this.closeButton.setVisibility(View.VISIBLE);
@@ -277,6 +293,7 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         this.payButton.setTypeface(CustomFonts.customTitleLight(this));
         this.headerBalance.setTypeface(CustomFonts.customTitleLight(this));
         this.toPicker.setTypeface(CustomFonts.customContentRegular(this));
+        this.locationText.setTypeface(CustomFonts.customContentRegular(this));
 
         this.headerCB.setColorFilter(this.getResources().getColor(R.color.blue));
         capturePicButton.setColorFilter(this.getResources().getColor(android.R.color.white));
@@ -437,7 +454,7 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         });
 
         capturePicButton.setOnClickListener(showCamera);
-        captureAlbumButton.setOnClickListener(showAlbum);
+        locationButton.setOnClickListener(showGeo);
 
         this.tooltipScopeView = new ToolTipScopeView(this);
         this.tooltipScopeView.changeScope(this.currentScope);
@@ -630,6 +647,19 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
                         }
                     });
                 }
+            } else if (requestCode == PICK_LOCATION) {
+                if (data.hasExtra("geo")) {
+                    try {
+                        currentGeo = new JSONObject(data.getStringExtra("geo"));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        currentGeo = null;
+                    }
+                } else {
+                    currentGeo = null;
+                }
+
+                this.updateGeo();
             }
         }
     }
@@ -762,6 +792,7 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
                 this.showDemoStepPopover(this.preset.steps.optJSONObject(demoCurrentStep));
         }
 
+        this.updateGeo();
         this.updateBalanceIndicator();
 
         if (this.transactionPending)
@@ -859,6 +890,9 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         if (focus.contentEquals("pay")) {
             return payButton;
         }
+        if (focus.contentEquals("geo")) {
+            return locationButton;
+        }
         return null;
     }
 
@@ -879,6 +913,9 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
             return Gravity.BOTTOM;
         }
         if (focus.contentEquals("pay")) {
+            return Gravity.TOP;
+        }
+        if (focus.contentEquals("geo")) {
             return Gravity.TOP;
         }
         return 0;
@@ -902,6 +939,9 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         }
         if (focus.contentEquals("pay")) {
             return Gravity.RIGHT;
+        }
+        if (focus.contentEquals("geo")) {
+            return Gravity.LEFT;
         }
         return 0;
     }
@@ -1071,37 +1111,68 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         public void onClick(View view) {
             saveData();
 
-            if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            List<ActionSheetItem> items = new ArrayList<>();
+
+            items.add(new ActionSheetItem(instance, R.string.GLOBAL_CAMERA, new ActionSheetItem.ActionSheetItemClickListener() {
+                @Override
+                public void onClick() {
+                    if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
 //                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
 //                    // Display UI and wait for user interaction
 //                } else {
-                ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.CAMERA}, PERMISSION_CAMERA);
+                        ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.CAMERA}, PERMISSION_CAMERA);
 //                }
-            } else {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                    } else {
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                tmpUriImage = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUriImage);
+                        tmpUriImage = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUriImage);
 
-                try {
-                    startActivityForResult(intent, TAKE_PICTURE);
-                } catch (ActivityNotFoundException e) {
+                        try {
+                            startActivityForResult(intent, TAKE_PICTURE);
+                        } catch (ActivityNotFoundException e) {
 
+                        }
+                    }
                 }
-            }
+            }));
+
+            items.add(new ActionSheetItem(instance, R.string.GLOBAL_ALBUMS, new ActionSheetItem.ActionSheetItemClickListener() {
+                @Override
+                public void onClick() {
+                    Intent intent = new Intent(Intent.ACTION_PICK);
+                    intent.setType("image/*");
+                    try {
+                        startActivityForResult(Intent.createChooser(intent, ""), SELECT_PICTURE);
+                    } catch (ActivityNotFoundException e) {
+
+                    }
+                }
+            }));
+
+            ActionSheet.showWithItems(instance, items);
+
         }
     };
 
-    private View.OnClickListener showAlbum = new View.OnClickListener() {
+    private View.OnClickListener showGeo = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             saveData();
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setType("image/*");
-            try {
-                startActivityForResult(Intent.createChooser(intent, ""), SELECT_PICTURE);
-            } catch (ActivityNotFoundException e) {
+            if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+//                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
+//                    // Display UI and wait for user interaction
+//                } else {
+                ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_LOCATION);
+//                }
+            } else {
+                Intent intentGeo = new Intent(instance, LocationActivity.class);
 
+                if (currentGeo != null)
+                    intentGeo.putExtra("geo", currentGeo.toString());
+
+                instance.startActivityForResult(intentGeo, PICK_LOCATION);
+                instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
             }
         }
     };
@@ -1125,6 +1196,16 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
                 contactListAdapter.loadContacts();
                 FloozRestClient.getInstance().sendUserContacts();
             }
+        } else if (requestCode == PERMISSION_LOCATION) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent intentGeo = new Intent(instance, LocationActivity.class);
+
+                if (currentGeo != null)
+                    intentGeo.putExtra("geo", currentGeo.toString());
+
+                instance.startActivityForResult(intentGeo, PICK_LOCATION);
+                instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+            }
         }
     }
 
@@ -1142,6 +1223,17 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
                 this.contentTextfield.requestFocus();
         }
         this.validateView();
+    }
+
+    public void updateGeo() {
+        if (this.currentGeo != null) {
+            this.locationButton.setColorFilter(this.getResources().getColor(R.color.blue));
+            this.locationContainer.setVisibility(View.VISIBLE);
+            this.locationText.setText(this.currentGeo.optString("name"));
+        } else {
+            this.locationButton.setColorFilter(this.getResources().getColor(android.R.color.white));
+            this.locationContainer.setVisibility(View.GONE);
+        }
     }
 
     public void photoTaken(final Bitmap photo) {
@@ -1255,6 +1347,13 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         params.put("scope", FLTransaction.transactionScopeToParams(this.currentScope));
         params.put("why", this.contentTextfield.getText().toString());
         params.put("validate", validate);
+
+        if (currentGeo != null)
+            try {
+                params.put("geo", JSONHelper.toMap(currentGeo));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
         if (this.preset != null && this.preset.payload != null)
             params.put("payload", this.preset.payload);

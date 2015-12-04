@@ -39,6 +39,7 @@ public class FLPhoneField extends LinearLayout {
     private EditText textfield;
     private ImageView flagImageView;
     private TextView indicatifLabel;
+    private LinearLayout countrySide;
 
     private FLCountry currentCountry;
     private String currentPhone;
@@ -115,8 +116,8 @@ public class FLPhoneField extends LinearLayout {
             }
         });
 
-        LinearLayout countrySide = (LinearLayout) view.findViewById(R.id.phone_country_side);
-        countrySide.setOnClickListener(new OnClickListener() {
+        this.countrySide = (LinearLayout) view.findViewById(R.id.phone_country_side);
+        this.countrySide.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -171,6 +172,20 @@ public class FLPhoneField extends LinearLayout {
     }
 
     public void setPhoneNumber(String phone) {
+        currentPhone = phone;
 
+        if (delegate != null) {
+            delegate.phoneChanged(currentPhone, currentCountry);
+        }
+
+        this.textfield.setText(currentPhone);
+    }
+
+    public void setEnable(Boolean enable) {
+        this.textfield.setFocusable(enable);
+        this.textfield.setFocusableInTouchMode(enable);
+        this.textfield.setCursorVisible(enable);
+        this.textfield.setClickable(enable);
+        this.countrySide.setClickable(enable);
     }
 }

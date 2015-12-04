@@ -144,7 +144,8 @@
                     android:layout_width="fill_parent"
                     android:padding="@dimen/dimen_large"
                     android:layout_height="fill_parent"
-                    android:baselineAligned="false">
+                    android:baselineAligned="false"
+                    android:layout_marginBottom="65dp">
 
                     <RelativeLayout
                         android:id="@+id/new_transac_content"
@@ -200,6 +201,7 @@
                 </LinearLayout>
 
                 <LinearLayout
+                    android:id="@+id/new_transac_tabbar"
                     android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -234,11 +236,10 @@
 
                             <ImageView
                                 android:layout_centerInParent="true"
-                                android:id="@+id/new_transac_album_button"
+                                android:id="@+id/new_transac_pic_button"
                                 android:layout_width="wrap_content"
                                 android:layout_height="@dimen/new_flooz_main_social_icn"
-                                android:src="@drawable/photo_album"/>
-
+                                android:src="@drawable/camera"/>
                         </RelativeLayout>
 
                         <RelativeLayout
@@ -248,10 +249,11 @@
 
                             <ImageView
                                 android:layout_centerInParent="true"
-                                android:id="@+id/new_transac_pic_button"
+                                android:id="@+id/new_transac_geo_button"
                                 android:layout_width="wrap_content"
                                 android:layout_height="@dimen/new_flooz_main_social_icn"
-                                android:src="@drawable/camera"/>
+                                android:src="@drawable/map"/>
+
                         </RelativeLayout>
                     </LinearLayout>
 
@@ -289,6 +291,35 @@
                             android:enabled="false"/>
 
                     </LinearLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/new_transac_geo"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_above="@+id/new_transac_tabbar"
+                    android:background="@color/background_header"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="@dimen/dimen_large"
+                    android:paddingRight="@dimen/dimen_large"
+                    android:paddingTop="@dimen/dimen_small"
+                    android:paddingBottom="@dimen/dimen_small">
+
+                    <ImageView
+                        android:id="@+id/new_transac_geo_pic"
+                        android:layout_width="15dp"
+                        android:layout_height="15dp"
+                        android:src="@drawable/map"
+                        android:layout_marginRight="@dimen/dimen_medium"/>
+
+                    <TextView
+                        android:id="@+id/new_transac_geo_text"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="13sp"
+                        android:textColor="@android:color/white"/>
+                    
                 </LinearLayout>
 
                 <se.emilsjolander.stickylistheaders.StickyListHeadersListView

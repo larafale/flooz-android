@@ -20,25 +20,28 @@ import java.util.HashMap;
 import java.util.Map;
 
 import me.flooz.app.App.FloozApplication;
+import me.flooz.app.Model.FLCountry;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.HomeActivity;
+import me.flooz.app.UI.View.FLPhoneField;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
+import me.flooz.app.Utils.FLHelper;
 
 /**
  * Created by Flooz on 9/1/15.
  */
-public class IdentityController extends BaseController {
+public class IdentityController extends BaseController implements FLPhoneField.FLPhoneFieldDelegate {
 
     private ImageView headerBackButton;
 
     private EditText firstnameTextfield;
     private EditText lastnameTextfield;
-    private EditText phoneTextfield;
+    private FLPhoneField phoneTextfield;
     private EditText emailTextfield;
     private EditText addressTextfield;
     private EditText zipCodeTextfield;
@@ -46,6 +49,8 @@ public class IdentityController extends BaseController {
 
     private TextView sendVerifyPhone;
     private TextView sendVerifyMail;
+
+    private String currentPhone;
 
     private Button saveButton;
 
@@ -63,7 +68,7 @@ public class IdentityController extends BaseController {
         TextView headerTitle = (TextView) this.currentView.findViewById(R.id.header_title);
         this.firstnameTextfield = (EditText) this.currentView.findViewById(R.id.settings_identity_firstname);
         this.lastnameTextfield = (EditText) this.currentView.findViewById(R.id.settings_identity_lastname);
-        this.phoneTextfield = (EditText) this.currentView.findViewById(R.id.settings_coord_phone);
+        this.phoneTextfield = (FLPhoneField) this.currentView.findViewById(R.id.settings_coord_phone);
         this.emailTextfield = (EditText) this.currentView.findViewById(R.id.settings_coord_email);
         this.addressTextfield = (EditText) this.currentView.findViewById(R.id.settings_coord_address);
         this.zipCodeTextfield = (EditText) this.currentView.findViewById(R.id.settings_coord_zip);
@@ -75,7 +80,6 @@ public class IdentityController extends BaseController {
         headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
         this.firstnameTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.lastnameTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
-        this.phoneTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.emailTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.addressTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.zipCodeTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
@@ -113,25 +117,6 @@ public class IdentityController extends BaseController {
             public void onClick(View v) {
                 FloozRestClient.getInstance().sendEmailValidation();
                 v.setVisibility(View.GONE);
-            }
-        });
-
-
-        this.phoneTextfield.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 10)
-                    s.delete(10, s.length());
             }
         });
 
@@ -178,8 +163,8 @@ public class IdentityController extends BaseController {
                 if (!lastnameTextfield.getText().toString().contentEquals(currentUser.lastname))
                     param.put("lastName", lastnameTextfield.getText().toString());
 
-                if (!phoneTextfield.getText().toString().contentEquals(currentUser.phone.replace("+33", "0")))
-                    param.put("phone", phoneTextfield.getText().toString());
+                if (currentPhone != null && !currentPhone.isEmpty())
+                    param.put("phone", currentPhone);
 
                 if (!emailTextfield.getText().toString().contentEquals(currentUser.email))
                     param.put("email", emailTextfield.getText().toString());
@@ -224,25 +209,20 @@ public class IdentityController extends BaseController {
 
         this.firstnameTextfield.setText(currentUser.firstname);
         this.lastnameTextfield.setText(currentUser.lastname);
-        this.phoneTextfield.setText(currentUser.phone.replace("+33", "0"));
         this.emailTextfield.setText(currentUser.email);
         this.addressTextfield.setText(currentUser.address.get("address"));
         this.zipCodeTextfield.setText(currentUser.address.get("zipCode"));
         this.cityTextfield.setText(currentUser.address.get("city"));
+        this.phoneTextfield.setCountry(currentUser.country);
+        this.phoneTextfield.setPhoneNumber(currentUser.phone);
 
         if (currentUser.checkDocuments.get("phone").equals(3)) {
             this.sendVerifyPhone.setVisibility(View.VISIBLE);
-            this.phoneTextfield.setFocusable(false);
-            this.phoneTextfield.setFocusableInTouchMode(false);
-            this.phoneTextfield.setCursorVisible(false);
-            this.phoneTextfield.setClickable(false);
+            this.phoneTextfield.setEnable(false);
         }
         else {
             this.sendVerifyPhone.setVisibility(View.GONE);
-            this.phoneTextfield.setFocusable(true);
-            this.phoneTextfield.setFocusableInTouchMode(true);
-            this.phoneTextfield.setCursorVisible(true);
-            this.phoneTextfield.setClickable(true);
+            this.phoneTextfield.setEnable(true);
         }
 
         if (currentUser.checkDocuments.get("email").equals(3)) {
@@ -277,5 +257,20 @@ public class IdentityController extends BaseController {
     @Override
     public void onBackPressed() {
         this.headerBackButton.performClick();
+    }
+
+    @Override
+    public void phoneChanged(String phone, FLCountry country) {
+        if (phone != null && !phone.isEmpty()) {
+            currentPhone = FLHelper.fullPhone(phone, country.code);
+        }
+    }
+
+    @Override
+    public void phoneNext() {
+        if (this.emailTextfield.isClickable())
+            this.emailTextfield.requestFocus();
+        else
+            this.addressTextfield.requestFocus();
     }
 }
