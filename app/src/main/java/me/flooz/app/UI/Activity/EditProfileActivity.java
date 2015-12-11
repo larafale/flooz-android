@@ -62,12 +62,11 @@ public class EditProfileActivity extends Activity {
     private ImageView cameraPictureAvatar;
     private ImageView cameraPictureCover;
     private EditText bioField;
-    private TextView bioHeader;
+    private EditText locationField;
+    private EditText websiteField;
     private TextView headerName;
 
     private Uri tmpUriImage;
-
-    private boolean isEdited = false;
 
     public static final int SELECT_PICTURE_AVATAR = 1;
     public static final int TAKE_PICTURE_AVATAR = 2;
@@ -92,23 +91,28 @@ public class EditProfileActivity extends Activity {
         this.profileAvatar = (ImageView) this.findViewById(R.id.edit_profile_avatar);
         this.profileCover = (ImageView) this.findViewById(R.id.edit_profile_cover);
         this.bioField = (EditText) this.findViewById(R.id.edit_profile_bio);
+        this.locationField = (EditText) this.findViewById(R.id.edit_profile_location);
+        this.websiteField = (EditText) this.findViewById(R.id.edit_profile_website);
         this.headerName = (TextView) this.findViewById(R.id.edit_profile_headername);
         this.saveProfile = (ImageView) this.findViewById(R.id.edit_profile_save);
-        this.bioHeader = (TextView) this.findViewById(R.id.edit_profile_bio_header);
         this.cameraPictureAvatar = (ImageView) this.findViewById(R.id.edit_profile_camera2);
         this.cameraPictureCover = (ImageView) this.findViewById(R.id.edit_profile_camera1);
         this.cameraPictureAvatar.bringToFront();
 
-        this.bioHeader.setTypeface(CustomFonts.customContentRegular(this));
         this.bioField.setTypeface(CustomFonts.customContentRegular(this));
+        this.locationField.setTypeface(CustomFonts.customContentRegular(this));
+        this.websiteField.setTypeface(CustomFonts.customContentRegular(this));
         this.headerName.setTypeface(CustomFonts.customContentLight(this));
         this.headerName.setTextColor(getResources().getColor(R.color.blue));
         this.saveProfile.setColorFilter(getResources().getColor(R.color.grey_pseudo));
         this.cameraPictureAvatar.setColorFilter(getResources().getColor(R.color.light_white_alpha));
         this.cameraPictureCover.setColorFilter(getResources().getColor(R.color.light_white_alpha));
 
-        this.bioField.setText(this.currentUser.userBio);
-        this.bioField.setSelection(this.bioField.getText().length());
+        FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+        this.bioField.setText(currentUser.userBio);
+        this.locationField.setText(currentUser.location);
+        this.websiteField.setText(currentUser.website);
 
         if (this.currentUser.avatarURL != null && !this.currentUser.avatarURL.isEmpty()) {
             ImageLoader.getInstance().displayImage(this.currentUser.avatarURL, this.profileAvatar);
@@ -152,29 +156,69 @@ public class EditProfileActivity extends Activity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (editable.toString().contentEquals(FloozRestClient.getInstance().currentUser.userBio)) {
-                    saveProfile.setColorFilter(getResources().getColor(R.color.grey_pseudo));
-                    saveProfile.setEnabled(false);
-                } else {
-                    saveProfile.setColorFilter(getResources().getColor(R.color.blue));
-                    saveProfile.setEnabled(true);
-                }
+                updateSaveButton();
             }
         });
+
+        this.websiteField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                updateSaveButton();
+            }
+        });
+
+        this.locationField.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                updateSaveButton();
+            }
+        });
+
         this.saveProfile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Map < String, Object > data = new HashMap<>(1);
-                String bioContent = bioField.getText().toString();
+                Map<String, Object> data = new HashMap<>(1);
 
-                data.put("bio", bioContent.isEmpty() ? "" : bioContent);
+                if (!bioField.getText().toString().isEmpty())
+                    data.put("bio", bioField.getText().toString());
+
+                if (!locationField.getText().toString().isEmpty())
+                    data.put("location", locationField.getText().toString());
+
+                if (!websiteField.getText().toString().isEmpty())
+                    data.put("website", websiteField.getText().toString());
 
                 FloozRestClient.getInstance().showLoadView();
                 FloozRestClient.getInstance().updateUser(data, new FloozHttpResponseHandler() {
                     @Override
                     public void success(Object response) {
-                        saveProfile.setColorFilter(getResources().getColor(R.color.grey_pseudo));
-                        saveProfile.setEnabled(false);
+                        FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+                        bioField.setText(currentUser.userBio);
+                        locationField.setText(currentUser.location);
+                        websiteField.setText(currentUser.website);
+
+                        updateSaveButton();
                     }
 
                     @Override
@@ -184,6 +228,20 @@ public class EditProfileActivity extends Activity {
                 });
             }
         });
+    }
+
+    private void updateSaveButton() {
+        FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+        if (!bioField.getText().toString().contentEquals(currentUser.birthdate)
+                || !locationField.getText().toString().contentEquals(currentUser.location)
+                || !websiteField.getText().toString().contentEquals(currentUser.website)) {
+            saveProfile.setColorFilter(getResources().getColor(R.color.blue));
+            saveProfile.setEnabled(true);
+        } else {
+            saveProfile.setColorFilter(getResources().getColor(R.color.grey_pseudo));
+            saveProfile.setEnabled(false);
+        }
     }
 
     private void showPictureActionMenu(boolean origin) {

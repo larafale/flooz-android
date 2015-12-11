@@ -44,6 +44,7 @@ public class DocumentsController extends BaseController {
     private static final int SELECT_PICTURE = 1;
     private static final int TAKE_PICTURE = 2;
     private static final int PERMISSION_CAMERA = 3;
+    private static final int PERMISSION_STORAGE = 4;
 
     private ImageView headerBackButton;
 
@@ -263,13 +264,25 @@ public class DocumentsController extends BaseController {
                 ActivityCompat.requestPermissions(parentActivity, new String[]{Manifest.permission.CAMERA}, PERMISSION_CAMERA);
 //                }
             } else {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (ActivityCompat.checkSelfPermission(parentActivity, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
+//                    // Display UI and wait for user interaction
+//                } else {
+                    ActivityCompat.requestPermissions(parentActivity, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_CAMERA);
+//                }
+                } else {
+                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
-                tmpUriImage = fileUri;
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                    Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
+                    tmpUriImage = fileUri;
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
 
-                parentActivity.startActivityForResult(intent, TAKE_PICTURE);
+                    try {
+                        parentActivity.startActivityForResult(intent, TAKE_PICTURE);
+                    } catch (ActivityNotFoundException e) {
+
+                    }
+                }
             }
         }
     };
@@ -277,13 +290,21 @@ public class DocumentsController extends BaseController {
     private ActionSheetItem.ActionSheetItemClickListener showGallery = new ActionSheetItem.ActionSheetItemClickListener() {
         @Override
         public void onClick() {
-            Intent intent = new Intent(Intent.ACTION_PICK);
-            intent.setType("image/*");
+            if (ActivityCompat.checkSelfPermission(parentActivity, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
+//                    // Display UI and wait for user interaction
+//                } else {
+                ActivityCompat.requestPermissions(parentActivity, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_STORAGE);
+//                }
+            } else {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
 
-            try {
-                parentActivity.startActivityForResult(Intent.createChooser(intent, ""), SELECT_PICTURE);
-            } catch (ActivityNotFoundException e) {
+                try {
+                    parentActivity.startActivityForResult(Intent.createChooser(intent, ""), SELECT_PICTURE);
+                } catch (ActivityNotFoundException e) {
 
+                }
             }
         }
     };
@@ -352,13 +373,44 @@ public class DocumentsController extends BaseController {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == PERMISSION_CAMERA) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (ActivityCompat.checkSelfPermission(parentActivity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
+//                    // Display UI and wait for user interaction
+//                } else {
+                    ActivityCompat.requestPermissions(parentActivity, new String[]{Manifest.permission.CAMERA}, PERMISSION_CAMERA);
+//                }
+                } else {
+                    if (ActivityCompat.checkSelfPermission(parentActivity, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
+//                    // Display UI and wait for user interaction
+//                } else {
+                        ActivityCompat.requestPermissions(parentActivity, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_CAMERA);
+//                }
+                    } else {
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
-                tmpUriImage = fileUri;
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                        Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
+                        tmpUriImage = fileUri;
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
 
-                parentActivity.startActivityForResult(intent, TAKE_PICTURE);
+                        try {
+                            parentActivity.startActivityForResult(intent, TAKE_PICTURE);
+                        } catch (ActivityNotFoundException e) {
+
+                        }
+                    }
+                }
+            }
+        } else if (requestCode == PERMISSION_STORAGE) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+
+                try {
+                    parentActivity.startActivityForResult(Intent.createChooser(intent, ""), SELECT_PICTURE);
+                } catch (ActivityNotFoundException e) {
+
+                }
             }
         }
     }

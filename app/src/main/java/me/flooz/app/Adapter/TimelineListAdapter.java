@@ -1,7 +1,9 @@
 package me.flooz.app.Adapter;
 
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
@@ -17,6 +19,8 @@ import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,6 +72,7 @@ public class TimelineListAdapter extends BaseAdapter {
         public TextView transactionText;
         public TextView transactionValue;
         public TextView transactionText3D;
+        public TextView transactionWhen;
         public TextView transactionLocationText;
         public TextView transactionLikesText;
         public TextView transactionLikesButtonText;
@@ -144,6 +149,7 @@ public class TimelineListAdapter extends BaseAdapter {
 
             holder.transactionText = (TextView) rowView.findViewById(R.id.timelineTransactionText);
             holder.transactionValue = (TextView) rowView.findViewById(R.id.timelineTransactionValue);
+            holder.transactionWhen = (TextView) rowView.findViewById(R.id.timelineTransactionWhen);
             holder.transactionText3D = (TextView) rowView.findViewById(R.id.timelineTransactionText3D);
             holder.transactionLocationText = (TextView) rowView.findViewById(R.id.timelineTransactionLocationText);
             holder.transactionLikesText = (TextView) rowView.findViewById(R.id.timelineTransactionLikesText);
@@ -160,6 +166,7 @@ public class TimelineListAdapter extends BaseAdapter {
 
             holder.transactionLocationImg.setColorFilter(context.getResources().getColor(R.color.placeholder));
 
+            holder.transactionWhen.setTypeface(CustomFonts.customContentRegular(context));
             holder.transactionText.setTypeface(CustomFonts.customContentLight(context));
             holder.transactionValue.setTypeface(CustomFonts.customTitleExtraLight(context), Typeface.BOLD);
             holder.transactionText3D.setTypeface(CustomFonts.customContentRegular(context));
@@ -205,6 +212,8 @@ public class TimelineListAdapter extends BaseAdapter {
         holder.userPic.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
         if (currentTransaction.avatarURL != null && !currentTransaction.avatarURL.isEmpty())
             ImageLoader.getInstance().displayImage(currentTransaction.avatarURL, holder.userPic);
+
+        holder.transactionWhen.setText(currentTransaction.when);
 
         if (currentTransaction.text3d != null) {
 
@@ -290,7 +299,10 @@ public class TimelineListAdapter extends BaseAdapter {
         if (currentTransaction.social != null && currentTransaction.social.isLiked) {
             holder.transactionLikesButtonText.setBackground(this.context.getResources().getDrawable(R.drawable.timeline_row_action_button_background_selected));
             holder.transactionLikesButtonText.setTextColor(this.context.getResources().getColor(android.R.color.white));
-            holder.transactionLikesButtonText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.social_like_full, 0, 0, 0);
+            Drawable fullLike = this.context.getResources().getDrawable(R.drawable.social_like_full);
+            fullLike.setColorFilter(this.context.getResources().getColor(android.R.color.white), PorterDuff.Mode.SRC_ATOP);
+
+            holder.transactionLikesButtonText.setCompoundDrawablesWithIntrinsicBounds(fullLike, null, null, null);
         }
         else {
             holder.transactionLikesButtonText.setBackground(this.context.getResources().getDrawable(R.drawable.timeline_row_action_button_background));
@@ -302,48 +314,18 @@ public class TimelineListAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if (FloozRestClient.getInstance().currentUser != null) {
-//                    FloozRestClient.getInstance().likeTransaction(currentTransaction.transactionId, new FloozHttpResponseHandler() {
-//                        @Override
-//                        public void success(Object response) {
-//                            currentTransaction.social.isLiked = !currentTransaction.social.isLiked;
-//                            currentTransaction.social.likeText = (String) response;
-//
-//                            if (!currentTransaction.social.likeText.isEmpty() || currentTransaction.social.commentsCount.intValue() > 0) {
-//                                holder.transactionSocialContainer.setVisibility(View.VISIBLE);
-//
-//                                if (currentTransaction.social.commentsCount.intValue() > 0) {
-//                                    holder.transactionCommentsNumber.setText(currentTransaction.social.commentsCount.toString());
-//                                    holder.transactionCommentsNumber.setVisibility(View.VISIBLE);
-//                                } else {
-//                                    holder.transactionCommentsNumber.setVisibility(View.GONE);
-//                                }
-//
-//
-//                                if (!currentTransaction.social.likeText.isEmpty()) {
-//                                    holder.transactionLikesText.setText(currentTransaction.social.likeText);
-//                                    holder.transactionLikesText.setVisibility(View.VISIBLE);
-//                                } else {
-//                                    holder.transactionLikesText.setVisibility(View.GONE);
-//                                }
-//                            } else
-//                                holder.transactionSocialContainer.setVisibility(View.GONE);
-//
-//                            if (currentTransaction.social.isLiked) {
-//                                holder.transactionLikesButtonText.setBackground(context.getResources().getDrawable(R.drawable.timeline_row_action_button_background_selected));
-//                                holder.transactionLikesButtonText.setTextColor(context.getResources().getColor(android.R.color.white));
-//                                holder.transactionLikesButtonText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.social_like_full, 0, 0, 0);
-//                            } else {
-//                                holder.transactionLikesButtonText.setBackground(context.getResources().getDrawable(R.drawable.timeline_row_action_button_background));
-//                                holder.transactionLikesButtonText.setTextColor(context.getResources().getColor(R.color.placeholder));
-//                                holder.transactionLikesButtonText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.social_like, 0, 0, 0);
-//                            }
-//                        }
-//
-//                        @Override
-//                        public void failure(int statusCode, FLError error) {
-//
-//                        }
-//                    });
+                    FloozRestClient.getInstance().likeTransaction(currentTransaction.transactionId, new FloozHttpResponseHandler() {
+                        @Override
+                        public void success(Object response) {
+                            currentTransaction.setJson((JSONObject)response);
+                            notifyDataSetChanged();
+                        }
+
+                        @Override
+                        public void failure(int statusCode, FLError error) {
+
+                        }
+                    });
                 } else {
                     if (delegate != null)
                         delegate.ListItemCommentClick(currentTransaction);

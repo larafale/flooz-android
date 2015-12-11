@@ -2,6 +2,7 @@ package me.flooz.app.UI.Controllers;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,14 +10,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ImageView;
@@ -36,7 +36,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 
-import jp.wasabeef.blurry.Blurry;
 import me.flooz.app.Adapter.TimelineListAdapter;
 import me.flooz.app.Adapter.UserListAdapter;
 import me.flooz.app.App.FloozApplication;
@@ -47,9 +46,13 @@ import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.AccountActivity;
 import me.flooz.app.UI.Activity.EditProfileActivity;
 import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.NewTransactionActivity;
+import me.flooz.app.UI.Fragment.Home.TabFragments.AccountFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.ProfileCardFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.ProfileFragment;
 import me.flooz.app.UI.Tools.ActionSheet;
 import me.flooz.app.UI.Tools.ActionSheetItem;
 import me.flooz.app.UI.Tools.CustomImageViewer;
@@ -76,6 +79,13 @@ public class ProfileController extends BaseController implements TimelineListAda
     private TextView profileName;
     private TextView profileUsername;
     private TextView userBio;
+    private LinearLayout infosContainer;
+    private LinearLayout locationContainer;
+    private ImageView locationPic;
+    private TextView locationText;
+    private LinearLayout websiteContainer;
+    private ImageView websitePic;
+    private TextView websiteText;
     private LinearLayout stickyLayout;
     private FLUser flUser;
     private ImageView removeButton;
@@ -85,11 +95,12 @@ public class ProfileController extends BaseController implements TimelineListAda
     private ImageView addPendingImage;
     private LinearLayout largePendingButton;
     private LinearLayout addButton;
-    private LinearLayout editButton;
+    private RelativeLayout editButton;
     private TextView addButtonText;
     private TextView largePendingText;
     private TextView addPendingButtonText;
     private TextView editProfileText;
+    private TextView editProfileBadge;
     private RadioButton settingsFloozButton;
     private RadioButton settingsFollowingButton;
     private LinearLayout buttonRequestPending;
@@ -139,7 +150,8 @@ public class ProfileController extends BaseController implements TimelineListAda
 
         this.largePendingButton = (LinearLayout) listHeader.findViewById(R.id.profile_largebutton_pending);
         this.addButton = (LinearLayout) listHeader.findViewById(R.id.profile_button_add);
-        this.editButton = (LinearLayout) listHeader.findViewById(R.id.profile_button_edit);
+        this.editButton = (RelativeLayout) listHeader.findViewById(R.id.profile_button_edit);
+        this.editProfileBadge = (TextView) listHeader.findViewById(R.id.edit_profile_badge);
         this.buttonRequestPending = (LinearLayout) listHeader.findViewById(R.id.profile_button_add_pending);
         this.settingsButton = (ImageView) listHeader.findViewById(R.id.settings_profile_button);
         this.addButtonImage = (ImageView) listHeader.findViewById(R.id.add_profile_image);
@@ -152,6 +164,15 @@ public class ProfileController extends BaseController implements TimelineListAda
         this.profileName = (TextView) listHeader.findViewById(R.id.profile_card_name);
         this.profileUsername = (TextView) listHeader.findViewById(R.id.profile_card_username);
         this.userBio = (TextView) listHeader.findViewById(R.id.profile_card_bio);
+
+        this.infosContainer = (LinearLayout) listHeader.findViewById(R.id.profile_card_infos);
+        this.locationContainer = (LinearLayout) listHeader.findViewById(R.id.profile_card_infos_location);
+        this.locationPic = (ImageView) listHeader.findViewById(R.id.profile_card_infos_location_pic);
+        this.locationText = (TextView) listHeader.findViewById(R.id.profile_card_infos_location_text);
+        this.websiteContainer = (LinearLayout) listHeader.findViewById(R.id.profile_card_infos_website);
+        this.websitePic = (ImageView) listHeader.findViewById(R.id.profile_card_infos_website_pic);
+        this.websiteText = (TextView) listHeader.findViewById(R.id.profile_card_infos_website_text);
+
         this.addButtonText = (TextView) listHeader.findViewById(R.id.add_profile_text);
         this.largePendingText = (TextView) listHeader.findViewById(R.id.pending_largebutton_text);
         this.editProfileText = (TextView) listHeader.findViewById(R.id.edit_profile_text);
@@ -173,6 +194,8 @@ public class ProfileController extends BaseController implements TimelineListAda
         this.largePendingImage.setColorFilter(Color.WHITE);
         this.largePendingText.setTextColor(Color.WHITE);
         this.removeButton.setColorFilter(Color.WHITE);
+        this.locationPic.setColorFilter(Color.WHITE);
+        this.websitePic.setColorFilter(Color.WHITE);
         this.addPendingImage.setColorFilter(parentActivity.getResources().getColor(R.color.blue));
         this.stickyName.setTextColor(Color.WHITE);
         this.profileName.setTextColor(Color.WHITE);
@@ -198,11 +221,20 @@ public class ProfileController extends BaseController implements TimelineListAda
         this.editProfileText.setTypeface(regContent);
         this.addPendingButtonText.setTypeface(regContent);
         this.stickyUsername.setTypeface(regContent);
-
+        this.locationText.setTypeface(regContent);
+        this.websiteText.setTypeface(regContent);
+        this.editProfileBadge.setTypeface(regContent);
         this.profileUsername.setTypeface(regContent);
         this.userBio.setTypeface(regContent);
 
         this.reloadWithUser();
+
+        this.websiteContainer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         this.stickyLayout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -232,8 +264,14 @@ public class ProfileController extends BaseController implements TimelineListAda
             }
         });
 
-        if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
-            this.cardHeaderCloseButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
+        if (currentKind == ControllerKind.FRAGMENT_CONTROLLER) {
+            HomeActivity activity = (HomeActivity) parentActivity;
+
+            if (activity.currentTabHistory.size() == 1)
+                this.cardHeaderCloseButton.setVisibility(View.GONE);
+            else
+                this.cardHeaderCloseButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
+        }
 
         this.cardHeaderCloseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -247,152 +285,176 @@ public class ProfileController extends BaseController implements TimelineListAda
             }
         });
 
-        this.profileImage.setOnClickListener(new View.OnClickListener() {
+        this.websiteContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (flUser.avatarURL != null && !flUser.avatarURL.isEmpty()) {
-                    CustomImageViewer.start(parentActivity, profileImageFullURL);
-                }
-            }
-        });
+                if (!flUser.website.isEmpty()) {
+                    String url = flUser.website;
 
-        this.editButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(parentActivity, EditProfileActivity.class);
-                parentActivity.startActivity(intent);
-                parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-            }
-        });
+                    if (!url.startsWith("http://") && !url.startsWith("https://"))
+                        url = "http://" + url;
 
-        this.mainListContainer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                if (settingsFollowingButton.isChecked()) {
-                    if (friendAdapter.userList.size() != 0) {
-                        FloozApplication.getInstance().showUserProfile(friendAdapter.getItem(position - 1));
+                    try {
+                        Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                        parentActivity.startActivity(browserIntent);
+                    } catch (ActivityNotFoundException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
-            }
-        });
+            });
 
-        this.mainListContainer.setOnUserProfileListViewListener(new UserProfileListView.OnUserProfileListViewListener() {
-            @Override
-            public void onShowLastItem() {
-                loadNextPage();
-            }
-        });
-
-        this.settingsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showUserActionMenu(flUser);
-            }
-        });
-
-        this.largePendingButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showActivePendingFriendActionMenu(flUser);
-            }
-        });
-
-        this.removeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showRemoveFriendActionMenu(flUser);
-            }
-        });
-
-        this.buttonRequestPending.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showPendingFriendActionMenu(flUser);
-            }
-        });
-
-        this.profileCover.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (flUser.coverURL != null && !flUser.coverURL.isEmpty()) {
-                    CustomImageViewer.start(parentActivity, coverURLFull);
+            this.profileImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (flUser.avatarURL != null && !flUser.avatarURL.isEmpty()) {
+                        CustomImageViewer.start(parentActivity, profileImageFullURL);
+                    }
                 }
-            }
-        });
+            });
 
-        this.addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FloozRestClient.getInstance().sendFriendRequest(flUser.userId, flUser.getSelectedCanal(), new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
-                        settingsClearVision();
-                        largePendingButton.setVisibility(View.VISIBLE);
+            this.editButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (currentKind == ControllerKind.FRAGMENT_CONTROLLER) {
+                        AccountFragment controller = new AccountFragment();
+                        ((HomeActivity) parentActivity).pushFragmentInCurrentTab(controller);
+                    } else {
+                        Intent editIntent = new Intent(parentActivity, AccountActivity.class);
+                        parentActivity.startActivity(editIntent);
+                        parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                    }
+                }
+            });
+
+            this.mainListContainer.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                    if (settingsFollowingButton.isChecked()) {
+                        if (friendAdapter.userList.size() != 0) {
+                            FloozApplication.getInstance().showUserProfile(friendAdapter.getItem(position - 1));
+                        }
+                    }
+                }
+            });
+
+            this.mainListContainer.setOnUserProfileListViewListener(new UserProfileListView.OnUserProfileListViewListener() {
+                @Override
+                public void onShowLastItem() {
+                    loadNextPage();
+                }
+            });
+
+            this.settingsButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showUserActionMenu(flUser);
+                }
+            });
+
+            this.largePendingButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showActivePendingFriendActionMenu(flUser);
+                }
+            });
+
+            this.removeButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showRemoveFriendActionMenu(flUser);
+                }
+            });
+
+            this.buttonRequestPending.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    showPendingFriendActionMenu(flUser);
+                }
+            });
+
+            this.profileCover.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (flUser.coverURL != null && !flUser.coverURL.isEmpty()) {
+                        CustomImageViewer.start(parentActivity, coverURLFull);
+                    }
+                }
+            });
+
+            this.addButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FloozRestClient.getInstance().sendFriendRequest(flUser.userId, flUser.getSelectedCanal(), new FloozHttpResponseHandler() {
+                        @Override
+                        public void success(Object response) {
+                            settingsClearVision();
+                            largePendingButton.setVisibility(View.VISIBLE);
+                        }
+
+                        @Override
+                        public void failure(int statusCode, FLError error) {
+
+                        }
+                    });
+                }
+            });
+
+            this.mainListContainer.setOnScrollListener(new AbsListView.OnScrollListener() {
+                @Override
+                public void onScrollStateChanged(AbsListView view, int scrollState) {
+
+                }
+
+                @Override
+                public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
+                    int firstVisiblePosition = mainListContainer.getFirstVisiblePosition();
+                    int scrollY = (int) FLHelper.convertPixelsToDp(getScroll(), parentActivity);
+                    int modifier = (scrollY / 2);
+
+                    if (scrollY <= 100) {
+                        profileImage.getLayoutParams().height = imageSize - (int) FLHelper.convertDpToPixel(modifier, parentActivity);
+                        profileImage.getLayoutParams().width = imageSize - (int) FLHelper.convertDpToPixel(modifier, parentActivity);
+                        profileImage.requestLayout();
                     }
 
-                    @Override
-                    public void failure(int statusCode, FLError error) {
-
+                    if (scrollY >= 120 && (scrollY <= 200 || modCond > 1) && firstVisiblePosition == 0) {
+                        if (stickyModifier == 0)
+                            stickyModifier = modifier;
+                        modCond = 120 - (modifier - stickyModifier) * 2;
+                        if (modCond < 0)
+                            modCond = 1;
+                        stickyLayout.setPadding(0, modCond, 0, 0);
                     }
-                });
-            }
-        });
 
-        this.mainListContainer.setOnScrollListener(new AbsListView.OnScrollListener() {
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState) {
+                    if (scrollY >= 60 && !isSticky && firstVisiblePosition == 0) {
+                        stickyHeader.setVisibility(View.VISIBLE);
+                        isSticky = !isSticky;
+                    }
+                    if (scrollY < 60 && isSticky && firstVisiblePosition == 0) {
+                        stickyHeader.setVisibility(View.INVISIBLE);
+                        isSticky = !isSticky;
+                    }
+                    if (scrollY < 100 && isHeaderSticky && firstVisiblePosition == 0) {
+                        stickyLayout.setVisibility(View.INVISIBLE);
+                        stickyHeaderBlur.setVisibility(View.INVISIBLE);
+                        isHeaderSticky = !isHeaderSticky;
+                    }
+                    if (scrollY >= 100 && !isHeaderSticky && firstVisiblePosition == 0) {
+                        stickyLayout.setVisibility(View.VISIBLE);
+                        stickyHeaderBlur.setVisibility(View.VISIBLE);
 
-            }
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-                int firstVisiblePosition = mainListContainer.getFirstVisiblePosition();
-                int scrollY = (int) FLHelper.convertPixelsToDp(getScroll(), parentActivity);
-                int modifier = (scrollY / 2);
-
-                if (scrollY <= 100) {
-                    profileImage.getLayoutParams().height = imageSize - (int) FLHelper.convertDpToPixel(modifier, parentActivity);
-                    profileImage.getLayoutParams().width = imageSize - (int) FLHelper.convertDpToPixel(modifier, parentActivity);
-                    profileImage.requestLayout();
+                        isHeaderSticky = !isHeaderSticky;
+                    }
                 }
+            });
 
-                if (scrollY >= 120 && (scrollY <= 200 || modCond > 1) && firstVisiblePosition == 0) {
-                    if (stickyModifier == 0)
-                        stickyModifier = modifier;
-                    modCond = 120 - (modifier - stickyModifier) * 2;
-                    if (modCond < 0)
-                        modCond = 1;
-                    stickyLayout.setPadding(0, modCond, 0, 0);
-                }
+            this.mainListContainer.addHeaderView(listHeader);
+            this.reloadWithUser();
+            this.settingsFloozButton.performClick();
+        }
 
-                if (scrollY >= 60 && !isSticky && firstVisiblePosition == 0) {
-                    stickyHeader.setVisibility(View.VISIBLE);
-                    isSticky = !isSticky;
-                }
-                if (scrollY < 60 && isSticky && firstVisiblePosition == 0) {
-                    stickyHeader.setVisibility(View.INVISIBLE);
-                    isSticky = !isSticky;
-                }
-                if (scrollY < 100 && isHeaderSticky && firstVisiblePosition == 0) {
-                    stickyLayout.setVisibility(View.INVISIBLE);
-                    stickyHeaderBlur.setVisibility(View.INVISIBLE);
-                    isHeaderSticky = !isHeaderSticky;
-                }
-                if (scrollY >= 100 && !isHeaderSticky && firstVisiblePosition == 0) {
-                    stickyLayout.setVisibility(View.VISIBLE);
-                    stickyHeaderBlur.setVisibility(View.VISIBLE);
-
-                    isHeaderSticky = !isHeaderSticky;
-                }
-            }
-        });
-
-        this.mainListContainer.addHeaderView(listHeader);
-        this.reloadWithUser();
-        this.settingsFloozButton.performClick();
-    }
-
-    private Dictionary<Integer, Integer> listViewItemHeights = new Hashtable<Integer, Integer>();
+        private Dictionary<Integer, Integer> listViewItemHeights = new Hashtable<Integer, Integer>();
 
     private int getScroll() {
         View c = mainListContainer.getChildAt(0); //this is the first visible row
@@ -502,13 +564,13 @@ public class ProfileController extends BaseController implements TimelineListAda
 
                 @Override
                 public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    Blurry.with(parentActivity)
-                            .radius(20)
-                            .sampling(1)
-                            .async()
-                            .animate(2000)
-                            .capture(stickyHeaderBlur)
-                            .into(stickyHeaderBlur);
+//                    Blurry.with(parentActivity)
+//                            .radius(20)
+//                            .sampling(1)
+//                            .async()
+//                            .animate(2000)
+//                            .capture(stickyHeaderBlur)
+//                            .into(stickyHeaderBlur);
                 }
 
                 @Override
@@ -522,13 +584,13 @@ public class ProfileController extends BaseController implements TimelineListAda
         }  else {
             this.stickyHeaderBlur.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.cover));
 
-            Blurry.with(parentActivity)
-                    .radius(20)
-                    .sampling(1)
-                    .async()
-                    .animate(2000)
-                    .capture(stickyHeaderBlur)
-                    .into(stickyHeaderBlur);
+//            Blurry.with(parentActivity)
+//                    .radius(20)
+//                    .sampling(1)
+//                    .async()
+//                    .animate(2000)
+//                    .capture(stickyHeaderBlur)
+//                    .into(stickyHeaderBlur);
 
             this.stickyHeader.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.cover));
             this.profileCover.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.cover));
@@ -561,14 +623,41 @@ public class ProfileController extends BaseController implements TimelineListAda
         if (flUser.actions != null && flUser.actions.contains("settings"))
             this.settingsButton.setVisibility(View.VISIBLE);
 
-        if (flUser.actions != null && flUser.actions.contains("self"))
+        if (flUser.actions != null && flUser.actions.contains("self")) {
             this.editButton.setVisibility(View.VISIBLE);
+            this.editProfileText.setText(parentActivity.getResources().getText(R.string.GLOBAL_ACCOUNT) + " " +  FLHelper.trimTrailingZeros(String.format("%.2f", FloozRestClient.getInstance().currentUser.amount.floatValue()).replace(',', '.')) + " €");
+
+            int badgeValue = FloozRestClient.getInstance().currentUser.json.optJSONObject("metrics").optInt("accountMissing");
+            if (badgeValue > 0) {
+                this.editProfileBadge.setVisibility(View.VISIBLE);
+                this.editProfileBadge.setText("" + badgeValue);
+            } else
+                this.editProfileBadge.setVisibility(View.GONE);
+        }
 
         if (!flUser.userBio.isEmpty()) {
             this.userBio.setText(flUser.userBio);
             this.userBio.setVisibility(View.VISIBLE);
         } else {
             this.userBio.setVisibility(View.GONE);
+        }
+
+        if (!flUser.location.isEmpty() || !flUser.website.isEmpty()) {
+            this.infosContainer.setVisibility(View.VISIBLE);
+
+            if (!flUser.location.isEmpty()) {
+                this.locationContainer.setVisibility(View.VISIBLE);
+                this.locationText.setText(flUser.location);
+            } else
+                this.locationContainer.setVisibility(View.GONE);
+
+            if (!flUser.website.isEmpty()) {
+                this.websiteContainer.setVisibility(View.VISIBLE);
+                this.websiteText.setText(flUser.website);
+            } else
+                this.websiteContainer.setVisibility(View.GONE);
+        } else {
+            this.infosContainer.setVisibility(View.GONE);
         }
 
         this.settingsFloozButton.setTypeface(regContent);

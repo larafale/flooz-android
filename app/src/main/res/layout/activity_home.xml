@@ -63,6 +63,7 @@
                         android:gravity="center"
                         android:padding="2dp"
                         android:textSize="@dimen/tab_bar_badge_text"
+                        android:textColor="@android:color/white"
                         android:visibility="gone"
                         android:background="@drawable/notification_alert_background"
                         android:layout_alignRight="@id/home_tab_image"/>
@@ -106,6 +107,7 @@
                         android:layout_height="@dimen/tab_bar_badge_size"
                         android:gravity="center"
                         android:padding="2dp"
+                        android:textColor="@android:color/white"
                         android:textSize="@dimen/tab_bar_badge_text"
                         android:visibility="gone"
                         android:background="@drawable/notification_alert_background"
@@ -170,6 +172,7 @@
                         android:gravity="center"
                         android:padding="2dp"
                         android:textSize="@dimen/tab_bar_badge_text"
+                        android:textColor="@android:color/white"
                         android:visibility="gone"
                         android:background="@drawable/notification_alert_background"
                         android:layout_alignRight="@id/share_tab_image"/>
@@ -214,6 +217,7 @@
                         android:gravity="center"
                         android:padding="2dp"
                         android:textSize="@dimen/tab_bar_badge_text"
+                        android:textColor="@android:color/white"
                         android:visibility="gone"
                         android:background="@drawable/notification_alert_background"
                         android:layout_alignRight="@id/account_tab_image"/>

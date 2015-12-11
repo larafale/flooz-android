@@ -38,6 +38,23 @@
             android:layout_height="fill_parent"
             android:visibility="gone"/>
 
+        <TextView
+            android:id="@+id/timeline_scope_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/dimen_medium"
+            android:paddingBottom="@dimen/dimen_medium"
+            android:paddingLeft="@dimen/dimen_large"
+            android:paddingRight="@dimen/dimen_large"
+            android:background="@drawable/background_action_button"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dimen_large"
+            android:text="@string/TIMELINE_SCOPE_HELPER_ALL"
+            android:textColor="@android:color/white"
+            android:textSize="13sp"
+            android:clickable="false"
+            android:visibility="invisible"/>
+
     </RelativeLayout>
 
     <RelativeLayout
@@ -49,34 +66,23 @@
             android:layout_width="fill_parent"
             android:layout_height="@dimen/header_size">
 
-            <info.hoang8f.android.segmented.SegmentedGroup
-                android:id="@+id/header_segmented_control"
-                android:layout_width="150dp"
-                android:layout_height="fill_parent"
-                android:layout_margin="8dp"
-                android:orientation="horizontal"
-                android:layout_centerInParent="true"
-                android:gravity="center_vertical">
+            <ImageView
+                android:id="@+id/header_item_left"
+                android:layout_width="@dimen/header_item_size"
+                android:layout_height="@dimen/header_item_size"
+                android:layout_centerVertical="true"
+                android:padding="7dp"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/scope_public"
+                android:layout_marginLeft="@dimen/header_item_margin"
+                />
 
-                <me.flooz.app.UI.View.RadioButtonCenter
-                    android:id="@+id/settings_segment_all"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"/>
-
-                <me.flooz.app.UI.View.RadioButtonCenter
-                    android:id="@+id/settings_segment_friends"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"/>
-
-                <me.flooz.app.UI.View.RadioButtonCenter
-                    android:id="@+id/settings_segment_private"
-                    android:layout_width="0dp"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="1"/>
-
-            </info.hoang8f.android.segmented.SegmentedGroup>
+            <ImageView
+                android:id="@+id/header_item_middle"
+                android:layout_width="50dp"
+                android:layout_height="match_parent"
+                android:src="@drawable/flooz_mini"
+                android:layout_centerInParent="true"/>
 
             <ImageView
                 android:id="@+id/header_item_right"
@@ -88,26 +94,6 @@
                 android:src="@drawable/search"
                 android:layout_marginLeft="@dimen/header_item_margin"
                 />
-
-            <!--<TextView-->
-                <!--android:id="@+id/header_title"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_centerInParent="true"-->
-                <!--android:text="@string/MENU_HOME"-->
-                <!--android:textColor="@color/blue"-->
-                <!--android:textSize="@dimen/header_title"/>-->
-
-            <!--<TextView-->
-                <!--android:id="@+id/header_item_right"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_centerVertical="true"-->
-                <!--android:layout_alignParentRight="true"-->
-                <!--android:textColor="@color/blue"-->
-                <!--android:padding="@dimen/header_item_padding"-->
-                <!--android:layout_marginRight="@dimen/header_item_margin"/>-->
-
         </RelativeLayout>
 
         <View

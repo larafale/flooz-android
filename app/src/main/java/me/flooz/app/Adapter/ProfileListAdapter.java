@@ -144,7 +144,7 @@ public class ProfileListAdapter extends BaseAdapter implements StickyListHeaders
         menuHeader.add(this.context.getResources().getString(R.string.MENU_OTHER));
 
         Map<String, Object> item0 = new HashMap<>();
-        item0.put("title", this.context.getResources().getString(R.string.NAV_PROFILE));
+        item0.put("title", this.context.getResources().getString(R.string.MENU_EDIT_PROFILE));
         item0.put("action", "profile");
         item0.put("headerID", 1);
         menuData.add(item0);

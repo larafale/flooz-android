@@ -31,18 +31,17 @@
 
         <TextView
             android:id="@+id/account_menu_row_notif"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingLeft="@dimen/dimen_medium"
-            android:paddingRight="@dimen/dimen_medium"
-            android:paddingTop="@dimen/dimen_small"
-            android:paddingBottom="@dimen/dimen_small"
-            android:background="@drawable/background_account_notif"
-            android:textColor="@color/placeholder"
+            android:layout_width="@dimen/tab_bar_badge_size"
+            android:layout_height="@dimen/tab_bar_badge_size"
+            android:gravity="center"
+            android:padding="2dp"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/tab_bar_badge_text"
+            android:background="@drawable/notification_alert_background"
             android:layout_toLeftOf="@id/account_menu_row_arrow"
             android:layout_marginRight="@dimen/dimen_large"
             android:layout_centerVertical="true"
-            android:visibility="gone" />
+            android:visibility="gone"/>
 
     </RelativeLayout>
 

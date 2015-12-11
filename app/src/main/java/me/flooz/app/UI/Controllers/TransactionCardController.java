@@ -5,7 +5,9 @@ import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.PorterDuff;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Spannable;
@@ -258,41 +260,8 @@ public class TransactionCardController extends BaseController {
                 FloozRestClient.getInstance().likeTransaction(transaction.transactionId, new FloozHttpResponseHandler() {
                     @Override
                     public void success(Object response) {
-                        transaction.social.isLiked = !transaction.social.isLiked;
-                        transaction.social.likeText = (String) response;
-
-                        if (!transaction.social.likeText.isEmpty() || transaction.social.commentsCount.intValue() > 0) {
-                            cardSocialContainer.setVisibility(View.VISIBLE);
-
-                            if (transaction.social.commentsCount.intValue() > 0) {
-                                if (transaction.social.commentsCount.intValue() < 10)
-                                    cardCommentsNumber.setText("0" + transaction.social.commentsCount.toString());
-                                else
-                                    cardCommentsNumber.setText(transaction.social.commentsCount.toString());
-                                cardCommentsNumberContainer.setVisibility(View.VISIBLE);
-                            } else {
-                                cardCommentsNumberContainer.setVisibility(View.GONE);
-                            }
-
-
-                            if (!transaction.social.likeText.isEmpty()) {
-                                cardLikesText.setText(transaction.social.likeText);
-                                cardLikesContainer.setVisibility(View.VISIBLE);
-                            } else {
-                                cardLikesContainer.setVisibility(View.GONE);
-                            }
-                        } else
-                            cardSocialContainer.setVisibility(View.GONE);
-
-                        if (transaction.social.isLiked) {
-                            cardLikesButton.setBackground(parentActivity.getResources().getDrawable(R.drawable.timeline_row_action_button_background_selected));
-                            cardLikesButtonText.setTextColor(parentActivity.getResources().getColor(android.R.color.white));
-                            cardLikesButtonPicto.setImageDrawable(parentActivity.getResources().getDrawable(R.drawable.social_like_full));
-                        } else {
-                            cardLikesButton.setBackground(parentActivity.getResources().getDrawable(R.drawable.timeline_row_action_button_background));
-                            cardLikesButtonText.setTextColor(parentActivity.getResources().getColor(R.color.placeholder));
-                            cardLikesButtonPicto.setImageDrawable(parentActivity.getResources().getDrawable(R.drawable.social_like));
-                        }
+                        transaction.setJson((JSONObject)response);
+                        reloadView();
                     }
 
                     @Override
@@ -471,7 +440,11 @@ public class TransactionCardController extends BaseController {
         if (this.transaction.social.isLiked) {
             this.cardLikesButton.setBackground(this.parentActivity.getResources().getDrawable(R.drawable.timeline_row_action_button_background_selected));
             this.cardLikesButtonText.setTextColor(this.parentActivity.getResources().getColor(android.R.color.white));
-            this.cardLikesButtonPicto.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.social_like_full));
+
+            Drawable fullLike = this.parentActivity.getResources().getDrawable(R.drawable.social_like_full);
+            fullLike.setColorFilter(this.parentActivity.getResources().getColor(android.R.color.white), PorterDuff.Mode.SRC_ATOP);
+
+            this.cardLikesButtonPicto.setImageDrawable(fullLike);
         }
         else {
             this.cardLikesButton.setBackground(this.parentActivity.getResources().getDrawable(R.drawable.timeline_row_action_button_background));

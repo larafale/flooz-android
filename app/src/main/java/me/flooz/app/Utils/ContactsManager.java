@@ -16,6 +16,7 @@ import java.util.List;
 
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLUser;
+import me.flooz.app.Network.FloozRestClient;
 
 /**
  * Created by Flooz on 10/2/14.
@@ -144,9 +145,9 @@ public class ContactsManager {
 
         PhoneNumberUtil phoneUtil = PhoneNumberUtil.getInstance();
         try {
-            Phonenumber.PhoneNumber numberProto = phoneUtil.parse(number, "FR");
+            Phonenumber.PhoneNumber numberProto = phoneUtil.parse(number, FloozRestClient.getInstance().currentUser.country.code);
 
-            if (phoneUtil.isValidNumberForRegion(numberProto, "FR") && phoneUtil.getNumberType(numberProto) == PhoneNumberUtil.PhoneNumberType.MOBILE)
+            if (phoneUtil.isValidNumber(numberProto) && phoneUtil.getNumberType(numberProto) == PhoneNumberUtil.PhoneNumberType.MOBILE)
                 return phoneUtil.format(numberProto, PhoneNumberUtil.PhoneNumberFormat.E164);
             else
                 return null;

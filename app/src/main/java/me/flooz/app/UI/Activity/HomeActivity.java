@@ -39,6 +39,7 @@ import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.UI.Activity.Settings.CreditCardSettingsActivity;
 import me.flooz.app.UI.Fragment.Home.TabFragments.NotificationsFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.ProfileCardFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.ProfileFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.ShareFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.TabBarFragment;
@@ -85,7 +86,7 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
 
     public TabID currentTabID;
     public TabBarFragment currentFragment;
-    private ArrayList<TabBarFragment> currentTabHistory;
+    public ArrayList<TabBarFragment> currentTabHistory;
 
     private SoftKeyboardHandledRelativeLayout mainView;
 
@@ -284,7 +285,11 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         this.tabHistory = new ArrayList<>();
 
         TabBarFragment timelineFragment = new TimelineFragment();
-        TabBarFragment accountFragment = new ProfileFragment();
+
+        ProfileCardFragment controller = new ProfileCardFragment();
+        controller.user = FloozRestClient.getInstance().currentUser;
+        TabBarFragment accountFragment = controller;
+
         TabBarFragment notifFragment = new NotificationsFragment();
         TabBarFragment shareFragment = new ShareFragment();
 
@@ -376,6 +381,8 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         });
 
         this.changeCurrentTab(TabID.HOME_TAB);
+
+        this.changeTabBadgeValue(TabID.ACCOUNT_TAB, FloozRestClient.getInstance().currentUser.json.optJSONObject("metrics").optInt("accountMissing"));
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

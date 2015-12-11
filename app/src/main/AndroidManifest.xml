@@ -132,6 +132,13 @@
         <activity
             android:label="@string/app_name"
             android:screenOrientation="portrait"
+            android:name=".UI.Activity.FriendRequestActivity"
+            android:windowSoftInputMode="adjustResize">
+        </activity>
+
+        <activity
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
             android:name=".UI.Activity.ShareAppActivity"
             android:windowSoftInputMode="adjustResize">
         </activity>
@@ -140,6 +147,13 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:name=".UI.Activity.Secure3DActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+        </activity>
+
+        <activity
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:name=".UI.Activity.AccountActivity"
             android:windowSoftInputMode="stateHidden|adjustResize">
         </activity>
 
@@ -279,7 +293,7 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:name=".UI.Activity.EditProfileActivity"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden|adjustResize">
         </activity>
 
         <activity

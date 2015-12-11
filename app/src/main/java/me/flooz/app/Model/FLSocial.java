@@ -38,8 +38,8 @@ public class FLSocial {
 
             this.commentsCount = comments.length();
             this.likesCount = likes.length();
-            this.likeText = json.getString("likesString");
-            this.commentText = json.getString("commentsString");
+            this.likeText = json.optString("likesString");
+            this.commentText = json.optString("commentsString");
 
             this.isCommented = false;
             this.isLiked = false;
@@ -62,7 +62,7 @@ public class FLSocial {
             }
 
 
-            this.scope = socialScopeParamToEnum(json.getString("scope"));
+            this.scope = socialScopeParamToEnum(json.optString("scope"));
 
         } catch (JSONException e) {
             e.printStackTrace();

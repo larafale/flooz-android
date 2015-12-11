@@ -23,14 +23,33 @@
         app:riv_corner_radius="@dimen/avatar_corner"
         app:riv_mutate_background="true"/>
 
-    <TextView
-        android:id="@+id/timelineTransactionText3D"
+    <RelativeLayout
+        android:id="@+id/timelineTransactionTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textStyle="bold"
-        android:textSize="@dimen/timeline_cell_title"
-        android:inputType="none"
-        android:layout_toRightOf="@id/userTimelineTransactionPic"/>
+        android:layout_toRightOf="@id/userTimelineTransactionPic">
+
+        <TextView
+            android:id="@+id/timelineTransactionWhen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:singleLine="true"
+            android:textSize="13sp"
+            android:inputType="none"
+            android:layout_marginLeft="@dimen/dimen_medium"
+            android:layout_marginTop="@dimen/dimen_xsmall"/>
+
+        <TextView
+            android:layout_toLeftOf="@id/timelineTransactionWhen"
+            android:id="@+id/timelineTransactionText3D"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:textSize="@dimen/timeline_cell_title"
+            android:inputType="none"/>
+
+    </RelativeLayout>
 
     <TextView
         android:id="@+id/timelineTransactionText"
@@ -40,7 +59,7 @@
         android:textColor="@android:color/white"
         android:textSize="@dimen/timeline_cell_title"
         android:layout_toRightOf="@id/userTimelineTransactionPic"
-        android:layout_below="@id/timelineTransactionText3D"/>
+        android:layout_below="@id/timelineTransactionTitle"/>
 
     <me.flooz.app.UI.View.LoadingImageView
         android:id="@+id/timelineTransactionPic"

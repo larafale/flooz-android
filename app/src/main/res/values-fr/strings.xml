@@ -27,6 +27,7 @@
     <string name="GLOBAL_INTERO">\?</string>
     <string name="GLOBAL_UPDATE">Mise à jour disponible !</string>
     <string name="GLOBAL_SHARE">Partager</string>
+    <string name="GLOBAL_ACCOUNT">Mon Compte ⋅ </string>
 
     <string name="GLOBAL_LOADING">chargement…</string>
 
@@ -46,7 +47,7 @@
 
     <string name="SEND_COMMENT">Ajouter un commentaire…</string>
 
-    <string name="COUNTRY_PICKER_TITLE">Régions disponibles</string>
+    <string name="COUNTRY_PICKER_TITLE">Pays disponibles</string>
 
     <string name="NAV_HOME">Fil d\'actualité</string>
     <string name="NAV_PROFILE">Mon profil</string>
@@ -134,6 +135,15 @@
     <string name="FIELD_SECRET_ANSWER">Réponse</string>
     <string name="FIELD_SPONSOR">Code parrain (optionnel)</string>
 
+    <string name="FIELD_BIO">Bio</string>
+    <string name="FIELD_LOCATION">Localisation (ex: Paris, France)</string>
+    <string name="FIELD_WEBSITE">Site web</string>
+
+    <string name="SOCIAL_SHARE_TITLE">Vous aimez Flooz ?</string>
+    <string name="SOCIAL_SHARE_FACEBOOK">Likez notre page !</string>
+    <string name="SOCIAL_SHARE_TWITTER">Twittez nous !</string>
+    <string name="SOCIAL_SHARE_APP">Donnez votre avis !</string>
+
     <string name="FIELD_IBAN">Code IBAN</string>
     <string name="FIELD_IBAN_PLACEHOLDER">FR</string>
 
@@ -172,6 +182,7 @@
     <string name="MENU_NEW_TRANSACTION_PAYMENT">Payer</string>
     <string name="MENU_NEW_TRANSACTION_COLLECT">Réclamer</string>
 
+    <string name="MENU_EDIT_PROFILE">Editer mon profil</string>
     <string name="MENU_PAYMENT">Payer</string>
     <string name="MENU_COLLECT">Réclamer</string>
     <string name="MENU_NEW_FLOOZ">Floozer @%s</string>
@@ -246,6 +257,12 @@
 
     <string name="FRIEND_INVITE">Inviter ses amis</string>
 
+    <string name="SEARCH_LOCATION">Rechercher un lieu</string>
+    <string name="SELECTED_LOCATION">Lieu séléctionné</string>
+    <string name="AROUND_YOU">Autour de vous</string>
+    <string name="LOCATION_RESULTS">Résultats</string>
+    <string name="EMPTY_LOCATION">Aucun lieu trouvé</string>
+
     <string name="TRANSACTION_CONTACT_PICKER_PREFIX">À :&#160;</string>
     <string name="TRANSACTION_CONTACT_PICKER_HINT">saisir nom, pseudo ou 06</string>
     <string name="TRANSACTION_CONTACT_LIST_EMPTY_1">Sélectionnez un contact</string>
@@ -281,6 +298,9 @@
     <string name="FILTER_SCOPE_PUBLIC">Fil Public</string>
     <string name="FILTER_SCOPE_FRIEND">Fil d\'actualité</string>
     <string name="FILTER_SCOPE_PRIVATE">Fil Privé</string>
+
+    <string name="TIMELINE_SCOPE_HELPER_ALL">Tous les paiements</string>
+    <string name="TIMELINE_SCOPE_HELPER_FRIENDS">Les paiements qui me concernent</string>
 
     <string name="EVENT_SCOPE_FRIEND">Ouverte aux amis</string>
     <string name="EVENT_SCOPE_PRIVATE">Sur invitation</string>
@@ -399,15 +419,15 @@
     <string name="future">dans %s</string>
     <string name="past">il y a %s</string>
     <string name="s">quelques secondes</string>
-    <string name="m">une minute</string>
-    <string name="mm">%d minutes</string>
-    <string name="h">une heure</string>
-    <string name="hh">%d heures</string>
-    <string name="d">un jour</string>
-    <string name="dd">%d jours</string>
-    <string name="M">un mois</string>
-    <string name="MM">%d mois</string>
-    <string name="y">un an</string>
-    <string name="yy">%d ans</string>
+    <string name="m">1mn</string>
+    <string name="mm">%dmns</string>
+    <string name="h">1h</string>
+    <string name="hh">%dh</string>
+    <string name="d">1j</string>
+    <string name="dd">%dj</string>
+    <string name="M">1m</string>
+    <string name="MM">%dm</string>
+    <string name="y">1a</string>
+    <string name="yy">%da</string>
 
 </resources>

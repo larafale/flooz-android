@@ -1101,6 +1101,17 @@ public class FloozRestClient
         Map<String, Object> params = new HashMap<>();
         params.put("scope", FLTransaction.transactionScopeToParams(scope));
 
+        if (responseHandler != null) {
+            List<FLTransaction> transactions = loadTimelineData(scope);
+            if (transactions != null) {
+                Map<String, Object> ret = new HashMap<>();
+                ret.put("transactions", transactions);
+                ret.put("nextUrl", null);
+                ret.put("scope", FLTransaction.transactionScopeToParams(scope));
+                responseHandler.success(ret);
+            }
+        }
+
         this.request("/flooz", HttpRequestType.GET, params, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
@@ -1112,6 +1123,7 @@ public class FloozRestClient
                     Map<String, Object> ret = new HashMap<>();
                     ret.put("transactions", transactions);
                     ret.put("nextUrl", jsonResponse.optString("next"));
+                    ret.put("scope", jsonResponse.optString("scope"));
                     responseHandler.success(ret);
                 }
             }
@@ -1128,6 +1140,7 @@ public class FloozRestClient
                             Map<String, Object> ret = new HashMap<>();
                             ret.put("transactions", transactions);
                             ret.put("nextUrl", null);
+                            ret.put("scope", FLTransaction.transactionScopeToParams(scope));
                             responseHandler.success(ret);
                         }
                     } else {
@@ -1265,7 +1278,7 @@ public class FloozRestClient
             @Override
             public void success(Object response) {
                 if (responseHandler != null) {
-                    responseHandler.success(((JSONObject) response).optString("item"));
+                    responseHandler.success(((JSONObject) response).optJSONObject("item"));
                 }
             }
 

@@ -90,6 +90,7 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
     private static final int PERMISSION_CONTACTS = 4;
     private static final int PICK_LOCATION = 5;
     private static final int PERMISSION_LOCATION = 6;
+    private static final int PERMISSION_STORAGE = 7;
 
     private NewTransactionActivity instance;
     private FloozApplication floozApp;
@@ -634,15 +635,29 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
                             if (path != null) {
                                 imagePath = path;
                                 File image = new File(path);
-                                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                                Bitmap photo = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
+                                Bitmap photo = null;
+                                BitmapFactory.Options bmOptions;
 
-                                int rotation = ImageHelper.getRotation(instance, selectedImageUri);
-                                if (rotation != 0) {
-                                    photo = ImageHelper.rotateBitmap(photo, rotation);
+                                try {
+                                    photo = BitmapFactory.decodeFile(image.getAbsolutePath());
+                                } catch (OutOfMemoryError e) {
+                                    try {
+                                        bmOptions = new BitmapFactory.Options();
+                                        bmOptions.inSampleSize = 2;
+                                        photo = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
+                                    } catch (Exception f) {
+                                        f.printStackTrace();
+                                    }
                                 }
 
-                                photoTaken(photo);
+                                if (photo != null) {
+                                    int rotation = ImageHelper.getRotation(instance, selectedImageUri);
+                                    if (rotation != 0) {
+                                        photo = ImageHelper.rotateBitmap(photo, rotation);
+                                    }
+
+                                    photoTaken(photo);
+                                }
                             }
                         }
                     });
@@ -1123,15 +1138,23 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
                         ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.CAMERA}, PERMISSION_CAMERA);
 //                }
                     } else {
-                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
+//                    // Display UI and wait for user interaction
+//                } else {
+                            ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_CAMERA);
+//                }
+                        } else {
+                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                        tmpUriImage = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUriImage);
+                            tmpUriImage = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
+                            intent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUriImage);
 
-                        try {
-                            startActivityForResult(intent, TAKE_PICTURE);
-                        } catch (ActivityNotFoundException e) {
+                            try {
+                                startActivityForResult(intent, TAKE_PICTURE);
+                            } catch (ActivityNotFoundException e) {
 
+                            }
                         }
                     }
                 }
@@ -1140,12 +1163,20 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
             items.add(new ActionSheetItem(instance, R.string.GLOBAL_ALBUMS, new ActionSheetItem.ActionSheetItemClickListener() {
                 @Override
                 public void onClick() {
-                    Intent intent = new Intent(Intent.ACTION_PICK);
-                    intent.setType("image/*");
-                    try {
-                        startActivityForResult(Intent.createChooser(intent, ""), SELECT_PICTURE);
-                    } catch (ActivityNotFoundException e) {
+                    if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
+//                    // Display UI and wait for user interaction
+//                } else {
+                        ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_STORAGE);
+//                }
+                    } else {
+                        Intent intent = new Intent(Intent.ACTION_PICK);
+                        intent.setType("image/*");
+                        try {
+                            startActivityForResult(Intent.createChooser(intent, ""), SELECT_PICTURE);
+                        } catch (ActivityNotFoundException e) {
 
+                        }
                     }
                 }
             }));
@@ -1180,21 +1211,47 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == PERMISSION_CAMERA) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+//                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
+//                    // Display UI and wait for user interaction
+//                } else {
+                    ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.CAMERA}, PERMISSION_CAMERA);
+//                }
+                } else {
+                    if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
+//                    // Display UI and wait for user interaction
+//                } else {
+                        ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_CAMERA);
+//                }
+                    } else {
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                tmpUriImage = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUriImage);
+                        tmpUriImage = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUriImage);
 
-                try {
-                    startActivityForResult(intent, TAKE_PICTURE);
-                } catch (ActivityNotFoundException e) {
+                        try {
+                            startActivityForResult(intent, TAKE_PICTURE);
+                        } catch (ActivityNotFoundException e) {
 
+                        }
+                    }
                 }
             }
         } else if (requestCode == PERMISSION_CONTACTS) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 contactListAdapter.loadContacts();
                 FloozRestClient.getInstance().sendUserContacts();
+            }
+        } else if (requestCode == PERMISSION_STORAGE) {
+            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                Intent intent = new Intent(Intent.ACTION_PICK);
+                intent.setType("image/*");
+                try {
+                    startActivityForResult(Intent.createChooser(intent, ""), SELECT_PICTURE);
+                } catch (ActivityNotFoundException e) {
+
+                }
             }
         } else if (requestCode == PERMISSION_LOCATION) {
             if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

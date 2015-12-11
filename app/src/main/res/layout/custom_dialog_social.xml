@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="@dimen/dialog_validate_flooz_width"
+    android:layout_height="wrap_content"
+    android:background="@drawable/tooltip_scope_view">
+
+    <ImageView
+        android:id="@+id/dialog_social_close"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:padding="@dimen/dimen_medium"
+        android:src="@drawable/image_close"
+        android:layout_alignParentRight="true"/>
+
+    <TextView
+        android:id="@+id/dialog_social_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/SOCIAL_SHARE_TITLE"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dimen_xlarge"
+        android:textSize="@dimen/dialog_validate_flooz_text_size"
+        android:textColor="@color/blue"
+        />
+
+    <RelativeLayout
+        android:id="@+id/dialog_social_fb"
+        android:layout_below="@+id/dialog_social_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/social_fb_background"
+        android:layout_marginLeft="@dimen/dimen_xlarge"
+        android:layout_marginRight="@dimen/dimen_xlarge"
+        android:padding="@dimen/dimen_medium"
+        android:layout_marginTop="@dimen/dimen_xlarge">
+
+        <ImageView
+            android:id="@+id/dialog_social_fb_pic"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/share_facebook"
+            android:layout_marginTop="@dimen/dimen_small"
+            android:padding="@dimen/dimen_xsmall"
+            android:layout_marginBottom="@dimen/dimen_small"
+            android:layout_marginLeft="@dimen/dimen_medium"/>
+
+        <TextView
+            android:id="@+id/dialog_social_fb_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/social_fb"
+            android:text="@string/SOCIAL_SHARE_FACEBOOK"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/dialog_social_twitter"
+        android:layout_below="@+id/dialog_social_fb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/social_tweeter_background"
+        android:layout_marginLeft="@dimen/dimen_xlarge"
+        android:layout_marginRight="@dimen/dimen_xlarge"
+        android:padding="@dimen/dimen_medium"
+        android:layout_marginTop="@dimen/dimen_large">
+
+        <ImageView
+            android:id="@+id/dialog_social_twitter_pic"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:padding="@dimen/dimen_xsmall"
+            android:src="@drawable/share_twitter"
+            android:layout_marginTop="@dimen/dimen_small"
+            android:layout_marginBottom="@dimen/dimen_small"
+            android:layout_marginLeft="@dimen/dimen_medium"/>
+
+        <TextView
+            android:id="@+id/dialog_social_twitter_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/social_twitter"
+            android:text="@string/SOCIAL_SHARE_TWITTER"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/dialog_social_store"
+        android:layout_below="@+id/dialog_social_twitter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/social_store_background"
+        android:layout_marginLeft="@dimen/dimen_xlarge"
+        android:layout_marginRight="@dimen/dimen_xlarge"
+        android:padding="@dimen/dimen_medium"
+        android:layout_marginTop="@dimen/dimen_large"
+        android:layout_marginBottom="@dimen/dimen_xlarge">
+
+        <ImageView
+            android:id="@+id/dialog_social_store_pic"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/social_like"
+            android:layout_marginTop="@dimen/dimen_small"
+            android:layout_marginBottom="@dimen/dimen_small"
+            android:layout_marginLeft="@dimen/dimen_medium"/>
+
+        <TextView
+            android:id="@+id/dialog_social_store_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:textColor="@color/social_store"
+            android:text="@string/SOCIAL_SHARE_APP"/>
+
+    </RelativeLayout>
+</RelativeLayout>

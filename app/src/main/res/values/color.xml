@@ -14,8 +14,8 @@
     <color name="separator">#333E4A</color>
     <color name="blue">#3AA9E3</color>
     <color name="blue_alpha">#7F3AA9E3</color>
-    <color name="blue_fb">#3B579D</color>
-    <color name="blue_fb_alpha">#AA3B579D</color>
+    <color name="blue_fb">#3B5998</color>
+    <color name="blue_fb_alpha">#AA3B5998</color>
     <color name="blue_light">#6092AC</color>
     <color name="blue_hover">#263B4B</color>
     <color name="placeholder">#87939D</color>
@@ -28,4 +28,9 @@
     <color name="ttlm_default_background_color">#EE131518</color>
     <color name="ttlm_default_stroke_color">#FFE9ECEF</color>
     <color name="semi_transparent">#7F000000</color>
+
+    <color name="social_fb">#3B5998</color>
+    <color name="social_twitter">#4099FF</color>
+    <color name="social_store">#E26292</color>
+
 </resources>

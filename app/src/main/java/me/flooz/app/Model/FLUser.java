@@ -36,6 +36,8 @@ public class FLUser
     public String coverURL;
     public String coverURLFull;
     public String userBio;
+    public String website;
+    public String location;
     public Bitmap avatarData = null;
     public String profileCompletion;
     public Number friendsCount;
@@ -148,6 +150,8 @@ public class FLUser
             this.username = this.json.optString("nick");
             this.email = this.json.optString("email");
             this.phone = this.json.optString("phone");
+            this.website = this.json.optString("website");
+            this.location = this.json.optString("location");
             this.avatarURL = this.json.optString("pic");
             this.profileCompletion = this.json.optString("profileCompletion");
             this.hasSecureCode = this.json.optString("secureCode");

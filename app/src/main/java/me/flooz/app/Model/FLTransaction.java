@@ -99,7 +99,7 @@ public class FLTransaction {
         this.status = TransactionStatus.TransactionStatusNone;
     }
 
-    private void setJson(JSONObject json) {
+    public void setJson(JSONObject json) {
         this.json = json;
 
         try {

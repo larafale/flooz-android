@@ -38,6 +38,7 @@ import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.EditProfileActivity;
 import me.flooz.app.UI.Controllers.WebController;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
@@ -93,9 +94,9 @@ public class ProfileFragment extends TabBarFragment implements ProfileListAdapte
 
                     switch (action) {
                         case "profile":
-                            ProfileCardFragment controller = new ProfileCardFragment();
-                            controller.user = FloozRestClient.getInstance().currentUser;
-                            tabBarActivity.pushFragmentInCurrentTab(controller);
+                            Intent editIntent = new Intent(tabBarActivity, EditProfileActivity.class);
+                            tabBarActivity.startActivity(editIntent);
+                            tabBarActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
                             break;
                         case "friends":
                             tabBarActivity.pushFragmentInCurrentTab(new FriendRequestFragment());

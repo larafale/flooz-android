@@ -2,6 +2,7 @@ package me.flooz.app.UI.Fragment.Home.TabFragments;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -9,15 +10,26 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
+import android.view.animation.AnimationSet;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.baoyz.widget.PullRefreshLayout;
@@ -60,13 +72,10 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
     public TimelineListView timelineListView;
     private TimelineListAdapter timelineAdapter;
     private ImageView backgroundImage;
-    private RadioButtonCenter settingsFilterAll;
-    private RadioButtonCenter settingsFilterFriends;
-    private RadioButtonCenter settingsFilterSelf;
-    private Drawable scopeAll;
-    private Drawable scopeFriend;
-    private Drawable scopePrivate;
     private ImageView searchButton;
+    private ImageView scopeButton;
+    private ImageView logoButton;
+    private TextView scopeHint;
 
     public List<FLTransaction> transactions = null;
     public FLTransaction.TransactionScope currentFilter;
@@ -82,15 +91,9 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
         }
     };
 
-    private BroadcastReceiver reloadUserReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            updateBalance();
-        }
-    };
-
     public TimelineFragment() {
-        if (FloozRestClient.getInstance().appSettings.contains("defaultScope")) {
+        if (FloozRestClient.getInstance().appSettings.contains("defaultScope")
+                && FLTransaction.transactionParamsToScope(FloozRestClient.getInstance().appSettings.getString("defaultScope", "")) != FLTransaction.TransactionScope.TransactionScopePrivate) {
             this.currentFilter = FLTransaction.transactionParamsToScope(FloozRestClient.getInstance().appSettings.getString("defaultScope", ""));
         } else {
             this.currentFilter = FLTransaction.TransactionScope.TransactionScopeAll;
@@ -111,65 +114,150 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
         this.searchButton = (ImageView) view.findViewById(R.id.header_item_right);
         this.searchButton.setColorFilter(getResources().getColor(R.color.blue));
 
-        this.settingsFilterAll = (RadioButtonCenter) view.findViewById(R.id.settings_segment_all);
-        this.settingsFilterFriends = (RadioButtonCenter) view.findViewById(R.id.settings_segment_friends);
-        this.settingsFilterSelf = (RadioButtonCenter) view.findViewById(R.id.settings_segment_private);
-        prepareBitmaps();
+        this.scopeButton = (ImageView) view.findViewById(R.id.header_item_left);
+        this.scopeButton.setColorFilter(getResources().getColor(R.color.blue));
+
+        this.logoButton = (ImageView) view.findViewById(R.id.header_item_middle);
+        this.scopeHint = (TextView) view.findViewById(R.id.timeline_scope_hint);
 
         this.refreshContainer = (PullRefreshLayout) view.findViewById(R.id.timeline_refresh_container);
         this.timelineListView = (TimelineListView) view.findViewById(R.id.timeline_list);
-        ((TextView)this.timelineListView.getScrollBarPanel().findViewById(R.id.timeline_scrollbar_panel_when)).setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
         this.backgroundImage  = (ImageView) view.findViewById(R.id.timeline_background);
 
-        switch (this.currentFilter) {
-            case TransactionScopeFriend:
-                resetFilterColor();
-                this.scopeFriend.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
-                this.settingsFilterFriends.setChecked(true);
-                break;
-            case TransactionScopePrivate:
-                resetFilterColor();
-                this.scopePrivate.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
-                this.settingsFilterSelf.setChecked(true);
-                break;
-            default:
-                resetFilterColor();
-                this.scopeAll.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
-                this.settingsFilterAll.setChecked(true);
-                break;
-        }
+        if (currentFilter == FLTransaction.TransactionScope.TransactionScopeAll)
+            this.scopeButton.setImageDrawable(tabBarActivity.getResources().getDrawable(R.drawable.scope_public));
+        else
+            this.scopeButton.setImageDrawable(tabBarActivity.getResources().getDrawable(R.drawable.scope_friend));
+
+        this.logoButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final Dialog dialog = new Dialog(tabBarActivity);
+
+                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+                dialog.setContentView(R.layout.custom_dialog_social);
+
+                TextView title = (TextView) dialog.findViewById(R.id.dialog_social_title);
+                title.setTypeface(CustomFonts.customContentRegular(tabBarActivity), Typeface.BOLD);
+
+                ImageView close = (ImageView) dialog.findViewById(R.id.dialog_social_close);
+
+                RelativeLayout fbButton = (RelativeLayout) dialog.findViewById(R.id.dialog_social_fb);
+                TextView fbButtonText = (TextView) dialog.findViewById(R.id.dialog_social_fb_text);
+                ImageView fbButtonPic = (ImageView) dialog.findViewById(R.id.dialog_social_fb_pic);
+
+                RelativeLayout twitterButton = (RelativeLayout) dialog.findViewById(R.id.dialog_social_twitter);
+                TextView twitterButtonText = (TextView) dialog.findViewById(R.id.dialog_social_twitter_text);
+                ImageView twitterButtonPic = (ImageView) dialog.findViewById(R.id.dialog_social_twitter_pic);
+
+                RelativeLayout storeButton = (RelativeLayout) dialog.findViewById(R.id.dialog_social_store);
+                TextView storeButtonText = (TextView) dialog.findViewById(R.id.dialog_social_store_text);
+                ImageView storeButtonPic = (ImageView) dialog.findViewById(R.id.dialog_social_store_pic);
+
+                close.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        dialog.dismiss();
+                    }
+                });
+
+                fbButtonText.setTypeface(CustomFonts.customContentRegular(tabBarActivity));
+                twitterButtonText.setTypeface(CustomFonts.customContentRegular(tabBarActivity));
+                storeButtonText.setTypeface(CustomFonts.customContentRegular(tabBarActivity));
+
+                fbButtonPic.setColorFilter(tabBarActivity.getResources().getColor(R.color.social_fb));
+                twitterButtonPic.setColorFilter(tabBarActivity.getResources().getColor(R.color.social_twitter));
+                storeButtonPic.setColorFilter(tabBarActivity.getResources().getColor(R.color.social_store));
+
+                fbButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            tabBarActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("fb://page/1462571777306570")));
+                        } catch (android.content.ActivityNotFoundException anfe) {
+                            tabBarActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/floozme")));
+                        }
+                    }
+                });
+
+                twitterButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        try {
+                            tabBarActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("twitter:///user?screen_name=floozme")));
+                        } catch (android.content.ActivityNotFoundException anfe) {
+                            tabBarActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://twitter.com/floozme")));
+                        }
+                    }
+                });
+
+                storeButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        final String appPackageName = tabBarActivity.getPackageName();
+                        try {
+                            tabBarActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                        } catch (android.content.ActivityNotFoundException anfe) {
+                            tabBarActivity.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                        }
+                    }
+                });
+
+                dialog.setCanceledOnTouchOutside(true);
+                dialog.show();
+            }
+        });
+
+        this.scopeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentFilter == FLTransaction.TransactionScope.TransactionScopeAll) {
+                    scopeButton.setImageDrawable(tabBarActivity.getResources().getDrawable(R.drawable.scope_friend));
+
+                    scopeHint.setText(tabBarActivity.getResources().getText(R.string.TIMELINE_SCOPE_HELPER_FRIENDS));
+
+                    filterChanged(FLTransaction.TransactionScope.TransactionScopeFriend);
+
+                    Animation fadeIn = new AlphaAnimation(0, 1);
+                    fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
+                    fadeIn.setDuration(500);
+
+                    Animation fadeOut = new AlphaAnimation(1, 0);
+                    fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
+                    fadeOut.setStartOffset(2000);
+                    fadeOut.setDuration(500);
+
+                    AnimationSet animation = new AnimationSet(false); //change to false
+                    animation.addAnimation(fadeIn);
+                    animation.addAnimation(fadeOut);
+                    scopeHint.setAnimation(animation);
+                } else {
+                    scopeButton.setImageDrawable(tabBarActivity.getResources().getDrawable(R.drawable.scope_public));
+                    scopeHint.setText(tabBarActivity.getResources().getText(R.string.TIMELINE_SCOPE_HELPER_ALL));
+
+                    filterChanged(FLTransaction.TransactionScope.TransactionScopeAll);
+
+                    Animation fadeIn = new AlphaAnimation(0, 1);
+                    fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
+                    fadeIn.setDuration(1000);
+
+                    Animation fadeOut = new AlphaAnimation(1, 0);
+                    fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
+                    fadeOut.setStartOffset(2000);
+                    fadeOut.setDuration(1000);
+
+                    AnimationSet animation = new AnimationSet(false); //change to false
+                    animation.addAnimation(fadeIn);
+                    animation.addAnimation(fadeOut);
+                    scopeHint.setAnimation(animation);
+                }
+            }
+        });
 
         this.refreshContainer.setOnRefreshListener(new PullRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 refreshTransactions();
-            }
-        });
-
-        this.settingsFilterAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                filterChanged(FLTransaction.TransactionScope.TransactionScopeAll);
-                resetFilterColor();
-                scopeAll.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
-            }
-        });
-
-        this.settingsFilterFriends.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                filterChanged(FLTransaction.TransactionScope.TransactionScopeFriend);
-                resetFilterColor();
-                scopeFriend.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
-            }
-        });
-
-        this.settingsFilterSelf.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                filterChanged(FLTransaction.TransactionScope.TransactionScopePrivate);
-                resetFilterColor();
-                scopePrivate.setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
             }
         });
 
@@ -183,17 +271,6 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
         });
 
         this.timelineListView.setOnTimelineListViewListener(new TimelineListView.OnTimelineListViewListener() {
-            @Override
-            public void onPositionChanged(TimelineListView listView, int position, View scrollBarPanel) {
-                FLTransaction transac = timelineAdapter.getItem(position);
-
-                if (transac != null) {
-                    ((ImageView) scrollBarPanel.findViewById(R.id.timeline_scrollbar_panel_scope)).setImageDrawable(FLTransaction.transactionScopeToImage(transac.scope));
-                    ((ImageView) scrollBarPanel.findViewById(R.id.timeline_scrollbar_panel_scope)).setColorFilter(tabBarActivity.getResources().getColor(android.R.color.white));
-                    ((TextView) scrollBarPanel.findViewById(R.id.timeline_scrollbar_panel_when)).setText(transac.when);
-                }
-            }
-
             @Override
             public void onShowLastItem() {
                 loadNextPage();
@@ -236,11 +313,6 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadTimelineReceiver,
                 CustomNotificationIntents.filterReloadTimeline());
 
-        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadUserReceiver,
-                CustomNotificationIntents.filterReloadCurrentUser());
-
-        updateBalance();
-
         if (transactions.size() != 0) {
             backgroundImage.setVisibility(View.GONE);
         }
@@ -257,7 +329,6 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
         super.onDestroy();
 
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadTimelineReceiver);
-        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadUserReceiver);
     }
 
     @Override
@@ -296,32 +367,6 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
         FloozApplication.getInstance().showUserProfile(user);
     }
 
-    private void resetFilterColor() {
-        this.scopeAll.setColorFilter(getResources().getColor(R.color.blue), PorterDuff.Mode.SRC_IN);
-        this.scopeFriend.setColorFilter(getResources().getColor(R.color.blue), PorterDuff.Mode.SRC_IN);
-        this.scopePrivate.setColorFilter(getResources().getColor(R.color.blue), PorterDuff.Mode.SRC_IN);
-    }
-
-    private void prepareBitmaps() {
-
-        int segmentHeight = 47 - 8;
-        int imgWidth = (int)FLHelper.convertDpToPixel(segmentHeight - 20, tabBarActivity);
-        int imgHeight = imgWidth;
-
-        Bitmap scopeAllBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.scope_public), imgWidth, imgHeight, true);
-        Bitmap scopeFriendBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.scope_friend),imgWidth, imgHeight, true);
-        Bitmap scopePrivateBitmap = Bitmap.createScaledBitmap(BitmapFactory.decodeResource(getResources(), R.drawable.scope_private), imgWidth, imgHeight, true);
-
-        this.scopeAll = new BitmapDrawable(getResources(), scopeAllBitmap);
-        this.scopeFriend = new BitmapDrawable(getResources(), scopeFriendBitmap);
-        this.scopePrivate = new BitmapDrawable(getResources(), scopePrivateBitmap);
-        resetFilterColor();
-
-        this.settingsFilterAll.setButtonDrawable(scopeAll);
-        this.settingsFilterFriends.setButtonDrawable(scopeFriend);
-        this.settingsFilterSelf.setButtonDrawable(scopePrivate);
-    }
-
     private void loadNextPage() {
         if (nextPageUrl == null || nextPageUrl.isEmpty())
             return;
@@ -350,11 +395,6 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
         });
     }
 
-    public void updateBalance() {
-        float amount = FloozRestClient.getInstance().currentUser.amount.floatValue();
-//        headerBalanceIndicator.setText(FLHelper.trimTrailingZeros(String.format("%.2f", amount)) + " €");
-    }
-
     public void refreshTransactions() {
         FloozRestClient.getInstance().timeline(this.currentFilter, new FloozHttpResponseHandler() {
             @Override
@@ -362,7 +402,9 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
                 @SuppressWarnings("unchecked")
                 Map<String, Object> responseMap = (Map<String, Object>) response;
 
-                if (responseMap.containsKey("transactions") && responseMap.get("transactions") != null && responseMap.get("transactions") instanceof List) {
+                if (responseMap.containsKey("transactions") && responseMap.get("transactions") != null
+                        && responseMap.get("transactions") instanceof List
+                        && FLTransaction.transactionParamsToScope((String)responseMap.get("scope")) == currentFilter) {
                     if (transactions != null)
                         transactions.clear();
                     else
