@@ -1190,11 +1190,11 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         @Override
         public void onClick(View v) {
             saveData();
-            if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 //                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
 //                    // Display UI and wait for user interaction
 //                } else {
-                ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}, PERMISSION_LOCATION);
+                ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
 //                }
             } else {
                 Intent intentGeo = new Intent(instance, LocationActivity.class);

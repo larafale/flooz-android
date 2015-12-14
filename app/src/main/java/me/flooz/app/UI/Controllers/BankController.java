@@ -72,13 +72,6 @@ public class BankController extends BaseController {
 
             @Override
             public void afterTextChanged(Editable s) {
-                if (s.length() > 0 && s.toString().indexOf("FR") != 0) {
-                    s.insert(0, "FR");
-                }
-
-                if (s.length() == 2)
-                    s.delete(0, s.length());
-
                 if (s.length() > 27)
                     s.delete(27, s.length());
             }

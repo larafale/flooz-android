@@ -109,7 +109,7 @@ public class FLHelper {
         try {
             Phonenumber.PhoneNumber phoneNumber = phoneUtil.parse(formatedPhone, FloozRestClient.getInstance().currentUser.country.code);
 
-            return phoneUtil.isValidNumber(phoneNumber);
+            return phoneUtil.isValidNumber(phoneNumber) && phoneUtil.getNumberType(phoneNumber) == PhoneNumberUtil.PhoneNumberType.MOBILE;
         } catch (NumberParseException e) {
             e.printStackTrace();
         }

@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:clipChildren="false"
-    android:clipToPadding="false">
+    android:layout_height="match_parent">
 
     <ImageView
         android:id="@+id/header_cover"
@@ -140,7 +138,8 @@
             android:layout_marginTop="5dp"
             android:background="@drawable/frame_action_button"
             android:clipChildren="false"
-            android:clipToPadding="false">
+            android:clipToPadding="false"
+            android:layout_marginRight="@dimen/dimen_large">
 
             <TextView
                 android:id="@+id/edit_profile_text"
@@ -160,7 +159,7 @@
                 android:padding="2dp"
                 android:textColor="@android:color/white"
                 android:textSize="@dimen/tab_bar_badge_text"
-                android:visibility="gone"
+                android:visibility="visible"
                 android:background="@drawable/notification_alert_background"
                 android:layout_alignRight="@id/edit_profile_text"
                 android:layout_marginTop="-12dp"

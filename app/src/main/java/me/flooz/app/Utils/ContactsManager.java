@@ -61,8 +61,10 @@ public class ContactsManager {
                 user.avatarURL = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI));
                 String phoneNumber = contactCursor.getString(contactCursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-                user.username = ContactsManager.validatePhoneNumber(phoneNumber);
-                user.phone = user.username;
+                if (FLHelper.isValidPhoneNumber(phoneNumber)) {
+                    user.username = FLHelper.formatedPhone(phoneNumber);
+                    user.phone = user.username;
+                }
 
                 if (user.username != null && !user.username.isEmpty()) {
                     boolean alreadyExist = false;
