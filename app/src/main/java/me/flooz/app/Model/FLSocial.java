@@ -61,7 +61,6 @@ public class FLSocial {
                 }
             }
 
-
             this.scope = socialScopeParamToEnum(json.optString("scope"));
 
         } catch (JSONException e) {

@@ -296,7 +296,7 @@ public class TimelineListAdapter extends BaseAdapter {
         else
             holder.transactionSocialContainer.setVisibility(View.GONE);
 
-        if (currentTransaction.social != null && currentTransaction.social.isLiked) {
+        if (currentTransaction.social.isLiked) {
             holder.transactionLikesButtonText.setBackground(this.context.getResources().getDrawable(R.drawable.timeline_row_action_button_background_selected));
             holder.transactionLikesButtonText.setTextColor(this.context.getResources().getColor(android.R.color.white));
             Drawable fullLike = this.context.getResources().getDrawable(R.drawable.social_like_full);
@@ -314,6 +314,23 @@ public class TimelineListAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if (FloozRestClient.getInstance().currentUser != null) {
+                    if (currentTransaction.social.isLiked) {
+                        currentTransaction.social.isLiked = false;
+                        holder.transactionLikesButtonText.setBackground(context.getResources().getDrawable(R.drawable.timeline_row_action_button_background));
+                        holder.transactionLikesButtonText.setTextColor(context.getResources().getColor(R.color.placeholder));
+                        holder.transactionLikesButtonText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.social_like, 0, 0, 0);
+                    }
+                    else {
+                        currentTransaction.social.isLiked = true;
+                        holder.transactionLikesButtonText.setBackground(context.getResources().getDrawable(R.drawable.timeline_row_action_button_background_selected));
+                        holder.transactionLikesButtonText.setTextColor(context.getResources().getColor(android.R.color.white));
+                        Drawable fullLike = context.getResources().getDrawable(R.drawable.social_like_full);
+                        fullLike.setColorFilter(context.getResources().getColor(android.R.color.white), PorterDuff.Mode.SRC_ATOP);
+
+                        holder.transactionLikesButtonText.setCompoundDrawablesWithIntrinsicBounds(fullLike, null, null, null);
+                    }
+
+
                     FloozRestClient.getInstance().likeTransaction(currentTransaction.transactionId, new FloozHttpResponseHandler() {
                         @Override
                         public void success(Object response) {

@@ -177,6 +177,8 @@ public class TransactionCardController extends BaseController {
         this.cardCommentsSendButton.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.cardCommentsTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
 
+        this.cardHeaderReportButton.setColorFilter(this.parentActivity.getResources().getColor(R.color.blue));
+
         if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
             this.cardHeaderCloseButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
 
@@ -257,6 +259,23 @@ public class TransactionCardController extends BaseController {
         this.cardLikesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (transaction.social.isLiked) {
+                    cardLikesButton.setBackground(parentActivity.getResources().getDrawable(R.drawable.timeline_row_action_button_background));
+                    cardLikesButtonText.setTextColor(parentActivity.getResources().getColor(R.color.placeholder));
+                    cardLikesButtonPicto.setImageDrawable(parentActivity.getResources().getDrawable(R.drawable.social_like));
+                }
+                else {
+                    cardLikesButton.setBackground(parentActivity.getResources().getDrawable(R.drawable.timeline_row_action_button_background_selected));
+                    cardLikesButtonText.setTextColor(parentActivity.getResources().getColor(android.R.color.white));
+
+                    Drawable fullLike = parentActivity.getResources().getDrawable(R.drawable.social_like_full);
+                    fullLike.setColorFilter(parentActivity.getResources().getColor(android.R.color.white), PorterDuff.Mode.SRC_ATOP);
+
+                    cardLikesButtonPicto.setImageDrawable(fullLike);
+                }
+
+                transaction.social.isLiked = !transaction.social.isLiked;
+
                 FloozRestClient.getInstance().likeTransaction(transaction.transactionId, new FloozHttpResponseHandler() {
                     @Override
                     public void success(Object response) {

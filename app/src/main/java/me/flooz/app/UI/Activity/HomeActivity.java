@@ -679,92 +679,28 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
     public static void showTransactionCard(FLTransaction transaction, Boolean insertComment) {
         Activity activity = FloozApplication.getInstance().getCurrentActivity();
 
-        if (activity instanceof HomeActivity) {
-            FloozRestClient.getInstance().readNotification(transaction.transactionId, null);
-            TransactionCardFragment transactionCardFragment = new TransactionCardFragment();
+        if (activity != null) {
+            if (activity instanceof HomeActivity) {
+                FloozRestClient.getInstance().readNotification(transaction.transactionId, null);
+                TransactionCardFragment transactionCardFragment = new TransactionCardFragment();
 
-            transactionCardFragment.insertComment = insertComment;
-            transactionCardFragment.transaction = transaction;
+                transactionCardFragment.insertComment = insertComment;
+                transactionCardFragment.transaction = transaction;
 
-            ((HomeActivity)activity).pushFragmentInCurrentTab(transactionCardFragment);
-        } else {
-            Intent intent = new Intent(activity, TransactionActivity.class);
-            intent.putExtra("insertComment", insertComment);
-            intent.putExtra("transaction", transaction.json.toString());
-            activity.startActivity(intent);
-            activity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                ((HomeActivity) activity).pushFragmentInCurrentTab(transactionCardFragment);
+            } else {
+                Intent intent = new Intent(activity, TransactionActivity.class);
+                intent.putExtra("insertComment", insertComment);
+                intent.putExtra("transaction", transaction.json.toString());
+                activity.startActivity(intent);
+                activity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+            }
         }
-    }
-
-    public void showImageViewer(final String url) {
-        if (!url.contentEquals("/img/fake")) {
-            Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), android.R.anim.fade_in);
-            anim.setAnimationListener(new Animation.AnimationListener() {
-                @Override
-                public void onAnimationStart(Animation animation) {
-                    imageViewer.setVisibility(View.VISIBLE);
-                    imageViewerProgress.setMax(100);
-                    imageViewerProgress.setProgress(0);
-                    imageViewerImage.setVisibility(View.GONE);
-                    imageViewerProgress.setVisibility(View.GONE);
-                }
-
-                @Override
-                public void onAnimationEnd(Animation animation) {
-                    imageViewerProgress.setVisibility(View.VISIBLE);
-
-                    ImageLoader.getInstance().displayImage(url, imageViewerImage, null, new ImageLoadingListener() {
-                        @Override
-                        public void onLoadingStarted(String imageUri, View view) {
-                            imageViewerImage.setVisibility(View.GONE);
-                            imageViewerProgress.setVisibility(View.VISIBLE);
-                            imageViewerProgress.setProgress(0);
-                        }
-
-                        @Override
-                        public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-                        }
-
-                        @Override
-                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                            imageViewerImage.setVisibility(View.VISIBLE);
-                            imageViewerProgress.setVisibility(View.GONE);
-                            imageViewerAttacher.update();
-                        }
-
-                        @Override
-                        public void onLoadingCancelled(String imageUri, View view) {
-
-                        }
-                    }, new ImageLoadingProgressListener() {
-                        @Override
-                        public void onProgressUpdate(String imageUri, View view, int current, int total) {
-                            float tmp = current;
-                            tmp /= total;
-                            tmp *= 100;
-
-                            imageViewerProgress.setProgress((int) tmp);
-                        }
-                    });
-                }
-
-                @Override
-                public void onAnimationRepeat(Animation animation) {
-
-                }
-            });
-            this.imageViewer.startAnimation(anim);
-        }
-    }
-
-    public void hideImageViewer() {
-        this.imageViewerClose.performClick();
     }
 
     @Override
     public void onItemSelected(FLTransaction transac) {
-        this.showTransactionCard(transac);
+        HomeActivity.showTransactionCard(transac);
     }
 
     @Override
@@ -779,9 +715,7 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
 
     @Override
     public void onBackPressed() {
-        if (this.imageViewer.getVisibility() == View.VISIBLE) {
-            this.hideImageViewer();
-        } else if (this.currentTabHistory.size() > 1) {
+        if (this.currentTabHistory.size() > 1) {
             this.currentFragment.onBackPressed();
         } else if (this.tabHistory.size() > 1) {
             this.tabHistory.remove(this.tabHistory.size() - 1);
@@ -796,7 +730,7 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         this.setIntent(intent);
     }
 
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         currentFragment.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 }

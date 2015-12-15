@@ -214,7 +214,10 @@ public class IdentityController extends BaseController implements FLPhoneField.F
         this.zipCodeTextfield.setText(currentUser.address.get("zipCode"));
         this.cityTextfield.setText(currentUser.address.get("city"));
         this.phoneTextfield.setCountry(currentUser.country);
-        this.phoneTextfield.setPhoneNumber(currentUser.phone);
+
+        String phone = currentUser.phone.replace(currentUser.country.indicatif, "0");
+
+        this.phoneTextfield.setPhoneNumber(phone);
 
         if (currentUser.checkDocuments.get("phone").equals(3)) {
             this.sendVerifyPhone.setVisibility(View.VISIBLE);
