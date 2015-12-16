@@ -743,7 +743,7 @@ public class FloozRestClient
     }
 
     public void updateCurrentUser(final FloozHttpResponseHandler responseHandler) {
-        this.request("/users/profile", HttpRequestType.GET, null, new FloozHttpResponseHandler() {
+        this.request("/users/profile?uuid=" + this.deviceManager.getDeviceUuid(), HttpRequestType.GET, null, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
                 JSONObject responseObject = (JSONObject)response;
@@ -1006,6 +1006,9 @@ public class FloozRestClient
 
         param.put("amount", amount);
 
+        if (this.getSecureCode() != null)
+            param.put("secureCode", this.getSecureCode());
+
         this.request("/cashouts", HttpRequestType.POST, param, responseHandler);
     }
 
@@ -1178,6 +1181,11 @@ public class FloozRestClient
     }
 
     public void performTransaction(Map<String, Object> params, final FloozHttpResponseHandler responseHandler) {
+
+        if (getSecureCode() != null) {
+            params.put("secureCode", getSecureCode());
+        }
+
         this.request("/flooz", HttpRequestType.POST, params, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
@@ -1232,6 +1240,10 @@ public class FloozRestClient
         Map<String, Object> param = new HashMap<>(1);
 
         param.put("state", FLTransaction.transactionStatusToParams(status));
+
+        if (getSecureCode() != null) {
+            param.put("secureCode", getSecureCode());
+        }
 
         this.request("/flooz/" + transaction.transactionId, HttpRequestType.POST, param, new FloozHttpResponseHandler() {
             @Override
@@ -1630,9 +1642,6 @@ public class FloozRestClient
 
             if (!path.contains("&mo="))
                 path += "&mo=" + this.deviceManager.getDeviceName();
-
-            if (!path.contains("&uuid="))
-                path += "&uuid=" + this.deviceManager.getDeviceUuid();
 
             final JsonHttpResponseHandler jsonHttpResponseHandler = new JsonHttpResponseHandler() {
                 @Override

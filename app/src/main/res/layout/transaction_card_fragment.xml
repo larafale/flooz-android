@@ -16,7 +16,7 @@
 
         <ImageView
             android:id="@+id/transac_card_header_report"
-            android:layout_width="@dimen/card_header_close"
+            android:layout_width="40dp"
             android:padding="@dimen/dimen_large"
             android:layout_height="fill_parent"
             android:src="@drawable/cog"

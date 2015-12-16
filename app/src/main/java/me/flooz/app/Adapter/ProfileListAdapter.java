@@ -178,11 +178,15 @@ public class ProfileListAdapter extends BaseAdapter implements StickyListHeaders
         item6.put("headerID", 1);
         menuData.add(item6);
 
-        Map<String, Object> item7 = new HashMap<>();
-        item7.put("title", FloozRestClient.getInstance().currentTexts.json.optJSONObject("menu").optJSONObject("promo").optString("title"));
-        item7.put("action", "sponsor");
-        item7.put("headerID", 1);
-        menuData.add(item7);
+        if (FloozRestClient.getInstance().currentTexts.json.optJSONObject("menu").has("promo")
+                && FloozRestClient.getInstance().currentTexts.json.optJSONObject("menu").optJSONObject("promo").has("title")
+                && !FloozRestClient.getInstance().currentTexts.json.optJSONObject("menu").optJSONObject("promo").optString("title").isEmpty()) {
+            Map<String, Object> item7 = new HashMap<>();
+            item7.put("title", FloozRestClient.getInstance().currentTexts.json.optJSONObject("menu").optJSONObject("promo").optString("title"));
+            item7.put("action", "sponsor");
+            item7.put("headerID", 1);
+            menuData.add(item7);
+        }
 
         Map<String, Object> item3 = new HashMap<>();
         item3.put("title", this.context.getResources().getString(R.string.SETTINGS_CARD));
