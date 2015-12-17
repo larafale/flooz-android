@@ -1131,30 +1131,23 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
             items.add(new ActionSheetItem(instance, R.string.GLOBAL_CAMERA, new ActionSheetItem.ActionSheetItemClickListener() {
                 @Override
                 public void onClick() {
-                    if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                    if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+                            || ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 //                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
 //                    // Display UI and wait for user interaction
 //                } else {
-                        ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.CAMERA}, PERMISSION_CAMERA);
+                        ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_CAMERA);
 //                }
                     } else {
-                        if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
-//                    // Display UI and wait for user interaction
-//                } else {
-                            ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_CAMERA);
-//                }
-                        } else {
-                            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                            tmpUriImage = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
-                            intent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUriImage);
+                        tmpUriImage = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
+                        intent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUriImage);
 
-                            try {
-                                startActivityForResult(intent, TAKE_PICTURE);
-                            } catch (ActivityNotFoundException e) {
+                        try {
+                            startActivityForResult(intent, TAKE_PICTURE);
+                        } catch (ActivityNotFoundException e) {
 
-                            }
                         }
                     }
                 }
@@ -1190,11 +1183,12 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         @Override
         public void onClick(View v) {
             saveData();
-            if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 //                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
 //                    // Display UI and wait for user interaction
 //                } else {
-                ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
+                ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
 //                }
             } else {
                 Intent intentGeo = new Intent(instance, LocationActivity.class);
@@ -1210,32 +1204,15 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == PERMISSION_CAMERA) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-//                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
-//                    // Display UI and wait for user interaction
-//                } else {
-                    ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.CAMERA}, PERMISSION_CAMERA);
-//                }
-                } else {
-                    if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
-//                    // Display UI and wait for user interaction
-//                } else {
-                        ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_CAMERA);
-//                }
-                    } else {
-                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            if (grantResults.length == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED ) {
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                        tmpUriImage = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUriImage);
+                tmpUriImage = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUriImage);
 
-                        try {
-                            startActivityForResult(intent, TAKE_PICTURE);
-                        } catch (ActivityNotFoundException e) {
-
-                        }
-                    }
+                try {
+                    startActivityForResult(intent, TAKE_PICTURE);
+                } catch (ActivityNotFoundException e) {
                 }
             }
         } else if (requestCode == PERMISSION_CONTACTS) {
@@ -1254,7 +1231,7 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
                 }
             }
         } else if (requestCode == PERMISSION_LOCATION) {
-            if (grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED ) {
                 Intent intentGeo = new Intent(instance, LocationActivity.class);
 
                 if (currentGeo != null)
@@ -1431,6 +1408,8 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
 
         if (FLHelper.isDebuggable())
             ViewServer.get(this).removeWindow(this);
+
+        FloozRestClient.getInstance().clearLocationData();
 
         super.onDestroy();
     }

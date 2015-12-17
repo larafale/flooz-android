@@ -158,5 +158,6 @@ dependencies {
     }
     compile 'io.branch.sdk.android:library:1.5.8'
     compile 'com.android.support:multidex:1.0.1'
+    compile 'com.github.quentin7b:android-location-tracker:3.0'
     compile project(':tooltips')
 }

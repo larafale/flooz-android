@@ -138,6 +138,8 @@ public class LocationActivity extends Activity implements LocationListAdapter.Lo
     public void onPause() {
         clearReferences();
         super.onPause();
+
+        this.listAdapter.stopTracker();
     }
 
     @Override
@@ -167,5 +169,10 @@ public class LocationActivity extends Activity implements LocationListAdapter.Lo
         this.geo = null;
         this.listAdapter.selectedLocation = null;
         this.listAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void locationTimeout() {
+
     }
 }

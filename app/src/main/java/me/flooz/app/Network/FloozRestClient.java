@@ -112,6 +112,7 @@ public class FloozRestClient
     public static String kShareData = "shareData";
     public static String kNotificationsData = "notifData";
     public static String kLocationData = "locationData";
+    public static String kLlData = "llData";
 
     public enum FriendAction {
         Accept,
@@ -395,6 +396,10 @@ public class FloozRestClient
         }
     }
 
+    public String loadLlData() {
+        return this.appSettings.getString(kLlData, null);
+    }
+
     public JSONArray loadLocationData() {
         String locationData = this.appSettings.getString(kLocationData, null);
         if (locationData != null) {
@@ -469,6 +474,11 @@ public class FloozRestClient
             this.appSettings.edit().putString(kLocationData, locations.toString()).apply();
     }
 
+    public void saveLlData(String ll) {
+        if (ll != null)
+            this.appSettings.edit().putString(kLlData, ll).apply();
+    }
+
     public void saveTimelineData(FLTransaction.TransactionScope scope, JSONArray timeline) {
         if (timeline != null) {
             String dataKey = "";
@@ -499,6 +509,7 @@ public class FloozRestClient
         tmpEditor.remove(kTextData);
         tmpEditor.remove(kNotificationsData);
         tmpEditor.remove(kLocationData);
+        tmpEditor.remove(kLlData);
         tmpEditor.apply();
     }
 
@@ -506,6 +517,7 @@ public class FloozRestClient
         SharedPreferences.Editor tmpEditor = this.appSettings.edit();
 
         tmpEditor.remove(kLocationData);
+        tmpEditor.remove(kLlData);
         tmpEditor.apply();
     }
 
@@ -1656,7 +1668,6 @@ public class FloozRestClient
                                 responseHandler.success(response);
 
                             if (response.has("popup"))
-
                             {
                                 FLError errorContent = new FLError(response.optJSONObject("popup"));
                                 CustomToast.show(FloozApplication.getAppContext(), errorContent);

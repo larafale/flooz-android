@@ -9,6 +9,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import fr.quentinklein.slt.LocationTracker;
+import fr.quentinklein.slt.TrackerSettings;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
@@ -35,6 +38,7 @@ public class LocationListAdapter  extends BaseAdapter implements StickyListHeade
 
     public interface LocationListAdapterDelegate {
         void clearCurrentSelection();
+        void locationTimeout();
     }
 
     private Boolean firstLoading = false;
@@ -53,6 +57,7 @@ public class LocationListAdapter  extends BaseAdapter implements StickyListHeade
     private String searchData;
 
     private String ll;
+    private LocationTracker locationTracker;
 
     private Runnable searchRunnable = new Runnable() {
         @Override
@@ -83,48 +88,75 @@ public class LocationListAdapter  extends BaseAdapter implements StickyListHeade
 
         this.searchHandler = new Handler(Looper.getMainLooper());
 
-        LocationManager locationManager = (LocationManager) ctx.getSystemService(Activity.LOCATION_SERVICE);
+        this.ll = FloozRestClient.getInstance().loadLlData();
 
-        try {
-            locationManager.requestSingleUpdate(LocationManager.NETWORK_PROVIDER, new LocationListener() {
+        if (ll != null) {
+            FloozRestClient.getInstance().placesFrom(ll, new FloozHttpResponseHandler() {
                 @Override
-                public void onLocationChanged(Location location) {
-                    ll = location.getLatitude() + "," + location.getLongitude();
-                    FloozRestClient.getInstance().placesFrom(ll, new FloozHttpResponseHandler() {
-                        @Override
-                        public void success(Object response) {
-                            aroundPlaces = (JSONArray) response;
-                            firstLoading = true;
-                            notifyDataSetChanged();
-                        }
-
-                        @Override
-                        public void failure(int statusCode, FLError error) {
-
-                        }
-                    });
+                public void success(Object response) {
+                    aroundPlaces = (JSONArray) response;
+                    firstLoading = true;
+                    notifyDataSetChanged();
                 }
 
                 @Override
-                public void onStatusChanged(String provider, int status, Bundle extras) {
+                public void failure(int statusCode, FLError error) {
 
                 }
-
-                @Override
-                public void onProviderEnabled(String provider) {
-
-                }
-
-                @Override
-                public void onProviderDisabled(String provider) {
-
-                }
-            }, Looper.getMainLooper());
-        } catch (SecurityException e) {
-            e.printStackTrace();
+            });
         }
 
+        this.locationTracker = new LocationTracker(this.context, new TrackerSettings().setUsePassive(false)) {
+            @Override
+            public void onLocationFound(@NonNull Location location) {
+                ll = location.getLatitude() + "," + location.getLongitude();
+                FloozRestClient.getInstance().saveLlData(ll);
+                FloozRestClient.getInstance().placesFrom(ll, new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        aroundPlaces = (JSONArray) response;
+                        firstLoading = true;
+                        notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void failure(int statusCode, FLError error) {
+
+                    }
+                });
+
+                LocationListAdapter.this.stopTracker();
+            }
+
+            @Override
+            public void onTimeout() {
+                firstLoading = true;
+                notifyDataSetChanged();
+
+                if (delegate != null)
+                    delegate.locationTimeout();
+            }
+        };
+
         notifyDataSetChanged();
+
+        this.startTracker();
+    }
+
+    public void startTracker() {
+        if (!this.locationTracker.isListening() && this.ll == null) {
+            try {
+                this.locationTracker.startListen();
+            } catch (SecurityException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void stopTracker() {
+        if (this.locationTracker.isListening()) {
+            this.locationTracker.stopListen();
+        }
     }
 
     @Override
@@ -272,7 +304,7 @@ public class LocationListAdapter  extends BaseAdapter implements StickyListHeade
 
         final JSONObject location = this.getItem(position);
 
-        if (((isSearchActive && searchPlaces.length() == 0) || aroundPlaces.length() == 0) && (position != 0 || selectedLocation == null)) {
+        if (((isSearchActive && searchPlaces.length() == 0) || aroundPlaces.length() == 0 || (firstLoading && ll == null)) && (position != 0 || selectedLocation == null)) {
             View empty = LayoutInflater.from(context).inflate(R.layout.empty_row, parent, false);
 
             TextView emptyText = (TextView) empty.findViewById(R.id.empty_row_text);
