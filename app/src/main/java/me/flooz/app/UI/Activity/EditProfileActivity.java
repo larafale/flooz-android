@@ -199,14 +199,9 @@ public class EditProfileActivity extends Activity {
             public void onClick(View v) {
                 Map<String, Object> data = new HashMap<>(1);
 
-                if (!bioField.getText().toString().isEmpty())
-                    data.put("bio", bioField.getText().toString());
-
-                if (!locationField.getText().toString().isEmpty())
-                    data.put("location", locationField.getText().toString());
-
-                if (!websiteField.getText().toString().isEmpty())
-                    data.put("website", websiteField.getText().toString());
+                data.put("bio", bioField.getText().toString());
+                data.put("location", locationField.getText().toString());
+                data.put("website", websiteField.getText().toString());
 
                 FloozRestClient.getInstance().showLoadView();
                 FloozRestClient.getInstance().updateUser(data, new FloozHttpResponseHandler() {

@@ -215,12 +215,24 @@ public class FloozRestClient
         if (this.accessToken == null || this.accessToken.isEmpty())
             return false;
 
-        this.updateCurrentUser(new FloozHttpResponseHandler() {
+        this.request("/users/login", HttpRequestType.POST, null, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
-                updateNotificationFeed(null);
-                FloozApplication.getInstance().didConnected();
-                FloozApplication.getInstance().displayMainView();
+
+                JSONObject responseObject = (JSONObject)response;
+
+                setNewAccessToken(responseObject.optJSONArray("items").optJSONObject(0).optString("token"));
+
+                currentUser = new FLUser(responseObject.optJSONArray("items").optJSONObject(1));
+                appSettings.edit().putString("userId", currentUser.userId).apply();
+
+                saveUserData();
+
+                checkDeviceToken();
+                floozApp.didConnected();
+                floozApp.displayMainView();
+
+                updateCurrentUser(null);
             }
 
             @Override
@@ -237,6 +249,7 @@ public class FloozRestClient
                 }
             }
         });
+
         return true;
     }
 

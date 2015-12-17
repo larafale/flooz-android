@@ -279,7 +279,7 @@ public class TransactionCardController extends BaseController {
                 FloozRestClient.getInstance().likeTransaction(transaction.transactionId, new FloozHttpResponseHandler() {
                     @Override
                     public void success(Object response) {
-                        transaction.setJson((JSONObject)response);
+                        transaction.setJson((JSONObject) response);
                         reloadView();
                     }
 
@@ -297,6 +297,32 @@ public class TransactionCardController extends BaseController {
                 cardCommentsTextfield.requestFocus();
                 InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(cardCommentsTextfield, InputMethodManager.SHOW_IMPLICIT);
+            }
+        });
+
+        this.cardCommentsSendButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (cardCommentsTextfield.getText().length() > 0 && cardCommentsTextfield.getText().length() < 140) {
+                    FloozRestClient.getInstance().commentTransaction(transaction.transactionId, cardCommentsTextfield.getText().toString(), new FloozHttpResponseHandler() {
+                        @Override
+                        public void success(Object response) {
+                            transaction.setJson((JSONObject) response);
+                            reloadView();
+                        }
+
+                        @Override
+                        public void failure(int statusCode, FLError error) {
+
+                        }
+                    });
+
+                    cardCommentsTextfield.setText("");
+                    cardCommentsTextfield.clearFocus();
+                    InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(
+                            Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(parentActivity.getWindow().getDecorView().getRootView().getWindowToken(), 0);
+                }
             }
         });
 
@@ -426,11 +452,10 @@ public class TransactionCardController extends BaseController {
 
         this.cardDesc.setText(this.transaction.content);
 
-        if (this.transaction.attachmentThumbURL != null && !this.transaction.attachmentThumbURL.isEmpty()) {
-            this.cardPic.setImageFromUrl(this.transaction.attachmentThumbURL);
+        if (this.transaction.attachmentURL != null && !this.transaction.attachmentURL.isEmpty()) {
+            this.cardPic.setImageFromUrl(this.transaction.attachmentURL);
             this.cardPic.setVisibility(View.VISIBLE);
-        }
-        else
+        } else
             this.cardPic.setVisibility(View.GONE);
 
         if (!this.transaction.social.likeText.isEmpty() || this.transaction.social.commentsCount.intValue() > 0) {
@@ -491,59 +516,6 @@ public class TransactionCardController extends BaseController {
                     cardCommentsSendButton.performClick();
                 }
                 return false;
-            }
-        });
-
-        this.cardCommentsSendButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (cardCommentsTextfield.getText().length() > 0 && cardCommentsTextfield.getText().length() < 140) {
-                    FloozRestClient.getInstance().commentTransaction(transaction.transactionId, cardCommentsTextfield.getText().toString(), new FloozHttpResponseHandler() {
-                        @Override
-                        public void success(Object response) {
-                            FLComment com = (FLComment) response;
-
-                            transaction.comments.add(com);
-                            transaction.social.isCommented = true;
-                            transaction.social.commentsCount = transaction.comments.size();
-
-                            if (!transaction.social.likeText.isEmpty() || transaction.social.commentsCount.intValue() > 0) {
-                                cardSocialContainer.setVisibility(View.VISIBLE);
-
-                                if (transaction.social.commentsCount.intValue() > 0) {
-                                    if (transaction.social.commentsCount.intValue() < 10)
-                                        cardCommentsNumber.setText("0" + transaction.social.commentsCount.toString());
-                                    else
-                                        cardCommentsNumber.setText(transaction.social.commentsCount.toString());
-                                    cardCommentsNumberContainer.setVisibility(View.VISIBLE);
-                                } else {
-                                    cardCommentsNumberContainer.setVisibility(View.GONE);
-                                }
-
-                                if (!transaction.social.likeText.isEmpty()) {
-                                    cardLikesText.setText(transaction.social.likeText);
-                                    cardLikesContainer.setVisibility(View.VISIBLE);
-                                } else {
-                                    cardLikesContainer.setVisibility(View.GONE);
-                                }
-                            } else
-                                cardSocialContainer.setVisibility(View.GONE);
-
-                            cardCommentsContainer.addView(createCommentRowView(com));
-                        }
-
-                        @Override
-                        public void failure(int statusCode, FLError error) {
-
-                        }
-                    });
-
-                    cardCommentsTextfield.setText("");
-                    cardCommentsTextfield.clearFocus();
-                    InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(
-                            Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(parentActivity.getWindow().getDecorView().getRootView().getWindowToken(), 0);
-                }
             }
         });
     }

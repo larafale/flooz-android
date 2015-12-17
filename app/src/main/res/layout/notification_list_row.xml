@@ -15,9 +15,7 @@
             android:id="@+id/notification_content"
             android:orientation="horizontal"
             android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:paddingBottom="@dimen/dimen_large">
+            android:layout_height="wrap_content">
 
             <com.makeramen.roundedimageview.RoundedImageView
                 xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -28,42 +26,48 @@
                 android:layout_marginRight="@dimen/dimen_large"
                 android:layout_marginTop="@dimen/dimen_xsmall"
                 android:layout_marginBottom="@dimen/dimen_xsmall"
-                android:layout_gravity="center_vertical"
                 android:src="@drawable/avatar_default"
                 app:riv_corner_radius="@dimen/avatar_corner"
                 app:riv_mutate_background="true"/>
 
-            <TextView
-                android:id="@+id/notification_row_content"
+            <LinearLayout
+                android:orientation="vertical"
                 android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/notification_content"
-                android:textColor="@android:color/white"/>
+                android:layout_height="wrap_content">
 
-        </LinearLayout>
+                <TextView
+                    android:id="@+id/notification_row_content"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="@dimen/notification_content"
+                    android:textColor="@android:color/white"/>
 
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center_vertical|right"
-            android:layout_marginTop="@dimen/dimen_small"
-            android:layout_below="@id/notification_content">
+                <LinearLayout
+                    android:orientation="horizontal"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|right"
+                    android:layout_marginTop="@dimen/dimen_medium"
+                    android:layout_below="@id/notification_content">
 
-            <TextView
-                android:id="@+id/notification_row_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textColor="@color/placeholder"
-                android:textSize="@dimen/notification_date"
-                android:layout_marginRight="@dimen/dimen_medium"
-                />
+                    <TextView
+                        android:id="@+id/notification_row_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/placeholder"
+                        android:textSize="@dimen/notification_date"
+                        android:layout_marginRight="@dimen/dimen_medium"
+                        />
 
-            <ImageView
-                android:id="@+id/notification_row_read_indicator"
-                android:layout_width="@dimen/dimen_medium"
-                android:layout_height="@dimen/dimen_medium"
-                android:background="@drawable/notification_read_indicator"/>
+                    <ImageView
+                        android:id="@+id/notification_row_read_indicator"
+                        android:layout_width="@dimen/dimen_medium"
+                        android:layout_height="@dimen/dimen_medium"
+                        android:background="@drawable/notification_read_indicator"/>
+
+                </LinearLayout>
+            </LinearLayout>
+
 
         </LinearLayout>
 

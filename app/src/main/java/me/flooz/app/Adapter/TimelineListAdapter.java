@@ -253,7 +253,7 @@ public class TimelineListAdapter extends BaseAdapter {
         }
 
         if (currentTransaction.attachmentURL != null &&!currentTransaction.attachmentURL.isEmpty()) {
-            holder.transactionPic.setImageFromUrl(currentTransaction.attachmentThumbURL);
+            holder.transactionPic.setImageFromUrl(currentTransaction.attachmentURL);
             holder.transactionPic.setVisibility(View.VISIBLE);
 
             holder.transactionPic.setOnClickListener(new View.OnClickListener() {

@@ -41,8 +41,8 @@ public class FLPhoneField extends LinearLayout {
     private TextView indicatifLabel;
     private LinearLayout countrySide;
 
-    private FLCountry currentCountry;
-    private String currentPhone;
+    public FLCountry currentCountry;
+    public String currentPhone;
 
     public FLPhoneFieldDelegate delegate;
 

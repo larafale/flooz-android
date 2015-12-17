@@ -29,7 +29,7 @@ public class StartLoginFragment extends StartBaseFragment implements FLPhoneFiel
     private FLPhoneField phoneTextfield;
     private EditText passwordTextfield;
 
-    private String currentPhone;
+    private String currentPhone = "";
     private FLCountry currentCountry;
 
     @Override
@@ -61,6 +61,8 @@ public class StartLoginFragment extends StartBaseFragment implements FLPhoneFiel
         facebookPicto.setColorFilter(inflater.getContext().getResources().getColor(android.R.color.white));
 
         phoneTextfield.delegate = this;
+        currentCountry = phoneTextfield.currentCountry;
+        currentPhone = phoneTextfield.currentPhone;
 
         fbButton.setOnClickListener(new View.OnClickListener() {
             @Override

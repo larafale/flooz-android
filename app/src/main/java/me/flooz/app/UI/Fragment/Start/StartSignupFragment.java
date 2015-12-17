@@ -52,7 +52,7 @@ public class StartSignupFragment extends StartBaseFragment implements FLPhoneFie
     private RelativeLayout fbPicView;
     private RoundedImageView fbPic;
 
-    private String currentPhone;
+    private String currentPhone = "";
     private FLCountry currentCountry;
 
     @Override
@@ -88,6 +88,9 @@ public class StartSignupFragment extends StartBaseFragment implements FLPhoneFie
         nicknameTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
         passwordTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
         sponsorTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+
+        currentCountry = phoneTextfield.currentCountry;
+        currentPhone = phoneTextfield.currentPhone;
 
         phoneTextfield.delegate = this;
 

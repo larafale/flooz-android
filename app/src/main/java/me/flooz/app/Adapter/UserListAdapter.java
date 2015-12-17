@@ -47,6 +47,8 @@ public class UserListAdapter extends BaseAdapter {
         this.currentUser = currentUser;
         if (this.currentUser != null)
             this.userList = currentUser.friends;
+
+        this.notifyDataSetChanged();
     }
 
     @Override
@@ -82,7 +84,7 @@ public class UserListAdapter extends BaseAdapter {
     public View getView(int i, View convertView, ViewGroup parent) {
         final ViewHolder holder;
 
-        if (this.userList.size() == 0) {
+        if (this.userList.size() == 0 && i == 0) {
             View empty = LayoutInflater.from(context).inflate(R.layout.empty_row, parent, false);
 
             TextView emptyText = (TextView) empty.findViewById(R.id.empty_row_text);
@@ -93,7 +95,7 @@ public class UserListAdapter extends BaseAdapter {
             return empty;
         }
 
-        if (convertView == null) {
+        if (convertView == null || convertView.getTag() == null) {
             holder = new ViewHolder();
             convertView = inflater.inflate(R.layout.user_list_row, parent, false);
             holder.username = (TextView) convertView.findViewById(R.id.user_list_row_username);

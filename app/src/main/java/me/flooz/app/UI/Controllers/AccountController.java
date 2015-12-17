@@ -138,25 +138,13 @@ public class AccountController extends BaseController implements ProfileListAdap
 
                             break;
                         case "cashout":
-                            FloozRestClient.getInstance().showLoadView();
-                            FloozRestClient.getInstance().cashoutValidate(new FloozHttpResponseHandler() {
-                                @Override
-                                public void success(Object response) {
-                                    if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
-                                        ((HomeActivity)parentActivity).pushFragmentInCurrentTab(new CashoutFragment());
-                                    else {
-                                        Intent cashoutIntent = new Intent(parentActivity, CashoutActivity.class);
-                                        parentActivity.startActivity(cashoutIntent);
-                                        parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-                                    }
-                                }
-
-                                @Override
-                                public void failure(int statusCode, FLError error) {
-
-                                }
-                            });
-
+                            if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
+                                ((HomeActivity)parentActivity).pushFragmentInCurrentTab(new CashoutFragment());
+                            else {
+                                Intent cashoutIntent = new Intent(parentActivity, CashoutActivity.class);
+                                parentActivity.startActivity(cashoutIntent);
+                                parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                            }
                             break;
                         case "card":
                             if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
