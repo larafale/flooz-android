@@ -96,7 +96,7 @@ public class FLPhoneField extends LinearLayout {
                     size += 1;
 
                 if (s.length() > size)
-                    s.delete(size, s.length() - 1);
+                    s.delete(size, s.length());
 
                 currentPhone = s.toString();
 

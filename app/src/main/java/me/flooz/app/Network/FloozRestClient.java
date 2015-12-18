@@ -17,6 +17,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Debug;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
@@ -48,6 +49,7 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 
+import java.io.Console;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -768,7 +770,7 @@ public class FloozRestClient
     }
 
     public void updateCurrentUser(final FloozHttpResponseHandler responseHandler) {
-        this.request("/users/profile?uuid=" + this.deviceManager.getDeviceUuid(), HttpRequestType.GET, null, new FloozHttpResponseHandler() {
+        this.request("/users/profile", HttpRequestType.GET, null, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
                 JSONObject responseObject = (JSONObject)response;
@@ -1336,7 +1338,7 @@ public class FloozRestClient
             @Override
             public void success(Object response) {
                 if (responseHandler != null) {
-                    responseHandler.success(new FLComment(((JSONObject) response).optJSONObject("item")));
+                    responseHandler.success(((JSONObject) response).optJSONObject("item"));
                 }
             }
 
@@ -1632,6 +1634,11 @@ public class FloozRestClient
         NetworkInfo activeNetwork = conMgr.getActiveNetworkInfo();
 
         if (activeNetwork != null && activeNetwork.isConnected()) {
+
+            if (BuildConfig.DEBUG_API) {
+                Log.d(type.toString() + "Request", path + " - " + (params != null ? params.toString() : "(null)"));
+            }
+
             if (this.accessToken != null && !this.accessToken.isEmpty())
             {
                 if (path.indexOf('?') == -1) {
@@ -1667,6 +1674,9 @@ public class FloozRestClient
 
             if (!path.contains("&mo="))
                 path += "&mo=" + this.deviceManager.getDeviceName();
+
+            if (!path.contains("&uuid="))
+                path += "&uuid=" + this.deviceManager.getDeviceUuid();
 
             final JsonHttpResponseHandler jsonHttpResponseHandler = new JsonHttpResponseHandler() {
                 @Override

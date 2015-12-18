@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 import me.flooz.app.App.FloozApplication;
+import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.Utils.MomentDate;
 
 /**
@@ -55,7 +56,11 @@ public class FLNotification {
         try {
             MomentDate momentDate = new MomentDate(FloozApplication.getAppContext(), json.optString("cAt"));
             this.date = momentDate.getDate();
-            this.dateText = momentDate.fromNow();
+
+            if (FloozRestClient.getInstance().isConnected())
+                this.dateText = json.optString("when");
+            else
+                this.dateText = momentDate.fromNow();
         } catch (ParseException e) {
             e.printStackTrace();
         }

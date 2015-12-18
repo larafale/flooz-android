@@ -264,7 +264,7 @@
     <string name="EMPTY_LOCATION">Aucun lieu trouvé</string>
 
     <string name="TRANSACTION_CONTACT_PICKER_PREFIX">À :&#160;</string>
-    <string name="TRANSACTION_CONTACT_PICKER_HINT">saisir nom, pseudo ou 06</string>
+    <string name="TRANSACTION_CONTACT_PICKER_HINT">nom, pseudo ou 06</string>
     <string name="TRANSACTION_CONTACT_LIST_EMPTY_1">Sélectionnez un contact</string>
     <string name="TRANSACTION_CONTACT_LIST_EMPTY_2">ou entrez un n° de mobile</string>
 
@@ -313,10 +313,10 @@
     <string name="FRIENDS_FRIENDS">Mes amis</string>
 
     <string name="FRIEND_PICKER_PLACEHOLDER">Chercher un contact / Entrer un 06</string>
-    <string name="FRIEND_PICKER_FRIENDS_RECENT">Contacts Récents</string>
-    <string name="FRIEND_PICKER_FRIENDS">Mes amis</string>
-    <string name="FRIEND_PICKER_ADDRESS_BOOK">Carnet d\'adresse</string>
-    <string name="FRIEND_PICKER_RESULT">Résultats</string>
+    <string name="FRIEND_PICKER_FRIENDS_RECENT">contacts récents</string>
+    <string name="FRIEND_PICKER_FRIENDS">mes amis</string>
+    <string name="FRIEND_PICKER_ADDRESS_BOOK">carnet d\'adresses</string>
+    <string name="FRIEND_PICKER_RESULT">résultats</string>
 
     <string name="SECORE_CODE_TEXT_FIRST_TIME">Ce code vous permet de sécuriser vos paiements en cas de perte/vol de votre mobile.</string>
     <string name="SECORE_CODE_TEXT_CURRENT">Entrez votre code secret :</string>
@@ -419,8 +419,8 @@
     <string name="future">dans %s</string>
     <string name="past">il y a %s</string>
     <string name="s">quelques secondes</string>
-    <string name="m">1mn</string>
-    <string name="mm">%dmns</string>
+    <string name="m">1m</string>
+    <string name="mm">%dm</string>
     <string name="h">1h</string>
     <string name="hh">%dh</string>
     <string name="d">1j</string>
