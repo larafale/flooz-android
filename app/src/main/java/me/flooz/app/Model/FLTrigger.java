@@ -49,7 +49,10 @@ public class FLTrigger {
         TriggerEditProfile,
         TriggerFbConnect,
         TriggerReloadText,
-        TriggerReloadInvitation
+        TriggerReloadInvitation,
+        TriggerPayClick,
+        TriggerShowNotification,
+        TriggerReloadNotification
     }
 
     public FLTriggerType type;
@@ -159,6 +162,12 @@ public class FLTrigger {
             return TriggerReloadText;
         else if (param.contentEquals("invitation:reload"))
             return TriggerReloadInvitation;
+        else if (param.contentEquals("pay:click"))
+            return TriggerPayClick;
+        else if (param.contentEquals("notification:show"))
+            return TriggerShowNotification;
+        else if (param.contentEquals("notification:reload"))
+            return TriggerReloadNotification;
         else
             return TriggerNone;
     }

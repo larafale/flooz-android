@@ -82,7 +82,6 @@ public class TransactionCardController extends BaseController {
     private TextView card3dText;
     private TextView cardDesc;
     private LoadingImageView cardPic;
-    private LinearLayout cardLikesContainer;
     private TextView cardLikesText;
     private LinearLayout cardLikesButton;
     private TextView cardLikesButtonText;
@@ -94,11 +93,10 @@ public class TransactionCardController extends BaseController {
     private TextView cardCommentsSendButton;
     private EditText cardCommentsTextfield;
     private LinearLayout cardSocialContainer;
-    private LinearLayout cardCommentsNumberContainer;
-    private TextView cardCommentsNumber;
-
-    private Context context;
-    private LayoutInflater inflater;
+    private TextView cardCommentsText;
+    private TextView cardLocationText;
+    private ImageView cardLocationImg;
+    private LinearLayout cardLocationLayout;
 
     private Boolean transactionPending = false;
     private Boolean dialogIsShowing = false;
@@ -145,7 +143,6 @@ public class TransactionCardController extends BaseController {
         this.card3dText = (TextView) view.findViewById(R.id.transac_card_3dText);
         this.cardDesc = (TextView) view.findViewById(R.id.transac_card_desc);
         this.cardPic = (LoadingImageView) view.findViewById(R.id.transac_card_pic);
-        this.cardLikesContainer = (LinearLayout) view.findViewById(R.id.transac_card_likes_container);
         this.cardCommentsButton = (LinearLayout) view.findViewById(R.id.transac_card_comments_button);
         this.cardCommentsButtonText = (TextView) view.findViewById(R.id.transac_card_comments_button_text);
         this.cardCommentsButtonPicto = (ImageView) view.findViewById(R.id.transac_card_comments_button_picto);
@@ -157,8 +154,10 @@ public class TransactionCardController extends BaseController {
         this.cardCommentsSendButton = (TextView) view.findViewById(R.id.transac_card_comments_send);
         this.cardCommentsTextfield = (EditText) view.findViewById(R.id.transac_card_comments_textfield);
         this.cardSocialContainer = (LinearLayout) view.findViewById(R.id.transac_card_social_container);
-        this.cardCommentsNumberContainer = (LinearLayout) view.findViewById(R.id.transac_card_comments_number_container);
-        this.cardCommentsNumber = (TextView) view.findViewById(R.id.transac_card_comments_number);
+        this.cardCommentsText = (TextView) view.findViewById(R.id.transac_card_comments_text);
+        this.cardLocationImg = (ImageView) view.findViewById(R.id.transac_card_location_img);
+        this.cardLocationLayout = (LinearLayout) view.findViewById(R.id.transac_card_location);
+        this.cardLocationText = (TextView) view.findViewById(R.id.transac_card_location_text);
 
         this.cardHeaderDate.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
         this.cardFromUsername.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity), Typeface.BOLD);
@@ -171,13 +170,15 @@ public class TransactionCardController extends BaseController {
         this.card3dText.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.cardDesc.setTypeface(CustomFonts.customContentLight(this.parentActivity));
         this.cardLikesText.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
-        this.cardCommentsNumber.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
+        this.cardCommentsText.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.cardLikesButtonText.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.cardCommentsButtonText.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.cardCommentsSendButton.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.cardCommentsTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
+        this.cardLocationText.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
 
         this.cardHeaderReportButton.setColorFilter(this.parentActivity.getResources().getColor(R.color.blue));
+        this.cardLocationImg.setColorFilter(this.parentActivity.getResources().getColor(R.color.placeholder));
 
         if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
             this.cardHeaderCloseButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
@@ -458,24 +459,28 @@ public class TransactionCardController extends BaseController {
         } else
             this.cardPic.setVisibility(View.GONE);
 
+        if (this.transaction.location != null && !this.transaction.location.isEmpty()) {
+            this.cardLocationText.setText(this.transaction.location.toCharArray(), 0, this.transaction.location.length());
+            this.cardLocationLayout.setVisibility(View.VISIBLE);
+        } else {
+            this.cardLocationLayout.setVisibility(View.GONE);
+        }
+
         if (!this.transaction.social.likeText.isEmpty() || this.transaction.social.commentsCount.intValue() > 0) {
             this.cardSocialContainer.setVisibility(View.VISIBLE);
 
             if (this.transaction.social.commentsCount.intValue() > 0) {
-                if (this.transaction.social.commentsCount.intValue() < 10)
-                    this.cardCommentsNumber.setText("0" + this.transaction.social.commentsCount.toString());
-                else
-                    this.cardCommentsNumber.setText(this.transaction.social.commentsCount.toString());
-                this.cardCommentsNumberContainer.setVisibility(View.VISIBLE);
+                this.cardCommentsText.setText(this.transaction.social.commentText);
+                this.cardCommentsText.setVisibility(View.VISIBLE);
             } else {
-                this.cardCommentsNumberContainer.setVisibility(View.GONE);
+                this.cardCommentsText.setVisibility(View.GONE);
             }
 
             if (!this.transaction.social.likeText.isEmpty()) {
                 this.cardLikesText.setText(this.transaction.social.likeText);
-                this.cardLikesContainer.setVisibility(View.VISIBLE);
+                this.cardLikesText.setVisibility(View.VISIBLE);
             } else {
-                this.cardLikesContainer.setVisibility(View.GONE);
+                this.cardLikesText.setVisibility(View.GONE);
             }
         }
         else
@@ -555,7 +560,7 @@ public class TransactionCardController extends BaseController {
             commentPic.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.avatar_default));
 
         commentText.setText(comment.content);
-        commentInfos.setText("@" + comment.user.username + " - " + comment.date.fromNow());
+        commentInfos.setText("@" + comment.user.username + " - " + comment.dateText);
 
         commentPic.setOnClickListener(new View.OnClickListener() {
             @Override

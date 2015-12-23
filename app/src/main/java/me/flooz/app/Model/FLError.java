@@ -17,6 +17,7 @@ public class FLError {
         ErrorTypeError
     }
 
+    public Number delay;
     public Number time;
     public String text;
     public String title;
@@ -46,6 +47,7 @@ public class FLError {
     }
 
     private void setJson(JSONObject json) {
+        this.delay = json.optInt("delay");
         this.time = json.optInt("time");
         this.text = json.optString("message");
         this.title = json.optString("title");

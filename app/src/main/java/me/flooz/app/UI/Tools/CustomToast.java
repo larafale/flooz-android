@@ -24,7 +24,7 @@ public class CustomToast {
     public static void show(final Context ctx, final FLError content) {
         if (content.isVisible && content.type != null && FloozApplication.appInForeground) {
             Handler mainHandler = new Handler(ctx.getMainLooper());
-            mainHandler.post(new Runnable() {
+            mainHandler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     int layoutId;
@@ -137,7 +137,7 @@ public class CustomToast {
 
                     showHandler.post(showRunnable);
                 }
-            });
+            }, content.delay.intValue() * 1000);
         }
     }
 }

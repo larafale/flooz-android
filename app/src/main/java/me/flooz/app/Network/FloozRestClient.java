@@ -22,6 +22,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -83,6 +84,7 @@ import me.flooz.app.UI.Activity.EditProfileActivity;
 import me.flooz.app.UI.Activity.FriendsActivity;
 import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.NewTransactionActivity;
+import me.flooz.app.UI.Activity.NotificationActivity;
 import me.flooz.app.UI.Activity.Secure3DActivity;
 import me.flooz.app.UI.Activity.Settings.BankSettingsActivity;
 import me.flooz.app.UI.Activity.Settings.IdentitySettingsActivity;
@@ -217,7 +219,15 @@ public class FloozRestClient
         if (this.accessToken == null || this.accessToken.isEmpty())
             return false;
 
-        this.request("/users/login", HttpRequestType.POST, null, new FloozHttpResponseHandler() {
+        String path = "/users/login";
+
+        path += "?os=" + Build.VERSION.RELEASE;
+
+        path += "&mo=" + this.deviceManager.getDeviceName();
+
+        path += "&uuid=" + this.deviceManager.getDeviceUuid();
+
+        this.request(path, HttpRequestType.POST, null, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
 
@@ -261,7 +271,15 @@ public class FloozRestClient
         params.put("password", password);
         params.put("codeReset", true);
 
-        this.request("/users/login", HttpRequestType.POST, params, responseHandler);
+        String path = "/users/login";
+
+        path += "?os=" + Build.VERSION.RELEASE;
+
+        path += "&mo=" + this.deviceManager.getDeviceName();
+
+        path += "&uuid=" + this.deviceManager.getDeviceUuid();
+
+        this.request(path, HttpRequestType.POST, params, responseHandler);
     }
 
     public void loginWithPseudoAndPassword(String pseudo, String password, final FloozHttpResponseHandler responseHandler) {
@@ -269,7 +287,15 @@ public class FloozRestClient
         params.put("login", pseudo);
         params.put("password", password);
 
-        this.request("/users/login", HttpRequestType.POST, params, new FloozHttpResponseHandler() {
+        String path = "/users/login";
+
+        path += "?os=" + Build.VERSION.RELEASE;
+
+        path += "&mo=" + this.deviceManager.getDeviceName();
+
+        path += "&uuid=" + this.deviceManager.getDeviceUuid();
+
+        this.request(path, HttpRequestType.POST, params, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
                 JSONObject responseObject = (JSONObject)response;
@@ -302,7 +328,15 @@ public class FloozRestClient
 
         param.put("accessToken", fbToken);
 
-        this.request("/users/facebook", HttpRequestType.POST, param, new FloozHttpResponseHandler() {
+        String path = "/users/facebook";
+
+        path += "?os=" + Build.VERSION.RELEASE;
+
+        path += "&mo=" + this.deviceManager.getDeviceName();
+
+        path += "&uuid=" + this.deviceManager.getDeviceUuid();
+
+        this.request(path, HttpRequestType.POST, param, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
                 JSONObject responseObject = (JSONObject) response;
@@ -541,7 +575,15 @@ public class FloozRestClient
     /***************************/
 
     public void signupPassStep(String step, Map<String, Object> params, FloozHttpResponseHandler responseHandler) {
-        this.request("/signup/" + step, HttpRequestType.POST, params, responseHandler);
+        String path = "/signup/" + step;
+
+        path += "?os=" + Build.VERSION.RELEASE;
+
+        path += "&mo=" + this.deviceManager.getDeviceName();
+
+        path += "&uuid=" + this.deviceManager.getDeviceUuid();
+
+        this.request(path, HttpRequestType.POST, params, responseHandler);
     }
 
     public void sendSignupSMS(String phone) {
@@ -1603,13 +1645,34 @@ public class FloozRestClient
     }
 
     public void showLoadView() {
-        if (this.loadDialog == null || !this.loadDialog.isShowing()) {
-            this.loadDialog = new ProgressDialog(this.floozApp.getCurrentActivity());
-            this.loadDialog.setCancelable(false);
-            this.loadDialog.setCanceledOnTouchOutside(false);
-            this.loadDialog.setMessage(this.floozApp.getResources().getString(R.string.GLOBAL_WAIT));
-            this.loadDialog.show();
-        }
+        final int[] showTentative = {0};
+        final Handler showHandler = new Handler(Looper.getMainLooper());
+
+        final Runnable showRunnable = new Runnable() {
+            @Override
+            public void run() {
+                ++showTentative[0];
+                Activity currentActivity = FloozApplication.getInstance().getCurrentActivity();
+
+                if (currentActivity != null && currentActivity.getWindow().isActive()) {
+                    showTentative[0] = 0;
+                    if (loadDialog == null || !loadDialog.isShowing()) {
+                        loadDialog = new ProgressDialog(floozApp.getCurrentActivity());
+                        loadDialog.setCancelable(false);
+                        loadDialog.setCanceledOnTouchOutside(false);
+                        loadDialog.setMessage(floozApp.getResources().getString(R.string.GLOBAL_WAIT));
+                        loadDialog.show();
+                    }
+                } else if (showTentative[0] < 5) {
+                    showHandler.removeCallbacks(this);
+                    showHandler.postDelayed(this, 100);
+                } else {
+                    showTentative[0] = 0;
+                }
+            }
+        };
+
+        showHandler.post(showRunnable);
     }
 
     public void hideLoadView() {
@@ -1668,15 +1731,6 @@ public class FloozRestClient
 
             if (!path.contains("&api="))
                 path += "&api=v2";
-
-            if (!path.contains("&os="))
-                path += "&os=" + Build.VERSION.RELEASE;
-
-            if (!path.contains("&mo="))
-                path += "&mo=" + this.deviceManager.getDeviceName();
-
-            if (!path.contains("&uuid="))
-                path += "&uuid=" + this.deviceManager.getDeviceUuid();
 
             final JsonHttpResponseHandler jsonHttpResponseHandler = new JsonHttpResponseHandler() {
                 @Override
@@ -2000,24 +2054,10 @@ public class FloozRestClient
             StartActivity activity = (StartActivity) floozApp.getCurrentActivity();
 
             try {
-                Map<String, Object> fbData = JSONHelper.toMap(data);
-                Map<String, Object> userData = new HashMap<>();
+                Map<String, Object> userData = JSONHelper.toMap(data);
 
-                fbData.remove("type");
-
-                userData.put("fb", fbData);
-
-                if (fbData.containsKey("email"))
-                    userData.put("email", fbData.get("email"));
-
-                if (fbData.containsKey("lastName"))
-                    userData.put("lastName", fbData.get("lastName"));
-
-                if (fbData.containsKey("firstName"))
-                    userData.put("firstName", fbData.get("firstName"));
-
-                if (fbData.containsKey("id"))
-                    userData.put("avatarURL", "https://graph.facebook.com/" + fbData.get("id") + "/picture?width=360&height=360");
+                if (userData.containsKey("fb") && ((Map)userData.get("fb")).containsKey("id"))
+                    userData.put("avatarURL", "https://graph.facebook.com/" + ((Map)userData.get("fb")).get("id") + "/picture");
 
                 activity.updateUserData(userData);
 
@@ -2281,6 +2321,28 @@ public class FloozRestClient
         this.getInvitationText(null);
     }
 
+    private void handleTriggerPayClick() {
+        if ((floozApp.getCurrentActivity() instanceof NewTransactionActivity)) {
+            NewTransactionActivity activity = (NewTransactionActivity)floozApp.getCurrentActivity();
+
+            activity.performTransaction();
+        }
+    }
+
+    private void handleTriggerNotificationShow() {
+        if (!(floozApp.getCurrentActivity() instanceof EditProfileActivity)) {
+            Intent intent = new Intent(floozApp.getCurrentActivity(), NotificationActivity.class);
+            Activity tmpActivity = floozApp.getCurrentActivity();
+            tmpActivity.startActivity(intent);
+            tmpActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+        }
+    }
+
+    private void handleTriggerNotificationReload() {
+        FloozRestClient.getInstance().updateNotificationFeed(null);
+        FloozApplication.performLocalNotification(CustomNotificationIntents.reloadNotifications());
+    }
+
     public void handleTrigger(final FLTrigger trigger) {
         if (trigger == null)
             return;
@@ -2397,6 +2459,15 @@ public class FloozRestClient
                 break;
             case TriggerReloadInvitation:
                 handleTriggerInvitationReload();
+                break;
+            case TriggerPayClick:
+                handleTriggerPayClick();
+                break;
+            case TriggerShowNotification:
+                handleTriggerNotificationShow();
+                break;
+            case TriggerReloadNotification:
+                handleTriggerNotificationReload();
                 break;
             default:
                 break;

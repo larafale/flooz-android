@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import java.text.ParseException;
 
 import me.flooz.app.App.FloozApplication;
+import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.Utils.MomentDate;
 
 /**
@@ -16,7 +17,6 @@ public class FLComment {
     public FLUser user;
     public String content;
     public MomentDate date;
-    public String when;
     public String dateText;
 
     public FLComment(JSONObject json) {
@@ -31,6 +31,11 @@ public class FLComment {
             this.user.userId = json.getString("userId");
 
             this.date = new MomentDate(FloozApplication.getAppContext(), json.getString("cAt"));
+
+            if (FloozRestClient.getInstance().isConnected() && json.has("when"))
+                this.dateText = json.optString("when");
+            else
+                this.dateText = this.date.fromNow();
 
         } catch (JSONException | ParseException e) {
             e.printStackTrace();

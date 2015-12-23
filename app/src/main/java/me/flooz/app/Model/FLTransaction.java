@@ -100,94 +100,95 @@ public class FLTransaction {
     }
 
     public void setJson(JSONObject json) {
-        this.json = json;
+        if (json != null) {
+            this.json = json;
 
-        try {
-            this.transactionId = json.getString("_id");
+            try {
+                this.transactionId = json.getString("_id");
 
-            if (json.has("method"))
-                this.type = transactionsTypeParamToEnum(json.getString("method"));
+                if (json.has("method"))
+                    this.type = transactionsTypeParamToEnum(json.getString("method"));
 
-            if (json.has("state"))
-                this.status = transactionStatusParamToEnum(json.getString("state"));
+                if (json.has("state"))
+                    this.status = transactionStatusParamToEnum(json.getString("state"));
 
-            if (json.has("amount")) {
-                this.amount = json.getDouble("amount");
-                if (!this.amount.equals(0) && json.getBoolean("payer"))
-                    this.amount = this.amount.floatValue() * -1.0;
-            }
-
-            this.amountText = json.optString("amountText");
-
-            this.avatarURL = json.optString("avatar");
-
-            if (this.avatarURL.equals("/img/nopic.png"))
-                this.avatarURL = null;
-
-            this.title = json.getString("text");
-            this.content = json.getString("why");
-
-            this.attachmentURL = json.optString("pic");
-            this.attachmentThumbURL = json.optString("picMini");
-
-            this.social = new FLSocial(json);
-
-            this.isPrivate = json.getString("scopeString").contentEquals("private");
-
-            this.scope = transactionScopeParamToEnum(json.getString("scopeString"));
-
-            this.isCancelable = false;
-            this.isAcceptable = false;
-
-            this.haveAction = this.isPrivate && this.status == TransactionStatus.TransactionStatusPending;
-
-            if (this.status == TransactionStatus.TransactionStatusPending)
-            {
-                if (json.has("actions")) {
-                    if (json.getJSONObject("actions").length() == 1)
-                        this.isCancelable = true;
-                    else if (json.getJSONObject("actions").length() == 2)
-                        this.isAcceptable = true;
+                if (json.has("amount")) {
+                    this.amount = json.getDouble("amount");
+                    if (!this.amount.equals(0) && json.getBoolean("payer"))
+                        this.amount = this.amount.floatValue() * -1.0;
                 }
+
+                this.amountText = json.optString("amountText");
+
+                this.avatarURL = json.optString("avatar");
+
+                if (this.avatarURL.equals("/img/nopic.png"))
+                    this.avatarURL = null;
+
+                this.title = json.getString("text");
+                this.content = json.getString("why");
+
+                this.attachmentURL = json.optString("pic");
+                this.attachmentThumbURL = json.optString("picMini");
+
+                this.social = new FLSocial(json);
+
+                this.isPrivate = json.getString("scopeString").contentEquals("private");
+
+                this.scope = transactionScopeParamToEnum(json.getString("scopeString"));
+
+                this.isCancelable = false;
+                this.isAcceptable = false;
+
+                this.haveAction = this.isPrivate && this.status == TransactionStatus.TransactionStatusPending;
+
+                if (this.status == TransactionStatus.TransactionStatusPending) {
+                    if (json.has("actions")) {
+                        if (json.getJSONObject("actions").length() == 1)
+                            this.isCancelable = true;
+                        else if (json.getJSONObject("actions").length() == 2)
+                            this.isAcceptable = true;
+                    }
+                }
+
+                this.from = new FLUser(json.getJSONObject("from"));
+                this.to = new FLUser(json.getJSONObject("to"));
+
+                String starterId = json.optJSONObject("starter").optString("_id");
+
+                if (starterId.contentEquals(this.from.userId))
+                    this.starter = this.from;
+                else
+                    this.starter = this.to;
+
+                this.date = new MomentDate(FloozApplication.getAppContext(), json.getString("cAt"));
+
+                if (FloozRestClient.getInstance().isConnected() && json.has("when"))
+                    this.when = json.optString("when");
+                else
+                    this.when = this.date.fromNow();
+
+                if (json.has("location"))
+                    this.location = json.optString("location");
+                else
+                    this.location = null;
+
+                this.comments = new ArrayList();
+                for (int i = 0; i < json.getJSONArray("comments").length(); i++) {
+                    FLComment comment = new FLComment(json.getJSONArray("comments").getJSONObject(i));
+                    this.comments.add(comment);
+                }
+
+                if (json.has("text3d")) {
+                    this.text3d = new ArrayList(3);
+                    JSONArray array = json.getJSONArray("text3d");
+                    for (int i = 0; i < array.length(); i++)
+                        this.text3d.add(array.get(i));
+                }
+
+            } catch (JSONException | ParseException e) {
+                e.printStackTrace();
             }
-
-            this.from = new FLUser(json.getJSONObject("from"));
-            this.to = new FLUser(json.getJSONObject("to"));
-
-            String starterId = json.optJSONObject("starter").optString("_id");
-
-            if (starterId.contentEquals(this.from.userId))
-                this.starter = this.from;
-            else
-                this.starter = this.to;
-
-            this.date = new MomentDate(FloozApplication.getAppContext(), json.getString("cAt"));
-
-            if (FloozRestClient.getInstance().isConnected() && json.has("when"))
-                this.when = json.optString("when");
-            else
-                this.when = this.date.fromNow();
-
-            if (json.has("location"))
-                this.location = json.optString("location");
-            else
-                this.location = null;
-
-            this.comments = new ArrayList();
-            for (int i = 0; i < json.getJSONArray("comments").length(); i++) {
-                FLComment comment = new FLComment(json.getJSONArray("comments").getJSONObject(i));
-                this.comments.add(comment);
-            }
-
-            if (json.has("text3d")) {
-                this.text3d = new ArrayList(3);
-                JSONArray array = json.getJSONArray("text3d");
-                for (int i = 0; i < array.length(); i++)
-                    this.text3d.add(array.get(i));
-            }
-
-        } catch (JSONException | ParseException e) {
-            e.printStackTrace();
         }
     }
 

@@ -110,7 +110,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="@color/placeholder"
-            android:textSize="@dimen/timeline_cell_social_label"/>
+            android:textSize="@dimen/timeline_cell_social_label"
+            android:layout_marginRight="@dimen/dimen_large"/>
 
         <TextView
             android:id="@+id/timelineTransactionCommentsText"
@@ -118,7 +119,7 @@
             android:layout_height="wrap_content"
             android:textColor="@color/placeholder"
             android:textSize="@dimen/timeline_cell_social_label"
-            android:layout_marginLeft="@dimen/dimen_large"/>
+            />
 
     </LinearLayout>
 

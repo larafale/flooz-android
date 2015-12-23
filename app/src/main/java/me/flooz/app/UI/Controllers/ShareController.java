@@ -396,7 +396,31 @@ public class ShareController extends BaseController {
             fbShareCallbackManager.onActivityResult(requestCode, resultCode, data);
         } else {
             if (FloozRestClient.getInstance().isConnectedToFacebook()) {
-                fbPublishCallbackManager.onActivityResult(requestCode, resultCode, data);
+                if (fbPublishCallbackManager != null)
+                    fbPublishCallbackManager.onActivityResult(requestCode, resultCode, data);
+                else {
+                    fbPublishCallbackManager = CallbackManager.Factory.create();
+
+                    LoginManager.getInstance().registerCallback(fbPublishCallbackManager,
+                            new FacebookCallback<LoginResult>() {
+                                @Override
+                                public void onSuccess(LoginResult loginResult) {
+                                    showCustomFbSharePopup();
+                                }
+
+                                @Override
+                                public void onCancel() {
+
+                                }
+
+                                @Override
+                                public void onError(FacebookException exception) {
+
+                                }
+                            });
+
+                    fbPublishCallbackManager.onActivityResult(requestCode, resultCode, data);
+                }
             } else {
                 FloozRestClient.getInstance().fbLoginCallbackManager.onActivityResult(requestCode, resultCode, data);
             }

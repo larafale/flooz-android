@@ -1044,6 +1044,21 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         this.scopePic.setImageDrawable(FLTransaction.transactionScopeToImage(this.currentScope));
     }
 
+    public void performTransaction() {
+        FloozRestClient.getInstance().performTransaction(this.generateRequestParams(true), new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                JSONObject jsonObject = (JSONObject) response;
+                showValidationDialog(jsonObject.optString("confirmationText"));
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+
+            }
+        });
+    }
+
     private void performTransaction(FLTransaction.TransactionType type) {
         this.currentType = type;
 
