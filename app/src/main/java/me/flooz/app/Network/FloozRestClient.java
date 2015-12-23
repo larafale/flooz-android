@@ -2279,7 +2279,7 @@ public class FloozRestClient
     }
 
     private void handleTriggerInvitationSMSShow() {
-
+        handleTriggerInvitationShow();
     }
 
     private void handleTriggerSMSValidate() {
