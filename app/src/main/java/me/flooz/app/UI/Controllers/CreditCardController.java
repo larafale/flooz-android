@@ -19,6 +19,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLCreditCard;
 import me.flooz.app.Model.FLError;
@@ -62,6 +67,8 @@ public class CreditCardController extends BaseController {
     public Boolean next3DSecure = false;
 
     private FLCreditCard creditCard;
+
+    public JSONObject floozData;
 
     private BroadcastReceiver reloadCurrentUserDataReceiver = new BroadcastReceiver() {
         @Override
@@ -252,7 +259,18 @@ public class CreditCardController extends BaseController {
             @Override
             public void onClick(View v) {
                 FloozRestClient.getInstance().showLoadView();
-                FloozRestClient.getInstance().createCreditCard(cardOwner.getText().toString(), cardNumber.getText().toString(), cardExpires.getText().toString(), cardCVV.getText().toString(), false, new FloozHttpResponseHandler() {
+
+                Map<String, Object> params = new HashMap<>(4);
+
+                params.put("holder", cardOwner.getText().toString());
+                params.put("number", cardNumber.getText().toString().replace(" ", ""));
+                params.put("expires", cardExpires.getText().toString());
+                params.put("cvv", cardCVV.getText().toString());
+
+                if (floozData != null)
+                    params.put("flooz", floozData);
+
+                FloozRestClient.getInstance().createCreditCard(params, false, new FloozHttpResponseHandler() {
                     @Override
                     public void success(Object response) {
                         creditCard = new FLCreditCard();

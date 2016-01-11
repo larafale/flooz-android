@@ -18,9 +18,13 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLCreditCard;
 import me.flooz.app.Model.FLError;
+import me.flooz.app.Model.FLPreset;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
@@ -55,6 +59,15 @@ public class CreditCardSettingsActivity extends Activity {
         this.setContentView(R.layout.settings_credit_card_fragment);
 
         this.controller = new CreditCardController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER);
+
+        if (getIntent() != null && getIntent().hasExtra("flooz")) {
+            try {
+                JSONObject floozData = new JSONObject(getIntent().getStringExtra("flooz"));
+                this.controller.floozData = floozData;
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     @Override

@@ -1000,14 +1000,7 @@ public class FloozRestClient
     /******  CREDIT CARD  ******/
     /***************************/
 
-    public void createCreditCard(String cardOwner, String cardNumber, String cardExpires, String cardCVV, Boolean signup, final FloozHttpResponseHandler responseHandler) {
-
-        Map<String, Object> params = new HashMap<>(4);
-
-        params.put("holder", cardOwner);
-        params.put("number", cardNumber.replace(" ", ""));
-        params.put("expires", cardExpires);
-        params.put("cvv", cardCVV);
+    public void createCreditCard(Map<String, Object> params, Boolean signup, final FloozHttpResponseHandler responseHandler) {
 
         String path = "/cards";
 
@@ -1393,7 +1386,7 @@ public class FloozRestClient
     }
 
     public void loadFriendSuggestions(final FloozHttpResponseHandler responseHandler) {
-        this.request("/friends/suggestion", HttpRequestType.GET, null, new FloozHttpResponseHandler() {
+        this.request("/social/suggests", HttpRequestType.GET, null, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
                 if (responseHandler != null) {
@@ -1443,7 +1436,7 @@ public class FloozRestClient
         Map<String, Object> params = new HashMap<>();
         params.put("q", searchString);
 
-        String url = "/friends/search";
+        String url = "/social/search";
 
         if (newFLooz)
             url += "?context=newFlooz";
@@ -2018,6 +2011,9 @@ public class FloozRestClient
 
             if (data != null && data.has("label"))
                 intent.putExtra("label", data.optString("label"));
+
+            if (data != null && data.has("flooz"))
+                intent.putExtra("flooz", data.optJSONObject("flooz").toString());
 
             Activity tmpActivity = floozApp.getCurrentActivity();
             tmpActivity.startActivity(intent);
