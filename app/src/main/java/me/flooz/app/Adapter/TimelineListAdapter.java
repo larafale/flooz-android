@@ -37,6 +37,7 @@ import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
+import me.flooz.app.Utils.FLHelper;
 
 /**
  * Created by Flooz on 9/12/14.
@@ -74,19 +75,27 @@ public class TimelineListAdapter extends BaseAdapter {
         public TextView transactionText3D;
         public TextView transactionWhen;
         public TextView transactionLocationText;
-        public TextView transactionLikesText;
         public TextView transactionLikesButtonText;
-        public TextView transactionCommentsText;
         public TextView transactionCommentsButtonText;
 
         public ImageView transactionLocationImg;
         public RoundedImageView userPic;
         public LoadingImageView transactionPic;
 
+        public ImageView transactionLikesButtonImg;
+        public ImageView transactionCommentsButtonImg;
+        public ImageView transactionShareButtonImg;
+        public ImageView transactionMoreButtonImg;
+
         public RelativeLayout transactionRowContent;
         public LinearLayout transactionRowActionBar;
-        public LinearLayout transactionSocialContainer;
         public LinearLayout transactionLocationLayout;
+
+        public LinearLayout transactionLikesButton;
+        public LinearLayout transactionCommentsButton;
+        public LinearLayout transactionShareButton;
+        public LinearLayout transactionMoreButton;
+
     }
 
     public void setTransactions(List<FLTransaction> transactions){
@@ -152,27 +161,34 @@ public class TimelineListAdapter extends BaseAdapter {
             holder.transactionWhen = (TextView) rowView.findViewById(R.id.timelineTransactionWhen);
             holder.transactionText3D = (TextView) rowView.findViewById(R.id.timelineTransactionText3D);
             holder.transactionLocationText = (TextView) rowView.findViewById(R.id.timelineTransactionLocationText);
-            holder.transactionLikesText = (TextView) rowView.findViewById(R.id.timelineTransactionLikesText);
             holder.transactionLikesButtonText = (TextView) rowView.findViewById(R.id.timelineTransactionLikesButtonText);
             holder.transactionCommentsButtonText = (TextView) rowView.findViewById(R.id.timelineTransactionCommentsButtonText);
-            holder.transactionCommentsText = (TextView) rowView.findViewById(R.id.timelineTransactionCommentsText);
 
             holder.transactionLocationImg = (ImageView) rowView.findViewById(R.id.timelineTransactionLocationImg);
             holder.userPic = (RoundedImageView) rowView.findViewById(R.id.userTimelineTransactionPic);
             holder.transactionPic = (LoadingImageView) rowView.findViewById(R.id.timelineTransactionPic);
 
+            holder.transactionShareButtonImg = (ImageView) rowView.findViewById(R.id.timelineTransactionShareButtonImg);
+            holder.transactionCommentsButtonImg = (ImageView) rowView.findViewById(R.id.timelineTransactionCommentsButtonImg);
+            holder.transactionLikesButtonImg = (ImageView) rowView.findViewById(R.id.timelineTransactionLikesButtonImg);
+            holder.transactionMoreButtonImg = (ImageView) rowView.findViewById(R.id.timelineTransactionMoreButtonImg);
+
             holder.transactionLocationLayout = (LinearLayout) rowView.findViewById(R.id.timelineTransactionLocationLayout);
-            holder.transactionSocialContainer = (LinearLayout) rowView.findViewById(R.id.timelineTransactionSocialLayout);
+
+            holder.transactionShareButton = (LinearLayout) rowView.findViewById(R.id.timelineTransactionShareButton);
+            holder.transactionCommentsButton = (LinearLayout) rowView.findViewById(R.id.timelineTransactionCommentsButton);
+            holder.transactionLikesButton = (LinearLayout) rowView.findViewById(R.id.timelineTransactionLikesButton);
+            holder.transactionMoreButton = (LinearLayout) rowView.findViewById(R.id.timelineTransactionMoreButton);
 
             holder.transactionLocationImg.setColorFilter(context.getResources().getColor(R.color.placeholder));
+            holder.transactionShareButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
+            holder.transactionMoreButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
 
             holder.transactionWhen.setTypeface(CustomFonts.customContentRegular(context));
             holder.transactionText.setTypeface(CustomFonts.customContentLight(context));
             holder.transactionValue.setTypeface(CustomFonts.customTitleExtraLight(context), Typeface.BOLD);
             holder.transactionText3D.setTypeface(CustomFonts.customContentRegular(context));
-            holder.transactionCommentsText.setTypeface(CustomFonts.customContentRegular(context));
             holder.transactionLocationText.setTypeface(CustomFonts.customContentRegular(context));
-            holder.transactionLikesText.setTypeface(CustomFonts.customContentRegular(context));
             holder.transactionLikesButtonText.setTypeface(CustomFonts.customContentRegular(context));
             holder.transactionCommentsButtonText.setTypeface(CustomFonts.customContentRegular(context));
 
@@ -201,7 +217,7 @@ public class TimelineListAdapter extends BaseAdapter {
             }
         });
 
-        holder.transactionCommentsButtonText.setOnClickListener(new View.OnClickListener() {
+        holder.transactionCommentsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (delegate != null)
@@ -275,59 +291,91 @@ public class TimelineListAdapter extends BaseAdapter {
             holder.transactionLocationLayout.setVisibility(View.GONE);
         }
 
-        if ((currentTransaction.social != null && currentTransaction.social.likeText != null && currentTransaction.social.commentsCount != null)
-                && (!currentTransaction.social.likeText.isEmpty() || currentTransaction.social.commentsCount.intValue() > 0)) {
-            holder.transactionSocialContainer.setVisibility(View.VISIBLE);
+//        if ((currentTransaction.social != null && currentTransaction.social.likeText != null && currentTransaction.social.commentsCount != null)
+//                && (!currentTransaction.social.likeText.isEmpty() || currentTransaction.social.commentsCount.intValue() > 0)) {
+//            holder.transactionSocialContainer.setVisibility(View.VISIBLE);
+//
+//            if (!currentTransaction.social.commentText.isEmpty()) {
+//                holder.transactionCommentsText.setText(currentTransaction.social.commentText.toCharArray(), 0, currentTransaction.social.commentText.length());
+//                holder.transactionCommentsText.setVisibility(View.VISIBLE);
+//            } else {
+//                holder.transactionCommentsText.setVisibility(View.GONE);
+//            }
+//
+//            if (!currentTransaction.social.likeText.isEmpty()) {
+//                holder.transactionLikesText.setText(currentTransaction.social.likeText.toCharArray(), 0, currentTransaction.social.likeText.length());
+//                holder.transactionLikesText.setVisibility(View.VISIBLE);
+//            } else {
+//                holder.transactionLikesText.setVisibility(View.GONE);
+//            }
+//        }
+//        else
+//            holder.transactionSocialContainer.setVisibility(View.GONE);
 
-            if (!currentTransaction.social.commentText.isEmpty()) {
-                holder.transactionCommentsText.setText(currentTransaction.social.commentText.toCharArray(), 0, currentTransaction.social.commentText.length());
-                holder.transactionCommentsText.setVisibility(View.VISIBLE);
+        if (currentTransaction.social != null && currentTransaction.social.likesCount.intValue() > 0) {
+            holder.transactionLikesButtonText.setVisibility(View.VISIBLE);
+            holder.transactionLikesButtonText.setText(FLHelper.formatUserNumber(currentTransaction.social.likesCount.longValue()));
+
+            if (currentTransaction.social.isLiked) {
+                holder.transactionLikesButtonText.setTextColor(this.context.getResources().getColor(R.color.pink));
+                holder.transactionLikesButtonImg.setColorFilter(this.context.getResources().getColor(R.color.pink));
             } else {
-                holder.transactionCommentsText.setVisibility(View.GONE);
+                holder.transactionLikesButtonText.setTextColor(this.context.getResources().getColor(R.color.background_social_button));
+                holder.transactionLikesButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
             }
+        } else {
+            holder.transactionLikesButtonText.setVisibility(View.INVISIBLE);
+            holder.transactionLikesButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
+        }
 
-            if (!currentTransaction.social.likeText.isEmpty()) {
-                holder.transactionLikesText.setText(currentTransaction.social.likeText.toCharArray(), 0, currentTransaction.social.likeText.length());
-                holder.transactionLikesText.setVisibility(View.VISIBLE);
+        if (currentTransaction.social != null && currentTransaction.social.commentsCount.intValue() > 0) {
+            holder.transactionCommentsButtonText.setVisibility(View.VISIBLE);
+            holder.transactionCommentsButtonText.setText(FLHelper.formatUserNumber(currentTransaction.social.commentsCount.longValue()));
+
+            if (currentTransaction.social.isCommented) {
+                holder.transactionCommentsButtonText.setTextColor(this.context.getResources().getColor(R.color.blue));
+                holder.transactionCommentsButtonImg.setColorFilter(this.context.getResources().getColor(R.color.blue));
             } else {
-                holder.transactionLikesText.setVisibility(View.GONE);
+                holder.transactionCommentsButtonText.setTextColor(this.context.getResources().getColor(R.color.background_social_button));
+                holder.transactionCommentsButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
             }
-        }
-        else
-            holder.transactionSocialContainer.setVisibility(View.GONE);
-
-        if (currentTransaction.social.isLiked) {
-            holder.transactionLikesButtonText.setBackground(this.context.getResources().getDrawable(R.drawable.timeline_row_action_button_background_selected));
-            holder.transactionLikesButtonText.setTextColor(this.context.getResources().getColor(android.R.color.white));
-            Drawable fullLike = this.context.getResources().getDrawable(R.drawable.social_like_full);
-            fullLike.setColorFilter(this.context.getResources().getColor(android.R.color.white), PorterDuff.Mode.SRC_ATOP);
-
-            holder.transactionLikesButtonText.setCompoundDrawablesWithIntrinsicBounds(fullLike, null, null, null);
-        }
-        else {
-            holder.transactionLikesButtonText.setBackground(this.context.getResources().getDrawable(R.drawable.timeline_row_action_button_background));
-            holder.transactionLikesButtonText.setTextColor(this.context.getResources().getColor(R.color.placeholder));
-            holder.transactionLikesButtonText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.social_like, 0, 0, 0);
+        } else {
+            holder.transactionCommentsButtonText.setVisibility(View.INVISIBLE);
+            holder.transactionCommentsButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
         }
 
-        holder.transactionLikesButtonText.setOnClickListener(new View.OnClickListener() {
+
+        holder.transactionLikesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (FloozRestClient.getInstance().currentUser != null) {
                     if (currentTransaction.social.isLiked) {
                         currentTransaction.social.isLiked = false;
-                        holder.transactionLikesButtonText.setBackground(context.getResources().getDrawable(R.drawable.timeline_row_action_button_background));
-                        holder.transactionLikesButtonText.setTextColor(context.getResources().getColor(R.color.placeholder));
-                        holder.transactionLikesButtonText.setCompoundDrawablesWithIntrinsicBounds(R.drawable.social_like, 0, 0, 0);
+                        currentTransaction.social.likesCount = currentTransaction.social.likesCount.intValue() - 1;
+
+                        if (currentTransaction.social.likesCount.intValue() > 0) {
+                            holder.transactionLikesButtonText.setVisibility(View.VISIBLE);
+                            holder.transactionLikesButtonText.setText(FLHelper.formatUserNumber(currentTransaction.social.likesCount.longValue()));
+                        } else {
+                            holder.transactionLikesButtonText.setVisibility(View.INVISIBLE);
+                        }
+
+                        holder.transactionLikesButtonText.setTextColor(context.getResources().getColor(R.color.background_social_button));
+                        holder.transactionLikesButtonImg.setColorFilter(context.getResources().getColor(R.color.background_social_button));
                     }
                     else {
                         currentTransaction.social.isLiked = true;
-                        holder.transactionLikesButtonText.setBackground(context.getResources().getDrawable(R.drawable.timeline_row_action_button_background_selected));
-                        holder.transactionLikesButtonText.setTextColor(context.getResources().getColor(android.R.color.white));
-                        Drawable fullLike = context.getResources().getDrawable(R.drawable.social_like_full);
-                        fullLike.setColorFilter(context.getResources().getColor(android.R.color.white), PorterDuff.Mode.SRC_ATOP);
+                        currentTransaction.social.likesCount = currentTransaction.social.likesCount.intValue() + 1;
 
-                        holder.transactionLikesButtonText.setCompoundDrawablesWithIntrinsicBounds(fullLike, null, null, null);
+                        if (currentTransaction.social.likesCount.intValue() > 0) {
+                            holder.transactionLikesButtonText.setVisibility(View.VISIBLE);
+                            holder.transactionLikesButtonText.setText(FLHelper.formatUserNumber(currentTransaction.social.likesCount.longValue()));
+                        } else {
+                            holder.transactionLikesButtonText.setVisibility(View.INVISIBLE);
+                        }
+
+                        holder.transactionLikesButtonText.setTextColor(context.getResources().getColor(R.color.pink));
+                        holder.transactionLikesButtonImg.setColorFilter(context.getResources().getColor(R.color.pink));
                     }
 
 

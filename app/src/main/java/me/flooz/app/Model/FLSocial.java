@@ -12,7 +12,7 @@ import me.flooz.app.Network.FloozRestClient;
 public class FLSocial {
 
     public enum SocialScope {
-        SocialScopeNone, // Pour desactiver pour les cagnottes
+        SocialScopeNone,
         SocialScopePublic,
         SocialScopeFriend,
         SocialScopePrivate

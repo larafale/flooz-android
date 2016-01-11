@@ -95,33 +95,33 @@
 
     </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/timelineTransactionSocialLayout"
-        android:orientation="horizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:paddingTop="@dimen/dimen_medium"
-        android:layout_toRightOf="@id/userTimelineTransactionPic"
-        android:layout_below="@id/timelineTransactionLocationLayout">
+    <!--<LinearLayout-->
+        <!--android:id="@+id/timelineTransactionSocialLayout"-->
+        <!--android:orientation="horizontal"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:gravity="center_vertical"-->
+        <!--android:paddingTop="@dimen/dimen_medium"-->
+        <!--android:layout_toRightOf="@id/userTimelineTransactionPic"-->
+        <!--android:layout_below="@id/timelineTransactionLocationLayout">-->
 
-        <TextView
-            android:id="@+id/timelineTransactionLikesText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/placeholder"
-            android:textSize="@dimen/timeline_cell_social_label"
-            android:layout_marginRight="@dimen/dimen_large"/>
+        <!--<TextView-->
+            <!--android:id="@+id/timelineTransactionLikesText"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textColor="@color/placeholder"-->
+            <!--android:textSize="@dimen/timeline_cell_social_label"-->
+            <!--android:layout_marginRight="@dimen/dimen_large"/>-->
 
-        <TextView
-            android:id="@+id/timelineTransactionCommentsText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/placeholder"
-            android:textSize="@dimen/timeline_cell_social_label"
-            />
+        <!--<TextView-->
+            <!--android:id="@+id/timelineTransactionCommentsText"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="wrap_content"-->
+            <!--android:textColor="@color/placeholder"-->
+            <!--android:textSize="@dimen/timeline_cell_social_label"-->
+            <!--/>-->
 
-    </LinearLayout>
+    <!--</LinearLayout>-->
 
     <LinearLayout
         android:id="@+id/timeline_row_actionBar"
@@ -133,42 +133,101 @@
         android:paddingLeft="0dp"
         android:gravity="center_vertical"
         android:layout_toRightOf="@id/userTimelineTransactionPic"
-        android:layout_below="@id/timelineTransactionSocialLayout">
+        android:layout_below="@id/timelineTransactionLocationLayout">
 
-        <TextView
-            android:id="@+id/timelineTransactionLikesButtonText"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/timelineTransactionLikesButton"
+            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_weight="3"
             android:layout_height="wrap_content"
-            android:paddingTop="@dimen/dimen_small"
-            android:paddingLeft="@dimen/dimen_medium"
             android:paddingRight="@dimen/dimen_medium"
-            android:paddingBottom="@dimen/dimen_small"
-            android:textColor="@color/placeholder"
-            android:textSize="@dimen/timeline_cell_action_social_label"
-            android:text="@string/CELL_SOCIAL_LIKE"
-            android:background="@drawable/timeline_row_action_button_background"
-            android:drawableLeft="@drawable/social_like"
-            android:drawablePadding="@dimen/dimen_small"/>
+            android:gravity="center_vertical">
 
-        <TextView
-            android:id="@+id/timelineTransactionCommentsButtonText"
-            android:layout_marginLeft="@dimen/dimen_large"
-            android:layout_width="wrap_content"
-            android:paddingTop="@dimen/dimen_small"
-            android:paddingLeft="@dimen/dimen_medium"
-            android:paddingRight="@dimen/dimen_medium"
-            android:paddingBottom="@dimen/dimen_small"
+            <ImageView
+                android:id="@+id/timelineTransactionLikesButtonImg"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/social_like"
+                android:layout_marginRight="@dimen/dimen_small"/>
+
+            <TextView
+                android:id="@+id/timelineTransactionLikesButtonText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:textColor="@color/placeholder"
+                android:textSize="@dimen/timeline_cell_action_social_label"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/timelineTransactionCommentsButton"
+            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_weight="3"
             android:layout_height="wrap_content"
-            android:textColor="@color/placeholder"
-            android:text="@string/CELL_SOCIAL_COMMENT"
-            android:textSize="@dimen/timeline_cell_action_social_label"
-            android:background="@drawable/timeline_row_action_button_background"
-            android:drawableLeft="@drawable/social_comment"
-            android:drawablePadding="@dimen/dimen_small"/>
+            android:paddingRight="@dimen/dimen_medium"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/timelineTransactionCommentsButtonImg"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/social_comment"
+                android:layout_marginRight="@dimen/dimen_small"/>
+
+            <TextView
+                android:id="@+id/timelineTransactionCommentsButtonText"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/placeholder"
+                android:gravity="left"
+                android:textSize="@dimen/timeline_cell_action_social_label"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/timelineTransactionShareButton"
+            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
+            android:layout_height="wrap_content"
+            android:paddingRight="@dimen/dimen_medium"
+            android:gravity="center">
+
+            <ImageView
+                android:id="@+id/timelineTransactionShareButtonImg"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/social_share"
+                android:layout_marginRight="@dimen/dimen_small"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/timelineTransactionMoreButton"
+            android:orientation="horizontal"
+            android:layout_width="0dp"
+            android:layout_weight="1.5"
+            android:layout_height="wrap_content"
+            android:paddingRight="@dimen/dimen_medium"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <ImageView
+                android:id="@+id/timelineTransactionMoreButtonImg"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/social_more"
+                android:layout_marginRight="@dimen/dimen_small"/>
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/timelineTransactionValue"
-            android:layout_width="fill_parent"
+            android:layout_width="0dp"
+            android:layout_weight="4"
             android:layout_height="wrap_content"
             android:gravity="right"
             android:textColor="@android:color/white"
