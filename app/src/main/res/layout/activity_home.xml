@@ -52,7 +52,7 @@
                         android:id="@+id/home_tab_image"
                         android:layout_width="@dimen/tab_bar_icon"
                         android:layout_height="@dimen/tab_bar_icon"
-                        android:src="@drawable/menu_home"
+                        android:src="@drawable/tab1"
                         />
 
                     <TextView
@@ -97,7 +97,7 @@
                         android:id="@+id/notif_tab_image"
                         android:layout_width="@dimen/tab_bar_icon"
                         android:layout_height="@dimen/tab_bar_icon"
-                        android:src="@drawable/menu_notif"
+                        android:src="@drawable/tab2"
                         />
 
                     <TextView
@@ -162,7 +162,7 @@
                         android:id="@+id/share_tab_image"
                         android:layout_width="@dimen/tab_bar_icon"
                         android:layout_height="@dimen/tab_bar_icon"
-                        android:src="@drawable/menu_share"
+                        android:src="@drawable/tab3a"
                         />
 
                     <TextView
@@ -207,7 +207,7 @@
                         android:id="@+id/account_tab_image"
                         android:layout_width="@dimen/tab_bar_icon"
                         android:layout_height="@dimen/tab_bar_icon"
-                        android:src="@drawable/menu_account"
+                        android:src="@drawable/tab4"
                         />
 
                     <TextView

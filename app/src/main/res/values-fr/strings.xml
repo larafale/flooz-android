@@ -83,7 +83,7 @@
     <string name="MENU_HOME">Accueil</string>
     <string name="MENU_NOTIF">Notifs</string>
     <string name="MENU_SHARE">Partager</string>
-    <string name="MENU_ACCOUNT">Compte</string>
+    <string name="MENU_ACCOUNT">Moi</string>
 
     <string name="HOME_LOGIN">Connexion</string>
     <string name="HOME_SIGNUP">S\'inscrire</string>
@@ -421,8 +421,8 @@
     <string name="future">dans %s</string>
     <string name="past">il y a %s</string>
     <string name="s">quelques secondes</string>
-    <string name="m">1mn</string>
-    <string name="mm">%dmns</string>
+    <string name="m">1m</string>
+    <string name="mm">%dm</string>
     <string name="h">1h</string>
     <string name="hh">%dh</string>
     <string name="d">1j</string>

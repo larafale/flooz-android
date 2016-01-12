@@ -83,7 +83,7 @@
     <string name="MENU_HOME">Accueil</string>
     <string name="MENU_NOTIF">Notifs</string>
     <string name="MENU_SHARE">Partager</string>
-    <string name="MENU_ACCOUNT">Compte</string>
+    <string name="MENU_ACCOUNT">Moi</string>
 
     <string name="HOME_LOGIN">Connexion</string>
     <string name="HOME_SIGNUP">S\'inscrire</string>
