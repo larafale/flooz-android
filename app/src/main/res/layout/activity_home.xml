@@ -34,7 +34,6 @@
             android:orientation="horizontal"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:layout_marginTop="@dimen/tab_bar_shadow"
             >
 
             <LinearLayout
@@ -132,16 +131,17 @@
                 android:id="@+id/flooz_tab"
                 android:layout_width="0dp"
                 android:layout_height="fill_parent"
-                android:layout_weight="1.2"
+                android:layout_weight="0.8"
                 android:orientation="vertical"
                 android:gravity="bottom|center_horizontal"
-                android:layout_marginBottom="-5dp">
+                android:background="@color/background"
+                android:padding="@dimen/dimen_medium">
 
                 <ImageView
                     android:id="@+id/flooz_tab_image"
-                    android:layout_width="@dimen/tab_bar_center_icon"
-                    android:layout_height="@dimen/tab_bar_center_icon"
-                    android:src="@drawable/new_flooz"
+                    android:layout_width="wrap_content"
+                    android:layout_height="fill_parent"
+                    android:src="@drawable/flooz_mini"
                     />
 
             </LinearLayout>

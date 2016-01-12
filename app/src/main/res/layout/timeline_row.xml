@@ -81,8 +81,9 @@
 
         <ImageView
             android:id="@+id/timelineTransactionLocationImg"
-            android:layout_width="13dp"
-            android:layout_height="13dp"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:padding="@dimen/dimen_small"
             android:src="@drawable/map"
             android:layout_marginRight="@dimen/dimen_small"/>
 
@@ -94,34 +95,6 @@
             android:textSize="12sp"/>
 
     </LinearLayout>
-
-    <!--<LinearLayout-->
-        <!--android:id="@+id/timelineTransactionSocialLayout"-->
-        <!--android:orientation="horizontal"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:gravity="center_vertical"-->
-        <!--android:paddingTop="@dimen/dimen_medium"-->
-        <!--android:layout_toRightOf="@id/userTimelineTransactionPic"-->
-        <!--android:layout_below="@id/timelineTransactionLocationLayout">-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/timelineTransactionLikesText"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:textColor="@color/placeholder"-->
-            <!--android:textSize="@dimen/timeline_cell_social_label"-->
-            <!--android:layout_marginRight="@dimen/dimen_large"/>-->
-
-        <!--<TextView-->
-            <!--android:id="@+id/timelineTransactionCommentsText"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:textColor="@color/placeholder"-->
-            <!--android:textSize="@dimen/timeline_cell_social_label"-->
-            <!--/>-->
-
-    <!--</LinearLayout>-->
 
     <LinearLayout
         android:id="@+id/timeline_row_actionBar"
@@ -146,8 +119,9 @@
 
             <ImageView
                 android:id="@+id/timelineTransactionLikesButtonImg"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:padding="@dimen/dimen_small"
                 android:src="@drawable/social_like"
                 android:layout_marginRight="@dimen/dimen_small"/>
 
@@ -172,8 +146,9 @@
 
             <ImageView
                 android:id="@+id/timelineTransactionCommentsButtonImg"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:padding="@dimen/dimen_small"
                 android:src="@drawable/social_comment"
                 android:layout_marginRight="@dimen/dimen_small"/>
 
@@ -198,8 +173,9 @@
 
             <ImageView
                 android:id="@+id/timelineTransactionShareButtonImg"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:padding="@dimen/dimen_small"
                 android:src="@drawable/social_share"
                 android:layout_marginRight="@dimen/dimen_small"/>
 
@@ -217,8 +193,9 @@
 
             <ImageView
                 android:id="@+id/timelineTransactionMoreButtonImg"
-                android:layout_width="20dp"
-                android:layout_height="20dp"
+                android:layout_width="27dp"
+                android:layout_height="27dp"
+                android:padding="@dimen/dimen_small"
                 android:src="@drawable/social_more"
                 android:layout_marginRight="@dimen/dimen_small"/>
 
