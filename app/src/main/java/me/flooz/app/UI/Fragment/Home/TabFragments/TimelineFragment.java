@@ -367,6 +367,16 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
         FloozApplication.getInstance().showUserProfile(user);
     }
 
+    @Override
+    public void ListItemShareClick(FLTransaction transac) {
+        Intent share = new Intent(Intent.ACTION_SEND);
+        share.setType("text/plain");
+
+        share.putExtra(Intent.EXTRA_TEXT, "https://www.flooz.me/flooz/" + transac.transactionId);
+
+        tabBarActivity.startActivity(Intent.createChooser(share, tabBarActivity.getResources().getString(R.string.SHARE_FLOOZ)));
+    }
+
     private void loadNextPage() {
         if (nextPageUrl == null || nextPageUrl.isEmpty())
             return;

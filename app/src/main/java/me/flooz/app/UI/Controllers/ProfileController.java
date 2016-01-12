@@ -729,6 +729,16 @@ public class ProfileController extends BaseController implements TimelineListAda
         FloozApplication.getInstance().showUserProfile(user);
     }
 
+    @Override
+    public void ListItemShareClick(FLTransaction transac) {
+        Intent share = new Intent(android.content.Intent.ACTION_SEND);
+        share.setType("text/plain");
+
+        share.putExtra(Intent.EXTRA_TEXT, "https://www.flooz.me/flooz/" + transac.transactionId);
+
+        parentActivity.startActivity(Intent.createChooser(share, parentActivity.getResources().getString(R.string.SHARE_FLOOZ)));
+    }
+
     private ActionSheetItem.ActionSheetItemClickListener removeFriend = new ActionSheetItem.ActionSheetItemClickListener() {
         @Override
         public void onClick() {

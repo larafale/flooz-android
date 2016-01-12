@@ -57,6 +57,7 @@ public class TimelineListAdapter extends BaseAdapter {
         void ListItemCommentClick(FLTransaction transac);
         void ListItemImageClick(String imgUrl);
         void ListItemUserClick(FLUser user);
+        void ListItemShareClick(FLTransaction transac);
     }
 
     public TimelineListAdapter(Context context, List<FLTransaction> values) {
@@ -222,6 +223,14 @@ public class TimelineListAdapter extends BaseAdapter {
             public void onClick(View v) {
                 if (delegate != null)
                     delegate.ListItemCommentClick(currentTransaction);
+            }
+        });
+
+        holder.transactionShareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (delegate != null)
+                    delegate.ListItemShareClick(currentTransaction);
             }
         });
 

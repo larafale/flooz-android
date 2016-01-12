@@ -49,4 +49,10 @@ public class CustomFonts
         String fontPath = "fonts/ProximaNova-Semibold.otf";
         return Typeface.createFromAsset(context.getAssets(), fontPath);
     }
+
+    public static Typeface customCreditCard(Context context)
+    {
+        String fontPath = "fonts/ocra.otf";
+        return Typeface.createFromAsset(context.getAssets(), fontPath);
+    }
 }

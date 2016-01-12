@@ -62,9 +62,9 @@ public class GcmIntentService extends IntentService {
                     .setContentTitle(extras.getCharSequence("title"))
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(extras.getCharSequence("text")))
                     .setContentText(extras.getCharSequence("text"))
-                    .setSmallIcon(R.drawable.flooz_icon_white)
+                    .setSmallIcon(R.drawable.flooz_mini)
                     .setLargeIcon(BitmapFactory.decodeResource(FloozApplication.getAppContext().getResources(),
-                            R.drawable.flooz))
+                            R.drawable.flooz_mini))
                     .setContentIntent(contentIntent)
                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                     .setAutoCancel(true)
