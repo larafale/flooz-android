@@ -51,6 +51,7 @@ import me.flooz.app.UI.Tools.CustomImageViewer;
 import me.flooz.app.UI.View.LoadingImageView;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
+import me.flooz.app.Utils.FLHelper;
 
 /**
  * Created by Wapazz on 17/09/15.
@@ -82,7 +83,6 @@ public class TransactionCardController extends BaseController {
     private TextView card3dText;
     private TextView cardDesc;
     private LoadingImageView cardPic;
-    private TextView cardLikesText;
     private LinearLayout cardLikesButton;
     private TextView cardLikesButtonText;
     private ImageView cardLikesButtonPicto;
@@ -92,11 +92,16 @@ public class TransactionCardController extends BaseController {
     private TextView cardCommentsButtonText;
     private TextView cardCommentsSendButton;
     private EditText cardCommentsTextfield;
-    private LinearLayout cardSocialContainer;
-    private TextView cardCommentsText;
     private TextView cardLocationText;
     private ImageView cardLocationImg;
     private LinearLayout cardLocationLayout;
+
+    private LinearLayout cardShareButton;
+    private ImageView cardShareButtonImg;
+
+    private LinearLayout cardMoreButton;
+    private ImageView cardMoreButtonImg;
+
 
     private Boolean transactionPending = false;
     private Boolean dialogIsShowing = false;
@@ -143,21 +148,26 @@ public class TransactionCardController extends BaseController {
         this.card3dText = (TextView) view.findViewById(R.id.transac_card_3dText);
         this.cardDesc = (TextView) view.findViewById(R.id.transac_card_desc);
         this.cardPic = (LoadingImageView) view.findViewById(R.id.transac_card_pic);
-        this.cardCommentsButton = (LinearLayout) view.findViewById(R.id.transac_card_comments_button);
-        this.cardCommentsButtonText = (TextView) view.findViewById(R.id.transac_card_comments_button_text);
-        this.cardCommentsButtonPicto = (ImageView) view.findViewById(R.id.transac_card_comments_button_picto);
-        this.cardLikesButton = (LinearLayout) view.findViewById(R.id.transac_card_likes_button);
-        this.cardLikesButtonText = (TextView) view.findViewById(R.id.transac_card_likes_button_text);
-        this.cardLikesButtonPicto = (ImageView) view.findViewById(R.id.transac_card_likes_button_picto);
-        this.cardLikesText = (TextView) view.findViewById(R.id.transac_card_likes_text);
         this.cardCommentsContainer = (LinearLayout) view.findViewById(R.id.transac_card_comments_container);
         this.cardCommentsSendButton = (TextView) view.findViewById(R.id.transac_card_comments_send);
         this.cardCommentsTextfield = (EditText) view.findViewById(R.id.transac_card_comments_textfield);
-        this.cardSocialContainer = (LinearLayout) view.findViewById(R.id.transac_card_social_container);
-        this.cardCommentsText = (TextView) view.findViewById(R.id.transac_card_comments_text);
         this.cardLocationImg = (ImageView) view.findViewById(R.id.transac_card_location_img);
         this.cardLocationLayout = (LinearLayout) view.findViewById(R.id.transac_card_location);
         this.cardLocationText = (TextView) view.findViewById(R.id.transac_card_location_text);
+
+        this.cardLikesButton = (LinearLayout) view.findViewById(R.id.transac_card_social_like);
+        this.cardLikesButtonText = (TextView) view.findViewById(R.id.transac_card_social_like_text);
+        this.cardLikesButtonPicto = (ImageView) view.findViewById(R.id.transac_card_social_like_img);
+
+        this.cardCommentsButton = (LinearLayout) view.findViewById(R.id.transac_card_social_comment);
+        this.cardCommentsButtonText = (TextView) view.findViewById(R.id.transac_card_social_comment_text);
+        this.cardCommentsButtonPicto = (ImageView) view.findViewById(R.id.transac_card_social_comment_img);
+
+        this.cardShareButton = (LinearLayout) view.findViewById(R.id.transac_card_social_share);
+        this.cardShareButtonImg = (ImageView) view.findViewById(R.id.transac_card_social_share_img);
+
+        this.cardMoreButton = (LinearLayout) view.findViewById(R.id.transac_card_social_more);
+        this.cardMoreButtonImg = (ImageView) view.findViewById(R.id.transac_card_social_more_img);
 
         this.cardHeaderDate.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
         this.cardFromUsername.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity), Typeface.BOLD);
@@ -169,8 +179,6 @@ public class TransactionCardController extends BaseController {
         this.cardActionBarAccept.setTypeface(CustomFonts.customTitleLight(this.parentActivity), Typeface.BOLD);
         this.card3dText.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.cardDesc.setTypeface(CustomFonts.customContentLight(this.parentActivity));
-        this.cardLikesText.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
-        this.cardCommentsText.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.cardLikesButtonText.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.cardCommentsButtonText.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.cardCommentsSendButton.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
@@ -179,6 +187,10 @@ public class TransactionCardController extends BaseController {
 
         this.cardHeaderReportButton.setColorFilter(this.parentActivity.getResources().getColor(R.color.blue));
         this.cardLocationImg.setColorFilter(this.parentActivity.getResources().getColor(R.color.placeholder));
+        this.cardLikesButtonPicto.setColorFilter(this.parentActivity.getResources().getColor(R.color.background_social_button));
+        this.cardCommentsButtonPicto.setColorFilter(this.parentActivity.getResources().getColor(R.color.background_social_button));
+        this.cardShareButtonImg.setColorFilter(this.parentActivity.getResources().getColor(R.color.background_social_button));
+        this.cardMoreButtonImg.setColorFilter(this.parentActivity.getResources().getColor(R.color.background_social_button));
 
         if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
             this.cardHeaderCloseButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
@@ -261,21 +273,33 @@ public class TransactionCardController extends BaseController {
             @Override
             public void onClick(View v) {
                 if (transaction.social.isLiked) {
-                    cardLikesButton.setBackground(parentActivity.getResources().getDrawable(R.drawable.timeline_row_action_button_background));
-                    cardLikesButtonText.setTextColor(parentActivity.getResources().getColor(R.color.placeholder));
-                    cardLikesButtonPicto.setImageDrawable(parentActivity.getResources().getDrawable(R.drawable.social_like));
+                    transaction.social.isLiked = false;
+                    transaction.social.likesCount = transaction.social.likesCount.intValue() - 1;
+
+                    if (transaction.social.likesCount.intValue() > 0) {
+                        cardLikesButtonText.setVisibility(View.VISIBLE);
+                        cardLikesButtonText.setText(FLHelper.formatUserNumber(transaction.social.likesCount.longValue()));
+                    } else {
+                        cardLikesButtonText.setVisibility(View.INVISIBLE);
+                    }
+
+                    cardLikesButtonText.setTextColor(parentActivity.getResources().getColor(R.color.background_social_button));
+                    cardLikesButtonPicto.setColorFilter(parentActivity.getResources().getColor(R.color.background_social_button));
                 }
                 else {
-                    cardLikesButton.setBackground(parentActivity.getResources().getDrawable(R.drawable.timeline_row_action_button_background_selected));
-                    cardLikesButtonText.setTextColor(parentActivity.getResources().getColor(android.R.color.white));
+                    transaction.social.isLiked = true;
+                    transaction.social.likesCount = transaction.social.likesCount.intValue() + 1;
 
-                    Drawable fullLike = parentActivity.getResources().getDrawable(R.drawable.social_like_full);
-                    fullLike.setColorFilter(parentActivity.getResources().getColor(android.R.color.white), PorterDuff.Mode.SRC_ATOP);
+                    if (transaction.social.likesCount.intValue() > 0) {
+                        cardLikesButtonText.setVisibility(View.VISIBLE);
+                        cardLikesButtonText.setText(FLHelper.formatUserNumber(transaction.social.likesCount.longValue()));
+                    } else {
+                        cardLikesButtonText.setVisibility(View.INVISIBLE);
+                    }
 
-                    cardLikesButtonPicto.setImageDrawable(fullLike);
+                    cardLikesButtonText.setTextColor(parentActivity.getResources().getColor(R.color.pink));
+                    cardLikesButtonPicto.setColorFilter(parentActivity.getResources().getColor(R.color.pink));
                 }
-
-                transaction.social.isLiked = !transaction.social.isLiked;
 
                 FloozRestClient.getInstance().likeTransaction(transaction.transactionId, new FloozHttpResponseHandler() {
                     @Override
@@ -298,6 +322,25 @@ public class TransactionCardController extends BaseController {
                 cardCommentsTextfield.requestFocus();
                 InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.showSoftInput(cardCommentsTextfield, InputMethodManager.SHOW_IMPLICIT);
+            }
+        });
+
+        this.cardShareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent share = new Intent(Intent.ACTION_SEND);
+                share.setType("text/plain");
+
+                share.putExtra(Intent.EXTRA_TEXT, "https://www.flooz.me/flooz/" + transaction.transactionId);
+
+                parentActivity.startActivity(Intent.createChooser(share, parentActivity.getResources().getString(R.string.SHARE_FLOOZ)));
+            }
+        });
+
+        this.cardMoreButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
 
@@ -466,39 +509,36 @@ public class TransactionCardController extends BaseController {
             this.cardLocationLayout.setVisibility(View.GONE);
         }
 
-        if (!this.transaction.social.likeText.isEmpty() || this.transaction.social.commentsCount.intValue() > 0) {
-            this.cardSocialContainer.setVisibility(View.VISIBLE);
+        if (transaction.social != null && transaction.social.likesCount.intValue() > 0) {
+            cardLikesButtonText.setVisibility(View.VISIBLE);
+            cardLikesButtonText.setText(FLHelper.formatUserNumber(transaction.social.likesCount.longValue()));
 
-            if (this.transaction.social.commentsCount.intValue() > 0) {
-                this.cardCommentsText.setText(this.transaction.social.commentText);
-                this.cardCommentsText.setVisibility(View.VISIBLE);
+            if (transaction.social.isLiked) {
+                cardLikesButtonText.setTextColor(this.parentActivity.getResources().getColor(R.color.pink));
+                cardLikesButtonPicto.setColorFilter(this.parentActivity.getResources().getColor(R.color.pink));
             } else {
-                this.cardCommentsText.setVisibility(View.GONE);
+                cardLikesButtonText.setTextColor(this.parentActivity.getResources().getColor(R.color.background_social_button));
+                cardLikesButtonPicto.setColorFilter(this.parentActivity.getResources().getColor(R.color.background_social_button));
             }
+        } else {
+            cardLikesButtonText.setVisibility(View.INVISIBLE);
+            cardLikesButtonPicto.setColorFilter(this.parentActivity.getResources().getColor(R.color.background_social_button));
+        }
 
-            if (!this.transaction.social.likeText.isEmpty()) {
-                this.cardLikesText.setText(this.transaction.social.likeText);
-                this.cardLikesText.setVisibility(View.VISIBLE);
+        if (transaction.social != null && transaction.social.commentsCount.intValue() > 0) {
+            cardCommentsButtonText.setVisibility(View.VISIBLE);
+            cardCommentsButtonText.setText(FLHelper.formatUserNumber(transaction.social.commentsCount.longValue()));
+
+            if (transaction.social.isCommented) {
+                cardCommentsButtonText.setTextColor(this.parentActivity.getResources().getColor(R.color.blue));
+                cardCommentsButtonPicto.setColorFilter(this.parentActivity.getResources().getColor(R.color.blue));
             } else {
-                this.cardLikesText.setVisibility(View.GONE);
+                cardCommentsButtonText.setTextColor(this.parentActivity.getResources().getColor(R.color.background_social_button));
+                cardCommentsButtonPicto.setColorFilter(this.parentActivity.getResources().getColor(R.color.background_social_button));
             }
-        }
-        else
-            this.cardSocialContainer.setVisibility(View.GONE);
-
-        if (this.transaction.social.isLiked) {
-            this.cardLikesButton.setBackground(this.parentActivity.getResources().getDrawable(R.drawable.timeline_row_action_button_background_selected));
-            this.cardLikesButtonText.setTextColor(this.parentActivity.getResources().getColor(android.R.color.white));
-
-            Drawable fullLike = this.parentActivity.getResources().getDrawable(R.drawable.social_like_full);
-            fullLike.setColorFilter(this.parentActivity.getResources().getColor(android.R.color.white), PorterDuff.Mode.SRC_ATOP);
-
-            this.cardLikesButtonPicto.setImageDrawable(fullLike);
-        }
-        else {
-            this.cardLikesButton.setBackground(this.parentActivity.getResources().getDrawable(R.drawable.timeline_row_action_button_background));
-            this.cardLikesButtonText.setTextColor(this.parentActivity.getResources().getColor(R.color.placeholder));
-            this.cardLikesButtonPicto.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.social_like));
+        } else {
+            cardCommentsButtonText.setVisibility(View.INVISIBLE);
+            cardCommentsButtonPicto.setColorFilter(this.parentActivity.getResources().getColor(R.color.background_social_button));
         }
 
         this.cardCommentsContainer.removeAllViews();
