@@ -13,6 +13,8 @@ import android.support.multidex.MultiDex;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.inputmethod.InputMethodManager;
 
+import com.batch.android.Batch;
+import com.batch.android.Config;
 import com.facebook.FacebookSdk;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
@@ -85,8 +87,10 @@ public class FloozApplication extends BranchApp
         super.onCreate();
 
         if (BuildConfig.DEBUG_API) {
+            Batch.setConfig(new Config("DEV56979694CFD11ABE2FC1A6E2E25"));
             mixpanelAPI = MixpanelAPI.getInstance(this, "82c134b277474d6143decdc6ae73d5c9");
         } else {
+            Batch.setConfig(new Config("56979694CD29F0FE46F8A64E103C06"));
             mixpanelAPI = MixpanelAPI.getInstance(this, "81df2d3dcfb7c866f37e78f1ad8aa1c4");
         }
 

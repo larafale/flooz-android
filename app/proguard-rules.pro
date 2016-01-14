@@ -22,3 +22,15 @@
 }
 -keep class org.apache.http.** { *; }
 -dontwarn org.apache.http.*
+
+-keep class com.batch.** {
+    *;
+}
+
+-keep class com.google.android.gms.** {
+    *;
+}
+
+-dontwarn com.batch.android.mediation.**
+
+-dontwarn com.batch.android.BatchPushService

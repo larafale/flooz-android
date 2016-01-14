@@ -97,8 +97,8 @@ public class CreditCardController extends BaseController {
         this.cardInfos = (TextView) this.currentView.findViewById(R.id.settings_credit_card_infos);
 
         headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
-        this.creditCardOwner.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
-        this.creditCardNumber.setTypeface(CustomFonts.customTitleLight(this.parentActivity));
+        this.creditCardOwner.setTypeface(CustomFonts.customCreditCard(this.parentActivity));
+        this.creditCardNumber.setTypeface(CustomFonts.customCreditCard(this.parentActivity));
         removeCreditCardText.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
         this.cardOwner.setTypeface(CustomFonts.customContentLight(this.parentActivity));
         this.cardNumber.setTypeface(CustomFonts.customContentLight(this.parentActivity));
@@ -359,7 +359,7 @@ public class CreditCardController extends BaseController {
         if (this.creditCard != null && this.creditCard.cardId != null) {
             this.createCardContainer.setVisibility(View.GONE);
             this.removeCardContainer.setVisibility(View.VISIBLE);
-            this.creditCardNumber.setText(this.creditCard.number.replaceAll(".(?=.)", "$0 "));
+            this.creditCardNumber.setText(this.creditCard.number.substring(0, 4) + " **** **** " + this.creditCard.number.substring(12, 16));
             this.creditCardOwner.setText(this.creditCard.owner);
         } else {
             this.removeCardContainer.setVisibility(View.GONE);

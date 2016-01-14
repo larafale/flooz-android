@@ -125,6 +125,7 @@ repositories {
     maven { url "https://jitpack.io" }
     maven { url 'https://maven.fabric.io/public' }
     maven { url "http://jzaccone.github.io/SlidingMenu-aar" }
+    maven { url "http://maven.batch.com/release" }
 }
 
 dependencies {
@@ -161,5 +162,6 @@ dependencies {
     compile 'com.github.quentin7b:android-location-tracker:3.0'
     compile 'com.android.support:recyclerview-v7:23.1.1'
     compile "com.daimajia.swipelayout:library:1.2.0@aar"
+    compile 'com.batch.android:batch-sdk:1.4+'
     compile project(':tooltips')
 }

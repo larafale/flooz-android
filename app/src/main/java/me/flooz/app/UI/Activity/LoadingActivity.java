@@ -10,6 +10,7 @@ import android.os.Looper;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.batch.android.Batch;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.appevents.AppEventsLogger;
 
@@ -58,9 +59,9 @@ public class LoadingActivity extends Activity {
     }
 
     protected void onStart() {
-        super.onStart();
-
         final Intent intent = getIntent();
+
+        Batch.onStart(this);
 
         Branch branch = Branch.getInstance(getApplicationContext());
         branch.initSession(new Branch.BranchReferralInitListener() {
@@ -175,6 +176,16 @@ public class LoadingActivity extends Activity {
 
             alert.show();
         }
+
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop()
+    {
+        Batch.onStop(this);
+
+        super.onStop();
     }
 
     protected void onResume() {
@@ -199,7 +210,17 @@ public class LoadingActivity extends Activity {
         if (FLHelper.isDebuggable())
             ViewServer.get(this).removeWindow(this);
 
+        Batch.onDestroy(this);
+
         super.onDestroy();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent)
+    {
+        Batch.onNewIntent(this, intent);
+
+        super.onNewIntent(intent);
     }
 
     private void clearReferences(){
