@@ -52,6 +52,7 @@ public class CreditCardController extends BaseController {
 
     private TextView creditCardOwner;
     private TextView creditCardNumber;
+    private TextView creditCardExpires;
     private LinearLayout removeCardContainer;
     private LinearLayout createCardContainer;
 
@@ -90,6 +91,7 @@ public class CreditCardController extends BaseController {
         this.addCardButton = (Button) this.currentView.findViewById(R.id.settings_credit_card_create_add);
         this.creditCardOwner = (TextView) this.currentView.findViewById(R.id.settings_credit_card_owner);
         this.creditCardNumber = (TextView) this.currentView.findViewById(R.id.settings_credit_card_number);
+        this.creditCardExpires = (TextView) this.currentView.findViewById(R.id.settings_credit_card_expires);
         LinearLayout removeCreditCardButton = (LinearLayout) this.currentView.findViewById(R.id.settings_credit_card_remove_button);
         TextView removeCreditCardText = (TextView) this.currentView.findViewById(R.id.settings_credit_card_remove_text);
         this.removeCardContainer = (LinearLayout) this.currentView.findViewById(R.id.settings_credit_card_remove_card_view);
@@ -99,6 +101,7 @@ public class CreditCardController extends BaseController {
         headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
         this.creditCardOwner.setTypeface(CustomFonts.customCreditCard(this.parentActivity));
         this.creditCardNumber.setTypeface(CustomFonts.customCreditCard(this.parentActivity));
+        this.creditCardExpires.setTypeface(CustomFonts.customCreditCard(this.parentActivity));
         removeCreditCardText.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
         this.cardOwner.setTypeface(CustomFonts.customContentLight(this.parentActivity));
         this.cardNumber.setTypeface(CustomFonts.customContentLight(this.parentActivity));
@@ -361,6 +364,7 @@ public class CreditCardController extends BaseController {
             this.removeCardContainer.setVisibility(View.VISIBLE);
             this.creditCardNumber.setText(this.creditCard.number.substring(0, 4) + " **** **** " + this.creditCard.number.substring(12, 16));
             this.creditCardOwner.setText(this.creditCard.owner);
+            this.creditCardExpires.setText(this.creditCard.expires);
         } else {
             this.removeCardContainer.setVisibility(View.GONE);
             this.createCardContainer.setVisibility(View.VISIBLE);

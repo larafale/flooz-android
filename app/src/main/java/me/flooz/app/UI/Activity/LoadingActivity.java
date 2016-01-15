@@ -181,8 +181,7 @@ public class LoadingActivity extends Activity {
     }
 
     @Override
-    protected void onStop()
-    {
+    protected void onStop() {
         Batch.onStop(this);
 
         super.onStop();

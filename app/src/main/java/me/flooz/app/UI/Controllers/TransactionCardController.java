@@ -373,6 +373,19 @@ public class TransactionCardController extends BaseController {
         this.viewCreated = true;
     }
 
+    public void acceptTransaction() {
+        FloozRestClient.getInstance().updateTransactionValidate(transaction, FLTransaction.TransactionStatus.TransactionStatusAccepted, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                showValidationDialog(((JSONObject) response).optString("confirmationText"));
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+            }
+        });
+    }
+
     @Override
     public void onStart() {
         super.onStart();

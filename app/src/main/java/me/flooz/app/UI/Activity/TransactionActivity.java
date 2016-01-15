@@ -22,10 +22,7 @@ import me.flooz.app.Utils.ViewServer;
 public class TransactionActivity  extends Activity {
 
     private FloozApplication floozApp;
-    private TransactionCardController controller;
-
-    public String title;
-    public String url;
+    public TransactionCardController controller;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

@@ -93,7 +93,10 @@ import me.flooz.app.UI.Activity.Settings.DocumentsSettingsActivity;
 import me.flooz.app.UI.Activity.Settings.SetSecureCodeActivity;
 import me.flooz.app.UI.Activity.ShareAppActivity;
 import me.flooz.app.UI.Activity.StartActivity;
+import me.flooz.app.UI.Activity.TransactionActivity;
 import me.flooz.app.UI.Activity.ValidateSMSActivity;
+import me.flooz.app.UI.Controllers.TransactionCardController;
+import me.flooz.app.UI.Fragment.Home.TabFragments.TransactionCardFragment;
 import me.flooz.app.UI.Tools.CustomToast;
 import me.flooz.app.UI.View.CustomDialog;
 import me.flooz.app.Utils.ContactsManager;
@@ -2322,6 +2325,18 @@ public class FloozRestClient
             NewTransactionActivity activity = (NewTransactionActivity)floozApp.getCurrentActivity();
 
             activity.performTransaction();
+        } else if ((floozApp.getCurrentActivity() instanceof TransactionActivity)) {
+            TransactionActivity activity = (TransactionActivity)floozApp.getCurrentActivity();
+
+            activity.controller.acceptTransaction();
+        } else if ((floozApp.getCurrentActivity() instanceof HomeActivity)) {
+            HomeActivity activity = (HomeActivity)floozApp.getCurrentActivity();
+
+            if ((activity.currentFragment instanceof TransactionCardFragment)) {
+                TransactionCardFragment fragment = (TransactionCardFragment)activity.currentFragment;
+
+                fragment.controller.acceptTransaction();
+            }
         }
     }
 

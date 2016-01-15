@@ -22,6 +22,7 @@ import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
+import com.onesignal.OneSignal;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -121,7 +122,23 @@ public class FloozApplication extends BranchApp
             registerInBackground();
         }
 
+        OneSignal.startInit(this).setNotificationOpenedHandler(new FLNotificationOpenedHandler()).init();
+
         SafeLooper.install();
+    }
+
+    private class FLNotificationOpenedHandler implements OneSignal.NotificationOpenedHandler {
+        @Override
+        public void notificationOpened(String message, JSONObject additionalData, boolean isActive) {
+            if (!isActive && additionalData != null) {
+                if (additionalData.has("data")) {
+                    JSONObject data = additionalData.optJSONObject("data");
+                    if (data != null && data.has("triggers")) {
+                        FloozRestClient.getInstance().handleRequestTriggers(data);
+                    }
+                }
+            }
+        }
     }
 
     @Override

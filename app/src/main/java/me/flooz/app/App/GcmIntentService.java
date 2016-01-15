@@ -14,7 +14,6 @@ import android.support.v4.app.NotificationCompat;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import me.flooz.app.R;
-import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.LoadingActivity;
 
 /**
@@ -62,7 +61,7 @@ public class GcmIntentService extends IntentService {
                     .setContentTitle(extras.getCharSequence("title"))
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(extras.getCharSequence("text")))
                     .setContentText(extras.getCharSequence("text"))
-                    .setSmallIcon(R.drawable.flooz_mini)
+                    .setSmallIcon(R.drawable.ic_stat_onesignal_default)
                     .setLargeIcon(BitmapFactory.decodeResource(FloozApplication.getAppContext().getResources(),
                             R.drawable.flooz_mini))
                     .setContentIntent(contentIntent)

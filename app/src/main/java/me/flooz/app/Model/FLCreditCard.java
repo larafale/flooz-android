@@ -26,5 +26,6 @@ public class FLCreditCard {
         this.cardId = json.optString("_id");
         this.owner = json.optString("holder");
         this.number = json.optString("number");
+        this.expires = json.optString("expires");
     }
 }
