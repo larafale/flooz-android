@@ -9,12 +9,12 @@ import android.content.SharedPreferences;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.multidex.MultiDex;
 import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 
-import com.batch.android.Batch;
-import com.batch.android.Config;
 import com.facebook.FacebookSdk;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
@@ -25,6 +25,7 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.onesignal.OneSignal;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -33,15 +34,12 @@ import java.util.List;
 
 import io.branch.referral.BranchApp;
 import me.flooz.app.BuildConfig;
-import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLReport;
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Model.FLUser;
-import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.HomeActivity;
-import me.flooz.app.UI.Activity.NewTransactionActivity;
 import me.flooz.app.UI.Activity.StartActivity;
 import me.flooz.app.UI.Activity.UserProfileActivity;
 import me.flooz.app.UI.Fragment.Home.TabFragments.ProfileCardFragment;
@@ -88,10 +86,8 @@ public class FloozApplication extends BranchApp
         super.onCreate();
 
         if (BuildConfig.DEBUG_API) {
-            Batch.setConfig(new Config("DEV56979694CFD11ABE2FC1A6E2E25"));
             mixpanelAPI = MixpanelAPI.getInstance(this, "82c134b277474d6143decdc6ae73d5c9");
         } else {
-            Batch.setConfig(new Config("56979694CD29F0FE46F8A64E103C06"));
             mixpanelAPI = MixpanelAPI.getInstance(this, "81df2d3dcfb7c866f37e78f1ad8aa1c4");
         }
 
@@ -123,6 +119,7 @@ public class FloozApplication extends BranchApp
         }
 
         OneSignal.startInit(this).setNotificationOpenedHandler(new FLNotificationOpenedHandler()).init();
+        OneSignal.enableNotificationsWhenActive(false);
 
         SafeLooper.install();
     }
@@ -130,11 +127,17 @@ public class FloozApplication extends BranchApp
     private class FLNotificationOpenedHandler implements OneSignal.NotificationOpenedHandler {
         @Override
         public void notificationOpened(String message, JSONObject additionalData, boolean isActive) {
+
             if (!isActive && additionalData != null) {
-                if (additionalData.has("data")) {
-                    JSONObject data = additionalData.optJSONObject("data");
-                    if (data != null && data.has("triggers")) {
-                        FloozRestClient.getInstance().handleRequestTriggers(data);
+                if (additionalData.has("triggers")) {
+                    try {
+                        final JSONArray data = new JSONArray(additionalData.optString("triggers"));
+
+                        if (data.length() > 0)
+                            pendingTriggers = data;
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 }
             }

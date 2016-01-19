@@ -5,12 +5,9 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.batch.android.Batch;
 import com.crashlytics.android.Crashlytics;
 import com.facebook.appevents.AppEventsLogger;
 
@@ -26,11 +23,8 @@ import io.branch.referral.BranchError;
 import io.fabric.sdk.android.Fabric;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.BuildConfig;
-import me.flooz.app.Model.FLError;
-import me.flooz.app.Model.FLTrigger;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
-import me.flooz.app.UI.Tools.CustomToast;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.ViewServer;
@@ -60,8 +54,6 @@ public class LoadingActivity extends Activity {
 
     protected void onStart() {
         final Intent intent = getIntent();
-
-        Batch.onStart(this);
 
         Branch branch = Branch.getInstance(getApplicationContext());
         branch.initSession(new Branch.BranchReferralInitListener() {
@@ -182,7 +174,6 @@ public class LoadingActivity extends Activity {
 
     @Override
     protected void onStop() {
-        Batch.onStop(this);
 
         super.onStop();
     }
@@ -209,16 +200,12 @@ public class LoadingActivity extends Activity {
         if (FLHelper.isDebuggable())
             ViewServer.get(this).removeWindow(this);
 
-        Batch.onDestroy(this);
-
         super.onDestroy();
     }
 
     @Override
     protected void onNewIntent(Intent intent)
     {
-        Batch.onNewIntent(this, intent);
-
         super.onNewIntent(intent);
     }
 

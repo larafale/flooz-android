@@ -2537,7 +2537,6 @@ public class FloozRestClient
 
     public void handleTriggerArray(JSONArray t) {
         if (FloozApplication.appInForeground) {
-
             Boolean canExecute = true;
             Class handlerClass = null;
 

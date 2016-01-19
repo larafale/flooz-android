@@ -79,6 +79,7 @@ android {
         debug {
             buildConfigField "boolean", "LOCAL_API", "false"
             buildConfigField "boolean", "DEBUG_API", "true"
+            debuggable true
             applicationIdSuffix 'dev'
         }
         release {
@@ -86,6 +87,7 @@ android {
             buildConfigField "boolean", "LOCAL_API", "false"
             buildConfigField "boolean", "DEBUG_API", "false"
             signingConfig signingConfigs.release
+            debuggable true
         }
     }
 
@@ -98,7 +100,7 @@ android {
         minSdkVersion 16
         targetSdkVersion 23
         versionCode 35
-        versionName "2.3.0"
+        versionName "2.2.3"
         signingConfig signingConfigs.release
         renderscriptTargetApi 20
         renderscriptSupportModeEnabled true
@@ -128,7 +130,6 @@ repositories {
     maven { url "https://jitpack.io" }
     maven { url 'https://maven.fabric.io/public' }
     maven { url "http://jzaccone.github.io/SlidingMenu-aar" }
-    maven { url "http://maven.batch.com/release" }
 }
 
 dependencies {
@@ -165,7 +166,6 @@ dependencies {
     compile 'com.github.quentin7b:android-location-tracker:3.0'
     compile 'com.android.support:recyclerview-v7:23.1.1'
     compile "com.daimajia.swipelayout:library:1.2.0@aar"
-    compile 'com.batch.android:batch-sdk:1.4+'
     compile 'com.onesignal:OneSignal:2.+@aar'
     compile project(':tooltips')
 }

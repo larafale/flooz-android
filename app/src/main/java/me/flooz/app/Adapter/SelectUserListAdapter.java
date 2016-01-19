@@ -131,12 +131,9 @@ public class SelectUserListAdapter extends BaseAdapter implements StickyListHead
 
         this.filteredContacts = new ArrayList<>();
 
-        if (this.friendsRecent.size() == 0 && this.contactsFromAdressBook.size() == 0)
-            this.filteredContacts.addAll(this.friends);
-        else {
-            this.filteredContacts.addAll(this.friendsRecent);
-            this.filteredContacts.addAll(this.contactsFromAdressBook);
-        }
+        this.filteredContacts.addAll(this.friendsRecent);
+        this.filteredContacts.addAll(this.friends);
+        this.filteredContacts.addAll(this.contactsFromAdressBook);
     }
 
     public void loadContacts() {
@@ -230,12 +227,10 @@ public class SelectUserListAdapter extends BaseAdapter implements StickyListHead
         if (searchString.length() == 0) {
             this.filteredContacts = new ArrayList<>();
 
-            if (this.friendsRecent.size() == 0 && this.contactsFromAdressBook.size() == 0)
-                this.filteredContacts.addAll(this.friends);
-            else {
-                this.filteredContacts.addAll(this.friendsRecent);
-                this.filteredContacts.addAll(this.contactsFromAdressBook);
-            }
+            this.filteredContacts.addAll(this.friendsRecent);
+            this.filteredContacts.addAll(this.friends);
+            this.filteredContacts.addAll(this.contactsFromAdressBook);
+
             this.notifyDataSetChanged();
         } else {
             this.searchHandler.postDelayed(searchRunnable, 500);
@@ -259,18 +254,12 @@ public class SelectUserListAdapter extends BaseAdapter implements StickyListHead
         }
 
         if (this.searchData.isEmpty()) {
-            if (this.friendsRecent.size() == 0 && this.contactsFromAdressBook.size() == 0) {
-                if (this.friends.size() == 0)
-                    return new View(this.context);
-                else
-                    holder.text.setText(this.context.getResources().getString(R.string.FRIEND_PICKER_FRIENDS));
-
-            } else {
-                if (position < this.friendsRecent.size())
-                    holder.text.setText(this.context.getResources().getString(R.string.FRIEND_PICKER_FRIENDS_RECENT));
-                else
-                    holder.text.setText(this.context.getResources().getString(R.string.FRIEND_PICKER_ADDRESS_BOOK));
-            }
+            if (position < this.friendsRecent.size())
+                holder.text.setText(this.context.getResources().getString(R.string.FRIEND_PICKER_FRIENDS_RECENT));
+            else if (position < this.friendsRecent.size() + this.friends.size())
+                holder.text.setText(this.context.getResources().getString(R.string.FRIEND_PICKER_FRIENDS));
+            else
+                holder.text.setText(this.context.getResources().getString(R.string.FRIEND_PICKER_ADDRESS_BOOK));
         }
         else
             holder.text.setText(this.context.getResources().getString(R.string.FRIEND_PICKER_RESULT));
@@ -281,13 +270,12 @@ public class SelectUserListAdapter extends BaseAdapter implements StickyListHead
     @Override
     public long getHeaderId(int i) {
         if (this.searchData.isEmpty()) {
-            if (this.friendsRecent.size() == 0 && this.contactsFromAdressBook.size() == 0) {
-                if (this.friends.size() == 0)
-                    return 0;
-                else
-                    return 1;
+            if (this.friendsRecent.size() == 0 && this.contactsFromAdressBook.size() == 0 && this.friends.size() == 0) {
+                return 0;
             } else {
                 if (i < this.friendsRecent.size())
+                    return 1;
+                else if (i < this.friendsRecent.size() + this.friends.size())
                     return 2;
                 else
                     return 3;

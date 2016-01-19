@@ -10,6 +10,7 @@ import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
@@ -45,6 +46,11 @@ public class GcmIntentService extends IntentService {
         SharedPreferences appSettings = FloozApplication.getAppContext().getSharedPreferences("FloozPrefs", Context.MODE_PRIVATE);
         String userId = appSettings.getString("userId", null);
 
+        Log.d("Notification Bundle", extras.toString());
+
+        if (extras.containsKey("custom"))
+            return;
+
         if (!FloozApplication.appInForeground && userId != null && (extras.getCharSequence("userId") == null || userId.contentEquals(extras.getCharSequence("userId")))) {
             NotificationManager notificationManager = (NotificationManager) this.getSystemService(Context.NOTIFICATION_SERVICE);
 
@@ -62,8 +68,6 @@ public class GcmIntentService extends IntentService {
                     .setStyle(new NotificationCompat.BigTextStyle().bigText(extras.getCharSequence("text")))
                     .setContentText(extras.getCharSequence("text"))
                     .setSmallIcon(R.drawable.ic_stat_onesignal_default)
-                    .setLargeIcon(BitmapFactory.decodeResource(FloozApplication.getAppContext().getResources(),
-                            R.drawable.flooz_mini))
                     .setContentIntent(contentIntent)
                     .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                     .setAutoCancel(true)
