@@ -215,7 +215,8 @@
     <string name="ACCOUNT_MENU_NOTIFICATION">Notifications</string>
     <string name="ACCOUNT_MENU_SHARE">Inviter vos amis</string>
     <string name="ACCOUNT_MENU_CASHOUT">Virer à ma banque</string>
-    <string name="ACCOUNT_MENU_SETTINGS">Paramètres</string>
+    <string name="ACCOUNT_MENU_ACCOUNT">Compte</string>
+    <string name="ACCOUNT_MENU_SETTINGS">Réglages</string>
     <string name="ACCOUNT_MENU_IDEAS">Idées / Critiques</string>
     <string name="ACCOUNT_MENU_PROFILE">Mon profil</string>
     <string name="ACCOUNT_MENU_OTHER">À propos</string>

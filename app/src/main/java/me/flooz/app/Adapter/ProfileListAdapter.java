@@ -139,7 +139,7 @@ public class ProfileListAdapter extends BaseAdapter implements StickyListHeaders
         menuData.clear();
         menuHeader.clear();
 
-        menuHeader.add(this.context.getResources().getString(R.string.MENU_ACCOUNT));
+        menuHeader.add(this.context.getResources().getString(R.string.ACCOUNT_MENU_ACCOUNT));
         menuHeader.add(this.context.getResources().getString(R.string.ACCOUNT_MENU_SETTINGS));
         menuHeader.add(this.context.getResources().getString(R.string.MENU_OTHER));
 
