@@ -473,7 +473,7 @@ public class TransactionCardController extends BaseController {
         }
         else {
             this.cardValue.setText("");
-            this.cardValue.setVisibility(View.GONE);
+            this.cardValue.setVisibility(View.INVISIBLE);
         }
 
         if (this.transaction.isAcceptable || this.transaction.isCancelable) {
