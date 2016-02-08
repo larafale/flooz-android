@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import me.flooz.app.Adapter.FriendRequestListAdapter;
+import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
@@ -64,70 +65,18 @@ public class FriendRequestController extends BaseController {
 
                 final FLUser user = listAdapter.getItem(position);
 
-                List<ActionSheetItem> items = new ArrayList<>();
-
-                items.add(new ActionSheetItem(parentActivity, R.string.MENU_ACCEPT_FRIENDS, new ActionSheetItem.ActionSheetItemClickListener() {
-                    @Override
-                    public void onClick() {
-                        FloozRestClient.getInstance().showLoadView();
-                        FloozRestClient.getInstance().performActionOnFriend(user.userId, FloozRestClient.FriendAction.Accept, new FloozHttpResponseHandler() {
-                            @Override
-                            public void success(Object response) {
-                                FloozRestClient.getInstance().updateCurrentUser(new FloozHttpResponseHandler() {
-                                    @Override
-                                    public void success(Object response) {
-                                        listAdapter.refreshFriendList();
-
-                                        if (listAdapter.getCount() == 0)
-                                            headerBackButton.performClick();
-                                    }
-
-                                    @Override
-                                    public void failure(int statusCode, FLError error) {
-                                        listAdapter.refreshFriendList();
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void failure(int statusCode, FLError error) { }
-                        });
-                    }
-                }));
-
-                items.add(new ActionSheetItem(parentActivity, R.string.MENU_DECLINE_FRIENDS, new ActionSheetItem.ActionSheetItemClickListener() {
-                    @Override
-                    public void onClick() {
-                        FloozRestClient.getInstance().showLoadView();
-                        FloozRestClient.getInstance().performActionOnFriend(user.userId, FloozRestClient.FriendAction.Delete, new FloozHttpResponseHandler() {
-                            @Override
-                            public void success(Object response) {
-                                FloozRestClient.getInstance().updateCurrentUser(new FloozHttpResponseHandler() {
-                                    @Override
-                                    public void success(Object response) {
-                                        listAdapter.refreshFriendList();
-
-                                        if (listAdapter.getCount() == 0)
-                                            headerBackButton.performClick();
-                                    }
-
-                                    @Override
-                                    public void failure(int statusCode, FLError error) {
-                                        listAdapter.refreshFriendList();
-                                    }
-                                });
-                            }
-
-                            @Override
-                            public void failure(int statusCode, FLError error) { }
-                        });
-                    }
-                }));
-
-                ActionSheet.showWithItems(parentActivity, items);
+                FloozApplication.getInstance().showUserProfile(user);
             }
         });
 
+    }
+
+    @Override
+    public void onResume() {
+        listAdapter.refreshFriendList();
+
+        if (listAdapter.getCount() == 0)
+            onBackPressed();
     }
 
     @Override
