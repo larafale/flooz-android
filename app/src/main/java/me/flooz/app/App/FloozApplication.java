@@ -46,6 +46,7 @@ import me.flooz.app.UI.Fragment.Home.TabFragments.ProfileCardFragment;
 import me.flooz.app.UI.Tools.ActionSheet;
 import me.flooz.app.UI.Tools.ActionSheetItem;
 import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.FLTriggerManager;
 import me.flooz.app.Utils.SafeLooper;
 
 /**
@@ -122,6 +123,8 @@ public class FloozApplication extends BranchApp
         OneSignal.enableNotificationsWhenActive(false);
 
         SafeLooper.install();
+
+        this.registerActivityLifecycleCallbacks(FLTriggerManager.getInstance());
     }
 
     private class FLNotificationOpenedHandler implements OneSignal.NotificationOpenedHandler {

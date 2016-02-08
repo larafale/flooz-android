@@ -103,6 +103,7 @@ import me.flooz.app.Utils.ContactsManager;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
 import me.flooz.app.Utils.DeviceManager;
+import me.flooz.app.Utils.FLTriggerManager;
 import me.flooz.app.Utils.JSONHelper;
 import me.flooz.app.Utils.NotificationsManager;
 
@@ -2354,233 +2355,115 @@ public class FloozRestClient
         FloozApplication.performLocalNotification(CustomNotificationIntents.reloadNotifications());
     }
 
-    public void handleTrigger(final FLTrigger trigger) {
-        if (trigger == null)
-            return;
-
-        switch (trigger.type) {
-            case TriggerNone:
-                break;
-            case TriggerReloadTimeline:
-                handleTriggerTimelineReload();
-                break;
-            case TriggerShowLine:
-                handleTriggerLineShow(trigger.data);
-                break;
-            case TriggerShowAvatar:
-                handleTriggerAvatarShow();
-                break;
-            case TriggerReloadProfile:
-                handleTriggerProfileReload();
-                break;
-            case TriggerShowCard:
-                handleTriggerCardShow(trigger.data);
-                break;
-            case TriggerReloadFriend:
-                handleTriggerFriendReload();
-                break;
-            case TriggerShowProfile:
-                handleTriggerProfileShow();
-                break;
-            case TriggerShowFriend:
-                handleTriggerFriendShow();
-                break;
-            case TriggerReloadLine:
-                handleTriggerTransactionReload();
-                break;
-            case TriggerShowSignup:
-                handleTriggerSignupShow(trigger.data);
-                break;
-            case TriggerLogout:
-                handleTriggerLogout();
-                break;
-            case TriggerAppUpdate:
-                handleTriggerAppUpdate(trigger.data);
-                break;
-            case TriggerShowContactInfo:
-                handleTriggerContactInfoShow();
-                break;
-            case TriggerShowUserDocuments:
-                handleTriggerUserDocumentsShow();
-                break;
-            case TriggerShow3DSecure:
-                handleTrigger3DSecureShow(trigger.data);
-                break;
-            case TriggerComplete3DSecure:
-                handleTrigger3DSecureComplete();
-                break;
-            case TriggerFail3DSecure:
-                handleTrigger3DSecureFail();
-                break;
-            case TriggerSecureCodeClear:
-                handleTriggerClearSecureCode();
-                break;
-            case TriggerSecureCodeCheck:
-                handleTriggerCheckSecureCode();
-                break;
-            case TriggerPresetLine:
-                handleTriggerPresetLine(trigger.data);
-                break;
-            case TriggerFeedRead:
-                handleTriggerReadFeed(trigger.data);
-                break;
-            case TriggerShowInvitation:
-                handleTriggerInvitationShow();
-                break;
-            case TriggerShowPopup:
-                handleTriggerPopupShow(trigger.data);
-                break;
-            case TriggerHttpCall:
-                handleTriggerHttpCall(trigger.data);
-                break;
-            case TriggerShowIban:
-                handleTriggerIbanShow();
-                break;
-            case TriggerShowHome:
-                handleTriggerHomeShow();
-                break;
-            case TriggerResetTuto:
-                break;
-            case TriggerCloseView:
-                handleTriggerViewClose();
-                break;
-            case TriggerSendContacts:
-                handleTriggerSendContact();
-                break;
-            case TriggerUserShow:
-                handleTriggerUserShow(trigger.data);
-                break;
-            case TriggerInvitationSMSShow:
-                handleTriggerInvitationSMSShow();
-                break;
-            case TriggerSMSValidate:
-                handleTriggerSMSValidate();
-                break;
-            case TriggerSecureCodeValidate:
-                handleTriggerSecureCodeValidate();
-                break;
-            case TriggerEditProfile:
-                handleTriggerEditProfile();
-                break;
-            case TriggerFbConnect:
-                handleTriggerFbConnect();
-                break;
-            case TriggerReloadText:
-                handleTriggerTextReload();
-                break;
-            case TriggerReloadInvitation:
-                handleTriggerInvitationReload();
-                break;
-            case TriggerPayClick:
-                handleTriggerPayClick();
-                break;
-            case TriggerShowNotification:
-                handleTriggerNotificationShow();
-                break;
-            case TriggerReloadNotification:
-                handleTriggerNotificationReload();
-                break;
-            default:
-                break;
-        }
-    }
-
     public void handleRequestTriggers(JSONObject responseObject) {
-        if (FloozApplication.appInForeground) {
-            if (responseObject != null && responseObject.has("triggers")) {
-                JSONArray t = responseObject.optJSONArray("triggers");
+        if (responseObject.has("triggers")) {
+            if (responseObject.opt("triggers") instanceof JSONArray) {
+                FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(responseObject.optJSONArray("triggers")));
+            } else if (responseObject.opt("triggers") instanceof JSONObject) {
+                FLTrigger tmp = new FLTrigger(responseObject.optJSONObject("triggers"));
 
-                Boolean canExecute = true;
-                Class handlerClass = null;
-
-                for (int i = 0; i < t.length(); i++) {
-                    final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
-                    if (trigger.handlerClass != null && !this.floozApp.getCurrentActivity().getClass().isAssignableFrom(trigger.handlerClass)) {
-                        canExecute = false;
-                        handlerClass = trigger.handlerClass;
-                        break;
-                    }
-                }
-
-                if (canExecute) {
-                    for (int i = 0; i < t.length(); i++) {
-                        final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
-                        if (trigger.delay.doubleValue() > 0) {
-                            Handler handler = new Handler(Looper.getMainLooper());
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    handleTrigger(trigger);
-                                }
-                            }, (int) (trigger.delay.doubleValue() * 1000));
-                        } else {
-                            Handler handler = new Handler(Looper.getMainLooper());
-                            handler.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                    handleTrigger(trigger);
-                                }
-                            });
-                        }
-                    }
-                } else {
-                    Intent intent = new Intent();
-                    intent.setClass(this.floozApp, handlerClass);
-                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    Activity tmpActivity = floozApp.getCurrentActivity();
-                    tmpActivity.startActivity(intent);
-                    tmpActivity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                }
+                if (tmp.valid)
+                    FLTriggerManager.getInstance().executeTrigger(tmp);
             }
         }
+
+//        if (FloozApplication.appInForeground) {
+//            if (responseObject != null && responseObject.has("triggers")) {
+//                JSONArray t = responseObject.optJSONArray("triggers");
+//
+//                Boolean canExecute = true;
+//                Class handlerClass = null;
+//
+//                for (int i = 0; i < t.length(); i++) {
+//                    final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
+//                    if (trigger.handlerClass != null && !this.floozApp.getCurrentActivity().getClass().isAssignableFrom(trigger.handlerClass)) {
+//                        canExecute = false;
+//                        handlerClass = trigger.handlerClass;
+//                        break;
+//                    }
+//                }
+//
+//                if (canExecute) {
+//                    for (int i = 0; i < t.length(); i++) {
+//                        final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
+//                        if (trigger.delay.doubleValue() > 0) {
+//                            Handler handler = new Handler(Looper.getMainLooper());
+//                            handler.postDelayed(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    handleTrigger(trigger);
+//                                }
+//                            }, (int) (trigger.delay.doubleValue() * 1000));
+//                        } else {
+//                            Handler handler = new Handler(Looper.getMainLooper());
+//                            handler.post(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    handleTrigger(trigger);
+//                                }
+//                            });
+//                        }
+//                    }
+//                } else {
+//                    Intent intent = new Intent();
+//                    intent.setClass(this.floozApp, handlerClass);
+//                    intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                    Activity tmpActivity = floozApp.getCurrentActivity();
+//                    tmpActivity.startActivity(intent);
+//                    tmpActivity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+//                }
+//            }
+//        }
     }
 
     public void handleTriggerArray(JSONArray t) {
-        if (FloozApplication.appInForeground) {
-            Boolean canExecute = true;
-            Class handlerClass = null;
+        FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(t));
 
-            for (int i = 0; i < t.length(); i++) {
-                final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
-                if (trigger.handlerClass != null && !this.floozApp.getCurrentActivity().getClass().isAssignableFrom(trigger.handlerClass)) {
-                    canExecute = false;
-                    handlerClass = trigger.handlerClass;
-                    break;
-                }
-            }
-
-            if (canExecute) {
-                for (int i = 0; i < t.length(); i++) {
-                    final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
-                    if (trigger.delay.doubleValue() > 0) {
-                        Handler handler = new Handler(Looper.getMainLooper());
-                        handler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                handleTrigger(trigger);
-                            }
-                        }, (int)(trigger.delay.doubleValue()*1000));
-                    } else {
-                        Handler handler = new Handler(Looper.getMainLooper());
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                handleTrigger(trigger);
-                            }
-                        });
-                    }
-                }
-            } else {
-                FloozApplication.getInstance().pendingTriggers = t;
-                Intent intent = new Intent();
-                intent.setClass(this.floozApp, handlerClass);
-                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                intent.putExtra("triggers", t.toString());
-                Activity tmpActivity = floozApp.getCurrentActivity();
-                tmpActivity.startActivity(intent);
-                tmpActivity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-            }
-        }
+//        if (FloozApplication.appInForeground) {
+//            Boolean canExecute = true;
+//            Class handlerClass = null;
+//
+//            for (int i = 0; i < t.length(); i++) {
+//                final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
+//                if (trigger.handlerClass != null && !this.floozApp.getCurrentActivity().getClass().isAssignableFrom(trigger.handlerClass)) {
+//                    canExecute = false;
+//                    handlerClass = trigger.handlerClass;
+//                    break;
+//                }
+//            }
+//
+//            if (canExecute) {
+//                for (int i = 0; i < t.length(); i++) {
+//                    final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
+//                    if (trigger.delay.doubleValue() > 0) {
+//                        Handler handler = new Handler(Looper.getMainLooper());
+//                        handler.postDelayed(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                handleTrigger(trigger);
+//                            }
+//                        }, (int)(trigger.delay.doubleValue()*1000));
+//                    } else {
+//                        Handler handler = new Handler(Looper.getMainLooper());
+//                        handler.post(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                handleTrigger(trigger);
+//                            }
+//                        });
+//                    }
+//                }
+//            } else {
+//                FloozApplication.getInstance().pendingTriggers = t;
+//                Intent intent = new Intent();
+//                intent.setClass(this.floozApp, handlerClass);
+//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//                intent.putExtra("triggers", t.toString());
+//                Activity tmpActivity = floozApp.getCurrentActivity();
+//                tmpActivity.startActivity(intent);
+//                tmpActivity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+//            }
+//        }
     }
 
     /***************************/

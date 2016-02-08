@@ -756,31 +756,6 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         this.amountTextfield.setText(this.savedAmount);
         this.contentTextfield.setText(this.savedWhy);
 
-        if (this.preset != null && this.preset.triggers != null) {
-            for (int i = 0; i < this.preset.triggers.length(); i++) {
-                final FLTrigger trigger = new FLTrigger(this.preset.triggers.optJSONObject(i));
-                if (trigger.delay.doubleValue() > 0) {
-                    double delay = trigger.delay.doubleValue() * 1000;
-                    Handler handler = new Handler(Looper.getMainLooper());
-                    handler.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            FloozRestClient.getInstance().handleTrigger(trigger);
-                        }
-                    }, (int) delay);
-                } else {
-                    Handler handler = new Handler(Looper.getMainLooper());
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            FloozRestClient.getInstance().handleTrigger(trigger);
-                        }
-                    });
-                }
-            }
-            this.preset.triggers = null;
-        }
-
         final InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
         if (!this.isDemo) {
             if (this.amountTextfield.getText().length() == 0 && ((this.preset != null && !this.preset.blockAmount) || this.preset == null)) {

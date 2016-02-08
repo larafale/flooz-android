@@ -29,7 +29,6 @@ public class FLPreset {
     public boolean blockBalance = false;
     public FLTransaction.TransactionType type = FLTransaction.TransactionType.TransactionTypeNone;
     public JSONArray steps;
-    public JSONArray triggers;
     public JSONObject popup;
 
     public FLPreset(JSONObject json) {
@@ -56,9 +55,6 @@ public class FLPreset {
 
         if (json.has("image"))
             this.image = json.optString("image");
-
-        if (json.has("triggers"))
-            this.triggers = json.optJSONArray("triggers");
 
         if (json.has("popup"))
             this.popup = json.optJSONObject("popup");

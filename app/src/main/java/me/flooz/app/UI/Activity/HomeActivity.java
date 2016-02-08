@@ -53,6 +53,7 @@ import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
 import me.flooz.app.UI.Fragment.Home.TabFragments.TransactionCardFragment;
 import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.FLTriggerManager;
 import me.flooz.app.Utils.ImageHelper;
 import me.flooz.app.Utils.SoftKeyboardHandledRelativeLayout;
 import me.flooz.app.Utils.ViewServer;
@@ -64,6 +65,7 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 
 import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class HomeActivity extends Activity implements TimelineFragment.TimelineFragmentDelegate
 {
@@ -312,23 +314,16 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
             @Override
             public void onClick(View v) {
                 if (FloozRestClient.getInstance().currentUser.ux != null
-                        && FloozRestClient.getInstance().currentUser.ux.has("homeButton")
-                        && FloozRestClient.getInstance().currentUser.ux.optJSONArray("homeButton").length() > 0) {
+                        && FloozRestClient.getInstance().currentUser.ux.has("homeButton")) {
 
-                    JSONArray t = FloozRestClient.getInstance().currentUser.ux.optJSONArray("homeButton");
+                    if (FloozRestClient.getInstance().currentUser.ux.has("homeButton")) {
+                        if (FloozRestClient.getInstance().currentUser.ux.opt("homeButton") instanceof JSONArray) {
+                            FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(FloozRestClient.getInstance().currentUser.ux.optJSONArray("homeButton")));
+                        } else if (FloozRestClient.getInstance().currentUser.ux.opt("homeButton") instanceof JSONObject) {
+                            FLTrigger tmp = new FLTrigger(FloozRestClient.getInstance().currentUser.ux.optJSONObject("homeButton"));
 
-                    for (int i = 0; i < t.length(); i++) {
-                        final FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
-                        if (trigger.delay.doubleValue() > 0) {
-                            Handler handler = new Handler(Looper.getMainLooper());
-                            handler.postDelayed(new Runnable() {
-                                @Override
-                                public void run() {
-                                    FloozRestClient.getInstance().handleTrigger(trigger);
-                                }
-                            }, (int) (trigger.delay.doubleValue() * 1000));
-                        } else {
-                            FloozRestClient.getInstance().handleTrigger(trigger);
+                            if (tmp.valid)
+                                FLTriggerManager.getInstance().executeTrigger(tmp);
                         }
                     }
                 } else {

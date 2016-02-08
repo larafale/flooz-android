@@ -15,6 +15,7 @@ import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.Utils.FLTriggerManager;
 
 /**
  * Created by Flooz on 10/14/14.
@@ -85,7 +86,7 @@ public class CustomToast {
 
                         public void onClick() {
                             for (int i = 0; i < content.triggers.size(); i++) {
-                                FloozRestClient.getInstance().handleTrigger(content.triggers.get(i));
+                                FLTriggerManager.getInstance().executeTriggerList(content.triggers);
                             }
                             try {
                                 if (popupWindow.isShowing())

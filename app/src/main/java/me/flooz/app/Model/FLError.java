@@ -6,6 +6,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.flooz.app.Utils.FLTriggerManager;
+
 /**
  * Created by Flooz on 9/9/14.
  */
@@ -60,10 +62,13 @@ public class FLError {
             this.time = 3;
 
         if (json.has("triggers")) {
-            JSONArray t = json.optJSONArray("triggers");
-            for (int i = 0; i < t.length(); i++) {
-                FLTrigger trigger = new FLTrigger(t.optJSONObject(i));
-                this.triggers.add(trigger);
+            if (json.opt("triggers") instanceof JSONArray) {
+                this.triggers = FLTriggerManager.convertTriggersJSONArrayToList(json.optJSONArray("triggers"));
+            } else if (json.opt("triggers") instanceof JSONObject) {
+                FLTrigger tmp = new FLTrigger(json.optJSONObject("triggers"));
+
+                if (tmp.valid)
+                    this.triggers.add(tmp);
             }
         }
     }
