@@ -46,8 +46,6 @@ public class GcmIntentService extends IntentService {
         SharedPreferences appSettings = FloozApplication.getAppContext().getSharedPreferences("FloozPrefs", Context.MODE_PRIVATE);
         String userId = appSettings.getString("userId", null);
 
-        Log.d("Notification Bundle", extras.toString());
-
         if (extras.containsKey("custom"))
             return;
 

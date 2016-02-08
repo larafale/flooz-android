@@ -44,18 +44,18 @@ public class LoadingActivity extends Activity {
         if (FLHelper.isDebuggable())
             ViewServer.get(this).addWindow(this);
 
-        floozApp = (FloozApplication)this.getApplicationContext();
-
         this.setContentView(R.layout.loading_activity);
 
         TextView loadingText = (TextView)this.findViewById(R.id.loading_text);
-        loadingText.setTypeface(CustomFonts.customContentRegular(this.getApplicationContext()));
+        loadingText.setTypeface(CustomFonts.customContentRegular(this));
     }
 
     protected void onStart() {
+        floozApp = (FloozApplication)this.getApplicationContext();
+
         final Intent intent = getIntent();
 
-        Branch branch = Branch.getInstance(getApplicationContext());
+        Branch branch = Branch.getInstance(this);
         branch.initSession(new Branch.BranchReferralInitListener() {
             @Override
             public void onInitFinished(JSONObject referringParams, BranchError error) {
