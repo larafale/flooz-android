@@ -3,45 +3,29 @@ package me.flooz.app.Network;
 import android.Manifest;
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Bundle;
-import android.os.Debug;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.View;
-import android.view.Window;
-import android.widget.Button;
-import android.widget.TextView;
 
-import cz.msebera.android.httpclient.HttpEntity;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.message.BasicHeader;
-import org.apache.http.protocol.HTTP;
 import org.json.*;
 import cz.msebera.android.httpclient.Header;
-import cz.msebera.android.httpclient.HttpStatus;
 
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.GraphRequest;
-import com.facebook.GraphResponse;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
@@ -50,11 +34,8 @@ import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 
-import java.io.Console;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -69,7 +50,6 @@ import io.socket.emitter.Emitter;
 import io.socket.engineio.client.transports.WebSocket;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.BuildConfig;
-import me.flooz.app.Model.FLComment;
 import me.flooz.app.Model.FLCreditCard;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLNotification;
@@ -95,12 +75,10 @@ import me.flooz.app.UI.Activity.ShareAppActivity;
 import me.flooz.app.UI.Activity.StartActivity;
 import me.flooz.app.UI.Activity.TransactionActivity;
 import me.flooz.app.UI.Activity.ValidateSMSActivity;
-import me.flooz.app.UI.Controllers.TransactionCardController;
 import me.flooz.app.UI.Fragment.Home.TabFragments.TransactionCardFragment;
 import me.flooz.app.UI.Tools.CustomToast;
 import me.flooz.app.UI.View.CustomDialog;
 import me.flooz.app.Utils.ContactsManager;
-import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
 import me.flooz.app.Utils.DeviceManager;
 import me.flooz.app.Utils.FLTriggerManager;
@@ -284,6 +262,76 @@ public class FloozRestClient
         path += "&uuid=" + this.deviceManager.getDeviceUuid();
 
         this.request(path, HttpRequestType.POST, params, responseHandler);
+    }
+
+    public void loginWithToken(String token, final FloozHttpResponseHandler responseHandler) {
+
+        if (token == null && token.isEmpty()) {
+            if (responseHandler != null) {
+                responseHandler.failure(400, null);
+            }
+
+            return;
+        }
+
+        this.setNewAccessToken(token);
+
+        String path = "/users/login";
+
+        path += "?os=" + Build.VERSION.RELEASE;
+
+        path += "&mo=" + this.deviceManager.getDeviceName();
+
+        path += "&uuid=" + this.deviceManager.getDeviceUuid();
+
+        this.request(path, HttpRequestType.POST, null, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+
+                JSONObject responseObject = (JSONObject) response;
+
+                setNewAccessToken(responseObject.optJSONArray("items").optJSONObject(0).optString("token"));
+
+                currentUser = new FLUser(responseObject.optJSONArray("items").optJSONObject(1));
+                appSettings.edit().putString("userId", currentUser.userId).apply();
+
+                saveUserData();
+
+                checkDeviceToken();
+                floozApp.didConnected();
+                floozApp.displayMainView();
+
+                updateCurrentUser(null);
+
+                if (responseHandler != null) {
+                    responseHandler.success(response);
+                }
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+                if (statusCode != 442 && statusCode != 426) {
+                    logout();
+                    if (responseHandler != null) {
+                        responseHandler.failure(statusCode, error);
+                    }
+                } else if (statusCode != 426) {
+                    loadUserData();
+                    if (currentUser != null) {
+                        FloozApplication.getInstance().didConnected();
+                        FloozApplication.getInstance().displayMainView();
+                        if (responseHandler != null) {
+                            responseHandler.success(null);
+                        }
+                    } else {
+                        logout();
+                        if (responseHandler != null) {
+                            responseHandler.failure(statusCode, error);
+                        }
+                    }
+                }
+            }
+        });
     }
 
     public void loginWithPseudoAndPassword(String pseudo, String password, final FloozHttpResponseHandler responseHandler) {
@@ -1688,7 +1736,7 @@ public class FloozRestClient
         return (activeNetwork != null && activeNetwork.isConnected());
     }
 
-    private void request(String path, HttpRequestType type, Map<String, Object> params, final FloozHttpResponseHandler responseHandler) {
+    public void request(String path, HttpRequestType type, Map<String, Object> params, final FloozHttpResponseHandler responseHandler) {
 
         ConnectivityManager conMgr = (ConnectivityManager) floozApp.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetwork = conMgr.getActiveNetworkInfo();
@@ -1808,33 +1856,6 @@ public class FloozRestClient
                         requestParams.put(entry.getKey(), entry.getValue());
                 }
             }
-
-//            HttpEntity entity = null;
-//            try {
-//                entity = new StringEntity("");
-//            } catch (UnsupportedEncodingException e) {
-//                e.printStackTrace();
-//            }
-//
-//            if (params != null) {
-//                if (!fileUpload) {
-//                    JSONObject jsonParams;
-//                    try {
-//                        jsonParams = (JSONObject) JSONHelper.toJSON(params);
-//                        StringEntity sEntity = new StringEntity(jsonParams.toString(), "UTF-8");
-//                        sEntity.setContentType(new BasicHeader(HTTP.CONTENT_TYPE, "application/json; charset=UTF-8"));
-//                        entity = sEntity;
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                } else {
-//                    try {
-//                        entity = requestParams.getEntity(null);
-//                    } catch (IOException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            }
 
             AsyncHttpClient httpClient;
 

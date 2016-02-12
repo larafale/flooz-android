@@ -23,6 +23,10 @@
 -keep class org.apache.http.** { *; }
 -dontwarn org.apache.http.*
 
+-keep class **.R$* {
+    <fields>;
+}
+
 -keep class com.batch.** {
     *;
 }

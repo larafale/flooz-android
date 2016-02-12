@@ -297,8 +297,13 @@ public class FloozApplication extends BranchApp
     }
 
     public void showUserProfile(FLUser user) {
-        if (user == null || user.isCactus)
+        this.showUserProfile(user, null);
+    }
+
+    public void showUserProfile(FLUser user, Runnable completion) {
+        if (user == null || user.isCactus) {
             return;
+        }
 
         if (this.currentActivity instanceof HomeActivity) {
             HomeActivity homeActivity = (HomeActivity)this.currentActivity;

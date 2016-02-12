@@ -62,7 +62,7 @@ public class FLTrigger {
         this.categoryView = this.category + ":" + this.view;
 
         this.delay = json.optDouble("delay", 0);
-        this.data = json;
+        this.data = json.optJSONObject("data");
 
         if (json.has("triggers")) {
             if (json.opt("triggers") instanceof JSONArray) {

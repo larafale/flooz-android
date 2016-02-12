@@ -46,7 +46,12 @@ public class GcmIntentService extends IntentService {
         SharedPreferences appSettings = FloozApplication.getAppContext().getSharedPreferences("FloozPrefs", Context.MODE_PRIVATE);
         String userId = appSettings.getString("userId", null);
 
+        String extraData = extras.toString();
+
         if (extras.containsKey("custom"))
+            return;
+
+        if (extras.containsKey("mp_message"))
             return;
 
         if (!FloozApplication.appInForeground && userId != null && (extras.getCharSequence("userId") == null || userId.contentEquals(extras.getCharSequence("userId")))) {

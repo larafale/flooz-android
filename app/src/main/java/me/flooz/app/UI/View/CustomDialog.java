@@ -21,6 +21,7 @@ import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.FLTriggerManager;
 
 /**
  * Created by Flooz on 10/22/15.
@@ -28,6 +29,10 @@ import me.flooz.app.Utils.CustomFonts;
 public class CustomDialog {
 
     public static void show(Context ctx, final JSONObject data, final View.OnClickListener dismissListener) {
+        show(ctx, data, null, dismissListener);
+    }
+
+    public static void show(Context ctx, final JSONObject data, final DialogInterface.OnShowListener showListener, final View.OnClickListener dismissListener) {
         final FloozApplication floozApp = FloozApplication.getInstance();
 
         final List<String> buttonsString = new ArrayList<>();
@@ -122,8 +127,7 @@ public class CustomDialog {
                         else if (v == btn4)
                             index = 3;
 
-                        JSONArray triggers = buttonsAction.get(index);
-                        FloozRestClient.getInstance().handleTriggerArray(triggers);
+                        FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(buttonsAction.get(index)));
 
                         dialog.dismiss();
 
@@ -166,6 +170,10 @@ public class CustomDialog {
                 }
 
                 dialog.setCanceledOnTouchOutside(false);
+
+                if (showListener != null)
+                    dialog.setOnShowListener(showListener);
+
                 dialog.show();
             }
         });

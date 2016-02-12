@@ -630,10 +630,18 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
     }
 
     public void popFragmentInCurrentTab() {
-        this.popFragmentInCurrentTab(R.animator.slide_in_right, R.animator.slide_out_left);
+        this.popFragmentInCurrentTab(R.animator.slide_in_right, R.animator.slide_out_left, null);
+    }
+
+    public void popFragmentInCurrentTab(Runnable completion) {
+        this.popFragmentInCurrentTab(R.animator.slide_in_right, R.animator.slide_out_left, completion);
     }
 
     public void popFragmentInCurrentTab(int animIn, int animOut) {
+        this.popFragmentInCurrentTab(animIn, animOut, null);
+    }
+
+    public void popFragmentInCurrentTab(int animIn, int animOut, Runnable completion) {
         if (this.currentTabHistory.size() > 1) {
 
             imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
@@ -651,6 +659,12 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
             ft.commit();
 
             this.currentFragment = fragment;
+
+            if (completion != null) {
+                this.getFragmentManager().executePendingTransactions();
+                Handler handler = new Handler(Looper.getMainLooper());
+                handler.post(completion);
+            }
         }
     }
 
