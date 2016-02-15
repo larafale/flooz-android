@@ -41,8 +41,10 @@ import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.StartActivity;
+import me.flooz.app.UI.Activity.TransactionActivity;
 import me.flooz.app.UI.Activity.UserProfileActivity;
 import me.flooz.app.UI.Fragment.Home.TabFragments.ProfileCardFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.TransactionCardFragment;
 import me.flooz.app.UI.Tools.ActionSheet;
 import me.flooz.app.UI.Tools.ActionSheetItem;
 import me.flooz.app.Utils.FLHelper;
@@ -314,17 +316,52 @@ public class FloozApplication extends BranchApp
                 } else {
                     ProfileCardFragment controller = new ProfileCardFragment();
                     controller.user = user;
-                    homeActivity.pushFragmentInCurrentTab(controller);                }
+                    homeActivity.pushFragmentInCurrentTab(controller, completion);
+                }
             } else {
                 ProfileCardFragment controller = new ProfileCardFragment();
                 controller.user = user;
-                homeActivity.pushFragmentInCurrentTab(controller);
+                homeActivity.pushFragmentInCurrentTab(controller, completion);
             }
         } else {
             Intent intent = new Intent(getAppContext(), UserProfileActivity.class);
             intent.putExtra("user", user.json.toString());
             currentActivity.startActivity(intent);
             currentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+        }
+    }
+
+    public void showTransactionCard(FLTransaction transaction) {
+        this.showTransactionCard(transaction, false, null);
+    }
+
+    public void showTransactionCard(FLTransaction transaction, Runnable completion) {
+        this.showTransactionCard(transaction, false, completion);
+    }
+
+    public void showTransactionCard(FLTransaction transaction, Boolean insertComment) {
+        this.showTransactionCard(transaction, insertComment, null);
+    }
+
+    public void showTransactionCard(FLTransaction transaction, Boolean insertComment, Runnable completion) {
+        Activity activity = this.getCurrentActivity();
+
+        if (activity != null) {
+            if (activity instanceof HomeActivity) {
+                FloozRestClient.getInstance().readNotification(transaction.transactionId, null);
+                TransactionCardFragment transactionCardFragment = new TransactionCardFragment();
+
+                transactionCardFragment.insertComment = insertComment;
+                transactionCardFragment.transaction = transaction;
+
+                ((HomeActivity) activity).pushFragmentInCurrentTab(transactionCardFragment, completion);
+            } else {
+                Intent intent = new Intent(activity, TransactionActivity.class);
+                intent.putExtra("insertComment", insertComment);
+                intent.putExtra("transaction", transaction.json.toString());
+                activity.startActivity(intent);
+                activity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+            }
         }
     }
 

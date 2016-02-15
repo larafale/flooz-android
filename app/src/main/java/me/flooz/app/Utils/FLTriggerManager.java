@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
-import android.view.View;
 
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
@@ -17,6 +16,7 @@ import com.loopj.android.http.SyncHttpClient;
 
 import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -30,7 +30,9 @@ import cz.msebera.android.httpclient.message.BasicHeader;
 import cz.msebera.android.httpclient.protocol.HTTP;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
+import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Model.FLTrigger;
+import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
@@ -89,6 +91,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
     private Map<String, String> binderKeyType;
 
     private FLTrigger pendingHideTrigger;
+    private FLTrigger pendingShowTrigger;
 
     private static FLTriggerManager instance;
 
@@ -388,8 +391,8 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
                     try {
                         Map<String, Object> userData = JSONHelper.toMap(this.trigger.data);
 
-                        if (userData.containsKey("fb") && ((Map)userData.get("fb")).containsKey("id"))
-                            userData.put("avatarURL", "https://graph.facebook.com/" + ((Map)userData.get("fb")).get("id") + "/picture");
+                        if (userData.containsKey("fb") && ((Map) userData.get("fb")).containsKey("id"))
+                            userData.put("avatarURL", "https://graph.facebook.com/" + ((Map) userData.get("fb")).get("id") + "/picture");
 
                         activity.updateUserData(userData);
 
@@ -405,190 +408,215 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
                     }
                 }, null);
             } else if (this.trigger.categoryView.contentEquals("app:sms")) {
+                if (this.trigger.data != null && this.trigger.data.has("recipients") && this.trigger.data.has("body")) {
+                    String uri = "smsto:";
 
+                    for (int i = 0; i < this.trigger.data.optJSONArray("recipients").length(); i++) {
+                        if (i > 0) {
+                            uri += ";";
+                        }
+                        uri += this.trigger.data.optJSONArray("recipients").optString(i);
+                    }
+
+                    Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
+                    sendIntent.setData(Uri.parse(uri));
+                    sendIntent.putExtra("sms_body", this.trigger.data.optString("body"));
+                    if (sendIntent.resolveActivity(FloozApplication.getInstance().getCurrentActivity().getPackageManager()) != null) {
+                        FloozApplication.getInstance().getCurrentActivity().startActivity(sendIntent);
+                    } else {
+                        if (this.trigger.data.has("failureTriggers")) {
+                            FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(this.trigger.data.optJSONArray("failureTriggers")));
+                        }
+                    }
+                }
             } else if (this.trigger.categoryView.contentEquals("auth:code")) {
 
             } else if (this.trigger.categoryView.contentEquals("profile:user")) {
+                if (this.trigger.data != null) {
+                    if (this.trigger.data.has("nick")) {
+                        FLUser user = new FLUser(this.trigger.data);
+                        pendingShowTrigger = trigger;
+                        FloozApplication.getInstance().showUserProfile(user, new Runnable() {
+                            @Override
+                            public void run() {
+                                FLTriggerManager.this.executeTriggerList(trigger.triggers);
+                                pendingShowTrigger = null;
+                            }
+                        });
+                    } else if (this.trigger.data.has("_id")) {
+                        FloozRestClient.getInstance().showLoadView();
+                        FloozRestClient.getInstance().getFullUser(this.trigger.data.optString("_id"), new FloozHttpResponseHandler() {
+                            @Override
+                            public void success(Object response) {
+                                pendingShowTrigger = trigger;
+                                FloozApplication.getInstance().showUserProfile((FLUser) response, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        FLTriggerManager.this.executeTriggerList(trigger.triggers);
+                                        pendingShowTrigger = null;
+                                    }
+                                });
+                            }
 
+                            @Override
+                            public void failure(int statusCode, FLError error) {
+
+                            }
+                        });
+                    }
+                }
             } else if (this.trigger.categoryView.contentEquals("timeline:flooz")) {
+                if (this.trigger.data != null && this.trigger.data.has("_id")) {
+                    FloozRestClient.getInstance().showLoadView();
+                    FloozRestClient.getInstance().transactionWithId(this.trigger.data.optString("_id"), new FloozHttpResponseHandler() {
+                        @Override
+                        public void success(Object response) {
+                            FLTransaction transac = new FLTransaction(((JSONObject) response).optJSONObject("item"));
+                            pendingShowTrigger = trigger;
+                            FloozApplication.getInstance().showTransactionCard(transac, new Runnable() {
+                                @Override
+                                public void run() {
+                                    FLTriggerManager.this.executeTriggerList(trigger.triggers);
+                                    pendingShowTrigger = null;
+                                }
+                            });
+                        }
 
-            } else {
+                        @Override
+                        public void failure(int statusCode, FLError error) {
+                        }
+                    });
+                }
+            } else if (FLTriggerManager.this.isTriggerKeyView(this.trigger)) {
+                Class activityClass = FLTriggerManager.this.binderKeyActivity.get(this.trigger.categoryView);
+                Class fragmentClass = FLTriggerManager.this.binderKeyFragment.get(this.trigger.categoryView);
+                Activity currentActivity = FloozApplication.getInstance().getCurrentActivity();
 
+                if (FLTriggerManager.this.isTriggerKeyViewRoot(this.trigger)) {
+                    Integer rootId = FLTriggerManager.this.isViewClassRoot(fragmentClass);
+
+                    if (rootId >= 0) {
+                        if (currentActivity != null && currentActivity instanceof HomeActivity) {
+                            HomeActivity homeActivity = (HomeActivity) currentActivity;
+
+                            HomeActivity.TabID tabId = HomeActivity.tabIDFromIndex(rootId);
+                            if (tabId != HomeActivity.TabID.NONE) {
+                                homeActivity.changeCurrentTab(tabId, true, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        FLTriggerManager.this.executeTriggerList(trigger.triggers);
+                                    }
+                                });
+                            }
+                        } else if (currentActivity != null) {
+                            pendingShowTrigger = this.trigger;
+                            Intent intent = new Intent();
+                            intent.setClass(currentActivity, HomeActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            currentActivity.startActivity(intent);
+                            currentActivity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        } else {
+                            pendingShowTrigger = this.trigger;
+                            Intent intent = new Intent();
+                            intent.setClass(FloozApplication.getAppContext(), HomeActivity.class);
+                            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                            FloozApplication.getInstance().startActivity(intent);
+                        }
+                    } else if (currentActivity != null) {
+                        pendingShowTrigger = this.trigger;
+                        Intent intent = new Intent();
+                        intent.setClass(FloozApplication.getAppContext(), activityClass);
+                        currentActivity.startActivity(intent);
+                        currentActivity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    } else {
+                        pendingShowTrigger = this.trigger;
+                        Intent intent = new Intent();
+                        intent.setClass(FloozApplication.getAppContext(), activityClass);
+                        FloozApplication.getInstance().startActivity(intent);
+                    }
+                } else if (FLTriggerManager.this.isTriggerKeyViewPush(this.trigger) && fragmentClass != null) {
+                    if (currentActivity != null && currentActivity instanceof HomeActivity) {
+                        HomeActivity homeActivity = (HomeActivity) currentActivity;
+
+                        try {
+                            TabBarFragment newFragment = (TabBarFragment) fragmentClass.newInstance();
+
+                            homeActivity.pushFragmentInCurrentTab(newFragment, new Runnable() {
+                                @Override
+                                public void run() {
+                                    FLTriggerManager.this.executeTriggerList(trigger.triggers);
+                                }
+                            });
+                        } catch (InstantiationException e) {
+                            e.printStackTrace();
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        if (currentActivity != null) {
+                            pendingShowTrigger = this.trigger;
+                            Intent intent = new Intent();
+                            intent.setClass(FloozApplication.getAppContext(), activityClass);
+                            currentActivity.startActivity(intent);
+                            currentActivity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        } else {
+                            pendingShowTrigger = this.trigger;
+                            Intent intent = new Intent();
+                            intent.setClass(FloozApplication.getAppContext(), activityClass);
+                            FloozApplication.getInstance().startActivity(intent);
+                        }
+                    }
+                } else if (FLTriggerManager.this.isTriggerKeyModal(this.trigger)) {
+                    if (currentActivity != null) {
+                        pendingShowTrigger = this.trigger;
+                        Intent intent = new Intent();
+                        intent.setClass(FloozApplication.getAppContext(), activityClass);
+                        currentActivity.startActivity(intent);
+                        currentActivity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    } else {
+                        pendingShowTrigger = this.trigger;
+                        Intent intent = new Intent();
+                        intent.setClass(FloozApplication.getAppContext(), activityClass);
+                        FloozApplication.getInstance().startActivity(intent);
+                    }
+                }
             }
-
-
-//            if ([trigger.viewCaregory isEqualToString:@"app:signup"]) {
-//                [appDelegate showSignupWithUser:trigger.data];
-//                [self executeTriggerList:trigger.triggers];
-//            } else if ([trigger.viewCaregory isEqualToString:@"app:popup"]) {
-//                if (trigger.data) {
-//                    [[[FLPopupTrigger alloc] initWithData:trigger.data] show:^{
-//                        [self executeTriggerList:trigger.triggers];
-//                    }];
-//                }
-//            } else if ([trigger.viewCaregory isEqualToString:@"app:sms"]) {
-//                if (trigger.data && trigger.data[@"recipients"] && trigger.data[@"body"]) {
-//                    if ([MFMessageComposeViewController canSendText]) {
-//                        [[Flooz sharedInstance] showLoadView];
-//                        MFMessageComposeViewController *message = [[MFMessageComposeViewController alloc] init];
-//                        message.messageComposeDelegate = self;
-//
-//                        [message setRecipients:trigger.data[@"recipients"]];
-//                        [message setBody:trigger.data[@"body"]];
-//
-//                        message.modalPresentationStyle = UIModalPresentationPageSheet;
-//                        UIViewController *tmp = [appDelegate myTopViewController];
-//
-//                        self.smsTrigger = trigger;
-//
-//                        [tmp presentViewController:message animated:YES completion:^{
-//                            [[Flooz sharedInstance] hideLoadView];
-//                        }];
-//                    } else {
-//                        if (trigger.data[@"failureTriggers"]) {
-//                            [self executeTriggerList:[FLTriggerManager convertDataInList:trigger.data[@"failureTriggers"]]];
-//                        }
-//                    }
-//                }
-//            } else if ([trigger.viewCaregory isEqualToString:@"auth:code"]) {
-//                [[Flooz sharedInstance] showLoadView];
-//
-//                CompleteBlock completeBlock = ^{
-//                    dispatch_async(dispatch_get_main_queue(), ^{
-//                            [[Flooz sharedInstance] hideLoadView];
-//
-//                    [self executeTriggerList:trigger.triggers];
-//
-//                    if (trigger.data && trigger.data[@"successTriggers"]) {
-//
-//                        if ([trigger.data[@"successTriggers"] isKindOfClass:[NSArray class]]) {
-//                            [self executeTriggerList:[self.class convertDataInList:trigger.data[@"successTriggers"]]];
-//                        } else if ([trigger.data[@"successTriggers"] isKindOfClass:[NSDictionary class]]) {
-//                            FLTrigger *tmp = [[FLTrigger alloc] initWithJson:trigger.data[@"successTriggers"]];
-//
-//                            if (tmp) {
-//                                [self executeTrigger:tmp];
-//                            }
-//                        }
-//                    }
-//                    });
-//                };
-//
-//                if ([SecureCodeViewController canUseTouchID])
-//                [SecureCodeViewController useToucheID:completeBlock passcodeCallback:^{
-//                    dispatch_async(dispatch_get_main_queue(), ^{
-//                            SecureCodeViewController *controller = [SecureCodeViewController new];
-//                    controller.completeBlock = completeBlock;
-//                    [[appDelegate myTopViewController] presentViewController:[[UINavigationController alloc] initWithRootViewController:controller] animated:YES completion:^{
-//                        [[Flooz sharedInstance] hideLoadView];
-//                        [self executeTriggerList:trigger.triggers];
-//                    }];
-//                    });
-//                } cancelCallback:^{
-//                    dispatch_async(dispatch_get_main_queue(), ^{
-//                            [self executeTriggerList:trigger.triggers];
-//                    [[Flooz sharedInstance] hideLoadView];
-//                    });
-//                }];
-//                else {
-//                    dispatch_async(dispatch_get_main_queue(), ^{
-//                            SecureCodeViewController *controller = [SecureCodeViewController new];
-//                    controller.completeBlock = completeBlock;
-//                    [[appDelegate myTopViewController] presentViewController:[[UINavigationController alloc] initWithRootViewController:controller] animated:YES completion:^{
-//                        [[Flooz sharedInstance] hideLoadView];
-//                        [self executeTriggerList:trigger.triggers];
-//                    }];
-//                    });
-//                }
-//            } else if ([trigger.viewCaregory isEqualToString:@"profile:user"]) {
-//                if ([trigger.data objectForKey:@"nick"]) {
-//                    FLUser *user = [[FLUser alloc] initWithJSON:trigger.data];
-//                    [appDelegate showUser:user inController:nil completion:^{
-//                        [self executeTriggerList:trigger.triggers];
-//                    }];
-//                } else if ([trigger.data objectForKey:@"_id"]) {
-//                    [[Flooz sharedInstance] showLoadView];
-//                    [[Flooz sharedInstance] getUserProfile:[trigger.data objectForKey:@"_id"] success:^(FLUser *result) {
-//                        if (result) {
-//                            [appDelegate showUser:result inController:nil completion:^{
-//                                [self executeTriggerList:trigger.triggers];
-//                            }];
-//                        }
-//                    } failure:nil];
-//                }
-//            } else if ([trigger.viewCaregory isEqualToString:@"timeline:flooz"]) {
-//                NSString *resourceID = trigger.data[@"_id"];
-//
-//                if (resourceID) {
-//                    [[Flooz sharedInstance] showLoadView];
-//                    [[Flooz sharedInstance] transactionWithId:resourceID success: ^(id result) {
-//                        FLTransaction *transaction = [[FLTransaction alloc] initWithJSON:[result objectForKey:@"item"]];
-//                        [appDelegate showTransaction:transaction inController:appDelegate.currentController withIndexPath:nil focusOnComment:NO completion:^{
-//                            [self executeTriggerList:trigger.triggers];
-//                        }];
-//                    }];
-//                }
-//
-//            } else if ([self isTriggerKeyView:trigger]) {
-//                Class controllerClass = [self.binderKeyView objectForKey:trigger.viewCaregory];
-//
-//                if ([self isTriggerKeyViewRoot:trigger]) {
-//                    NSInteger rootId = [self isViewClassRoot:controllerClass];
-//
-//                    if (rootId >= 0) {
-//                        FLTabBarController *tabBar = [appDelegate tabBarController];
-//
-//                        if (tabBar) {
-//                            [appDelegate dismissControllersAnimated:YES completion:^{
-//                                [tabBar setSelectedIndex:rootId];
-//                                UINavigationController *navigationController = [[tabBar viewControllers] objectAtIndex:rootId];
-//                                [navigationController popToRootViewControllerAnimated:YES];
-//                                [self executeTriggerList:trigger.triggers];
-//                            }];
-//                        }
-//                    } else {
-//                        UIViewController *controller = [[controllerClass alloc] initWithTriggerData:trigger.data];
-//
-//                        FLNavigationController *navController = [[FLNavigationController alloc] initWithRootViewController:controller];
-//
-//                        UIViewController *tmp = [appDelegate myTopViewController];
-//
-//                        [tmp presentViewController:navController animated:YES completion:^{
-//                            [self executeTriggerList:trigger.triggers];
-//                        }];
-//                    }
-//                } else if ([self isTriggerKeyViewPush:trigger]) {
-//                    UIViewController *tmp = [appDelegate myTopViewController];
-//                    FLNavigationController *navController;
-//
-//                    if ([tmp isKindOfClass:[FLTabBarController class]]) {
-//                        navController = [(FLTabBarController *)tmp selectedViewController];
-//                    } else if ([tmp isKindOfClass:[FLNavigationController class]]) {
-//                        navController = (FLNavigationController *)tmp;
-//                    } else if ([tmp navigationController]) {
-//                        navController = (FLNavigationController *)tmp.navigationController;
-//                    }
-//
-//                    if (navController) {
-//                        [navController pushViewController:[[controllerClass alloc] initWithTriggerData:trigger.data] animated:YES completion:^{
-//                            [self executeTriggerList:trigger.triggers];
-//                        }];
-//                    }
-//                } else if ([self isTriggerKeyViewModal:trigger]) {
-//                    UIViewController *controller = [[controllerClass alloc] initWithTriggerData:trigger.data];
-//
-//                    FLNavigationController *navController = [[FLNavigationController alloc] initWithRootViewController:controller];
-//
-//                    UIViewController *tmp = [appDelegate myTopViewController];
-//
-//                    [tmp presentViewController:navController animated:YES completion:^{
-//                        [self executeTriggerList:trigger.triggers];
-//                    }];
-//                }
-//            }
-
         }
     };
+
+    private Boolean isTriggerKeyView(FLTrigger trigger) {
+        return (trigger != null && trigger.categoryView != null && this.binderKeyActivity.containsKey(trigger.categoryView));
+    }
+
+    private Boolean isTriggerKeyModal(FLTrigger trigger) {
+        return (trigger != null && trigger.categoryView != null && this.binderKeyActivity.containsKey(trigger.categoryView) && this.binderKeyType.get(trigger.categoryView).contentEquals("modal"));
+    }
+
+    private Boolean isTriggerKeyViewPush(FLTrigger trigger) {
+        return (trigger != null && trigger.categoryView != null && this.binderKeyFragment.containsKey(trigger.categoryView) && this.binderKeyType.get(trigger.categoryView).contentEquals("push"));
+    }
+
+    private Boolean isTriggerKeyViewRoot(FLTrigger trigger) {
+        return (trigger != null && trigger.categoryView != null && this.binderKeyFragment.containsKey(trigger.categoryView) && this.binderKeyType.get(trigger.categoryView).contentEquals("root"));
+    }
+
+    private Integer isViewClassRoot(Class viewClass) {
+        HomeActivity activity = HomeActivity.getInstance();
+
+        if (activity != null) {
+            int i = 0;
+            for (ArrayList<TabBarFragment> historyTab : activity.fullTabHistory) {
+                TabBarFragment fragment = historyTab.get(0);
+
+                if (fragment.getClass().equals(viewClass))
+                    return i;
+
+                i++;
+            }
+        }
+
+        return -1;
+    }
 
     private ActionTask syncActionHandler = new ActionTask() {
         @Override
@@ -705,7 +733,6 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("app:profile", ProfileCardFragment.class);
             put("app:timeline", TimelineFragment.class);
             put("card:card", CreditCardFragment.class);
-//            put("code:set", .class);
             put("profile:user", ProfileCardFragment.class);
             put("settings:iban", BankFragment.class);
             put("settings:identity", IdentityFragment.class);
@@ -751,7 +778,41 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
 
     @Override
     public void onActivityStarted(Activity activity) {
+        if (this.pendingShowTrigger != null) {
+            if (FLTriggerManager.this.binderKeyActivity.containsKey(this.pendingShowTrigger.categoryView)) {
+                Class wantedActivityClass = FLTriggerManager.this.binderKeyActivity.get(this.pendingShowTrigger.categoryView);
 
+                if (activity.getClass().equals(wantedActivityClass)) {
+                    FLTriggerManager.this.executeTriggerList(this.pendingShowTrigger.triggers);
+                    this.pendingShowTrigger = null;
+                } else if (activity instanceof HomeActivity) {
+                    if (FLTriggerManager.this.isTriggerKeyViewRoot(this.pendingShowTrigger)) {
+                        Class wantedFragmentClass = FLTriggerManager.this.binderKeyFragment.get(this.pendingShowTrigger.categoryView);
+                        Integer rootId = FLTriggerManager.this.isViewClassRoot(wantedFragmentClass);
+
+                        if (rootId >= 0) {
+                            HomeActivity homeActivity = (HomeActivity) activity;
+
+                            HomeActivity.TabID tabId = HomeActivity.tabIDFromIndex(rootId);
+                            if (tabId != HomeActivity.TabID.NONE) {
+                                homeActivity.changeCurrentTab(tabId, true, new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        FLTriggerManager.this.executeTriggerList(pendingShowTrigger.triggers);
+                                        pendingShowTrigger = null;
+                                    }
+                                });
+                            } else
+                                this.pendingShowTrigger = null;
+                        } else
+                            this.pendingShowTrigger = null;
+                    } else
+                        this.pendingShowTrigger = null;
+                } else
+                    this.pendingShowTrigger = null;
+            } else
+                this.pendingShowTrigger = null;
+        }
     }
 
     @Override
@@ -774,6 +835,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
                     FLTriggerManager.this.executeTriggerList(this.pendingHideTrigger.triggers);
                 }
             }
+            this.pendingHideTrigger = null;
         }
     }
 

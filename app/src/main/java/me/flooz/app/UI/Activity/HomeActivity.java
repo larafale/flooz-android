@@ -73,10 +73,9 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         HOME_TAB,
         NOTIF_TAB,
         SHARE_TAB,
-        ACCOUNT_TAB
+        ACCOUNT_TAB,
+        NONE
     }
-
-    private HomeActivity instance;
 
     private FragmentManager fragmentManager;
 
@@ -85,6 +84,7 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
     private ArrayList<TabBarFragment> notifsTabHistory;
     private ArrayList<TabBarFragment> shareTabHistory;
     private ArrayList<TabBarFragment> accountTabHistory;
+    public ArrayList<ArrayList<TabBarFragment>> fullTabHistory;
 
     public TabID currentTabID;
     public TabBarFragment currentFragment;
@@ -164,12 +164,18 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         }
     };
 
+    private static HomeActivity instance;
+
+    public static HomeActivity getInstance() {
+        return instance;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        this.instance = this;
+        instance = this;
 
         if (FLHelper.isDebuggable())
             ViewServer.get(this).addWindow(this);
@@ -309,6 +315,12 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         this.notifsTabHistory.add(notifFragment);
         this.shareTabHistory.add(shareFragment);
         this.accountTabHistory.add(accountFragment);
+
+        this.fullTabHistory = new ArrayList<>();
+        this.fullTabHistory.add(this.homeTabHistory);
+        this.fullTabHistory.add(this.notifsTabHistory);
+        this.fullTabHistory.add(this.shareTabHistory);
+        this.fullTabHistory.add(this.accountTabHistory);
 
         this.floozTabImage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -463,6 +475,8 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         if (FLHelper.isDebuggable())
             ViewServer.get(this).removeWindow(this);
 
+        instance = null;
+
         super.onDestroy();
     }
 
@@ -506,6 +520,18 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
     }
 
     public void changeCurrentTab(@NonNull TabID tabID) {
+        this.changeCurrentTab(tabID, false, null);
+    }
+
+    public void changeCurrentTab(@NonNull TabID tabID, Boolean clearHistory) {
+        this.changeCurrentTab(tabID, clearHistory, null);
+    }
+
+    public void changeCurrentTab(@NonNull TabID tabID, Runnable completion) {
+        this.changeCurrentTab(tabID, false, completion);
+    }
+
+    public void changeCurrentTab(@NonNull TabID tabID, Boolean clearHistory, Runnable completion) {
         if (tabID != this.currentTabID) {
 
             imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
@@ -584,12 +610,27 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
                         break;
                 }
 
+                if (clearHistory) {
+                    int loop = this.currentTabHistory.size() - 1;
+                    while (loop > 0) {
+                        TabBarFragment clearFragment = this.currentTabHistory.get(this.currentTabHistory.size() - 1);
+                        this.currentTabHistory.remove(clearFragment);
+                        --loop;
+                    }
+                    fragment = this.currentTabHistory.get(this.currentTabHistory.size() - 1);
+                }
+
                 if (fragment != null) {
                     this.currentFragment = fragment;
                     FragmentTransaction ft = this.fragmentManager.beginTransaction();
                     ft.replace(R.id.fragment_container, fragment);
                     ft.addToBackStack(null).commit();
                     this.fragmentManager.executePendingTransactions();
+
+                    if (completion != null) {
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.post(completion);
+                    }
                 }
 
                 if (oldItemText != null) {
@@ -604,15 +645,35 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
             while (this.currentTabHistory.size() > 2)
                 this.currentTabHistory.remove(this.currentTabHistory.size() - 1);
 
-            this.popFragmentInCurrentTab();
+            this.popFragmentInCurrentTab(completion);
         }
     }
 
-    public void pushFragmentInCurrentTab(TabBarFragment fragment) {
-        this.pushFragmentInCurrentTab(fragment, R.animator.slide_in_left, R.animator.slide_out_right);
+    public static TabID tabIDFromIndex(Integer index) {
+        switch (index) {
+            case 0:
+                return TabID.HOME_TAB;
+            case 1:
+                return TabID.NOTIF_TAB;
+            case 2:
+                return TabID.SHARE_TAB;
+            case 3:
+                return TabID.ACCOUNT_TAB;
+            default:
+                break;
+        }
+        return TabID.NONE;
     }
 
-    public void pushFragmentInCurrentTab(TabBarFragment fragment, int animIn, int animOut) {
+    public void pushFragmentInCurrentTab(TabBarFragment fragment) {
+        this.pushFragmentInCurrentTab(fragment, R.animator.slide_in_left, R.animator.slide_out_right, null);
+    }
+
+    public void pushFragmentInCurrentTab(TabBarFragment fragment, Runnable completion) {
+        this.pushFragmentInCurrentTab(fragment, R.animator.slide_in_left, R.animator.slide_out_right, completion);
+    }
+
+    public void pushFragmentInCurrentTab(TabBarFragment fragment, int animIn, int animOut, Runnable completion) {
         imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
         fragment.tabBarActivity = this;
@@ -627,6 +688,12 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
 
         this.currentTabHistory.add(fragment);
         this.currentFragment = fragment;
+
+        if (completion != null) {
+            this.getFragmentManager().executePendingTransactions();
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(completion);
+        }
     }
 
     public void popFragmentInCurrentTab() {
@@ -681,40 +748,14 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
         this.fragmentContainer.setLayoutParams(layoutParams);
     }
 
-    public static void showTransactionCard(FLTransaction transaction) {
-        HomeActivity.showTransactionCard(transaction, false);
-    }
-
-    public static void showTransactionCard(FLTransaction transaction, Boolean insertComment) {
-        Activity activity = FloozApplication.getInstance().getCurrentActivity();
-
-        if (activity != null) {
-            if (activity instanceof HomeActivity) {
-                FloozRestClient.getInstance().readNotification(transaction.transactionId, null);
-                TransactionCardFragment transactionCardFragment = new TransactionCardFragment();
-
-                transactionCardFragment.insertComment = insertComment;
-                transactionCardFragment.transaction = transaction;
-
-                ((HomeActivity) activity).pushFragmentInCurrentTab(transactionCardFragment);
-            } else {
-                Intent intent = new Intent(activity, TransactionActivity.class);
-                intent.putExtra("insertComment", insertComment);
-                intent.putExtra("transaction", transaction.json.toString());
-                activity.startActivity(intent);
-                activity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-            }
-        }
-    }
-
     @Override
     public void onItemSelected(FLTransaction transac) {
-        HomeActivity.showTransactionCard(transac);
+        FloozApplication.getInstance().showTransactionCard(transac);
     }
 
     @Override
     public void onItemCommentSelected(FLTransaction transac) {
-        HomeActivity.showTransactionCard(transac, true);
+        FloozApplication.getInstance().showTransactionCard(transac, true);
     }
 
     @Override

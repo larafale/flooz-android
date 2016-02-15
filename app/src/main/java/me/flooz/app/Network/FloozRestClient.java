@@ -2004,7 +2004,7 @@ public class FloozRestClient
                     @Override
                     public void success(Object response) {
                         FLTransaction transac = new FLTransaction(((JSONObject) response).optJSONObject("item"));
-                        HomeActivity.showTransactionCard(transac);
+                        FloozApplication.getInstance().showTransactionCard(transac);
                     }
 
                     @Override
