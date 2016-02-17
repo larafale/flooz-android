@@ -21,7 +21,7 @@ public class NotificationsFragment extends TabBarFragment {
         View view = inflater.inflate(R.layout.notification_fragment, null);
 
         if (this.controller == null)
-            this.controller = new NotificationsController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
+            this.controller = new NotificationsController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER, this.triggerData);
 
         return this.controller.currentView;
     }

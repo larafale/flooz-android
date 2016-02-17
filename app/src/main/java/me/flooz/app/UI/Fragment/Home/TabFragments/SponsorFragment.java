@@ -22,7 +22,7 @@ public class SponsorFragment extends TabBarFragment {
         View view = inflater.inflate(R.layout.sponsor_fragment, null);
 
         if (this.controller == null)
-            this.controller = new SponsorController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
+            this.controller = new SponsorController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER, this.triggerData);
 
         return this.controller.currentView;
     }

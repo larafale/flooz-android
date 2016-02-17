@@ -34,11 +34,18 @@ public class UserProfileActivity extends Activity {
 
         this.setContentView(R.layout.profile_card_list_fragment);
 
+        JSONObject triggerData = null;
+        if (getIntent() != null && getIntent().hasExtra("triggerData"))
+            try {
+                triggerData = new JSONObject(getIntent().getStringExtra("triggerData"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         if (getIntent().hasExtra("user")) {
             try {
                 FLUser user = new FLUser(new JSONObject(getIntent().getStringExtra("user")));
-                this.controller = new ProfileController(user, this.findViewById(android.R.id.content), this, BaseController.ControllerKind.ACTIVITY_CONTROLLER);
-
+                this.controller = new ProfileController(user, this.findViewById(android.R.id.content), this, BaseController.ControllerKind.ACTIVITY_CONTROLLER, triggerData);
             } catch (JSONException e) {
                 e.printStackTrace();
             }

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -15,6 +16,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.baoyz.widget.PullRefreshLayout;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -36,7 +39,6 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
  */
 public class FriendsController extends BaseController implements FriendsListAdapterDelegate {
 
-    private ImageView headerBackButton;
     private TextView searchTextfield;
     private ImageView clearSearchTextfieldButton;
     public PullRefreshLayout refreshContainer;
@@ -45,30 +47,27 @@ public class FriendsController extends BaseController implements FriendsListAdap
 
     private FriendsListAdapter listAdapter;
 
-    public FriendsController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull ControllerKind kind) {
+    public FriendsController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
-        this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
+        this.init();
+    }
+
+    public FriendsController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind, @Nullable JSONObject data) {
+        super(mainView, parentActivity, kind, data);
+
+        this.init();
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
         this.refreshContainer = (PullRefreshLayout) this.currentView.findViewById(R.id.friends_refresh_container);
         this.searchTextfield = (TextView) this.currentView.findViewById(R.id.friends_search_textfield);
         this.clearSearchTextfieldButton = (ImageView) this.currentView.findViewById(R.id.friends_search_clear);
         this.backgroundView = (LinearLayout) this.currentView.findViewById(R.id.friends_empty_background);
         Button inviteFriends = (Button) this.currentView.findViewById(R.id.friends_invite_button);
-
-        if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
-            this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
-
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                    parentActivity.finish();
-                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                } else {
-                    ((HomeActivity) parentActivity).popFragmentInCurrentTab();
-                }
-            }
-        });
 
         inviteFriends.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -208,10 +207,5 @@ public class FriendsController extends BaseController implements FriendsListAdap
             backgroundView.setVisibility(View.VISIBLE);
         else
             backgroundView.setVisibility(View.GONE);
-    }
-
-    @Override
-    public void onBackPressed() {
-        this.headerBackButton.performClick();
     }
 }

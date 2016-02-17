@@ -9,7 +9,6 @@ import me.flooz.app.Model.FLUser;
 import me.flooz.app.R;
 import me.flooz.app.UI.Controllers.NotificationsController;
 import me.flooz.app.UI.Controllers.SearchController;
-import me.flooz.app.UI.Fragment.Home.TabFragments.TabBarFragment;
 
 /**
  * Created by Wapazz on 12/10/15.
@@ -23,7 +22,7 @@ public class SearchFragment extends TabBarFragment  {
         View view = inflater.inflate(R.layout.search_fragment, null);
 
         if (this.controller == null)
-            this.controller = new SearchController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
+            this.controller = new SearchController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER, this.triggerData);
 
         return this.controller.currentView;
     }

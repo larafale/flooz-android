@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import me.flooz.app.R;
-import me.flooz.app.UI.Controllers.CashoutController;
 import me.flooz.app.UI.Controllers.NotificationsController;
 import me.flooz.app.UI.Controllers.WebController;
 
@@ -26,9 +25,13 @@ public class WebFragment extends TabBarFragment {
         View view = inflater.inflate(R.layout.custom_webview_fragment, null);
 
         if (this.controller == null) {
-            this.controller = new WebController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
-            this.controller.title = this.title;
-            this.controller.url = this.url;
+            this.controller = new WebController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER, this.triggerData);
+
+            if (this.title != null && !this.title.isEmpty())
+                this.controller.title = this.title;
+
+            if (this.url != null && !this.url.isEmpty())
+                this.controller.url = this.url;
         }
 
         return this.controller.currentView;

@@ -8,10 +8,8 @@ import android.view.ViewGroup;
 
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.R;
-import me.flooz.app.UI.Controllers.CreditCardController;
 import me.flooz.app.UI.Controllers.NotificationsController;
 import me.flooz.app.UI.Controllers.TransactionCardController;
-import me.flooz.app.UI.Fragment.Home.TabFragments.TabBarFragment;
 
 /**
  * Created by Flooz on 9/25/14.
@@ -26,7 +24,7 @@ public class TransactionCardFragment extends TabBarFragment {
         View view = inflater.inflate(R.layout.transaction_card_fragment, null);
 
         if (this.controller == null) {
-            this.controller = new TransactionCardController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
+            this.controller = new TransactionCardController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER, this.triggerData);
             this.controller.insertComment = this.insertComment;
             this.controller.setTransaction(this.transaction);
         }

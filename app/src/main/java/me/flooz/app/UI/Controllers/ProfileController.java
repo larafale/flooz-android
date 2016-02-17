@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.SpannableString;
 import android.text.style.StyleSpan;
@@ -28,6 +29,8 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -66,7 +69,6 @@ import me.flooz.app.Utils.FLHelper;
  */
 public class ProfileController extends BaseController implements TimelineListAdapter.TimelineListRowDelegate {
 
-    private ImageView cardHeaderCloseButton;
     private ImageView profileImage;
     private ImageView profileCover;
     private ImageView stickyHeader;
@@ -134,8 +136,25 @@ public class ProfileController extends BaseController implements TimelineListAda
 
     public TimelineListAdapter.TimelineListRowDelegate delegate;
 
-    public ProfileController(@NonNull FLUser user, @NonNull View view, @NonNull final Activity parentActivity, @NonNull BaseController.ControllerKind kind) {
-        super(view, parentActivity, kind);
+    public ProfileController(@NonNull FLUser user,@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
+        super(mainView, parentActivity, kind);
+
+        this.flUser = user;
+
+        this.init();
+    }
+
+    public ProfileController(@NonNull FLUser user,@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind, @Nullable JSONObject data) {
+        super(mainView, parentActivity, kind, data);
+
+        this.flUser = user;
+
+        this.init();
+    }
+
+    @Override
+    protected void init() {
+        super.init();
 
         this.mainListContainer = (UserProfileListView) this.currentView.findViewById(R.id.profile_list_container);
 
@@ -144,7 +163,6 @@ public class ProfileController extends BaseController implements TimelineListAda
         this.stickyCoverContainer = (RelativeLayout) this.currentView.findViewById(R.id.sticky_cover_container);
         this.stickyHeader = (ImageView) this.currentView.findViewById(R.id.header_cover_sticky);
         this.stickyHeaderBlur = (ImageView) this.currentView.findViewById(R.id.header_cover_blur);
-        this.cardHeaderCloseButton = (ImageView) this.currentView.findViewById(R.id.transac_card_header_close);
         this.stickyName = (TextView) this.currentView.findViewById(R.id.profile_card_username_sticky);
         this.stickyUsername = (TextView) this.currentView.findViewById(R.id.profile_card_subname_sticky);
 
@@ -181,7 +199,6 @@ public class ProfileController extends BaseController implements TimelineListAda
         this.settingsFollowingButton = (RadioButton) listHeader.findViewById(R.id.settings_segment_following);
 
         this.imageSize = this.profileImage.getLayoutParams().height;
-        this.flUser = user;
 
         this.settingsClearVision();
         this.stickyHeader.setVisibility(View.INVISIBLE);
@@ -227,8 +244,6 @@ public class ProfileController extends BaseController implements TimelineListAda
         this.profileUsername.setTypeface(regContent);
         this.userBio.setTypeface(regContent);
 
-        this.reloadWithUser();
-
         this.websiteContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -268,22 +283,10 @@ public class ProfileController extends BaseController implements TimelineListAda
             HomeActivity activity = (HomeActivity) parentActivity;
 
             if (activity.currentTabHistory.size() == 1)
-                this.cardHeaderCloseButton.setVisibility(View.GONE);
-            else
-                this.cardHeaderCloseButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
+                this.closeButton.setVisibility(View.GONE);
         }
 
-        this.cardHeaderCloseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                    parentActivity.finish();
-                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                } else {
-                    ((HomeActivity) parentActivity).popFragmentInCurrentTab();
-                }
-            }
-        });
+        this.reloadWithUser();
 
         this.websiteContainer.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -465,11 +468,6 @@ public class ProfileController extends BaseController implements TimelineListAda
                 scrollY += listViewItemHeights.get(i); //add all heights of the views that are gone
         }
         return scrollY;
-    }
-
-    @Override
-    public void onBackPressed() {
-        this.cardHeaderCloseButton.performClick();
     }
 
     @Override

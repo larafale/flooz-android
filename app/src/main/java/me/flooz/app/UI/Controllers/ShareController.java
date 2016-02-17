@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -58,10 +59,6 @@ public class ShareController extends BaseController {
     private CallbackManager fbShareCallbackManager;
     private CallbackManager fbPublishCallbackManager;
 
-    private FloozApplication floozApp;
-    private ImageView headerBackButton;
-    private TextView headerTitle;
-
     private TextView h1;
     private TextView content;
     private ToolTip toolTip;
@@ -93,11 +90,21 @@ public class ShareController extends BaseController {
         }
     };
 
-    public ShareController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull BaseController.ControllerKind kind) {
+    public ShareController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
-        this.headerBackButton = (ImageView) currentView.findViewById(R.id.header_item_left);
-        this.headerTitle = (TextView) currentView.findViewById(R.id.header_title);
+        this.init();
+    }
+
+    public ShareController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind, @Nullable JSONObject data) {
+        super(mainView, parentActivity, kind, data);
+
+        this.init();
+    }
+
+    @Override
+    protected void init() {
+        super.init();
 
         this.h1 = (TextView) currentView.findViewById(R.id.invite_h1);
         this.content = (TextView) currentView.findViewById(R.id.invite_content);
@@ -114,7 +121,6 @@ public class ShareController extends BaseController {
         ImageView mailImage = (ImageView) currentView.findViewById(R.id.invite_mail_image);
         this.tipContainer = (ToolTipLayout) currentView.findViewById(R.id.invite_tooltip_container);
 
-        this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
         this.h1.setTypeface(CustomFonts.customContentBold(this.parentActivity));
         this.content.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         smsText.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
@@ -127,19 +133,11 @@ public class ShareController extends BaseController {
         twitterImage.setColorFilter(this.parentActivity.getResources().getColor(R.color.blue));
         mailImage.setColorFilter(this.parentActivity.getResources().getColor(R.color.blue));
 
-        if (this.currentKind == BaseController.ControllerKind.FRAGMENT_CONTROLLER)
-            this.headerBackButton.setVisibility(View.GONE);
-
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                parentActivity.finish();
-                parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-            }
-        });
-
         this.tipContainer.dismiss();
         this.toolTip = null;
+
+        if (this.currentKind == ControllerKind.FRAGMENT_CONTROLLER)
+            this.closeButton.setVisibility(View.GONE);
 
         this.reloadData(false);
 
@@ -259,7 +257,7 @@ public class ShareController extends BaseController {
     }
 
     private void reloadView() {
-        headerTitle.setText(_viewTitle);
+        this.titleLabel.setText(_viewTitle);
         h1.setText(_h1);
 
         Spannable text = new SpannableString(_appText.optString(0));
@@ -346,7 +344,7 @@ public class ShareController extends BaseController {
                         }
                     });
 
-            LoginManager.getInstance().logInWithPublishPermissions(floozApp.getCurrentActivity(), Arrays.asList("publish_actions"));
+            LoginManager.getInstance().logInWithPublishPermissions(this.parentActivity, Arrays.asList("publish_actions"));
         }
     }
 
@@ -445,11 +443,5 @@ public class ShareController extends BaseController {
 
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(facebookConnected);
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadInviationReceiver);
-    }
-
-    @Override
-    public void onBackPressed() {
-        if (this.currentKind == ControllerKind.ACTIVITY_CONTROLLER)
-            this.headerBackButton.performClick();
     }
 }

@@ -23,6 +23,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,7 +68,15 @@ public class DocumentsSettingsActivity extends Activity {
 
         this.setContentView(R.layout.settings_document_fragment);
 
-        this.controller = new DocumentsController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER);
+        JSONObject triggerData = null;
+        if (getIntent() != null && getIntent().hasExtra("triggerData"))
+            try {
+                triggerData = new JSONObject(getIntent().getStringExtra("triggerData"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        this.controller = new DocumentsController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER, triggerData);
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -15,6 +16,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -36,8 +39,6 @@ import me.flooz.app.Utils.FLHelper;
  * Created by Flooz on 9/1/15.
  */
 public class IdentityController extends BaseController implements FLPhoneField.FLPhoneFieldDelegate {
-
-    private ImageView headerBackButton;
 
     private EditText firstnameTextfield;
     private EditText lastnameTextfield;
@@ -61,11 +62,22 @@ public class IdentityController extends BaseController implements FLPhoneField.F
         }
     };
 
-    public IdentityController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull ControllerKind kind) {
+    public IdentityController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
-        this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
-        TextView headerTitle = (TextView) this.currentView.findViewById(R.id.header_title);
+        this.init();
+    }
+
+    public IdentityController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind, @Nullable JSONObject data) {
+        super(mainView, parentActivity, kind, data);
+
+        this.init();
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
         this.firstnameTextfield = (EditText) this.currentView.findViewById(R.id.settings_identity_firstname);
         this.lastnameTextfield = (EditText) this.currentView.findViewById(R.id.settings_identity_lastname);
         this.phoneTextfield = (FLPhoneField) this.currentView.findViewById(R.id.settings_coord_phone);
@@ -77,7 +89,6 @@ public class IdentityController extends BaseController implements FLPhoneField.F
         this.sendVerifyMail = (TextView) this.currentView.findViewById(R.id.settings_coord_verify_email);
         this.saveButton = (Button) this.currentView.findViewById(R.id.settings_coord_save);
 
-        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
         this.firstnameTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.lastnameTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.emailTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
@@ -88,21 +99,6 @@ public class IdentityController extends BaseController implements FLPhoneField.F
         this.sendVerifyMail.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
 
         this.reloadView();
-
-        if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
-            this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
-
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                    parentActivity.finish();
-                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                } else {
-                    ((HomeActivity) parentActivity).popFragmentInCurrentTab();
-                }
-            }
-        });
 
         this.sendVerifyPhone.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,7 +188,7 @@ public class IdentityController extends BaseController implements FLPhoneField.F
                 FloozRestClient.getInstance().updateUser(param, new FloozHttpResponseHandler() {
                     @Override
                     public void success(Object response) {
-                        headerBackButton.performClick();
+                        IdentityController.this.onBackPressed();
                     }
 
                     @Override
@@ -255,11 +251,6 @@ public class IdentityController extends BaseController implements FLPhoneField.F
     @Override
     public void onPause() {
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadCurrentUserDataReceiver);
-    }
-
-    @Override
-    public void onBackPressed() {
-        this.headerBackButton.performClick();
     }
 
     @Override

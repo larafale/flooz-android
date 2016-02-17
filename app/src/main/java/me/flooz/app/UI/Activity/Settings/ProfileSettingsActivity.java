@@ -17,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,6 +64,14 @@ public class ProfileSettingsActivity extends Activity {
 
         this.setContentView(R.layout.profile_settings);
 
+        JSONObject triggerData = null;
+        if (getIntent() != null && getIntent().hasExtra("triggerData"))
+            try {
+                triggerData = new JSONObject(getIntent().getStringExtra("triggerData"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         this.headerBackButton = (ImageView) this.findViewById(R.id.profile_settings_header_back);
         TextView headerTitle = (TextView) this.findViewById(R.id.profile_settings_header_title);
         this.contentList = (ListView) this.findViewById(R.id.profile_settings_list);
@@ -74,11 +83,22 @@ public class ProfileSettingsActivity extends Activity {
         infosText.setTypeface(CustomFonts.customTitleLight(this));
         infosNotifsText.setTypeface(CustomFonts.customContentBold(this));
 
+        if (triggerData != null) {
+            if (triggerData.has("title") && !triggerData.optString("title").isEmpty())
+                headerTitle.setText(triggerData.optString("title"));
+
+            if (triggerData.has("close") && !triggerData.optBoolean("close")) {
+                this.headerBackButton.setVisibility(View.GONE);
+            }
+        }
+
         this.headerBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                instance.finish();
-                instance.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+                if (headerBackButton.getVisibility() == View.VISIBLE) {
+                    ProfileSettingsActivity.this.finish();
+                    ProfileSettingsActivity.this.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+                }
             }
         });
 

@@ -3,11 +3,14 @@ package me.flooz.app.UI.Controllers;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,34 +30,26 @@ import me.flooz.app.Utils.CustomFonts;
  */
 public class SecurityController extends BaseController {
 
-    private ImageView headerBackButton;
-    private TextView headerTitle;
     private ListView contentList;
     private SettingsListAdapter listAdapter;
 
-    public SecurityController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull ControllerKind kind) {
+    public SecurityController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
-        this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
-        this.headerTitle = (TextView) this.currentView.findViewById(R.id.header_title);
+        this.init();
+    }
+
+    public SecurityController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind, @Nullable JSONObject data) {
+        super(mainView, parentActivity, kind, data);
+
+        this.init();
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
         this.contentList = (ListView) this.currentView.findViewById(R.id.settings_security_list);
-
-        this.headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
-
-        if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
-            this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
-
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                    parentActivity.finish();
-                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                } else {
-                    ((HomeActivity) parentActivity).popFragmentInCurrentTab();
-                }
-            }
-        });
 
         List<SettingsListItem> itemList = new ArrayList<>();
 
@@ -82,10 +77,5 @@ public class SecurityController extends BaseController {
         }));
 
         this.listAdapter = new SettingsListAdapter(this.parentActivity, itemList, this.contentList);
-    }
-
-    @Override
-    public void onBackPressed() {
-        this.headerBackButton.performClick();
     }
 }

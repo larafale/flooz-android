@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -44,11 +45,7 @@ public class CreditCardController extends BaseController {
 
     private static int RESULT_SCANPAY_ACTIVITY = 45;
 
-    private Boolean modal;
-
     public String cardInfosText;
-
-    private ImageView headerBackButton;
 
     private TextView creditCardOwner;
     private TextView creditCardNumber;
@@ -78,11 +75,22 @@ public class CreditCardController extends BaseController {
         }
     };
 
-    public CreditCardController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull ControllerKind kind) {
+    public CreditCardController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
-        this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
-        TextView headerTitle = (TextView) this.currentView.findViewById(R.id.header_title);
+        this.init();
+    }
+
+    public CreditCardController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind, @Nullable JSONObject data) {
+        super(mainView, parentActivity, kind, data);
+
+        this.init();
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
         this.cardOwner = (EditText) this.currentView.findViewById(R.id.settings_credit_card_create_owner);
         this.cardNumber = (EditText) this.currentView.findViewById(R.id.settings_credit_card_create_number);
         this.cardExpires = (EditText) this.currentView.findViewById(R.id.settings_credit_card_create_expires);
@@ -98,7 +106,6 @@ public class CreditCardController extends BaseController {
         this.createCardContainer = (LinearLayout) this.currentView.findViewById(R.id.settings_credit_card_create_card_view);
         this.cardInfos = (TextView) this.currentView.findViewById(R.id.settings_credit_card_infos);
 
-        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
         this.creditCardOwner.setTypeface(CustomFonts.customCreditCard(this.parentActivity));
         this.creditCardNumber.setTypeface(CustomFonts.customCreditCard(this.parentActivity));
         this.creditCardExpires.setTypeface(CustomFonts.customCreditCard(this.parentActivity));
@@ -109,21 +116,6 @@ public class CreditCardController extends BaseController {
         this.cardCVV.setTypeface(CustomFonts.customContentLight(this.parentActivity));
         this.addCardButton.setTypeface(CustomFonts.customContentLight(this.parentActivity));
         cardInfos.setTypeface(CustomFonts.customContentLight(this.parentActivity));
-
-        if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
-            this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
-
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                    parentActivity.finish();
-                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                } else {
-                    ((HomeActivity)parentActivity).popFragmentInCurrentTab();
-                }
-            }
-        });
 
         removeCreditCardButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -318,11 +310,6 @@ public class CreditCardController extends BaseController {
             cardExpires.setText(creditCard.month + "/" + creditCard.year);
             cardCVV.setText(creditCard.cvv);
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        this.headerBackButton.performClick();
     }
 
     @Override

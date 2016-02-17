@@ -16,6 +16,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -60,6 +61,14 @@ public class SetSecureCodeActivity extends Activity implements NumericKeyboard.N
 
         this.setContentView(R.layout.set_secure_code_activity);
 
+        JSONObject triggerData = null;
+        if (getIntent() != null && getIntent().hasExtra("triggerData"))
+            try {
+                triggerData = new JSONObject(getIntent().getStringExtra("triggerData"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         this.headerBackButton = (ImageView) this.findViewById(R.id.header_item_left);
         TextView title = (TextView) this.findViewById(R.id.header_title);
         TextView hintText = (TextView) this.findViewById(R.id.start_secure_code_hint);
@@ -73,11 +82,22 @@ public class SetSecureCodeActivity extends Activity implements NumericKeyboard.N
         title.setTypeface(CustomFonts.customTitleLight(this));
         hintText.setTypeface(CustomFonts.customContentRegular(this));
 
+        if (triggerData != null) {
+            if (triggerData.has("title") && !triggerData.optString("title").isEmpty())
+                title.setText(triggerData.optString("title"));
+
+            if (triggerData.has("close") && !triggerData.optBoolean("close")) {
+                this.headerBackButton.setVisibility(View.GONE);
+            }
+        }
+
         this.headerBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
-                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+                if (headerBackButton.getVisibility() == View.VISIBLE) {
+                    finish();
+                    overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+                }
             }
         });
 

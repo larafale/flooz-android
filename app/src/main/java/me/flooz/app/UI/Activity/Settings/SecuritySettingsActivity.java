@@ -10,6 +10,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +48,15 @@ public class SecuritySettingsActivity extends Activity {
 
         this.setContentView(R.layout.settings_security_fragment);
 
-        this.controller = new SecurityController(this.findViewById(android.R.id.content), this, BaseController.ControllerKind.ACTIVITY_CONTROLLER);
+        JSONObject triggerData = null;
+        if (getIntent() != null && getIntent().hasExtra("triggerData"))
+            try {
+                triggerData = new JSONObject(getIntent().getStringExtra("triggerData"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        this.controller = new SecurityController(this.findViewById(android.R.id.content), this, BaseController.ControllerKind.ACTIVITY_CONTROLLER, triggerData);
     }
 
     @Override

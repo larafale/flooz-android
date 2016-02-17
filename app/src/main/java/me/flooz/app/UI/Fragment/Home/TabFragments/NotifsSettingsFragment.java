@@ -9,7 +9,6 @@ import android.view.ViewGroup;
 import me.flooz.app.R;
 import me.flooz.app.UI.Controllers.NotificationsController;
 import me.flooz.app.UI.Controllers.NotifsSettingsController;
-import me.flooz.app.UI.Controllers.PrivacyController;
 
 /**
  * Created by Flooz on 9/2/15.
@@ -23,7 +22,7 @@ public class NotifsSettingsFragment extends TabBarFragment {
         View view = inflater.inflate(R.layout.settings_notifications_fragment, null);
 
         if (this.controller == null)
-            this.controller = new NotifsSettingsController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
+            this.controller = new NotifsSettingsController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER, this.triggerData);
 
         return this.controller.currentView;
     }

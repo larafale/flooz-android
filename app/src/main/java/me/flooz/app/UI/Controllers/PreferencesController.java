@@ -5,6 +5,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.AdapterView;
@@ -13,6 +14,8 @@ import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,7 +39,6 @@ import me.flooz.app.Utils.CustomNotificationIntents;
 public class PreferencesController extends BaseController {
 
     private Boolean viewVisible = false;
-    private ImageView headerBackButton;
     private CheckBox fbSwitch;
 
     private BroadcastReceiver reloadCurrentUserDataReceiver = new BroadcastReceiver() {
@@ -46,16 +48,26 @@ public class PreferencesController extends BaseController {
         }
     };
 
-    public PreferencesController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull ControllerKind kind) {
+    public PreferencesController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
-        this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
-        TextView headerTitle = (TextView) this.currentView.findViewById(R.id.header_title);
+        this.init();
+    }
+
+    public PreferencesController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind, @Nullable JSONObject data) {
+        super(mainView, parentActivity, kind, data);
+
+        this.init();
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
         TextView fbText = (TextView) this.currentView.findViewById(R.id.settings_preferences_fb_text);
         this.fbSwitch = (CheckBox) this.currentView.findViewById(R.id.settings_preferences_fb_toggle);
         ListView contentList = (ListView) this.currentView.findViewById(R.id.settings_preferences_list);
 
-        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
         fbText.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
 
         List<SettingsListItem> itemList = new ArrayList<>();
@@ -103,21 +115,6 @@ public class PreferencesController extends BaseController {
                 }
             }
         });
-
-        if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
-            this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
-
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                    parentActivity.finish();
-                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                } else {
-                    ((HomeActivity) parentActivity).popFragmentInCurrentTab(R.animator.slide_in_right, R.animator.slide_out_left);
-                }
-            }
-        });
     }
 
 
@@ -146,10 +143,5 @@ public class PreferencesController extends BaseController {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         FloozRestClient.getInstance().fbLoginCallbackManager.onActivityResult(requestCode, resultCode, data);
-    }
-
-    @Override
-    public void onBackPressed() {
-        this.headerBackButton.performClick();
     }
 }

@@ -10,6 +10,9 @@ import android.widget.TextView;
 
 import com.baoyz.widget.PullRefreshLayout;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import me.flooz.app.Adapter.NotificationListAdapter;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
@@ -42,7 +45,15 @@ public class NotificationActivity extends Activity {
 
         this.setContentView(R.layout.notification_fragment);
 
-        this.controller = new NotificationsController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER);
+        JSONObject triggerData = null;
+        if (getIntent() != null && getIntent().hasExtra("triggerData"))
+            try {
+                triggerData = new JSONObject(getIntent().getStringExtra("triggerData"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        this.controller = new NotificationsController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER, triggerData);
     }
 
     @Override

@@ -7,6 +7,9 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
@@ -31,12 +34,25 @@ public class Secure3DActivity extends Activity {
         if (FLHelper.isDebuggable())
             ViewServer.get(this).addWindow(this);
 
-        this.data = this.getIntent().getStringExtra("html");
+        JSONObject triggerData = null;
+        if (getIntent() != null && getIntent().hasExtra("triggerData"))
+            try {
+                triggerData = new JSONObject(getIntent().getStringExtra("triggerData"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
         setContentView(R.layout.settings_3d_secure_fragment);
         floozApp = (FloozApplication)this.getApplicationContext();
 
-        ((TextView)this.findViewById(R.id.settings_3ds_header_title)).setTypeface(CustomFonts.customTitleLight(this));
+        TextView titleLabel = (TextView)this.findViewById(R.id.settings_3ds_header_title);
+        titleLabel.setTypeface(CustomFonts.customTitleLight(this));
+
+        if (triggerData != null) {
+            this.data = triggerData.optString("html");
+            if (triggerData.has("title") && !triggerData.optString("title").isEmpty())
+                titleLabel.setText(triggerData.optString("title"));
+        }
 
         this.findViewById(R.id.settings_3ds_header_back).setOnClickListener(new View.OnClickListener() {
             @Override

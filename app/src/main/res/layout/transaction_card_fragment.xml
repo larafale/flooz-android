@@ -46,7 +46,7 @@
         </LinearLayout>
 
         <ImageView
-            android:id="@+id/transac_card_header_close"
+            android:id="@+id/header_item_left"
             android:layout_width="@dimen/card_header_close"
             android:padding="@dimen/dimen_large"
             android:layout_height="fill_parent"

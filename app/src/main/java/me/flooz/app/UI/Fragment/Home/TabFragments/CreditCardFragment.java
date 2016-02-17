@@ -23,7 +23,7 @@ public class CreditCardFragment extends TabBarFragment {
         View view = inflater.inflate(R.layout.settings_credit_card_fragment, null);
 
         if (this.controller == null)
-            this.controller = new CreditCardController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
+            this.controller = new CreditCardController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER, this.triggerData);
 
         this.controller.cardInfosText = this.cardInfosText;
 

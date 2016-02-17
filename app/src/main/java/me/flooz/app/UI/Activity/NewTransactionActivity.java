@@ -218,9 +218,9 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         this.instance = this;
         this.floozApp = (FloozApplication) this.getApplicationContext();
 
-        if (getIntent() != null && getIntent().hasExtra("preset"))
+        if (getIntent() != null && getIntent().hasExtra("triggerData"))
             try {
-                this.initWithPreset(new FLPreset(new JSONObject(getIntent().getStringExtra("preset"))));
+                this.initWithPreset(new FLPreset(new JSONObject(getIntent().getStringExtra("triggerData"))));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -271,7 +271,7 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         this.capturePicButton.setColorFilter(this.getResources().getColor(android.R.color.white));
         this.locationPic.setColorFilter(this.getResources().getColor(android.R.color.white));
 
-        if (this.preset == null || !this.preset.blockBack) {
+        if (this.preset == null || this.preset.close) {
             this.closeButton.setVisibility(View.VISIBLE);
             this.closeButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -1417,7 +1417,7 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
 
     @Override
     public void onBackPressed() {
-        if (this.preset == null || !this.preset.blockBack)
+        if (this.preset == null || this.preset.close)
             this.closeButton.performClick();
     }
 

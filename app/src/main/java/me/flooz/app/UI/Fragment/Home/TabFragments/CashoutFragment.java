@@ -22,7 +22,7 @@ public class CashoutFragment extends TabBarFragment {
         View view = inflater.inflate(R.layout.cashout_fragment, null);
 
         if (this.controller == null)
-            this.controller = new CashoutController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
+            this.controller = new CashoutController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER, this.triggerData);
 
         return this.controller.currentView;
     }

@@ -21,7 +21,7 @@ public class DocumentsFragment extends TabBarFragment {
         View view = inflater.inflate(R.layout.settings_document_fragment, null);
 
         if (this.controller == null)
-            this.controller = new DocumentsController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
+            this.controller = new DocumentsController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER, this.triggerData);
 
         return this.controller.currentView;
     }

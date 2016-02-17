@@ -2,6 +2,7 @@ package me.flooz.app.UI.Controllers;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -11,6 +12,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,35 +30,29 @@ import me.flooz.app.Utils.CustomFonts;
  */
 public class BankController extends BaseController {
 
-    private ImageView headerBackButton;
     private EditText ibanTextfield;
     private Button saveButton;
 
-    public BankController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull ControllerKind kind) {
+    public BankController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
-        this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
-        TextView headerTitle = (TextView) this.currentView.findViewById(R.id.header_title);
+        this.init();
+    }
+
+    public BankController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind, @Nullable JSONObject data) {
+        super(mainView, parentActivity, kind, data);
+
+        this.init();
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
         this.ibanTextfield = (EditText) this.currentView.findViewById(R.id.settings_bank_iban);
         this.saveButton = (Button) this.currentView.findViewById(R.id.settings_bank_save);
 
-        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
         this.ibanTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
-
-        if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
-            this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
-
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                    parentActivity.finish();
-                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                } else {
-                    ((HomeActivity) parentActivity).popFragmentInCurrentTab();
-                }
-            }
-        });
 
         this.reloadView();
 
@@ -119,10 +116,5 @@ public class BankController extends BaseController {
         if (FloozRestClient.getInstance().currentUser.sepa != null) {
             this.ibanTextfield.setText((String)FloozRestClient.getInstance().currentUser.sepa.get("iban"));
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        this.headerBackButton.performClick();
     }
 }

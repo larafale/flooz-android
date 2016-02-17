@@ -2,10 +2,13 @@ package me.flooz.app.UI.Controllers;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,33 +25,26 @@ import me.flooz.app.Utils.CustomFonts;
  */
 public class PrivacyController extends BaseController {
 
-    private ImageView headerBackButton;
-
-    public PrivacyController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull ControllerKind kind) {
+    public PrivacyController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
-        this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
-        TextView headerTitle = (TextView) this.currentView.findViewById(R.id.header_title);
+        this.init();
+    }
+
+    public PrivacyController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind, @Nullable JSONObject data) {
+        super(mainView, parentActivity, kind, data);
+
+        this.init();
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
         TextView infosText = (TextView) this.currentView.findViewById(R.id.settings_privacy_infos);
         SegmentedGroup segmentedGroup = (SegmentedGroup) this.currentView.findViewById(R.id.settings_privacy_segment);
 
-        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
         infosText.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
-
-        if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
-            this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
-
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                    parentActivity.finish();
-                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                } else {
-                    ((HomeActivity) parentActivity).popFragmentInCurrentTab();
-                }
-            }
-        });
 
         segmentedGroup.setTintColor(this.parentActivity.getResources().getColor(R.color.blue));
 
@@ -93,10 +89,5 @@ public class PrivacyController extends BaseController {
                 FloozRestClient.getInstance().updateUser(params, null);
             }
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        this.headerBackButton.performClick();
     }
 }

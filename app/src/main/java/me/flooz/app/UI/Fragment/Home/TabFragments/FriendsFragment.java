@@ -25,7 +25,7 @@ public class FriendsFragment extends TabBarFragment
         View view = inflater.inflate(R.layout.friends_fragment, null);
 
         if (this.controller == null)
-            this.controller = new FriendsController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
+            this.controller = new FriendsController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER, this.triggerData);
 
         return this.controller.currentView;
     }

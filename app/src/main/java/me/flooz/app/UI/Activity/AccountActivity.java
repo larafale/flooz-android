@@ -4,9 +4,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.R;
 import me.flooz.app.UI.Controllers.AccountController;
+import me.flooz.app.UI.Controllers.BaseController;
 import me.flooz.app.UI.Controllers.NotificationsController;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.ViewServer;
@@ -30,7 +34,15 @@ public class AccountActivity extends Activity {
 
         this.setContentView(R.layout.profile_fragment);
 
-        this.controller = new AccountController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER);
+        JSONObject triggerData = null;
+        if (getIntent() != null && getIntent().hasExtra("triggerData"))
+            try {
+                triggerData = new JSONObject(getIntent().getStringExtra("triggerData"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        this.controller = new AccountController(this.findViewById(android.R.id.content), this, BaseController.ControllerKind.ACTIVITY_CONTROLLER, triggerData);
     }
 
     @Override

@@ -13,6 +13,9 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Network.FloozHttpResponseHandler;
@@ -46,6 +49,14 @@ public class ValidateSMSActivity extends Activity {
 
         this.floozApp = (FloozApplication) this.getApplicationContext();
 
+        JSONObject triggerData = null;
+        if (getIntent() != null && getIntent().hasExtra("triggerData"))
+            try {
+                triggerData = new JSONObject(getIntent().getStringExtra("triggerData"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         this.setContentView(R.layout.validate_sms_activity);
 
         this.headerBackButton = (ImageView) this.findViewById(R.id.header_item_left);
@@ -57,11 +68,22 @@ public class ValidateSMSActivity extends Activity {
         title.setTypeface(CustomFonts.customTitleLight(this));
         codeTextfield.setTypeface(CustomFonts.customContentRegular(this));
 
+        if (triggerData != null) {
+            if (triggerData.has("title") && !triggerData.optString("title").isEmpty())
+                title.setText(triggerData.optString("title"));
+
+            if (triggerData.has("close") && !triggerData.optBoolean("close")) {
+                this.headerBackButton.setVisibility(View.GONE);
+            }
+        }
+
         this.headerBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finish();
-                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+                if (headerBackButton.getVisibility() == View.VISIBLE) {
+                    finish();
+                    overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+                }
             }
         });
 

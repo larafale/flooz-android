@@ -3,6 +3,7 @@ package me.flooz.app.UI.Controllers;
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -11,6 +12,8 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.json.JSONObject;
 
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Network.FloozHttpResponseHandler;
@@ -27,15 +30,26 @@ import me.flooz.app.Utils.ViewServer;
  */
 public class CashoutController extends BaseController {
 
-    private ImageView headerBackButton;
     private TextView balance;
     private EditText amountTextfield;
     private TextView cashoutButton;
 
-    public CashoutController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull BaseController.ControllerKind kind) {
+    public CashoutController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
-        this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
+        this.init();
+    }
+
+    public CashoutController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind, @Nullable JSONObject data) {
+        super(mainView, parentActivity, kind, data);
+
+        this.init();
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
         TextView headerTitle = (TextView) this.currentView.findViewById(R.id.header_title);
         TextView balanceInfos = (TextView) this.currentView.findViewById(R.id.cashout_balance_infos);
         TextView globalInfos = (TextView) this.currentView.findViewById(R.id.cashout_infos);
@@ -57,21 +71,6 @@ public class CashoutController extends BaseController {
         String amountValue = FLHelper.trimTrailingZeros(FloozRestClient.getInstance().currentUser.amount.toString());
 
         this.balance.setText(amountValue);
-
-        if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
-            this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
-
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                    parentActivity.finish();
-                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                } else {
-                    ((HomeActivity) parentActivity).popFragmentInCurrentTab();
-                }
-            }
-        });
 
         this.amountTextfield.setText("");
 
@@ -151,7 +150,7 @@ public class CashoutController extends BaseController {
                 amountTextfield.setText("");
                 amountTextfield.clearFocus();
 
-                headerBackButton.performClick();
+                CashoutController.this.onBackPressed();
             }
 
             @Override
@@ -174,10 +173,5 @@ public class CashoutController extends BaseController {
         super.onStart();
         this.amountTextfield.setText("");
         this.amountTextfield.clearFocus();
-    }
-
-    @Override
-    public void onBackPressed() {
-        this.headerBackButton.performClick();
     }
 }

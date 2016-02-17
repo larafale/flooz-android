@@ -6,12 +6,15 @@ import android.net.MailTo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+
+import org.json.JSONObject;
 
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.R;
@@ -25,36 +28,27 @@ import me.flooz.app.Utils.ViewServer;
  */
 public class WebController extends BaseController {
 
-    private ImageView headerBackButton;
-    private TextView headerTitle;
     private ProgressBar progressBar;
     private WebView webView;
 
     public String title;
     public String url;
 
-    public WebController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull ControllerKind kind) {
+    public WebController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
-        this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
-        this.headerTitle = (TextView) this.currentView.findViewById(R.id.header_title);
+        this.init();
+    }
 
-        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
+    public WebController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind, @Nullable JSONObject data) {
+        super(mainView, parentActivity, kind, data);
 
-        if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
-            this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
+        this.init();
+    }
 
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                    parentActivity.finish();
-                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                } else {
-                    ((HomeActivity) parentActivity).popFragmentInCurrentTab();
-                }
-            }
-        });
+    @Override
+    protected void init() {
+        super.init();
 
         this.progressBar = (ProgressBar) this.currentView.findViewById(R.id.custom_webview_progress_bar);
 
@@ -93,7 +87,9 @@ public class WebController extends BaseController {
 
     @Override
     public void onResume() {
-        headerTitle.setText(this.title);
+        if (this.title != null && !this.title.isEmpty())
+            this.titleLabel.setText(this.title);
+
         webView.loadUrl(this.url);
     }
 
@@ -105,10 +101,5 @@ public class WebController extends BaseController {
         intent.putExtra(Intent.EXTRA_SUBJECT, subject);
         intent.putExtra(Intent.EXTRA_CC, cc);
         return intent;
-    }
-
-    @Override
-    public void onBackPressed() {
-        this.headerBackButton.performClick();
     }
 }

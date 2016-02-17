@@ -22,7 +22,7 @@ public class FLPreset {
     public String image;
     public boolean blockAmount = false;
     public boolean blockTo = false;
-    public boolean blockBack = false;
+    public boolean close = true;
     public boolean blockWhy = false;
     public boolean focusAmount = false;
     public boolean focusWhy = false;
@@ -73,6 +73,9 @@ public class FLPreset {
                 e.printStackTrace();
             }
 
+        if (json.has("close"))
+            this.close = !json.optBoolean("close");
+
         if (json.has("block")) {
             JSONObject block = json.optJSONObject("block");
 
@@ -84,9 +87,6 @@ public class FLPreset {
 
             if (block.has("to"))
                 this.blockTo = block.optBoolean("to");
-
-            if (block.has("close"))
-                this.blockBack = block.optBoolean("close");
 
             if (block.has("pay") && block.optBoolean("pay"))
                 this.type = FLTransaction.TransactionType.TransactionTypeCharge;

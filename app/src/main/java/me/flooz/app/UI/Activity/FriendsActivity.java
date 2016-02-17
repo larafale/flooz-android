@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.R;
 import me.flooz.app.UI.Controllers.FriendsController;
@@ -30,7 +33,15 @@ public class FriendsActivity extends Activity {
 
         this.setContentView(R.layout.friends_fragment);
 
-        this.controller = new FriendsController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER);
+        JSONObject triggerData = null;
+        if (getIntent() != null && getIntent().hasExtra("triggerData"))
+            try {
+                triggerData = new JSONObject(getIntent().getStringExtra("triggerData"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        this.controller = new FriendsController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER, triggerData);
     }
 
     @Override

@@ -2,11 +2,14 @@ package me.flooz.app.UI.Controllers;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,33 +31,26 @@ import me.flooz.app.Utils.CustomFonts;
  */
 public class FriendRequestController extends BaseController {
 
-    private ImageView headerBackButton;
     private ListView listView;
     private FriendRequestListAdapter listAdapter;
 
-    public FriendRequestController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull ControllerKind kind) {
+    public FriendRequestController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
-        this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
-        TextView headerTitle = (TextView) this.currentView.findViewById(R.id.header_title);
+        this.init();
+    }
+
+    public FriendRequestController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind, @Nullable JSONObject data) {
+        super(mainView, parentActivity, kind, data);
+
+        this.init();
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
         listView = (ListView) this.currentView.findViewById(R.id.friends_request_list);
-
-        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
-
-        if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
-            this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
-
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                    parentActivity.finish();
-                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                } else {
-                    ((HomeActivity) parentActivity).popFragmentInCurrentTab();
-                }
-            }
-        });
 
         this.listAdapter = new FriendRequestListAdapter(this.parentActivity);
         this.listView.setAdapter(this.listAdapter);
@@ -77,10 +73,5 @@ public class FriendRequestController extends BaseController {
 
         if (listAdapter.getCount() == 0)
             onBackPressed();
-    }
-
-    @Override
-    public void onBackPressed() {
-        this.headerBackButton.performClick();
     }
 }

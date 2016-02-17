@@ -22,7 +22,7 @@ public class AccountFragment extends TabBarFragment {
         View view = inflater.inflate(R.layout.profile_fragment, null);
 
         if (this.controller == null)
-            this.controller = new AccountController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
+            this.controller = new AccountController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER, this.triggerData);
 
         return this.controller.currentView;
     }

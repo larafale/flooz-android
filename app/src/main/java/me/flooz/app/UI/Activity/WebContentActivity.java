@@ -12,6 +12,9 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.R;
 import me.flooz.app.UI.Controllers.CashoutController;
@@ -44,8 +47,23 @@ public class WebContentActivity extends Activity {
         this.title = getIntent().getStringExtra("title");
         this.url = getIntent().getStringExtra("url");
 
+        JSONObject triggerData = null;
+        if (getIntent() != null && getIntent().hasExtra("triggerData"))
+            try {
+                triggerData = new JSONObject(getIntent().getStringExtra("triggerData"));
+
+                if (triggerData.has("title") && !triggerData.optString("title").isEmpty())
+                    this.title = triggerData.optString("title");
+
+                if (triggerData.has("url") && !triggerData.optString("url").isEmpty())
+                    this.url = triggerData.optString("url");
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         this.setContentView(R.layout.custom_webview_fragment);
-        this.controller = new WebController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER);
+        this.controller = new WebController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER, triggerData);
         this.controller.title = this.title;
         this.controller.url = this.url;
     }

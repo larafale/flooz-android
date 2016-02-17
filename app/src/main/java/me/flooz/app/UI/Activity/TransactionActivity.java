@@ -38,7 +38,15 @@ public class TransactionActivity  extends Activity {
         Boolean insertComment = getIntent().getBooleanExtra("insertComment", false);
         String transaction = getIntent().getStringExtra("transaction");
 
-        this.controller = new TransactionCardController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER);
+        JSONObject triggerData = null;
+        if (getIntent() != null && getIntent().hasExtra("triggerData"))
+            try {
+                triggerData = new JSONObject(getIntent().getStringExtra("triggerData"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        this.controller = new TransactionCardController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER, triggerData);
         this.controller.insertComment = insertComment;
 
         try {

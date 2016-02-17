@@ -58,16 +58,18 @@ public class CreditCardSettingsActivity extends Activity {
 
         this.setContentView(R.layout.settings_credit_card_fragment);
 
-        this.controller = new CreditCardController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER);
-
-        if (getIntent() != null && getIntent().hasExtra("flooz")) {
+        JSONObject triggerData = null;
+        if (getIntent() != null && getIntent().hasExtra("triggerData"))
             try {
-                JSONObject floozData = new JSONObject(getIntent().getStringExtra("flooz"));
-                this.controller.floozData = floozData;
+                triggerData = new JSONObject(getIntent().getStringExtra("triggerData"));
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-        }
+
+        this.controller = new CreditCardController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER, triggerData);
+
+        if (triggerData != null && triggerData.has("flooz"))
+            this.controller.floozData.optJSONObject("flooz");
     }
 
     @Override

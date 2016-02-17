@@ -7,6 +7,9 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import me.flooz.app.Adapter.NotificationSettingsListAdapter;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.R;
@@ -37,7 +40,15 @@ public class NotificationsSettingsActivity extends Activity {
 
         this.setContentView(R.layout.settings_notifications_fragment);
 
-        this.controller = new NotifsSettingsController(this.findViewById(android.R.id.content), this, BaseController.ControllerKind.ACTIVITY_CONTROLLER);
+        JSONObject triggerData = null;
+        if (getIntent() != null && getIntent().hasExtra("triggerData"))
+            try {
+                triggerData = new JSONObject(getIntent().getStringExtra("triggerData"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+        this.controller = new NotifsSettingsController(this.findViewById(android.R.id.content), this, BaseController.ControllerKind.ACTIVITY_CONTROLLER, triggerData);
     }
 
     @Override

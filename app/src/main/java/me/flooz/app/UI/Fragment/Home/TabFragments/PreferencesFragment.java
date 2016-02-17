@@ -7,7 +7,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import me.flooz.app.R;
-import me.flooz.app.UI.Controllers.CashoutController;
 import me.flooz.app.UI.Controllers.NotificationsController;
 import me.flooz.app.UI.Controllers.PreferencesController;
 
@@ -23,7 +22,7 @@ public class PreferencesFragment extends TabBarFragment {
         View view = inflater.inflate(R.layout.settings_preferences_fragment, null);
 
         if (this.controller == null)
-            this.controller = new PreferencesController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
+            this.controller = new PreferencesController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER, this.triggerData);
 
         return this.controller.currentView;
     }

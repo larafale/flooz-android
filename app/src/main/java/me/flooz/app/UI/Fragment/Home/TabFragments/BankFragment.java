@@ -22,7 +22,7 @@ public class BankFragment extends TabBarFragment {
         View view = inflater.inflate(R.layout.settings_bank_fragment, null);
 
         if (this.controller == null)
-        this.controller = new BankController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
+        this.controller = new BankController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER, this.triggerData);
 
         return this.controller.currentView;
     }

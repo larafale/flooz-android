@@ -9,6 +9,7 @@ import android.graphics.PorterDuff;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -68,7 +69,6 @@ public class TransactionCardController extends BaseController {
     private RelativeLayout cardHeader;
     private ImageView cardHeaderScope;
     private TextView cardHeaderDate;
-    private ImageView cardHeaderCloseButton;
     private ImageView cardHeaderReportButton;
     private RoundedImageView cardFromPic;
     private RoundedImageView cardToPic;
@@ -124,50 +124,60 @@ public class TransactionCardController extends BaseController {
         }
     };
 
-    public TransactionCardController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull BaseController.ControllerKind kind) {
+    public TransactionCardController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
-        View view = this.currentView;
+        this.init();
+    }
 
-        this.cardScroll = (ScrollView) view.findViewById(R.id.card_scroll);
-        this.cardHeader = (RelativeLayout) view.findViewById(R.id.transac_card_header);
-        this.cardHeaderScope = (ImageView) view.findViewById(R.id.transac_card_header_scope);
-        this.cardHeaderDate = (TextView) view.findViewById(R.id.transac_card_header_date);
-        this.cardHeaderCloseButton = (ImageView) view.findViewById(R.id.transac_card_header_close);
-        this.cardHeaderReportButton = (ImageView) view.findViewById(R.id.transac_card_header_report);
-        this.cardFromPic = (RoundedImageView) view.findViewById(R.id.transac_card_from_pic);
-        this.cardToPic = (RoundedImageView) view.findViewById(R.id.transac_card_to_pic);
-        this.cardFromUsername = (TextView) view.findViewById(R.id.transac_card_from_username);
-        this.cardFromFullname = (TextView) view.findViewById(R.id.transac_card_from_fullname);
-        this.cardToUsername = (TextView) view.findViewById(R.id.transac_card_to_username);
-        this.cardToFullname = (TextView) view.findViewById(R.id.transac_card_to_fullname);
-        this.cardValue = (TextView) view.findViewById(R.id.transac_card_value);
-        this.cardActionBar = (LinearLayout) view.findViewById(R.id.transac_card_actionBar);
-        this.cardActionBarDecline = (TextView) view.findViewById(R.id.transac_card_actionBar_decline);
-        this.cardActionBarAccept = (TextView) view.findViewById(R.id.transac_card_actionBar_accept);
-        this.card3dText = (TextView) view.findViewById(R.id.transac_card_3dText);
-        this.cardDesc = (TextView) view.findViewById(R.id.transac_card_desc);
-        this.cardPic = (LoadingImageView) view.findViewById(R.id.transac_card_pic);
-        this.cardCommentsContainer = (LinearLayout) view.findViewById(R.id.transac_card_comments_container);
-        this.cardCommentsSendButton = (TextView) view.findViewById(R.id.transac_card_comments_send);
-        this.cardCommentsTextfield = (EditText) view.findViewById(R.id.transac_card_comments_textfield);
-        this.cardLocationImg = (ImageView) view.findViewById(R.id.transac_card_location_img);
-        this.cardLocationLayout = (LinearLayout) view.findViewById(R.id.transac_card_location);
-        this.cardLocationText = (TextView) view.findViewById(R.id.transac_card_location_text);
+    public TransactionCardController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind, @Nullable JSONObject data) {
+        super(mainView, parentActivity, kind, data);
 
-        this.cardLikesButton = (LinearLayout) view.findViewById(R.id.transac_card_social_like);
-        this.cardLikesButtonText = (TextView) view.findViewById(R.id.transac_card_social_like_text);
-        this.cardLikesButtonPicto = (ImageView) view.findViewById(R.id.transac_card_social_like_img);
+        this.init();
+    }
 
-        this.cardCommentsButton = (LinearLayout) view.findViewById(R.id.transac_card_social_comment);
-        this.cardCommentsButtonText = (TextView) view.findViewById(R.id.transac_card_social_comment_text);
-        this.cardCommentsButtonPicto = (ImageView) view.findViewById(R.id.transac_card_social_comment_img);
+    @Override
+    protected void init() {
+        super.init();
 
-        this.cardShareButton = (LinearLayout) view.findViewById(R.id.transac_card_social_share);
-        this.cardShareButtonImg = (ImageView) view.findViewById(R.id.transac_card_social_share_img);
+        this.cardScroll = (ScrollView) this.currentView.findViewById(R.id.card_scroll);
+        this.cardHeader = (RelativeLayout) this.currentView.findViewById(R.id.transac_card_header);
+        this.cardHeaderScope = (ImageView) this.currentView.findViewById(R.id.transac_card_header_scope);
+        this.cardHeaderDate = (TextView) this.currentView.findViewById(R.id.transac_card_header_date);
+        this.cardHeaderReportButton = (ImageView) this.currentView.findViewById(R.id.transac_card_header_report);
+        this.cardFromPic = (RoundedImageView) this.currentView.findViewById(R.id.transac_card_from_pic);
+        this.cardToPic = (RoundedImageView) this.currentView.findViewById(R.id.transac_card_to_pic);
+        this.cardFromUsername = (TextView) this.currentView.findViewById(R.id.transac_card_from_username);
+        this.cardFromFullname = (TextView) this.currentView.findViewById(R.id.transac_card_from_fullname);
+        this.cardToUsername = (TextView) this.currentView.findViewById(R.id.transac_card_to_username);
+        this.cardToFullname = (TextView) this.currentView.findViewById(R.id.transac_card_to_fullname);
+        this.cardValue = (TextView) this.currentView.findViewById(R.id.transac_card_value);
+        this.cardActionBar = (LinearLayout) this.currentView.findViewById(R.id.transac_card_actionBar);
+        this.cardActionBarDecline = (TextView) this.currentView.findViewById(R.id.transac_card_actionBar_decline);
+        this.cardActionBarAccept = (TextView) this.currentView.findViewById(R.id.transac_card_actionBar_accept);
+        this.card3dText = (TextView) this.currentView.findViewById(R.id.transac_card_3dText);
+        this.cardDesc = (TextView) this.currentView.findViewById(R.id.transac_card_desc);
+        this.cardPic = (LoadingImageView) this.currentView.findViewById(R.id.transac_card_pic);
+        this.cardCommentsContainer = (LinearLayout) this.currentView.findViewById(R.id.transac_card_comments_container);
+        this.cardCommentsSendButton = (TextView) this.currentView.findViewById(R.id.transac_card_comments_send);
+        this.cardCommentsTextfield = (EditText) this.currentView.findViewById(R.id.transac_card_comments_textfield);
+        this.cardLocationImg = (ImageView) this.currentView.findViewById(R.id.transac_card_location_img);
+        this.cardLocationLayout = (LinearLayout) this.currentView.findViewById(R.id.transac_card_location);
+        this.cardLocationText = (TextView) this.currentView.findViewById(R.id.transac_card_location_text);
 
-        this.cardMoreButton = (LinearLayout) view.findViewById(R.id.transac_card_social_more);
-        this.cardMoreButtonImg = (ImageView) view.findViewById(R.id.transac_card_social_more_img);
+        this.cardLikesButton = (LinearLayout) this.currentView.findViewById(R.id.transac_card_social_like);
+        this.cardLikesButtonText = (TextView) this.currentView.findViewById(R.id.transac_card_social_like_text);
+        this.cardLikesButtonPicto = (ImageView) this.currentView.findViewById(R.id.transac_card_social_like_img);
+
+        this.cardCommentsButton = (LinearLayout) this.currentView.findViewById(R.id.transac_card_social_comment);
+        this.cardCommentsButtonText = (TextView) this.currentView.findViewById(R.id.transac_card_social_comment_text);
+        this.cardCommentsButtonPicto = (ImageView) this.currentView.findViewById(R.id.transac_card_social_comment_img);
+
+        this.cardShareButton = (LinearLayout) this.currentView.findViewById(R.id.transac_card_social_share);
+        this.cardShareButtonImg = (ImageView) this.currentView.findViewById(R.id.transac_card_social_share_img);
+
+        this.cardMoreButton = (LinearLayout) this.currentView.findViewById(R.id.transac_card_social_more);
+        this.cardMoreButtonImg = (ImageView) this.currentView.findViewById(R.id.transac_card_social_more_img);
 
         this.cardHeaderDate.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
         this.cardFromUsername.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity), Typeface.BOLD);
@@ -191,21 +201,6 @@ public class TransactionCardController extends BaseController {
         this.cardCommentsButtonPicto.setColorFilter(this.parentActivity.getResources().getColor(R.color.background_social_button));
         this.cardShareButtonImg.setColorFilter(this.parentActivity.getResources().getColor(R.color.background_social_button));
         this.cardMoreButtonImg.setColorFilter(this.parentActivity.getResources().getColor(R.color.background_social_button));
-
-        if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
-            this.cardHeaderCloseButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
-
-        this.cardHeaderCloseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                    parentActivity.finish();
-                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                } else {
-                    ((HomeActivity) parentActivity).popFragmentInCurrentTab();
-                }
-            }
-        });
 
         this.cardHeaderReportButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -698,10 +693,5 @@ public class TransactionCardController extends BaseController {
             if (resultCode == Activity.RESULT_OK)
                 authenticationValidated();
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        this.cardHeaderCloseButton.performClick();
     }
 }

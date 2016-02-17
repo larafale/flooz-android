@@ -50,6 +50,7 @@ import me.flooz.app.UI.Activity.Settings.DocumentsSettingsActivity;
 import me.flooz.app.UI.Activity.Settings.IdentitySettingsActivity;
 import me.flooz.app.UI.Activity.Settings.NotificationsSettingsActivity;
 import me.flooz.app.UI.Activity.Settings.PrivacySettingsActivity;
+import me.flooz.app.UI.Activity.Settings.SetSecureCodeActivity;
 import me.flooz.app.UI.Activity.ShareAppActivity;
 import me.flooz.app.UI.Activity.SponsorActivity;
 import me.flooz.app.UI.Activity.StartActivity;
@@ -213,14 +214,31 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
                         AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
                             @Override
                             public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                                if (trigger.data.has("lock") && trigger.data.optBoolean("lock"))
+                                    FloozRestClient.getInstance().hideLoadView();
+
                                 FLTriggerManager.this.executeTriggerList(trigger.triggers);
+
+                                if (trigger.data.has("success")) {
+                                    FLTriggerManager.this.executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(trigger.data.optJSONArray("success")));
+                                }
                             }
 
                             @Override
                             public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                                if (trigger.data.has("lock") && trigger.data.optBoolean("lock"))
+                                    FloozRestClient.getInstance().hideLoadView();
+
                                 FLTriggerManager.this.executeTriggerList(trigger.triggers);
+
+                                if (trigger.data.has("failure")) {
+                                    FLTriggerManager.this.executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(trigger.data.optJSONArray("failure")));
+                                }
                             }
                         };
+
+                        if (trigger.data.has("lock") && trigger.data.optBoolean("lock"))
+                            FloozRestClient.getInstance().showLoadView();
 
                         switch (this.trigger.data.optString("method").toUpperCase()) {
                             case "GET":
@@ -274,15 +292,26 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
                         if (url.charAt(0) != '/')
                             url = "/" + url;
 
+                        if (trigger.data.has("lock") && trigger.data.optBoolean("lock"))
+                            FloozRestClient.getInstance().showLoadView();
+
                         FloozRestClient.getInstance().request(url, method, param, new FloozHttpResponseHandler() {
                             @Override
                             public void success(Object response) {
                                 FLTriggerManager.this.executeTriggerList(trigger.triggers);
+
+                                if (trigger.data.has("success")) {
+                                    FLTriggerManager.this.executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(trigger.data.optJSONArray("success")));
+                                }
                             }
 
                             @Override
                             public void failure(int statusCode, FLError error) {
                                 FLTriggerManager.this.executeTriggerList(trigger.triggers);
+
+                                if (trigger.data.has("failure")) {
+                                    FLTriggerManager.this.executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(trigger.data.optJSONArray("failure")));
+                                }
                             }
                         });
                     }
@@ -424,8 +453,8 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
                     if (sendIntent.resolveActivity(FloozApplication.getInstance().getCurrentActivity().getPackageManager()) != null) {
                         FloozApplication.getInstance().getCurrentActivity().startActivity(sendIntent);
                     } else {
-                        if (this.trigger.data.has("failureTriggers")) {
-                            FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(this.trigger.data.optJSONArray("failureTriggers")));
+                        if (this.trigger.data.has("failure")) {
+                            FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(this.trigger.data.optJSONArray("failure")));
                         }
                     }
                 }
@@ -514,7 +543,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
                             intent.setClass(currentActivity, HomeActivity.class);
                             intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                             currentActivity.startActivity(intent);
-                            currentActivity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            currentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
                         } else {
                             pendingShowTrigger = this.trigger;
                             Intent intent = new Intent();
@@ -526,12 +555,20 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
                         pendingShowTrigger = this.trigger;
                         Intent intent = new Intent();
                         intent.setClass(FloozApplication.getAppContext(), activityClass);
+
+                        if (this.trigger.data != null)
+                            intent.putExtra("triggerData", this.trigger.data.toString());
+
                         currentActivity.startActivity(intent);
-                        currentActivity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        currentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
                     } else {
                         pendingShowTrigger = this.trigger;
                         Intent intent = new Intent();
                         intent.setClass(FloozApplication.getAppContext(), activityClass);
+
+                        if (this.trigger.data != null)
+                            intent.putExtra("triggerData", this.trigger.data.toString());
+
                         FloozApplication.getInstance().startActivity(intent);
                     }
                 } else if (FLTriggerManager.this.isTriggerKeyViewPush(this.trigger) && fragmentClass != null) {
@@ -540,6 +577,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
 
                         try {
                             TabBarFragment newFragment = (TabBarFragment) fragmentClass.newInstance();
+                            newFragment.triggerData = this.trigger.data;
 
                             homeActivity.pushFragmentInCurrentTab(newFragment, new Runnable() {
                                 @Override
@@ -557,12 +595,20 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
                             pendingShowTrigger = this.trigger;
                             Intent intent = new Intent();
                             intent.setClass(FloozApplication.getAppContext(), activityClass);
+
+                            if (this.trigger.data != null)
+                                intent.putExtra("triggerData", this.trigger.data.toString());
+
                             currentActivity.startActivity(intent);
-                            currentActivity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                            currentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
                         } else {
                             pendingShowTrigger = this.trigger;
                             Intent intent = new Intent();
                             intent.setClass(FloozApplication.getAppContext(), activityClass);
+
+                            if (this.trigger.data != null)
+                                intent.putExtra("triggerData", this.trigger.data.toString());
+
                             FloozApplication.getInstance().startActivity(intent);
                         }
                     }
@@ -571,12 +617,20 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
                         pendingShowTrigger = this.trigger;
                         Intent intent = new Intent();
                         intent.setClass(FloozApplication.getAppContext(), activityClass);
+
+                        if (this.trigger.data != null)
+                            intent.putExtra("triggerData", this.trigger.data.toString());
+
                         currentActivity.startActivity(intent);
-                        currentActivity.overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                        currentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
                     } else {
                         pendingShowTrigger = this.trigger;
                         Intent intent = new Intent();
                         intent.setClass(FloozApplication.getAppContext(), activityClass);
+
+                        if (this.trigger.data != null)
+                            intent.putExtra("triggerData", this.trigger.data.toString());
+
                         FloozApplication.getInstance().startActivity(intent);
                     }
                 }
@@ -709,7 +763,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("auth:code", AuthenticationActivity.class);
             put("card:3ds", Secure3DActivity.class);
             put("card:card", CreditCardSettingsActivity.class);
-            put("code:set", HomeActivity.class);
+            put("code:set", SetSecureCodeActivity.class);
             put("profile:user", UserProfileActivity.class);
             put("profile:edit", EditProfileActivity.class);
             put("settings:iban", BankSettingsActivity.class);

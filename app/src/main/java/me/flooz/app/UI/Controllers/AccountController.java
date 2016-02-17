@@ -12,6 +12,7 @@ import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.view.Window;
@@ -21,6 +22,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.Map;
@@ -69,7 +72,6 @@ public class AccountController extends BaseController implements ProfileListAdap
 
     private TextView fullname;
     private TextView username;
-    private ImageView headerBackButton;
 
     public ProfileListAdapter listAdapter;
     public Uri tmpUriImage;
@@ -83,30 +85,27 @@ public class AccountController extends BaseController implements ProfileListAdap
         }
     };
 
-    public AccountController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull ControllerKind kind) {
+    public AccountController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
-        this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
+        this.init();
+    }
+
+    public AccountController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind, @Nullable JSONObject data) {
+        super(mainView, parentActivity, kind, data);
+
+        this.init();
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
         this.fullname = (TextView) this.currentView.findViewById(R.id.header_title);
         this.username = (TextView) this.currentView.findViewById(R.id.header_subtitle);
 
         this.fullname.setTypeface(CustomFonts.customTitleExtraLight(parentActivity));
         this.username.setTypeface(CustomFonts.customTitleLight(parentActivity));
-
-        if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
-            this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
-
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                    parentActivity.finish();
-                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                } else {
-                    ((HomeActivity) parentActivity).popFragmentInCurrentTab();
-                }
-            }
-        });
 
         this.listAdapter = new ProfileListAdapter(parentActivity, this);
 
@@ -298,8 +297,8 @@ public class AccountController extends BaseController implements ProfileListAdap
                 }
             }
         });
-
     }
+
     @Override
     public void onResume() {
         super.onResume();
@@ -431,10 +430,5 @@ public class AccountController extends BaseController implements ProfileListAdap
                 }
             }
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        this.headerBackButton.performClick();
     }
 }

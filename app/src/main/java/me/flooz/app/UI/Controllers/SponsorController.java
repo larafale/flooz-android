@@ -2,6 +2,7 @@ package me.flooz.app.UI.Controllers;
 
 import android.app.Activity;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -9,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.json.JSONObject;
 
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Network.FloozHttpResponseHandler;
@@ -22,41 +25,34 @@ import me.flooz.app.Utils.CustomFonts;
  */
 public class SponsorController extends BaseController {
 
-    private ImageView headerBackButton;
     private EditText sponsorTextfield;
     private Button saveButton;
 
-    public SponsorController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull ControllerKind kind) {
+    public SponsorController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
-        this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
-        TextView headerTitle = (TextView) this.currentView.findViewById(R.id.header_title);
+        this.init();
+    }
+
+    public SponsorController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind, @Nullable JSONObject data) {
+        super(mainView, parentActivity, kind, data);
+
+        this.init();
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
         this.sponsorTextfield = (EditText) this.currentView.findViewById(R.id.sponsor_field);
         this.saveButton = (Button) this.currentView.findViewById(R.id.sponsor_save);
         TextView infos = (TextView) this.currentView.findViewById(R.id.sponsor_infos);
 
-        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
         infos.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.sponsorTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
 
-        headerTitle.setText(FloozRestClient.getInstance().currentTexts.menu.optJSONObject("promo").optString("title"));
         this.sponsorTextfield.setHint(FloozRestClient.getInstance().currentTexts.menu.optJSONObject("promo").optString("placeholder"));
         infos.setText(FloozRestClient.getInstance().currentTexts.menu.optJSONObject("promo").optString("info"));
-
-        if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
-            this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
-
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                    parentActivity.finish();
-                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                } else {
-                    ((HomeActivity) parentActivity).popFragmentInCurrentTab();
-                }
-            }
-        });
 
         this.sponsorTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -76,7 +72,7 @@ public class SponsorController extends BaseController {
                 FloozRestClient.getInstance().sendDiscountCode(sponsorTextfield.getText().toString(), new FloozHttpResponseHandler() {
                     @Override
                     public void success(Object response) {
-                        headerBackButton.performClick();
+                        SponsorController.this.onBackPressed();
                     }
 
                     @Override
@@ -86,10 +82,5 @@ public class SponsorController extends BaseController {
                 });
             }
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        this.headerBackButton.performClick();
     }
 }

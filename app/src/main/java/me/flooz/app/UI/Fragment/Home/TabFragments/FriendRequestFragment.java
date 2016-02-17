@@ -22,7 +22,7 @@ public class FriendRequestFragment extends TabBarFragment {
         View view = inflater.inflate(R.layout.friend_request_fragment, null);
 
         if (this.controller == null)
-            this.controller = new FriendRequestController(view, tabBarActivity, BaseController.ControllerKind.FRAGMENT_CONTROLLER);
+            this.controller = new FriendRequestController(view, tabBarActivity, BaseController.ControllerKind.FRAGMENT_CONTROLLER, this.triggerData);
 
         return this.controller.currentView;
     }

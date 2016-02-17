@@ -12,12 +12,15 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -46,8 +49,6 @@ public class DocumentsController extends BaseController {
     private static final int PERMISSION_CAMERA = 3;
     private static final int PERMISSION_STORAGE = 4;
 
-    private ImageView headerBackButton;
-
     private ImageView cniRectoButton;
     private ImageView cniVersoButton;
     private ImageView justificatoryButton;
@@ -63,11 +64,22 @@ public class DocumentsController extends BaseController {
         }
     };
 
-    public DocumentsController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull ControllerKind kind) {
+    public DocumentsController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
-        this.headerBackButton = (ImageView) this.currentView.findViewById(R.id.header_item_left);
-        TextView headerTitle = (TextView) this.currentView.findViewById(R.id.header_title);
+        this.init();
+    }
+
+    public DocumentsController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind, @Nullable JSONObject data) {
+        super(mainView, parentActivity, kind, data);
+
+        this.init();
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
         EditText cniRectoTextfield = (EditText) this.currentView.findViewById(R.id.settings_identity_cni_recto);
         EditText cniVersoTextfield = (EditText) this.currentView.findViewById(R.id.settings_identity_cni_verso);
         this.cniRectoButton = (ImageView) this.currentView.findViewById(R.id.settings_identity_recto);
@@ -78,7 +90,6 @@ public class DocumentsController extends BaseController {
         this.justificatoryButton = (ImageView) this.currentView.findViewById(R.id.settings_coord_justificatory_button);
         TextView infos = (TextView) this.currentView.findViewById(R.id.documents_infos);
 
-        headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
         cniRectoTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         justificatoryTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         justificatory2Textfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
@@ -87,21 +98,6 @@ public class DocumentsController extends BaseController {
         infos.setText(FloozRestClient.getInstance().currentTexts.json.optJSONObject("menu").optJSONObject("documents").optString("info"));
 
         this.reloadDocuments();
-
-        if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
-            this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
-
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                    parentActivity.finish();
-                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                } else {
-                    ((HomeActivity) parentActivity).popFragmentInCurrentTab();
-                }
-            }
-        });
 
         cniRectoTextfield.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -413,10 +409,5 @@ public class DocumentsController extends BaseController {
                 }
             }
         }
-    }
-
-    @Override
-    public void onBackPressed() {
-        this.headerBackButton.performClick();
     }
 }

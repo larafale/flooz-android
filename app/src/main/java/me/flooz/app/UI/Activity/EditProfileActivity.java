@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
@@ -85,6 +86,14 @@ public class EditProfileActivity extends Activity {
         activity = this;
         this.setContentView(R.layout.edit_profile_activity);
 
+        JSONObject triggerData = null;
+        if (getIntent() != null && getIntent().hasExtra("triggerData"))
+            try {
+                triggerData = new JSONObject(getIntent().getStringExtra("triggerData"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
         this.currentUser = FloozRestClient.getInstance().currentUser;
 
         this.backButton = (ImageView) this.findViewById(R.id.edit_profile_back);
@@ -135,13 +144,17 @@ public class EditProfileActivity extends Activity {
             }
         });
 
-        this.backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-                overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-            }
-        });
+        if (triggerData != null && triggerData.has("close") && !triggerData.optBoolean("close")) {
+            this.backButton.setVisibility(View.GONE);
+        } else {
+            this.backButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    finish();
+                    overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
+                }
+            });
+        }
 
         this.bioField.addTextChangedListener(new TextWatcher() {
             @Override

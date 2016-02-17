@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
@@ -13,6 +14,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.baoyz.widget.PullRefreshLayout;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -33,7 +36,6 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
  */
 public class SearchController extends BaseController implements FriendsListAdapterDelegate {
 
-    private ImageView headerBackButton;
     private ImageView clearSearchButton;
     private EditText searchTextField;
 
@@ -41,32 +43,29 @@ public class SearchController extends BaseController implements FriendsListAdapt
     private SearchListAdapter listAdapter;
     private StickyListHeadersListView resultList;
 
-    public SearchController(@NonNull View mainView, @NonNull final Activity parentActivity, @NonNull ControllerKind kind) {
+    public SearchController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
-        this.headerBackButton = (ImageView) mainView.findViewById(R.id.header_item_left);
-        this.clearSearchButton = (ImageView) mainView.findViewById(R.id.friends_search_clear);
-        this.searchTextField = (EditText) mainView.findViewById(R.id.friends_search_textfield);
+        this.init();
+    }
+
+    public SearchController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind, @Nullable JSONObject data) {
+        super(mainView, parentActivity, kind, data);
+
+        this.init();
+    }
+
+    @Override
+    protected void init() {
+        super.init();
+
+        this.clearSearchButton = (ImageView) this.currentView.findViewById(R.id.friends_search_clear);
+        this.searchTextField = (EditText) this.currentView.findViewById(R.id.friends_search_textfield);
         this.refreshContainer = (PullRefreshLayout) this.currentView.findViewById(R.id.friends_refresh_container);
         this.resultList = (StickyListHeadersListView) this.currentView.findViewById(R.id.friends_result_list);
 
         this.listAdapter = new SearchListAdapter(this.parentActivity);
         resultList.setAdapter(this.listAdapter);
-
-        if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
-            this.headerBackButton.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.nav_back));
-
-        this.headerBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
-                    parentActivity.finish();
-                    parentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                } else {
-                    ((HomeActivity) parentActivity).popFragmentInCurrentTab();
-                }
-            }
-        });
 
         this.clearSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -122,11 +121,6 @@ public class SearchController extends BaseController implements FriendsListAdapt
                 FloozApplication.getInstance().showUserProfile(listAdapter.getItem(position));
             }
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        this.headerBackButton.performClick();
     }
 
     @Override

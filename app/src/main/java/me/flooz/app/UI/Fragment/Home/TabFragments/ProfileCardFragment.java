@@ -6,14 +6,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import me.flooz.app.Adapter.TimelineListAdapter;
-import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Model.FLUser;
 import me.flooz.app.R;
 import me.flooz.app.UI.Controllers.NotificationsController;
 import me.flooz.app.UI.Controllers.ProfileController;
-import me.flooz.app.UI.Fragment.Home.TabFragments.TabBarFragment;
-import me.flooz.app.UI.Fragment.Home.TabFragments.TimelineFragment;
 
 /**
  * Created by Wapazz on 22/09/15.
@@ -26,8 +22,9 @@ public class ProfileCardFragment extends TabBarFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        if (this.controller == null)
-            this.controller = new ProfileController(user, inflater.inflate(R.layout.profile_card_list_fragment, null), tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER);
+        if (this.controller == null) {
+            this.controller = new ProfileController(user, inflater.inflate(R.layout.profile_card_list_fragment, null), tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER, this.triggerData);
+        }
 
         return this.controller.currentView;
     }
