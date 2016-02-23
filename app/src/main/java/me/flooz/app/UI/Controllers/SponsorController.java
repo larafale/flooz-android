@@ -44,6 +44,9 @@ public class SponsorController extends BaseController {
     protected void init() {
         super.init();
 
+        if (this.titleLabel.getText().length() == 0)
+            this.titleLabel.setText(FloozRestClient.getInstance().currentTexts.menu.optJSONObject("promo").optString("title"));
+
         this.sponsorTextfield = (EditText) this.currentView.findViewById(R.id.sponsor_field);
         this.saveButton = (Button) this.currentView.findViewById(R.id.sponsor_save);
         TextView infos = (TextView) this.currentView.findViewById(R.id.sponsor_infos);
@@ -53,6 +56,20 @@ public class SponsorController extends BaseController {
 
         this.sponsorTextfield.setHint(FloozRestClient.getInstance().currentTexts.menu.optJSONObject("promo").optString("placeholder"));
         infos.setText(FloozRestClient.getInstance().currentTexts.menu.optJSONObject("promo").optString("info"));
+
+        if (this.triggersData != null) {
+            if (this.triggersData.has("placeholder") && !this.triggersData.optString("placeholder").isEmpty()) {
+                this.sponsorTextfield.setHint(this.triggersData.optString("placeholder"));
+            }
+
+            if (this.triggersData.has("info") && !this.triggersData.optString("info").isEmpty()) {
+                infos.setText(this.triggersData.optString("info"));
+            }
+
+            if (this.triggersData.has("button") && !this.triggersData.optString("button").isEmpty()) {
+                this.saveButton.setText(this.triggersData.optString("button"));
+            }
+        }
 
         this.sponsorTextfield.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override

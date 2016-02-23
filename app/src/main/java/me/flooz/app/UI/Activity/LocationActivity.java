@@ -22,7 +22,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 /**
  * Created by Flooz on 12/3/15.
  */
-public class LocationActivity extends Activity implements LocationListAdapter.LocationListAdapterDelegate {
+public class LocationActivity extends BaseActivity implements LocationListAdapter.LocationListAdapterDelegate {
 
     private LocationActivity instance;
     private FloozApplication floozApp;

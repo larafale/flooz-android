@@ -26,6 +26,7 @@ import me.flooz.app.Model.FLError;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.BaseActivity;
 import me.flooz.app.UI.Controllers.BaseController;
 import me.flooz.app.UI.Controllers.PasswordController;
 import me.flooz.app.UI.Controllers.SecurityController;
@@ -36,7 +37,7 @@ import me.flooz.app.Utils.ViewServer;
 /**
  * Created by Flooz on 3/10/15.
  */
-public class PasswordSettingsActivity extends Activity {
+public class PasswordSettingsActivity extends BaseActivity {
 
     private PasswordController controller;
     private FloozApplication floozApp;
@@ -80,6 +81,20 @@ public class PasswordSettingsActivity extends Activity {
         super.onPause();
 
         this.controller.onPause();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        this.controller.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        this.controller.onStop();
     }
 
     @Override

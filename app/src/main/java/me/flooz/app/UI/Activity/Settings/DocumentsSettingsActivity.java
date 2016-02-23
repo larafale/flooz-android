@@ -38,6 +38,7 @@ import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.BaseActivity;
 import me.flooz.app.UI.Controllers.CashoutController;
 import me.flooz.app.UI.Controllers.DocumentsController;
 import me.flooz.app.UI.Controllers.NotificationsController;
@@ -52,7 +53,7 @@ import me.flooz.app.Utils.ViewServer;
 /**
  * Created by Flooz on 3/10/15.
  */
-public class DocumentsSettingsActivity extends Activity {
+public class DocumentsSettingsActivity extends BaseActivity {
 
     private DocumentsController controller;
     private FloozApplication floozApp;
@@ -88,6 +89,20 @@ public class DocumentsSettingsActivity extends Activity {
             ViewServer.get(this).setFocusedWindow(this);
 
         this.controller.onResume();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        this.controller.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        this.controller.onStop();
     }
 
     @Override

@@ -21,6 +21,7 @@ import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.AuthenticationActivity;
+import me.flooz.app.UI.Activity.BaseActivity;
 import me.flooz.app.UI.Controllers.BaseController;
 import me.flooz.app.UI.Controllers.PrivacyController;
 import me.flooz.app.UI.Controllers.SecurityController;
@@ -32,7 +33,7 @@ import me.flooz.app.Utils.ViewServer;
 /**
  * Created by Flooz on 3/10/15.
  */
-public class SecuritySettingsActivity extends Activity {
+public class SecuritySettingsActivity extends BaseActivity {
 
     private SecurityController controller;
     private FloozApplication floozApp;
@@ -76,6 +77,20 @@ public class SecuritySettingsActivity extends Activity {
         super.onPause();
 
         this.controller.onPause();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        this.controller.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        this.controller.onStop();
     }
 
     @Override

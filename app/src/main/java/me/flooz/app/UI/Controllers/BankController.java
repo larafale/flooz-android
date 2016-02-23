@@ -24,6 +24,7 @@ import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.FLTriggerManager;
 
 /**
  * Created by Flooz on 9/1/15.
@@ -32,6 +33,8 @@ public class BankController extends BaseController {
 
     private EditText ibanTextfield;
     private Button saveButton;
+
+    private Boolean success = false;
 
     public BankController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
@@ -100,7 +103,8 @@ public class BankController extends BaseController {
                 FloozRestClient.getInstance().updateUser(user, new FloozHttpResponseHandler() {
                     @Override
                     public void success(Object response) {
-
+                        success = true;
+                        closeButton.performClick();
                     }
 
                     @Override
@@ -110,6 +114,22 @@ public class BankController extends BaseController {
                 });
             }
         });
+    }
+
+    @Override
+    public void onStop() {
+        if (success && triggersData != null && triggersData.has("success")) {
+            FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(triggersData.optJSONArray("success")));
+            success = false;
+        }
+    }
+
+    @Override
+    public void onDestroy() {
+        if (success && triggersData != null && triggersData.has("success")) {
+            FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(triggersData.optJSONArray("success")));
+            success = false;
+        }
     }
 
     private void reloadView() {

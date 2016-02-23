@@ -28,7 +28,7 @@ import me.flooz.app.Utils.ViewServer;
 /**
  * Created by Flooz on 10/22/15.
  */
-public class ValidateSMSActivity extends Activity {
+public class ValidateSMSActivity extends BaseActivity {
 
     private FloozApplication floozApp;
 

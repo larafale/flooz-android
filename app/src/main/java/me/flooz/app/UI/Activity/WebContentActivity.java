@@ -27,7 +27,7 @@ import me.flooz.app.Utils.ViewServer;
 /**
  * Created by Flooz on 3/10/15.
  */
-public class WebContentActivity extends Activity {
+public class WebContentActivity extends BaseActivity {
 
     private FloozApplication floozApp;
     private WebController controller;
@@ -85,6 +85,20 @@ public class WebContentActivity extends Activity {
         super.onPause();
 
         this.controller.onPause();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        this.controller.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        this.controller.onStop();
     }
 
     @Override

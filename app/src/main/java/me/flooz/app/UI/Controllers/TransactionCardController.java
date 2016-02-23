@@ -233,7 +233,7 @@ public class TransactionCardController extends BaseController {
                 FloozRestClient.getInstance().updateTransactionValidate(transaction, FLTransaction.TransactionStatus.TransactionStatusAccepted, new FloozHttpResponseHandler() {
                     @Override
                     public void success(Object response) {
-                        showValidationDialog(((JSONObject) response).optString("confirmationText"));
+
                     }
 
                     @Override
@@ -372,7 +372,7 @@ public class TransactionCardController extends BaseController {
         FloozRestClient.getInstance().updateTransactionValidate(transaction, FLTransaction.TransactionStatus.TransactionStatusAccepted, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
-                showValidationDialog(((JSONObject) response).optString("confirmationText"));
+
             }
 
             @Override
@@ -396,6 +396,11 @@ public class TransactionCardController extends BaseController {
         if (this.cardFromUsername.getText().toString().contentEquals("@" + self.username) && self.avatarURL != null && !self.avatarURL.isEmpty())
             ImageLoader.getInstance().displayImage(self.avatarURL, this.cardFromPic);
 
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadTransactionReceiver,
+                CustomNotificationIntents.filterReloadCurrentUser());
+
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadTransactionReceiver,
+                CustomNotificationIntents.filterReloadTimeline());
     }
 
     @Override
@@ -409,15 +414,17 @@ public class TransactionCardController extends BaseController {
         }
         if (this.transactionPending)
             FloozRestClient.getInstance().showLoadView();
-
-        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadTransactionReceiver,
-                CustomNotificationIntents.filterReloadCurrentUser());
-
     }
 
     @Override
     public void onPause() {
         super.onPause();
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
 
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadTransactionReceiver);
     }
@@ -627,71 +634,5 @@ public class TransactionCardController extends BaseController {
         this.transaction = transac;
         if (this.viewCreated)
             this.reloadView();
-    }
-
-    private void showValidationDialog(String content) {
-        if (!dialogIsShowing) {
-            dialogIsShowing = true;
-            final Dialog dialog = new Dialog(this.parentActivity);
-
-            dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-            dialog.setContentView(R.layout.custom_dialog_validate_transaction);
-
-            TextView text = (TextView) dialog.findViewById(R.id.dialog_validate_flooz_text);
-            text.setText(content);
-            text.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
-
-            Button decline = (Button) dialog.findViewById(R.id.dialog_validate_flooz_decline);
-            Button accept = (Button) dialog.findViewById(R.id.dialog_validate_flooz_accept);
-
-            decline.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialog.dismiss();
-                    dialogIsShowing = false;
-                }
-            });
-
-            accept.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    dialogIsShowing = false;
-                    dialog.dismiss();
-                    Intent intentNotifs = new Intent(parentActivity, AuthenticationActivity.class);
-                    parentActivity.startActivityForResult(intentNotifs, AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY);
-                    parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-                }
-            });
-
-            dialog.show();
-        }
-    }
-
-    public void authenticationValidated() {
-        this.transactionPending = true;
-        FloozRestClient.getInstance().updateTransaction(transaction, FLTransaction.TransactionStatus.TransactionStatusAccepted, new FloozHttpResponseHandler() {
-            @Override
-            public void success(Object response) {
-                setTransaction(new FLTransaction(((JSONObject)response).optJSONObject("item")));
-                transactionPending = false;
-            }
-
-            @Override
-            public void failure(int statusCode, FLError error) {
-                transactionPending = false;
-            }
-        });
-    }
-
-    public void authenticationFailed() {
-
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY) {
-            if (resultCode == Activity.RESULT_OK)
-                authenticationValidated();
-        }
     }
 }

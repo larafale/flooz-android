@@ -118,54 +118,9 @@ public class CashoutController extends BaseController {
                     amount = "0";
 
                 FloozRestClient.getInstance().showLoadView();
-                FloozRestClient.getInstance().cashoutValidate(Float.parseFloat(amount), new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
-                        Intent intentNotifs = new Intent(parentActivity, AuthenticationActivity.class);
-                        parentActivity.startActivityForResult(intentNotifs, AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY);
-                        parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-                    }
-
-                    @Override
-                    public void failure(int statusCode, FLError error) {
-
-                    }
-                });
+                FloozRestClient.getInstance().cashoutValidate(Float.parseFloat(amount), null);
             }
         });
-    }
-
-    public void authenticationValidated() {
-        String amount = amountTextfield.getText().toString();
-
-        if (amount.isEmpty())
-            amount = "0";
-
-        FloozRestClient.getInstance().cashout(Float.parseFloat(amount), new FloozHttpResponseHandler() {
-            @Override
-            public void success(Object response) {
-                String amountValue = FLHelper.trimTrailingZeros(FloozRestClient.getInstance().currentUser.amount.toString());
-
-                balance.setText(amountValue);
-                amountTextfield.setText("");
-                amountTextfield.clearFocus();
-
-                CashoutController.this.onBackPressed();
-            }
-
-            @Override
-            public void failure(int statusCode, FLError error) {
-
-            }
-        });
-    }
-
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY) {
-            if (resultCode == Activity.RESULT_OK)
-                authenticationValidated();
-        }
     }
 
     @Override

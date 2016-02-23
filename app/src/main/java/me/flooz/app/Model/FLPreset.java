@@ -74,7 +74,7 @@ public class FLPreset {
             }
 
         if (json.has("close"))
-            this.close = !json.optBoolean("close");
+            this.close = json.optBoolean("close");
 
         if (json.has("block")) {
             JSONObject block = json.optJSONObject("block");

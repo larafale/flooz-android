@@ -23,6 +23,7 @@ public class FLTrigger {
         FLTriggerActionLogout,
         FLTriggerActionOpen,
         FLTriggerActionNone,
+        FLTriggerActionSend,
         FLTriggerActionShow,
         FLTriggerActionSync
     }
@@ -44,6 +45,9 @@ public class FLTrigger {
     }
 
     private boolean setJson(JSONObject json) {
+        if (json == null)
+            return false;
+
         this.key = json.optString("key");
 
         if (this.key == null)
@@ -106,6 +110,9 @@ public class FLTrigger {
                 break;
             case "open":
                 this.action = FLTriggerActionOpen;
+                break;
+            case "send":
+                this.action = FLTriggerActionSend;
                 break;
             case "show":
                 this.action = FLTriggerActionShow;

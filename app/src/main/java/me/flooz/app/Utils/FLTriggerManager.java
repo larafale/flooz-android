@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.app.Application;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -18,6 +19,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -37,8 +39,10 @@ import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.AuthenticationActivity;
+import me.flooz.app.UI.Activity.BaseActivity;
 import me.flooz.app.UI.Activity.CashoutActivity;
 import me.flooz.app.UI.Activity.EditProfileActivity;
+import me.flooz.app.UI.Activity.FriendRequestActivity;
 import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.NewTransactionActivity;
 import me.flooz.app.UI.Activity.NotificationActivity;
@@ -62,6 +66,7 @@ import me.flooz.app.UI.Fragment.Home.TabFragments.BankFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.CashoutFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.CreditCardFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.DocumentsFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.FriendRequestFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.IdentityFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.NotificationsFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.NotifsSettingsFragment;
@@ -115,10 +120,12 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
 
         if (json != null) {
             for (int i = 0; i < json.length(); i++) {
-                FLTrigger tmp = new FLTrigger(json.optJSONObject(i));
+                if (json.optJSONObject(i) != null) {
+                    FLTrigger tmp = new FLTrigger(json.optJSONObject(i));
 
-                if (tmp.valid)
-                    ret.add(tmp);
+                    if (tmp.valid)
+                        ret.add(tmp);
+                }
             }
         }
 
@@ -159,9 +166,9 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put(FLTrigger.FLTriggerAction.FLTriggerActionLogin, loginActionHandler);
             put(FLTrigger.FLTriggerAction.FLTriggerActionLogout, logoutActionHandler);
             put(FLTrigger.FLTriggerAction.FLTriggerActionOpen, openActionHandler);
+            put(FLTrigger.FLTriggerAction.FLTriggerActionSend, sendActionHandler);
             put(FLTrigger.FLTriggerAction.FLTriggerActionShow, showActionHandler);
             put(FLTrigger.FLTriggerAction.FLTriggerActionSync, syncActionHandler);
-
         }};
     }
 
@@ -279,9 +286,16 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
 
                         Map param = null;
 
-                        if (this.trigger.data.has("body")) {
+                        if (this.trigger.data.has("body") && this.trigger.data.opt("body") instanceof JSONObject) {
                             try {
                                 param = JSONHelper.toMap(this.trigger.data.optJSONObject("body"));
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        else if (this.trigger.data.has("body") && this.trigger.data.opt("body") instanceof String) {
+                            try {
+                                param = JSONHelper.toMap(new JSONObject(this.trigger.data.optString("body")));
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
@@ -410,6 +424,42 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
         }
     };
 
+    private ActionTask sendActionHandler = new ActionTask() {
+        @Override
+        public void run() {
+            if (this.trigger.categoryView.contentEquals("image:flooz") && this.trigger.data != null && this.trigger.data.has("_id")) {
+                Activity currentActivity = FloozApplication.getInstance().getCurrentActivity();
+                if (currentActivity instanceof NewTransactionActivity) {
+                    NewTransactionActivity transactionActivity = (NewTransactionActivity) currentActivity;
+
+                    if (transactionActivity.havePicture) {
+                        final Bitmap currentImage = transactionActivity.currentPicture;
+
+                        Handler mainHandler = new Handler(Looper.getMainLooper());
+                        Runnable myRunnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
+                                FloozRestClient.getInstance().uploadTransactionPic(trigger.data.optString("_id"), ImageHelper.convertBitmapInFile(currentImage), new FloozHttpResponseHandler() {
+                                    @Override
+                                    public void success(Object response) {
+                                        FLTriggerManager.this.executeTriggerList(trigger.triggers);
+                                    }
+
+                                    @Override
+                                    public void failure(int statusCode, FLError error) {
+                                        FLTriggerManager.this.executeTriggerList(trigger.triggers);
+                                    }
+                                });
+                            }
+                        };
+                        mainHandler.post(myRunnable);
+                    }
+                }
+            }
+        }
+    };
+
     private ActionTask showActionHandler = new ActionTask() {
         @Override
         public void run() {
@@ -458,8 +508,6 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
                         }
                     }
                 }
-            } else if (this.trigger.categoryView.contentEquals("auth:code")) {
-
             } else if (this.trigger.categoryView.contentEquals("profile:user")) {
                 if (this.trigger.data != null) {
                     if (this.trigger.data.has("nick")) {
@@ -764,6 +812,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("card:3ds", Secure3DActivity.class);
             put("card:card", CreditCardSettingsActivity.class);
             put("code:set", SetSecureCodeActivity.class);
+            put("friend:pending", FriendRequestActivity.class);
             put("profile:user", UserProfileActivity.class);
             put("profile:edit", EditProfileActivity.class);
             put("settings:iban", BankSettingsActivity.class);
@@ -787,6 +836,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("app:profile", ProfileCardFragment.class);
             put("app:timeline", TimelineFragment.class);
             put("card:card", CreditCardFragment.class);
+            put("friend:pending", FriendRequestFragment.class);
             put("profile:user", ProfileCardFragment.class);
             put("settings:iban", BankFragment.class);
             put("settings:identity", IdentityFragment.class);
@@ -812,6 +862,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("card:3ds", "modal");
             put("card:card", "modal");
             put("code:set", "modal");
+            put("friend:pending", "modal");
             put("profile:user", "push");
             put("profile:edit", "modal");
             put("settings:iban", "modal");
@@ -827,11 +878,17 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-
+        if (activity instanceof BaseActivity) {
+            ((BaseActivity)activity).currentState = BaseActivity.FLActivityState.FLActivityStateCreated;
+        }
     }
 
     @Override
     public void onActivityStarted(Activity activity) {
+        if (activity instanceof BaseActivity) {
+            ((BaseActivity)activity).currentState = BaseActivity.FLActivityState.FLActivityStateStarted;
+        }
+
         if (this.pendingShowTrigger != null) {
             if (FLTriggerManager.this.binderKeyActivity.containsKey(this.pendingShowTrigger.categoryView)) {
                 Class wantedActivityClass = FLTriggerManager.this.binderKeyActivity.get(this.pendingShowTrigger.categoryView);
@@ -871,22 +928,34 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
 
     @Override
     public void onActivityResumed(Activity activity) {
-
+        if (activity instanceof BaseActivity) {
+            ((BaseActivity)activity).currentState = BaseActivity.FLActivityState.FLActivityStateResumed;
+        }
     }
 
     @Override
     public void onActivityPaused(Activity activity) {
-
+        if (activity instanceof BaseActivity) {
+            ((BaseActivity)activity).currentState = BaseActivity.FLActivityState.FLActivityStatePaused;
+        }
     }
 
     @Override
     public void onActivityStopped(Activity activity) {
+        if (activity instanceof BaseActivity) {
+            ((BaseActivity)activity).currentState = BaseActivity.FLActivityState.FLActivityStateStopped;
+        }
+
         if (this.pendingHideTrigger != null) {
             if (FLTriggerManager.this.binderKeyActivity.containsKey(this.pendingHideTrigger.categoryView)) {
                 Class wantedActivityClass = FLTriggerManager.this.binderKeyActivity.get(this.pendingHideTrigger.categoryView);
 
                 if (activity.getClass().equals(wantedActivityClass)) {
                     FLTriggerManager.this.executeTriggerList(this.pendingHideTrigger.triggers);
+
+                    if (activity instanceof AuthenticationActivity && this.pendingShowTrigger.categoryView.contentEquals("auth:code")) {
+                        AuthenticationActivity authActivity = (AuthenticationActivity) activity;
+                    }
                 }
             }
             this.pendingHideTrigger = null;
@@ -900,6 +969,8 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
 
     @Override
     public void onActivityDestroyed(Activity activity) {
-
+        if (activity instanceof BaseActivity) {
+            ((BaseActivity)activity).currentState = BaseActivity.FLActivityState.FLActivityStateDestroyed;
+        }
     }
 }

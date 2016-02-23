@@ -17,7 +17,7 @@ import me.flooz.app.Utils.ViewServer;
 /**
  * Created by Flooz on 3/9/15.
  */
-public class ShareAppActivity extends Activity {
+public class ShareAppActivity extends BaseActivity {
 
     private ShareController controller;
     private FloozApplication floozApp;
@@ -61,6 +61,20 @@ public class ShareAppActivity extends Activity {
         super.onPause();
 
         this.controller.onPause();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        this.controller.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        this.controller.onStop();
     }
 
     @Override

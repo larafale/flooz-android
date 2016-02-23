@@ -32,7 +32,7 @@ import me.flooz.app.Utils.ViewServer;
 /**
  * Created by Flooz on 11/6/14.
  */
-public class LoadingActivity extends Activity {
+public class LoadingActivity extends BaseActivity {
 
     public FloozApplication floozApp;
 

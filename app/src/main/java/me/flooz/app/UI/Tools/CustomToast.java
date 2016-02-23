@@ -15,6 +15,7 @@ import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.BaseActivity;
 import me.flooz.app.Utils.FLTriggerManager;
 
 /**
@@ -110,7 +111,7 @@ public class CustomToast {
                             ++showTentative[0];
                             Activity currentActivity = FloozApplication.getInstance().getCurrentActivity();
 
-                            if (currentActivity != null && currentActivity.getWindow().isActive()) {
+                            if (currentActivity != null && currentActivity.getWindow().isActive() && currentActivity instanceof BaseActivity && ((BaseActivity)currentActivity).currentState == BaseActivity.FLActivityState.FLActivityStateResumed) {
                                 showTentative[0] = 0;
                                 popupWindow.showAtLocation(currentActivity.findViewById(android.R.id.content), Gravity.TOP, 0, view.getMeasuredHeight() / 2 + 10);
                                 popupWindow.setAnimationStyle(R.style.alert_animation);

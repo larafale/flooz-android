@@ -17,7 +17,7 @@ import me.flooz.app.Utils.ViewServer;
 /**
  * Created by Flooz on 10/22/15.
  */
-public class SearchActivity extends Activity {
+public class SearchActivity extends BaseActivity {
 
     private FloozApplication floozApp;
     private SearchController controller;
@@ -63,6 +63,20 @@ public class SearchActivity extends Activity {
         super.onPause();
 
         this.controller.onPause();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        this.controller.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        this.controller.onStop();
     }
 
     @Override

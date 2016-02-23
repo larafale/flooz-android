@@ -18,7 +18,7 @@ import me.flooz.app.Utils.ViewServer;
 /**
  * Created by Flooz on 12/10/15.
  */
-public class AccountActivity extends Activity {
+public class AccountActivity extends BaseActivity {
 
     private AccountController controller;
     private FloozApplication floozApp;
@@ -62,6 +62,20 @@ public class AccountActivity extends Activity {
         super.onPause();
 
         this.controller.onPause();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        this.controller.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        this.controller.onStop();
     }
 
     @Override

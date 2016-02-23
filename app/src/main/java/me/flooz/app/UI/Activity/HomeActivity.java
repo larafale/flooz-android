@@ -67,7 +67,7 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListe
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class HomeActivity extends Activity implements TimelineFragment.TimelineFragmentDelegate
+public class HomeActivity extends BaseActivity implements TimelineFragment.TimelineFragmentDelegate
 {
     public enum TabID {
         HOME_TAB,
@@ -646,7 +646,11 @@ public class HomeActivity extends Activity implements TimelineFragment.TimelineF
                 this.currentTabHistory.remove(this.currentTabHistory.size() - 1);
 
             this.popFragmentInCurrentTab(completion);
+        } else if (completion != null) {
+            Handler handler = new Handler(Looper.getMainLooper());
+            handler.post(completion);
         }
+
     }
 
     public static TabID tabIDFromIndex(Integer index) {

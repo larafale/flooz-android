@@ -98,6 +98,10 @@ public class BaseController {
 
     }
 
+    public void onStop() {
+
+    }
+
     public void onDestroy() {
 
     }

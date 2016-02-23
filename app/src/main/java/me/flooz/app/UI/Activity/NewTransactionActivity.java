@@ -83,7 +83,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 /**
  * Created by Flooz on 3/13/15.
  */
-public class NewTransactionActivity extends Activity implements ToolTipScopeViewDelegate {
+public class NewTransactionActivity extends BaseActivity implements ToolTipScopeViewDelegate {
     private static final int SELECT_PICTURE = 1;
     private static final int TAKE_PICTURE = 2;
     private static final int PERMISSION_CAMERA = 3;
@@ -105,13 +105,11 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
     private Boolean isDemo = false;
     private int demoCurrentStep = 0;
 
-    private Boolean havePicture = false;
-    private Bitmap currentPicture;
+    public Boolean havePicture = false;
+    public Bitmap currentPicture;
 
     FLTransaction.TransactionType currentType;
     private FLTransaction.TransactionScope currentScope = FLTransaction.TransactionScope.TransactionScopePublic;
-
-    private Dialog validationDialog;
 
     private LinearLayout baseLayout;
     private TextView headerBalance;
@@ -611,11 +609,6 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY) {
-            if (resultCode == Activity.RESULT_OK)
-                authenticationValidated();
-        }
-
         if (resultCode == RESULT_OK) {
             if (requestCode == SELECT_PICTURE || requestCode == TAKE_PICTURE) {
 
@@ -1023,8 +1016,7 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         FloozRestClient.getInstance().performTransaction(this.generateRequestParams(true), new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
-                JSONObject jsonObject = (JSONObject) response;
-                showValidationDialog(jsonObject.optString("confirmationText"));
+
             }
 
             @Override
@@ -1040,8 +1032,7 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         FloozRestClient.getInstance().performTransaction(this.generateRequestParams(true), new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
-                JSONObject jsonObject = (JSONObject) response;
-                showValidationDialog(jsonObject.optString("confirmationText"));
+
             }
 
             @Override
@@ -1049,52 +1040,6 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
 
             }
         });
-    }
-
-    private void showValidationDialog(String content) {
-        if (this.validationDialog != null || !FloozApplication.appInForeground || !(FloozApplication.getInstance().getCurrentActivity() instanceof NewTransactionActivity))
-            return;
-
-        InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), 0);
-
-        this.validationDialog = new Dialog(this);
-
-        this.validationDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.validationDialog.setContentView(R.layout.custom_dialog_validate_transaction);
-
-        TextView text = (TextView) this.validationDialog.findViewById(R.id.dialog_validate_flooz_text);
-        text.setText(content);
-        text.setTypeface(CustomFonts.customContentRegular(this));
-
-        Button decline = (Button) this.validationDialog.findViewById(R.id.dialog_validate_flooz_decline);
-        Button accept = (Button) this.validationDialog.findViewById(R.id.dialog_validate_flooz_accept);
-
-        decline.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (validationDialog != null)
-                    validationDialog.dismiss();
-                validationDialog = null;
-            }
-        });
-
-        accept.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                saveData();
-                if (validationDialog != null)
-                    validationDialog.dismiss();
-                validationDialog = null;
-                Intent intentNotifs = new Intent(instance, AuthenticationActivity.class);
-                instance.startActivityForResult(intentNotifs, AuthenticationActivity.RESULT_AUTHENTICATION_ACTIVITY);
-                instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-            }
-        });
-
-        this.validationDialog.setCanceledOnTouchOutside(false);
-        this.validationDialog.setCancelable(false);
-        this.validationDialog.show();
     }
 
     private View.OnClickListener payTransaction = new View.OnClickListener() {
@@ -1279,59 +1224,6 @@ public class NewTransactionActivity extends Activity implements ToolTipScopeView
         };
 
         mainHandler.post(myRunnable);
-    }
-
-    public void authenticationValidated() {
-        this.transactionPending = true;
-        FloozRestClient.getInstance().performTransaction(this.generateRequestParams(false), new FloozHttpResponseHandler() {
-            @Override
-            public void success(final Object response) {
-                final JSONObject jsonObject = (JSONObject) response;
-                if (havePicture) {
-                    Handler handler = new Handler();
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            String transacId = jsonObject.optJSONObject("item").optString("_id");
-                            FloozRestClient.getInstance().uploadTransactionPic(transacId, ImageHelper.convertBitmapInFile(currentPicture), new FloozHttpResponseHandler() {
-                                @Override
-                                public void success(Object response) {
-                                    FloozApplication.performLocalNotification(CustomNotificationIntents.reloadTimeline());
-                                }
-
-                                @Override
-                                public void failure(int statusCode, FLError error) {
-
-                                }
-                            });
-                        }
-                    });
-                }
-                if (jsonObject.has("sms")) {
-                    final JSONObject smsObject = jsonObject.optJSONObject("sms");
-                    sendSMSIntent(smsObject.optString("phone"), smsObject.optString("message"));
-                } else {
-                    closeButton.performClick();
-                }
-                FloozApplication.performLocalNotification(CustomNotificationIntents.reloadTimeline());
-            }
-
-            @Override
-            public void failure(int statusCode, FLError error) {
-
-            }
-        });
-    }
-
-    private void sendSMSIntent(String phone, String content) {
-        Intent sendIntent = new Intent(Intent.ACTION_SENDTO);
-        sendIntent.setData(Uri.parse("sms:" + phone));
-        sendIntent.putExtra("address", phone);
-        sendIntent.putExtra("sms_body", content);
-        if (sendIntent.resolveActivity(this.getPackageManager()) != null) {
-            this.startActivity(sendIntent);
-        }
-        this.closeButton.performClick();
     }
 
     private Map<String, Object> generateRequestParams(boolean validate) {

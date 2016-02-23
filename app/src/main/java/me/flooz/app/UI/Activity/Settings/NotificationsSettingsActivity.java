@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import me.flooz.app.Adapter.NotificationSettingsListAdapter;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.BaseActivity;
 import me.flooz.app.UI.Controllers.BaseController;
 import me.flooz.app.UI.Controllers.NotifsSettingsController;
 import me.flooz.app.UI.Controllers.PrivacyController;
@@ -24,7 +25,7 @@ import se.emilsjolander.stickylistheaders.StickyListHeadersListView;
 /**
  * Created by Flooz on 3/10/15.
  */
-public class NotificationsSettingsActivity extends Activity {
+public class NotificationsSettingsActivity extends BaseActivity {
 
     private NotifsSettingsController controller;
     private FloozApplication floozApp;
@@ -68,6 +69,20 @@ public class NotificationsSettingsActivity extends Activity {
         super.onPause();
 
         this.controller.onPause();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        this.controller.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        this.controller.onStop();
     }
 
     @Override

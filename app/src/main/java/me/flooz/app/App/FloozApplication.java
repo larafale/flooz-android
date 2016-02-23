@@ -10,6 +10,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Handler;
+import android.os.Looper;
 import android.support.multidex.MultiDex;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
@@ -74,6 +75,15 @@ public class FloozApplication extends BranchApp
 
     private Activity currentActivity = null;
 
+    private Handler activityStateHandler;
+
+    private Runnable backgroundRunnable = new Runnable() {
+        @Override
+        public void run() {
+                appInForeground = false;
+        }
+    };
+
     public static FloozApplication getInstance()
     {
         return instance;
@@ -120,6 +130,8 @@ public class FloozApplication extends BranchApp
         if (regid.isEmpty()) {
             registerInBackground();
         }
+
+        activityStateHandler = new Handler(Looper.getMainLooper());
 
         OneSignal.startInit(this).setNotificationOpenedHandler(new FLNotificationOpenedHandler()).init();
         OneSignal.enableNotificationsWhenActive(false);
@@ -283,7 +295,13 @@ public class FloozApplication extends BranchApp
     }
 
     public void setCurrentActivity(Activity activity){
-        appInForeground = activity != null;
+
+        if (activity == null) {
+            activityStateHandler.postDelayed(backgroundRunnable, 100);
+        } else {
+            appInForeground = true;
+            activityStateHandler.removeCallbacks(backgroundRunnable);
+        }
 
         if (!BuildConfig.LOCAL_API) {
             if (this.currentActivity == null && activity != null) {

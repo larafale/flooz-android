@@ -28,9 +28,18 @@ public class ShareFragment extends TabBarFragment {
         return this.controller.currentView;
     }
 
+    @Override
     public void onStart() {
         super.onStart();
+
         this.controller.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        this.controller.onStop();
     }
 
     public void onResume() {

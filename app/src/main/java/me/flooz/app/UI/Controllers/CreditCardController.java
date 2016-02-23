@@ -20,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.HashMap;
@@ -34,6 +35,7 @@ import me.flooz.app.R;
 import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
+import me.flooz.app.Utils.JSONHelper;
 import scanpay.it.CreditCard;
 import scanpay.it.ScanPay;
 import scanpay.it.ScanPayActivity;
@@ -263,7 +265,11 @@ public class CreditCardController extends BaseController {
                 params.put("cvv", cardCVV.getText().toString());
 
                 if (floozData != null)
-                    params.put("flooz", floozData);
+                    try {
+                        params.put("flooz", JSONHelper.toMap(floozData));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                 FloozRestClient.getInstance().createCreditCard(params, false, new FloozHttpResponseHandler() {
                     @Override

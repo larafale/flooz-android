@@ -24,6 +24,7 @@ import me.flooz.app.Adapter.SettingsListItem;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.BaseActivity;
 import me.flooz.app.UI.Controllers.CashoutController;
 import me.flooz.app.UI.Controllers.NotificationsController;
 import me.flooz.app.UI.Controllers.PreferencesController;
@@ -35,7 +36,7 @@ import me.flooz.app.Utils.ViewServer;
 /**
  * Created by Flooz on 3/10/15.
  */
-public class PreferencesSettingsActivity extends Activity {
+public class PreferencesSettingsActivity extends BaseActivity {
 
     private PreferencesController controller;
     private FloozApplication floozApp;
@@ -79,6 +80,20 @@ public class PreferencesSettingsActivity extends Activity {
         super.onPause();
 
         this.controller.onPause();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        this.controller.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        this.controller.onStop();
     }
 
     @Override

@@ -13,6 +13,7 @@ import org.json.JSONObject;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.BaseActivity;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.ViewServer;
@@ -20,7 +21,7 @@ import me.flooz.app.Utils.ViewServer;
 /**
  * Created by Flooz on 3/10/15.
  */
-public class Secure3DSettingsActivity extends Activity {
+public class Secure3DSettingsActivity extends BaseActivity {
 
     private FloozApplication floozApp;
     private Boolean modal;

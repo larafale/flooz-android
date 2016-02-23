@@ -19,6 +19,7 @@ import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.BaseActivity;
 import me.flooz.app.UI.Controllers.BaseController;
 import me.flooz.app.UI.Controllers.CashoutController;
 import me.flooz.app.UI.Controllers.NotificationsController;
@@ -30,7 +31,7 @@ import me.flooz.app.Utils.ViewServer;
 /**
  * Created by Flooz on 3/10/15.
  */
-public class PrivacySettingsActivity extends Activity {
+public class PrivacySettingsActivity extends BaseActivity {
 
     private PrivacyController controller;
     private FloozApplication floozApp;
@@ -86,6 +87,20 @@ public class PrivacySettingsActivity extends Activity {
         super.onDestroy();
 
         this.controller.onDestroy();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        this.controller.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        this.controller.onStop();
     }
 
     private void clearReferences() {

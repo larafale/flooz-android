@@ -32,7 +32,7 @@ import me.flooz.app.Utils.ViewServer;
 /**
  * Created by Flooz on 4/24/15.
  */
-public class ScannerActivity extends Activity {
+public class ScannerActivity extends BaseActivity {
 
     private ScannerActivity instance;
     private FloozApplication floozApp;

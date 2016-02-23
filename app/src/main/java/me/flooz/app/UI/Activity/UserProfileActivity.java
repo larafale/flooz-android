@@ -18,7 +18,7 @@ import me.flooz.app.Utils.ViewServer;
 /**
  * Created by Flooz on 10/19/15.
  */
-public class UserProfileActivity extends Activity {
+public class UserProfileActivity extends BaseActivity {
 
     private ProfileController controller;
     private FloozApplication floozApp;
@@ -53,10 +53,17 @@ public class UserProfileActivity extends Activity {
     }
 
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
 
         this.controller.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        this.controller.onStop();
     }
 
     @Override

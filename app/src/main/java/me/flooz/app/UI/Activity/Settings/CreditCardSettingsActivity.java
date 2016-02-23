@@ -28,6 +28,7 @@ import me.flooz.app.Model.FLPreset;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.BaseActivity;
 import me.flooz.app.UI.Controllers.CashoutController;
 import me.flooz.app.UI.Controllers.CreditCardController;
 import me.flooz.app.UI.Controllers.NotificationsController;
@@ -42,7 +43,7 @@ import scanpay.it.ScanPayActivity;
 /**
  * Created by Flooz on 3/10/15.
  */
-public class CreditCardSettingsActivity extends Activity {
+public class CreditCardSettingsActivity extends BaseActivity {
 
     public CreditCardController controller;
     public FloozApplication floozApp;
@@ -68,15 +69,31 @@ public class CreditCardSettingsActivity extends Activity {
 
         this.controller = new CreditCardController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER, triggerData);
 
-        if (triggerData != null && triggerData.has("flooz"))
-            this.controller.floozData.optJSONObject("flooz");
+        if (triggerData != null && triggerData.has("flooz")) {
+            if (triggerData.opt("flooz") instanceof JSONObject)
+                this.controller.floozData = triggerData.optJSONObject("flooz");
+            else if (triggerData.opt("flooz") instanceof String) {
+                try {
+                    this.controller.floozData = new JSONObject(triggerData.optString("flooz"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
     @Override
-    public void onStart() {
+    protected void onStart() {
         super.onStart();
 
         this.controller.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        this.controller.onStop();
     }
 
     @Override

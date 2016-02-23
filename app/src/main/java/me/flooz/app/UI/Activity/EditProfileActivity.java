@@ -50,7 +50,7 @@ import me.flooz.app.Utils.ViewServer;
  * Created by Flooz on 06/10/15.
  */
 
-public class EditProfileActivity extends Activity {
+public class EditProfileActivity extends BaseActivity {
 
     private FloozApplication floozApp;
     private EditProfileActivity activity;

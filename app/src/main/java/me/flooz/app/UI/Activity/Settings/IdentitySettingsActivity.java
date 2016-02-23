@@ -33,6 +33,7 @@ import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.BaseActivity;
 import me.flooz.app.UI.Controllers.DocumentsController;
 import me.flooz.app.UI.Controllers.IdentityController;
 import me.flooz.app.UI.Controllers.NotificationsController;
@@ -46,7 +47,7 @@ import me.flooz.app.Utils.ViewServer;
 /**
  * Created by Flooz on 3/10/15.
  */
-public class IdentitySettingsActivity extends Activity {
+public class IdentitySettingsActivity extends BaseActivity {
 
     private IdentityController controller;
     private FloozApplication floozApp;
@@ -90,6 +91,20 @@ public class IdentitySettingsActivity extends Activity {
         super.onPause();
 
         this.controller.onPause();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        this.controller.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        this.controller.onStop();
     }
 
     @Override

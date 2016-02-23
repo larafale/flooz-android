@@ -25,7 +25,7 @@ import me.flooz.app.Utils.ViewServer;
 /**
  * Created by Flooz on 3/9/15.
  */
-public class AboutActivity extends Activity {
+public class AboutActivity extends BaseActivity {
 
     private AboutActivity instance;
     private FloozApplication floozApp;

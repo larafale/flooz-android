@@ -20,7 +20,7 @@ import me.flooz.app.Utils.ViewServer;
 /**
  * Created by Flooz on 7/6/15.
  */
-public class Secure3DActivity extends Activity {
+public class Secure3DActivity extends BaseActivity {
 
     public FloozApplication floozApp;
     private WebView webView;
@@ -54,13 +54,17 @@ public class Secure3DActivity extends Activity {
                 titleLabel.setText(triggerData.optString("title"));
         }
 
-        this.findViewById(R.id.settings_3ds_header_back).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FloozRestClient.getInstance().showLoadView();
-                FloozRestClient.getInstance().abort3DSecure();
-            }
-        });
+        if (triggerData != null && triggerData.has("close") && !triggerData.optBoolean("close")) {
+            this.findViewById(R.id.settings_3ds_header_back).setVisibility(View.GONE);
+        } else {
+            this.findViewById(R.id.settings_3ds_header_back).setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    FloozRestClient.getInstance().showLoadView();
+                    FloozRestClient.getInstance().abort3DSecure();
+                }
+            });
+        }
 
         webView = (WebView) this.findViewById(R.id.settings_3ds_webview);
         webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);

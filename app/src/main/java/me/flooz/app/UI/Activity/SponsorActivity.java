@@ -18,7 +18,7 @@ import me.flooz.app.Utils.ViewServer;
 /**
  * Created by Flooz on 9/2/15.
  */
-public class SponsorActivity extends Activity {
+public class SponsorActivity extends BaseActivity {
 
     private SponsorController controller;
     private FloozApplication floozApp;
@@ -32,7 +32,7 @@ public class SponsorActivity extends Activity {
 
         floozApp = (FloozApplication) this.getApplicationContext();
 
-        this.setContentView(R.layout.invite_fragment);
+        this.setContentView(R.layout.sponsor_fragment);
 
         JSONObject triggerData = null;
         if (getIntent() != null && getIntent().hasExtra("triggerData"))
@@ -62,6 +62,20 @@ public class SponsorActivity extends Activity {
         super.onPause();
 
         this.controller.onPause();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        this.controller.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        this.controller.onStop();
     }
 
     @Override

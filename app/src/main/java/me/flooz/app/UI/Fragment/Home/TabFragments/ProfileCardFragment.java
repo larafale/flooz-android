@@ -37,6 +37,13 @@ public class ProfileCardFragment extends TabBarFragment {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+
+        this.controller.onStop();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         this.controller.onResume();

@@ -33,7 +33,15 @@ public class FriendsFragment extends TabBarFragment
     @Override
     public void onStart() {
         super.onStart();
+
         this.controller.onStart();
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        this.controller.onStop();
     }
 
     @Override

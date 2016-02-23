@@ -11,6 +11,9 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.R;
 import me.flooz.app.UI.Fragment.Home.Authentication.AuthenticationBaseFragment;
@@ -20,12 +23,13 @@ import me.flooz.app.UI.Fragment.Home.Authentication.AuthenticationResetCodeFragm
 import me.flooz.app.UI.Fragment.Home.Authentication.AuthenticationSecureCodeFragment;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.FLTriggerManager;
 import me.flooz.app.Utils.ViewServer;
 
 /**
  * Created by Flooz on 3/9/15.
  */
-public class AuthenticationActivity extends Activity {
+public class AuthenticationActivity extends BaseActivity {
 
     private FloozApplication floozApp;
 
@@ -47,7 +51,11 @@ public class AuthenticationActivity extends Activity {
     private AuthenticationPageIdentifier currentPage;
     private AuthenticationBaseFragment currentFragment;
 
+    private JSONObject triggerData = null;
+
     public Boolean changeSecureCode = false;
+
+    public int resultCode = -1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,6 +63,13 @@ public class AuthenticationActivity extends Activity {
 
         if (FLHelper.isDebuggable())
             ViewServer.get(this).addWindow(this);
+
+        if (getIntent() != null && getIntent().hasExtra("triggerData"))
+            try {
+                this.triggerData = new JSONObject(getIntent().getStringExtra("triggerData"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
 
         floozApp = (FloozApplication)this.getApplicationContext();
 
@@ -280,10 +295,13 @@ public class AuthenticationActivity extends Activity {
     }
 
     public void dismissView(Boolean validate) {
-        if (validate)
+        if (validate) {
+            this.resultCode = Activity.RESULT_OK;
             setResult(Activity.RESULT_OK, null);
-        else
+        } else {
+            this.resultCode = Activity.RESULT_CANCELED;
             setResult(Activity.RESULT_CANCELED, null);
+        }
 
         finish();
         overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
@@ -297,6 +315,17 @@ public class AuthenticationActivity extends Activity {
             ViewServer.get(this).setFocusedWindow(this);
 
         floozApp.setCurrentActivity(this);
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        if (this.resultCode == RESULT_OK) {
+            if (this.triggerData != null && this.triggerData.has("success")) {
+                FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(this.triggerData.optJSONArray("success")));
+            }
+        }
     }
 
     @Override

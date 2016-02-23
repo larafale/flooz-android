@@ -24,6 +24,7 @@ import me.flooz.app.Model.FLError;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.BaseActivity;
 import me.flooz.app.UI.Controllers.BankController;
 import me.flooz.app.UI.Controllers.CashoutController;
 import me.flooz.app.UI.Controllers.NotificationsController;
@@ -34,7 +35,7 @@ import me.flooz.app.Utils.ViewServer;
 /**
  * Created by Flooz on 3/10/15.
  */
-public class BankSettingsActivity extends Activity {
+public class BankSettingsActivity extends BaseActivity {
 
     private BankController controller;
     private FloozApplication floozApp;
@@ -81,15 +82,27 @@ public class BankSettingsActivity extends Activity {
     }
 
     @Override
+    protected void onStart() {
+        this.controller.onStart();
+        super.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        this.controller.onStop();
+    }
+
+    @Override
     protected void onDestroy() {
         clearReferences();
 
         if (FLHelper.isDebuggable())
             ViewServer.get(this).removeWindow(this);
 
-        super.onDestroy();
-
         this.controller.onDestroy();
+
+        super.onDestroy();
     }
 
     private void clearReferences() {

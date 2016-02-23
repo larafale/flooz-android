@@ -19,7 +19,7 @@ import me.flooz.app.Utils.ViewServer;
 /**
  * Created by Flooz on 10/22/15.
  */
-public class TransactionActivity  extends Activity {
+public class TransactionActivity  extends BaseActivity {
 
     private FloozApplication floozApp;
     public TransactionCardController controller;
@@ -75,6 +75,20 @@ public class TransactionActivity  extends Activity {
         super.onPause();
 
         this.controller.onPause();
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        this.controller.onStart();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        this.controller.onStop();
     }
 
     @Override

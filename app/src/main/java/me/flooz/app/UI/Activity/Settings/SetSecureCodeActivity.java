@@ -27,6 +27,7 @@ import me.flooz.app.Model.FLError;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.BaseActivity;
 import me.flooz.app.UI.Fragment.Start.StartBaseFragment;
 import me.flooz.app.UI.View.NumericKeyboard;
 import me.flooz.app.Utils.CustomFonts;
@@ -36,7 +37,7 @@ import me.flooz.app.Utils.ViewServer;
 /**
  * Created by Flooz on 10/22/15.
  */
-public class SetSecureCodeActivity extends Activity implements NumericKeyboard.NumericKeyboardDelegate {
+public class SetSecureCodeActivity extends BaseActivity implements NumericKeyboard.NumericKeyboardDelegate {
 
     private FloozApplication floozApp;
 
