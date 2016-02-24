@@ -184,7 +184,7 @@
     <string name="MENU_NEW_TRANSACTION_PAYMENT">Payer</string>
     <string name="MENU_NEW_TRANSACTION_COLLECT">Réclamer</string>
 
-    <string name="MENU_EDIT_PROFILE">Editer mon profil</string>
+    <string name="MENU_EDIT_PROFILE">Éditer mon profil</string>
     <string name="MENU_PAYMENT">Payer</string>
     <string name="MENU_COLLECT">Réclamer</string>
     <string name="MENU_NEW_FLOOZ">Floozer @%s</string>

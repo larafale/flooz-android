@@ -276,6 +276,31 @@
 
                     </LinearLayout>
 
+                    <LinearLayout
+                        android:id="@+id/transac_card_likes_container"
+                        android:orientation="horizontal"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:paddingTop="@dimen/dimen_medium">
+
+                        <ImageView
+                            android:id="@+id/transac_card_likes_img"
+                            android:layout_width="18dp"
+                            android:layout_height="18dp"
+                            android:padding="@dimen/dimen_small"
+                            android:src="@drawable/social_like"
+                            android:layout_marginRight="@dimen/dimen_small"/>
+
+                        <TextView
+                            android:id="@+id/transac_card_likes_text"
+                            android:layout_width="fill_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/placeholder"
+                            android:textSize="12sp"/>
+
+                    </LinearLayout>
+
                     <!--<LinearLayout-->
                         <!--android:id="@+id/transac_card_social_container"-->
                         <!--android:orientation="horizontal"-->

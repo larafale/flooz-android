@@ -51,14 +51,14 @@ public class ProfileCardFragment extends TabBarFragment {
 
     @Override
     public void onPause() {
-        super.onPause();
         this.controller.onPause();
+        super.onPause();
     }
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         this.controller.onDestroy();
+        super.onDestroy();
     }
 
     @Override
