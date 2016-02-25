@@ -33,41 +33,49 @@ public class ProfileCardFragment extends TabBarFragment {
     public void onStart() {
         super.onStart();
 
-        this.controller.onStart();
+        if (this.controller != null)
+            this.controller.onStart();
     }
 
     @Override
     public void onStop() {
         super.onStop();
 
-        this.controller.onStop();
+        if (this.controller != null)
+            this.controller.onStop();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        this.controller.onResume();
+        if (this.controller != null)
+            this.controller.onResume();
     }
 
     @Override
     public void onPause() {
-        this.controller.onPause();
+        if (this.controller != null)
+            this.controller.onPause();
         super.onPause();
     }
 
     @Override
     public void onDestroy() {
-        this.controller.onDestroy();
+        if (this.controller != null)
+            this.controller.onDestroy();
+
         super.onDestroy();
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        this.controller.onActivityResult(requestCode, resultCode, data);
+        if (this.controller != null)
+            this.controller.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
     public void onBackPressed() {
-        this.controller.onBackPressed();
+        if (this.controller != null)
+            this.controller.onBackPressed();
     }
 }

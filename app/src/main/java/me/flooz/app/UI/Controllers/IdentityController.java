@@ -98,6 +98,8 @@ public class IdentityController extends BaseController implements FLPhoneField.F
         this.sendVerifyPhone.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.sendVerifyMail.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
 
+        this.phoneTextfield.delegate = this;
+
         this.reloadView();
 
         this.sendVerifyPhone.setOnClickListener(new View.OnClickListener() {
