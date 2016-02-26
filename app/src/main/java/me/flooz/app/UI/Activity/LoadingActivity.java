@@ -185,10 +185,12 @@ public class LoadingActivity extends BaseActivity {
             ViewServer.get(this).setFocusedWindow(this);
 
         floozApp.setCurrentActivity(this);
+        AppEventsLogger.activateApp(this);
     }
 
     protected void onPause() {
         clearReferences();
+        AppEventsLogger.deactivateApp(this);
         super.onPause();
     }
 

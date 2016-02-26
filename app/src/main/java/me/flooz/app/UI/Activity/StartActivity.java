@@ -9,6 +9,8 @@ import android.os.Bundle;
 import android.view.inputmethod.InputMethodManager;
 
 
+import com.facebook.login.LoginManager;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -37,6 +39,8 @@ public class StartActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        LoginManager.getInstance().logOut();
 
         if (FLHelper.isDebuggable())
             ViewServer.get(this).addWindow(this);

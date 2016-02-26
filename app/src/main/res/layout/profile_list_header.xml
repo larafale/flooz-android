@@ -121,11 +121,9 @@
 
         <RelativeLayout
             android:id="@+id/profile_button_edit"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_width="wrap_content"
             android:layout_height="33dp"
-            android:layout_alignParentRight="true"
-            android:orientation="horizontal"
             android:gravity="center_vertical"
             android:layout_marginTop="5dp"
             android:background="@drawable/frame_action_button"
@@ -137,11 +135,12 @@
                 android:id="@+id/edit_profile_text"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Mon compte"
+                android:text="Mon compte€"
                 android:layout_marginLeft="@dimen/dimen_large"
                 android:layout_marginRight="@dimen/dimen_large"
                 android:textColor="@color/blue"
-                android:gravity="center_vertical"/>
+                android:gravity="center_vertical"
+                android:singleLine="true" />
 
             <TextView
                 android:id="@+id/edit_profile_badge"

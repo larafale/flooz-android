@@ -381,7 +381,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
     private ActionTask loginActionHandler = new ActionTask() {
         @Override
         public void run() {
-            if (this.trigger.category.contentEquals("app")) {
+            if (this.trigger.category.contentEquals("auth")) {
                 if (this.trigger.data != null && this.trigger.data.has("token")) {
                     FloozRestClient.getInstance().loginWithToken(this.trigger.data.optString("token"), new FloozHttpResponseHandler() {
                         @Override
@@ -405,7 +405,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
     private ActionTask logoutActionHandler = new ActionTask() {
         @Override
         public void run() {
-            if (this.trigger.category.contentEquals("http")) {
+            if (this.trigger.category.contentEquals("auth")) {
                 FloozRestClient.getInstance().logout();
                 FLTriggerManager.this.executeTriggerList(trigger.triggers);
             }
@@ -475,6 +475,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
 
                         activity.updateUserData(userData);
 
+                        FLTriggerManager.this.executeTriggerList(trigger.triggers);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }

@@ -125,7 +125,7 @@ public class FloozApplication extends BranchApp
         gcm = GoogleCloudMessaging.getInstance(this);
         regid = getRegistrationId(context);
 
-        FacebookSdk.sdkInitialize(this);
+        FacebookSdk.sdkInitialize(getApplicationContext());
 
         if (regid.isEmpty()) {
             registerInBackground();
