@@ -130,21 +130,20 @@
 
             <LinearLayout
                 android:id="@+id/flooz_tab"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
                 android:orientation="vertical"
                 android:gravity="center"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                android:background="@drawable/flooz_button_background"
-                android:layout_marginBottom="@dimen/dimen_small">
+                android:layout_marginBottom="@dimen/dimen_xsmall">
 
                 <ImageView
                     android:id="@+id/flooz_tab_image"
-                    android:layout_width="30dp"
-                    android:layout_height="30dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:src="@drawable/flooz_mini"
+                    android:src="@drawable/home_button"
                     />
 
             </LinearLayout>
