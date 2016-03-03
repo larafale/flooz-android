@@ -21,6 +21,7 @@ import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.UI.View.NumericKeyboard;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.FLHelper;
 
 /**
  * Created by Flooz on 6/15/15.
@@ -105,7 +106,7 @@ public class StartSMSFragment extends StartBaseFragment {
                         }
                     });
                 } else {
-                    FloozRestClient.getInstance().sendSignupSMS((String) parentActivity.signupData.get("phone"));
+                    FloozRestClient.getInstance().sendSignupSMS(FLHelper.fullPhone((String)parentActivity.signupData.get("phone"), (String)parentActivity.signupData.get("country")));
                     countdown = maxCountdown;
                     String countDownValue = String.format(inflater.getContext().getResources().getString(R.string.SIGNUP_SMS_RESEND), countdown);
                     nextButton.setText(countDownValue);
@@ -124,7 +125,7 @@ public class StartSMSFragment extends StartBaseFragment {
             }
         }
 
-        FloozRestClient.getInstance().sendSignupSMS((String)parentActivity.signupData.get("phone"));
+        FloozRestClient.getInstance().sendSignupSMS(FLHelper.fullPhone((String)parentActivity.signupData.get("phone"), (String)parentActivity.signupData.get("country")));
         countdown = maxCountdown;
 
         timer = new Handler();

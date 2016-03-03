@@ -1232,9 +1232,9 @@ public class NewTransactionActivity extends BaseActivity implements ToolTipScope
         params.put("amount", this.amountTextfield.getText().toString());
         if (currentReceiver != null) {
             if (currentReceiver.userKind == FLUser.UserKind.FloozUser)
-                params.put("to", currentReceiver.username.replace("+33", "0"));
+                params.put("to", currentReceiver.username);
             else
-                params.put("to", currentReceiver.phone.replace("+33", "0"));
+                params.put("to", currentReceiver.phone);
 
             if (currentReceiver.userKind == FLUser.UserKind.PhoneUser) {
                 currentReceiver = ContactsManager.fillUserInformations(currentReceiver);

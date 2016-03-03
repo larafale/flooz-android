@@ -87,7 +87,7 @@ android {
             buildConfigField "boolean", "LOCAL_API", "false"
             buildConfigField "boolean", "DEBUG_API", "false"
             signingConfig signingConfigs.release
-            debuggable true
+            debuggable false
         }
     }
 
@@ -98,8 +98,8 @@ android {
         applicationId "me.flooz.app"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 37
-        versionName "2.2.5"
+        versionCode 40
+        versionName "2.2.7"
         signingConfig signingConfigs.release
         renderscriptTargetApi 20
         renderscriptSupportModeEnabled true
