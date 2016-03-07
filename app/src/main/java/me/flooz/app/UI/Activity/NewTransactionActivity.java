@@ -51,6 +51,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import me.flooz.app.Adapter.SelectUserListAdapter;
@@ -402,7 +403,9 @@ public class NewTransactionActivity extends BaseActivity implements ToolTipScope
 
             @Override
             public void onTokenRemoved(Object token) {
-                currentReceiver = null;
+                if (currentReceiver == token)
+                    currentReceiver = null;
+
                 validateView();
             }
         });
@@ -967,7 +970,7 @@ public class NewTransactionActivity extends BaseActivity implements ToolTipScope
             if (amount > 0) {
                 this.headerCB.setVisibility(View.GONE);
                 this.headerBalance.setVisibility(View.VISIBLE);
-                this.headerBalance.setText(FLHelper.trimTrailingZeros(String.format("%.2f", amount)) + " €");
+                this.headerBalance.setText(FLHelper.trimTrailingZeros(String.format(Locale.US, "%.2f", amount)) + " €");
             } else {
                 this.headerCB.setVisibility(View.VISIBLE);
                 this.headerBalance.setVisibility(View.GONE);
@@ -1013,6 +1016,7 @@ public class NewTransactionActivity extends BaseActivity implements ToolTipScope
     }
 
     public void performTransaction() {
+        FloozRestClient.getInstance().showLoadView();
         FloozRestClient.getInstance().performTransaction(this.generateRequestParams(true), new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
@@ -1029,6 +1033,7 @@ public class NewTransactionActivity extends BaseActivity implements ToolTipScope
     private void performTransaction(FLTransaction.TransactionType type) {
         this.currentType = type;
 
+        FloozRestClient.getInstance().showLoadView();
         FloozRestClient.getInstance().performTransaction(this.generateRequestParams(true), new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
@@ -1190,6 +1195,8 @@ public class NewTransactionActivity extends BaseActivity implements ToolTipScope
                 this.baseLayout.requestFocus();
             else
                 this.contentTextfield.requestFocus();
+
+            this.currentReceiver = user;
         }
         this.validateView();
     }
@@ -1281,6 +1288,9 @@ public class NewTransactionActivity extends BaseActivity implements ToolTipScope
     public void onPause() {
         saveData();
         clearReferences();
+
+        this.hideKeyboard();
+
         super.onPause();
     }
 

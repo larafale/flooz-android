@@ -87,6 +87,7 @@ public class NotificationsController extends BaseController {
     public void onResume() {
         if (this.listAdapter != null)
             this.listAdapter.loadBroadcastReceivers();
+        this.contentContainer.setRefreshing(false);
         FloozRestClient.getInstance().updateNotificationFeed(null);
     }
 
