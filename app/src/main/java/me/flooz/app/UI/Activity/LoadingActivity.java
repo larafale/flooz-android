@@ -9,7 +9,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.crashlytics.android.Crashlytics;
-import com.facebook.appevents.AppEventsLogger;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -185,12 +184,11 @@ public class LoadingActivity extends BaseActivity {
             ViewServer.get(this).setFocusedWindow(this);
 
         floozApp.setCurrentActivity(this);
-        AppEventsLogger.activateApp(this);
     }
 
     protected void onPause() {
         clearReferences();
-        AppEventsLogger.deactivateApp(this);
+
         super.onPause();
     }
 
