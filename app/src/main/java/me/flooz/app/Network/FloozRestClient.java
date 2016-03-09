@@ -1921,8 +1921,6 @@ public class FloozRestClient
     }
 
     public void connectFacebook() {
-        FacebookSdk.sdkInitialize(floozApp.getApplicationContext());
-
         fbLoginCallbackManager = CallbackManager.Factory.create();
 
         LoginManager.getInstance().registerCallback(fbLoginCallbackManager,
