@@ -1910,8 +1910,14 @@ public class FloozRestClient
             if (this.fbAccessToken == null || !token.contentEquals(this.fbAccessToken)) {
                 this.fbAccessToken = token;
 
-                AccessToken.setCurrentAccessToken(new AccessToken(token, FloozApplication.getAppContext().getResources().getString(R.string.facebook_app_id), currentUser.json.optJSONObject("fb").optString("id"), null, null, null, null, null));
-                Profile.fetchProfileForCurrentAccessToken();
+                try {
+                    AccessToken accessToken = new AccessToken(this.fbAccessToken, FloozApplication.getAppContext().getResources().getString(R.string.facebook_app_id), currentUser.json.optJSONObject("fb").optString("id"), null, null, null, null, null);
+                    AccessToken.setCurrentAccessToken(accessToken);
+                    Profile.fetchProfileForCurrentAccessToken();
+                } catch (IllegalArgumentException e) {
+                    e.printStackTrace();
+                    this.fbAccessToken = null;
+                }
             }
         }
     }
