@@ -111,7 +111,10 @@ public class PreferencesController extends BaseController {
                         fbSwitch.setChecked(false);
                     }
                 } else {
-                    FloozRestClient.getInstance().disconnectFacebook();
+                    if (FloozRestClient.getInstance().isConnectedToFacebook()) {
+                        FloozRestClient.getInstance().disconnectFacebook();
+                        fbSwitch.setChecked(true);
+                    }
                 }
             }
         });

@@ -139,7 +139,7 @@ public class FloozRestClient
     private Runnable socketCloseRunnable = new Runnable() {
         @Override
         public void run() {
-            if (socket != null && socket.connected() && currentUser != null) {
+            if (socket != null && socket.connected()) {
                 socketSendSessionEnd();
             }
         }
@@ -1765,14 +1765,10 @@ public class FloozRestClient
             if (FloozApplication.getAppVersionName(floozApp.getApplicationContext()) != null && !path.contains("?version=") && !path.contains("&version=")) {
                 if (path.indexOf('?') == -1) {
                     path = path + "?version=" + FloozApplication.getAppVersionName(floozApp.getApplicationContext());
-                }
-                else {
+                } else {
                     path = path + "&version=" + FloozApplication.getAppVersionName(floozApp.getApplicationContext());
                 }
             }
-
-            if (!path.contains("&api="))
-                path += "&api=v2";
 
             final JsonHttpResponseHandler jsonHttpResponseHandler = new JsonHttpResponseHandler() {
                 @Override
@@ -1929,6 +1925,8 @@ public class FloozRestClient
     public void connectFacebook() {
         fbLoginCallbackManager = CallbackManager.Factory.create();
 
+        LoginManager.getInstance().logOut();
+
         LoginManager.getInstance().registerCallback(fbLoginCallbackManager,
                 new FacebookCallback<LoginResult>() {
                     @Override
@@ -2041,14 +2039,17 @@ public class FloozRestClient
                     this.socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
                         @Override
                         public void call(Object... args) {
-                            try {
-                                JSONObject obj = new JSONObject();
-                                obj.put("nick", currentUser.username);
-                                obj.put("token", accessToken);
-                                socket.emit("session start", obj);
-                            } catch (JSONException e) {
-                                e.printStackTrace();
+                            if (currentUser != null) {
+                                try {
+                                    JSONObject obj = new JSONObject();
+                                    obj.put("nick", currentUser.username);
+                                    obj.put("token", accessToken);
+                                    socket.emit("session start", obj);
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
                             }
+                            closeSockets();
                         }
                     }).on("event", new Emitter.Listener() {
                         @Override
@@ -2108,7 +2109,9 @@ public class FloozRestClient
         if (this.socket != null && this.accessToken != null && this.socket.connected()) {
             JSONObject obj = new JSONObject();
             try {
-                obj.put("nick", currentUser.username);
+                if (currentUser != null)
+                    obj.put("nick", currentUser.username);
+
                 obj.put("token", accessToken);
                 this.socket.emit("session end", obj);
             } catch (JSONException e) {

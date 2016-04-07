@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.graphics.Typeface;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.v4.app.ActivityCompat;
@@ -13,13 +12,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +39,7 @@ public class SelectUserListAdapter extends BaseAdapter implements StickyListHead
     private Context context;
     private LayoutInflater inflater;
 
-    private List<FLUser> contactsFromAdressBook;
+    private List<FLUser> contactsFromAddressBook;
     private List<FLUser> contactsFiltered;
 
     private List<FLUser> friends;
@@ -133,25 +130,25 @@ public class SelectUserListAdapter extends BaseAdapter implements StickyListHead
 
         this.filteredContacts.addAll(this.friendsRecent);
         this.filteredContacts.addAll(this.friends);
-        this.filteredContacts.addAll(this.contactsFromAdressBook);
+        this.filteredContacts.addAll(this.contactsFromAddressBook);
     }
 
     public void loadContacts() {
         if (ActivityCompat.checkSelfPermission(FloozApplication.getAppContext(), Manifest.permission.READ_CONTACTS)
                 != PackageManager.PERMISSION_GRANTED) {
-            this.contactsFromAdressBook = new ArrayList<>();
+            this.contactsFromAddressBook = new ArrayList<>();
         } else {
-            this.contactsFromAdressBook = ContactsManager.getContactsList();
+            this.contactsFromAddressBook = ContactsManager.getContactsList();
 
             this.searchHandler.removeCallbacks(searchRunnable);
             if (this.searchData.length() == 0) {
                 this.filteredContacts = new ArrayList<>();
 
-                if (this.friendsRecent.size() == 0 && this.contactsFromAdressBook.size() == 0)
+                if (this.friendsRecent.size() == 0 && this.contactsFromAddressBook.size() == 0)
                     this.filteredContacts.addAll(this.friends);
                 else {
                     this.filteredContacts.addAll(this.friendsRecent);
-                    this.filteredContacts.addAll(this.contactsFromAdressBook);
+                    this.filteredContacts.addAll(this.contactsFromAddressBook);
                 }
                 this.notifyDataSetChanged();
             } else {
@@ -229,7 +226,7 @@ public class SelectUserListAdapter extends BaseAdapter implements StickyListHead
 
             this.filteredContacts.addAll(this.friendsRecent);
             this.filteredContacts.addAll(this.friends);
-            this.filteredContacts.addAll(this.contactsFromAdressBook);
+            this.filteredContacts.addAll(this.contactsFromAddressBook);
 
             this.notifyDataSetChanged();
         } else {
@@ -270,7 +267,7 @@ public class SelectUserListAdapter extends BaseAdapter implements StickyListHead
     @Override
     public long getHeaderId(int i) {
         if (this.searchData.isEmpty()) {
-            if (this.friendsRecent.size() == 0 && this.contactsFromAdressBook.size() == 0 && this.friends.size() == 0) {
+            if (this.friendsRecent.size() == 0 && this.contactsFromAddressBook.size() == 0 && this.friends.size() == 0) {
                 return 0;
             } else {
                 if (i < this.friendsRecent.size())

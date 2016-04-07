@@ -8,6 +8,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 
@@ -109,26 +110,39 @@ public class CustomToast {
                         @Override
                         public void run() {
                             ++showTentative[0];
-                            Activity currentActivity = FloozApplication.getInstance().getCurrentActivity();
+                            final Activity currentActivity = FloozApplication.getInstance().getCurrentActivity();
 
                             if (currentActivity != null && currentActivity.getWindow().isActive() && currentActivity instanceof BaseActivity
                                     && ((BaseActivity)currentActivity).currentState == BaseActivity.FLActivityState.FLActivityStateResumed) {
                                 showTentative[0] = 0;
-                                popupWindow.showAtLocation(currentActivity.findViewById(android.R.id.content), Gravity.TOP, 0, view.getMeasuredHeight() / 2 + 10);
-                                popupWindow.setAnimationStyle(R.style.alert_animation);
 
-                                Handler handler = new Handler(Looper.getMainLooper());
-                                handler.postDelayed(new Runnable() {
+                                currentActivity.findViewById(android.R.id.content).post(new Runnable() {
                                     @Override
                                     public void run() {
                                         try {
-                                            if (popupWindow.isShowing())
-                                                popupWindow.dismiss();
-                                        } catch (final IllegalArgumentException e) {
-                                            // Handle or log or ignore
+                                            popupWindow.showAtLocation(currentActivity.findViewById(android.R.id.content), Gravity.TOP, 0, view.getMeasuredHeight() / 2 + 10);
+                                            popupWindow.setAnimationStyle(R.style.alert_animation);
+                                        } catch (WindowManager.BadTokenException e) {
+                                            e.printStackTrace();
+                                            showHandler.removeCallbacks(this);
+                                            showHandler.postDelayed(this, 200);
+                                            return;
                                         }
+
+                                        Handler handler = new Handler(Looper.getMainLooper());
+                                        handler.postDelayed(new Runnable() {
+                                            @Override
+                                            public void run() {
+                                                try {
+                                                    if (popupWindow.isShowing())
+                                                        popupWindow.dismiss();
+                                                } catch (final IllegalArgumentException e) {
+                                                    // Handle or log or ignore
+                                                }
+                                            }
+                                        }, content.time.intValue() * 1000);
                                     }
-                                }, content.time.intValue() * 1000);
+                                });
                             } else if (showTentative[0] < 5) {
                                 showHandler.removeCallbacks(this);
                                 showHandler.postDelayed(this, 200);
