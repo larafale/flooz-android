@@ -22,7 +22,6 @@ import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
 import com.facebook.FacebookException;
-import com.facebook.FacebookSdk;
 import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
@@ -57,29 +56,11 @@ import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Model.FLTrigger;
 import me.flooz.app.Model.FLUser;
 import me.flooz.app.R;
-import me.flooz.app.UI.Activity.EditProfileActivity;
-import me.flooz.app.UI.Activity.FriendsActivity;
-import me.flooz.app.UI.Activity.HomeActivity;
-import me.flooz.app.UI.Activity.NewTransactionActivity;
-import me.flooz.app.UI.Activity.NotificationActivity;
-import me.flooz.app.UI.Activity.Secure3DActivity;
-import me.flooz.app.UI.Activity.Settings.BankSettingsActivity;
-import me.flooz.app.UI.Activity.Settings.IdentitySettingsActivity;
-import me.flooz.app.UI.Activity.Settings.CreditCardSettingsActivity;
-import me.flooz.app.UI.Activity.Settings.DocumentsSettingsActivity;
-import me.flooz.app.UI.Activity.Settings.SetSecureCodeActivity;
-import me.flooz.app.UI.Activity.ShareAppActivity;
-import me.flooz.app.UI.Activity.StartActivity;
-import me.flooz.app.UI.Activity.TransactionActivity;
-import me.flooz.app.UI.Activity.ValidateSMSActivity;
-import me.flooz.app.UI.Fragment.Home.TabFragments.TransactionCardFragment;
 import me.flooz.app.UI.Tools.CustomToast;
-import me.flooz.app.UI.View.CustomDialog;
 import me.flooz.app.Utils.ContactsManager;
 import me.flooz.app.Utils.CustomNotificationIntents;
 import me.flooz.app.Utils.DeviceManager;
 import me.flooz.app.Utils.FLTriggerManager;
-import me.flooz.app.Utils.JSONHelper;
 import me.flooz.app.Utils.NotificationsManager;
 
 /**
@@ -1280,6 +1261,27 @@ public class FloozRestClient
                     ret.put("transactions", transactions);
                     ret.put("nextUrl", jsonResponse.optString("next"));
                     responseHandler.success(ret);
+                }
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+                if (responseHandler != null)
+                    responseHandler.failure(statusCode, error);
+            }
+        });
+    }
+
+    public void createCollect(Map<String, Object> params, final FloozHttpResponseHandler responseHandler) {
+        if (getSecureCode() != null) {
+            params.put("secureCode", getSecureCode());
+        }
+
+        this.request("/pots", HttpRequestType.POST, params, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                if (responseHandler != null) {
+                    responseHandler.success(response);
                 }
             }
 

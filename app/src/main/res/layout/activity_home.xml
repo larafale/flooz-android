@@ -8,253 +8,244 @@
     android:clipChildren="false"
     android:clipToPadding="false">
 
-    <FrameLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:id="@+id/fragment_container"
-        android:layout_marginBottom="@dimen/tab_bar_size"/>
-
-    <LinearLayout
-        android:id="@+id/tab_bar"
-        android:layout_width="fill_parent"
-        android:layout_height="@dimen/tab_bar_height"
-        android:layout_alignParentBottom="true"
-        android:orientation="vertical"
+    <RelativeLayout
+        android:id="@+id/content_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:clipChildren="false"
         android:clipToPadding="false">
 
-        <View
-            android:layout_width="fill_parent"
-            android:layout_height="@dimen/tab_bar_shadow"
-            android:background="@drawable/tab_bar_background" />
-
-        <LinearLayout
+        <FrameLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:orientation="horizontal"
+            android:id="@+id/fragment_container"
+            android:layout_marginBottom="@dimen/tab_bar_size"/>
+
+        <LinearLayout
+            android:id="@+id/tab_bar"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/tab_bar_height"
+            android:layout_alignParentBottom="true"
+            android:orientation="vertical"
             android:clipChildren="false"
-            android:clipToPadding="false"
-            android:gravity="bottom"
-            >
+            android:clipToPadding="false">
+
+            <View
+                android:layout_width="fill_parent"
+                android:layout_height="@dimen/tab_bar_shadow"
+                android:background="@drawable/tab_bar_background" />
 
             <LinearLayout
-                android:layout_width="0dp"
+                android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center"
-                android:id="@+id/home_tab">
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:id="@+id/home_tab_image"
-                        android:layout_width="@dimen/tab_bar_icon"
-                        android:layout_height="@dimen/tab_bar_icon"
-                        android:src="@drawable/tab1"
-                        />
-
-                    <TextView
-                        android:id="@+id/home_tab_badge"
-                        android:layout_width="@dimen/tab_bar_badge_size"
-                        android:layout_height="@dimen/tab_bar_badge_size"
-                        android:gravity="center"
-                        android:padding="2dp"
-                        android:textSize="@dimen/tab_bar_badge_text"
-                        android:textColor="@android:color/white"
-                        android:visibility="gone"
-                        android:background="@drawable/notification_alert_background"
-                        android:layout_alignRight="@id/home_tab_image"/>
-
-                </RelativeLayout>
-
-                <TextView
-                    android:id="@+id/home_tab_text"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:textColor="@android:color/white"
-                    android:text="@string/MENU_HOME"
-                    android:textSize="@dimen/tab_bar_text"
-                    android:gravity="center"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/notif_tab"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:id="@+id/notif_tab_image"
-                        android:layout_width="@dimen/tab_bar_icon"
-                        android:layout_height="@dimen/tab_bar_icon"
-                        android:src="@drawable/tab2"
-                        />
-
-                    <TextView
-                        android:id="@+id/notif_tab_badge"
-                        android:layout_width="@dimen/tab_bar_badge_size"
-                        android:layout_height="@dimen/tab_bar_badge_size"
-                        android:gravity="center"
-                        android:padding="2dp"
-                        android:textColor="@android:color/white"
-                        android:textSize="@dimen/tab_bar_badge_text"
-                        android:visibility="gone"
-                        android:background="@drawable/notification_alert_background"
-                        android:layout_alignRight="@id/notif_tab_image"/>
-
-                </RelativeLayout>
-
-
-                <TextView
-                    android:id="@+id/notif_tab_text"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:textColor="@android:color/white"
-                    android:text="@string/MENU_NOTIF"
-                    android:textSize="@dimen/tab_bar_text"
-                    android:gravity="center"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/flooz_tab"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:orientation="vertical"
-                android:gravity="center"
+                android:orientation="horizontal"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                android:layout_marginBottom="@dimen/dimen_xsmall">
+                android:gravity="bottom"
+                >
 
-                <ImageView
-                    android:id="@+id/flooz_tab_image"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:src="@drawable/home_button"
-                    />
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:id="@+id/home_tab">
 
-            </LinearLayout>
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
 
-            <LinearLayout
-                android:id="@+id/share_tab"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
+                        <ImageView
+                            android:id="@+id/home_tab_image"
+                            android:layout_width="@dimen/tab_bar_icon"
+                            android:layout_height="@dimen/tab_bar_icon"
+                            android:src="@drawable/tab1"
+                            />
 
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
+                        <TextView
+                            android:id="@+id/home_tab_badge"
+                            android:layout_width="@dimen/tab_bar_badge_size"
+                            android:layout_height="@dimen/tab_bar_badge_size"
+                            android:gravity="center"
+                            android:padding="2dp"
+                            android:textSize="@dimen/tab_bar_badge_text"
+                            android:textColor="@android:color/white"
+                            android:visibility="gone"
+                            android:background="@drawable/notification_alert_background"
+                            android:layout_alignRight="@id/home_tab_image"/>
 
-                    <ImageView
-                        android:id="@+id/share_tab_image"
-                        android:layout_width="@dimen/tab_bar_icon"
-                        android:layout_height="@dimen/tab_bar_icon"
-                        android:src="@drawable/tab3a"
-                        />
-
-                    <TextView
-                        android:id="@+id/share_tab_badge"
-                        android:layout_width="@dimen/tab_bar_badge_size"
-                        android:layout_height="@dimen/tab_bar_badge_size"
-                        android:gravity="center"
-                        android:padding="2dp"
-                        android:textSize="@dimen/tab_bar_badge_text"
-                        android:textColor="@android:color/white"
-                        android:visibility="gone"
-                        android:background="@drawable/notification_alert_background"
-                        android:layout_alignRight="@id/share_tab_image"/>
-
-                </RelativeLayout>
-
-                <TextView
-                    android:id="@+id/share_tab_text"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:textColor="@android:color/white"
-                    android:text="@string/MENU_SHARE"
-                    android:textSize="@dimen/tab_bar_text"
-                    android:gravity="center"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/account_tab"
-                android:layout_width="0dp"
-                android:layout_height="fill_parent"
-                android:layout_weight="1"
-                android:orientation="vertical"
-                android:gravity="center">
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content">
-
-                    <ImageView
-                        android:id="@+id/account_tab_image"
-                        android:layout_width="@dimen/tab_bar_icon"
-                        android:layout_height="@dimen/tab_bar_icon"
-                        android:src="@drawable/tab4"
-                        />
+                    </RelativeLayout>
 
                     <TextView
-                        android:id="@+id/account_tab_badge"
-                        android:layout_width="@dimen/tab_bar_badge_size"
-                        android:layout_height="@dimen/tab_bar_badge_size"
-                        android:gravity="center"
-                        android:padding="2dp"
-                        android:textSize="@dimen/tab_bar_badge_text"
+                        android:id="@+id/home_tab_text"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
                         android:textColor="@android:color/white"
-                        android:visibility="gone"
-                        android:background="@drawable/notification_alert_background"
-                        android:layout_alignRight="@id/account_tab_image"/>
+                        android:text="@string/MENU_HOME"
+                        android:textSize="@dimen/tab_bar_text"
+                        android:gravity="center"/>
 
-                </RelativeLayout>
+                </LinearLayout>
 
-                <TextView
-                    android:id="@+id/account_tab_text"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:textColor="@android:color/white"
-                    android:text="@string/MENU_ACCOUNT"
-                    android:textSize="@dimen/tab_bar_text"
-                    android:gravity="center"/>
+                <LinearLayout
+                    android:id="@+id/notif_tab"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
 
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/notif_tab_image"
+                            android:layout_width="@dimen/tab_bar_icon"
+                            android:layout_height="@dimen/tab_bar_icon"
+                            android:src="@drawable/tab2"
+                            />
+
+                        <TextView
+                            android:id="@+id/notif_tab_badge"
+                            android:layout_width="@dimen/tab_bar_badge_size"
+                            android:layout_height="@dimen/tab_bar_badge_size"
+                            android:gravity="center"
+                            android:padding="2dp"
+                            android:textColor="@android:color/white"
+                            android:textSize="@dimen/tab_bar_badge_text"
+                            android:visibility="gone"
+                            android:background="@drawable/notification_alert_background"
+                            android:layout_alignRight="@id/notif_tab_image"/>
+
+                    </RelativeLayout>
+
+
+                    <TextView
+                        android:id="@+id/notif_tab_text"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:textColor="@android:color/white"
+                        android:text="@string/MENU_NOTIF"
+                        android:textSize="@dimen/tab_bar_text"
+                        android:gravity="center"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/flooz_tab"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:orientation="vertical"
+                    android:gravity="center"
+                    android:clipChildren="false"
+                    android:clipToPadding="false"
+                    android:layout_marginBottom="@dimen/dimen_xsmall">
+
+                    <ImageView
+                        android:id="@+id/flooz_tab_image"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:src="@drawable/home_button"
+                        />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/share_tab"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/share_tab_image"
+                            android:layout_width="@dimen/tab_bar_icon"
+                            android:layout_height="@dimen/tab_bar_icon"
+                            android:src="@drawable/tab3a"
+                            />
+
+                        <TextView
+                            android:id="@+id/share_tab_badge"
+                            android:layout_width="@dimen/tab_bar_badge_size"
+                            android:layout_height="@dimen/tab_bar_badge_size"
+                            android:gravity="center"
+                            android:padding="2dp"
+                            android:textSize="@dimen/tab_bar_badge_text"
+                            android:textColor="@android:color/white"
+                            android:visibility="gone"
+                            android:background="@drawable/notification_alert_background"
+                            android:layout_alignRight="@id/share_tab_image"/>
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/share_tab_text"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:textColor="@android:color/white"
+                        android:text="@string/MENU_SHARE"
+                        android:textSize="@dimen/tab_bar_text"
+                        android:gravity="center"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/account_tab"
+                    android:layout_width="0dp"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:gravity="center">
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
+
+                        <ImageView
+                            android:id="@+id/account_tab_image"
+                            android:layout_width="@dimen/tab_bar_icon"
+                            android:layout_height="@dimen/tab_bar_icon"
+                            android:src="@drawable/tab4"
+                            />
+
+                        <TextView
+                            android:id="@+id/account_tab_badge"
+                            android:layout_width="@dimen/tab_bar_badge_size"
+                            android:layout_height="@dimen/tab_bar_badge_size"
+                            android:gravity="center"
+                            android:padding="2dp"
+                            android:textSize="@dimen/tab_bar_badge_text"
+                            android:textColor="@android:color/white"
+                            android:visibility="gone"
+                            android:background="@drawable/notification_alert_background"
+                            android:layout_alignRight="@id/account_tab_image"/>
+
+                    </RelativeLayout>
+
+                    <TextView
+                        android:id="@+id/account_tab_text"
+                        android:layout_width="fill_parent"
+                        android:layout_height="wrap_content"
+                        android:singleLine="true"
+                        android:textColor="@android:color/white"
+                        android:text="@string/MENU_ACCOUNT"
+                        android:textSize="@dimen/tab_bar_text"
+                        android:gravity="center"/>
+
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
-
-    <RelativeLayout
-        android:id="@+id/main_transac_container"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@color/black_alpha"
-        android:visibility="gone"
-        android:clickable="true">
-
-        <FrameLayout
-            android:id="@+id/main_transac_view"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/dimen_xlarge"
-            android:background="@color/background_header"
-            android:layout_centerInParent="true"/>
 
     </RelativeLayout>
 
@@ -289,6 +280,68 @@
             android:layout_alignParentRight="true"
             android:padding="@dimen/dimen_large"
             android:layout_margin="@dimen/dimen_large"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/home_menu_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/home_menu_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <TextView
+            android:id="@+id/home_menu_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_medium"
+            android:gravity="center"
+            android:textColor="@color/blue"
+            android:text="Choisissez une option"
+            android:textSize="25sp"
+            android:layout_marginBottom="@dimen/dimen_small"
+            android:layout_centerHorizontal="true"/>
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/dimen_medium"
+            android:layout_marginRight="@dimen/dimen_medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_below="@id/home_menu_title"
+            android:layout_above="@+id/home_menu_close">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingLeft="@dimen/dimen_small"
+                android:paddingRight="@dimen/dimen_small"
+                android:paddingTop="@dimen/dimen_small"
+                android:paddingBottom="@dimen/dimen_small"
+                android:background="@color/red">
+
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp" />
+
+            </RelativeLayout>
+
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/home_menu_close"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/home_button"
+            />
 
     </RelativeLayout>
 

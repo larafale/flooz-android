@@ -16,6 +16,7 @@ public class FLPreset {
     public FLUser to;
     public Number amount;
     public String why;
+    public String name;
     public String whyPlaceholder;
     public String title;
     public Map payload;
@@ -43,6 +44,9 @@ public class FLPreset {
 
         if (json.has("amount"))
             this.amount = json.optDouble("amount");
+
+        if (json.has("name"))
+            this.name = json.optString("name");
 
         if (json.has("whyPlaceholder"))
             this.whyPlaceholder = json.optString("whyPlaceholder");

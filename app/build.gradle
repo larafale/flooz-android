@@ -9,7 +9,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.0.0-rc3'
+        classpath 'com.android.tools.build:gradle:2.0.0'
         classpath 'io.fabric.tools:gradle:1.20.1'
     }
 }
@@ -98,8 +98,8 @@ android {
         applicationId "me.flooz.app"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 43
-        versionName "2.2.10"
+        versionCode 50
+        versionName "2.3.0"
         signingConfig signingConfigs.release
         renderscriptTargetApi 20
         renderscriptSupportModeEnabled true
@@ -129,13 +129,14 @@ repositories {
     maven { url "https://jitpack.io" }
     maven { url 'https://maven.fabric.io/public' }
     maven { url "http://jzaccone.github.io/SlidingMenu-aar" }
+    maven { url 'https://github.com/500px/500px-android-blur/raw/master/releases/' }
 }
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    compile 'com.android.support:appcompat-v7:23.2.0'
-    compile 'com.android.support:support-v4:23.2.0'
-    compile 'com.android.support:support-v13:23.2.0'
+    compile 'com.android.support:appcompat-v7:23.3.0'
+    compile 'com.android.support:support-v4:23.3.0'
+    compile 'com.android.support:support-v13:23.3.0'
     compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
     compile 'com.makeramen:roundedimageview:2.2.1'
@@ -166,5 +167,10 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:23.+'
     compile "com.daimajia.swipelayout:library:1.+@aar"
     compile 'com.onesignal:OneSignal:2.+@aar'
+    compile 'jp.wasabeef:blurry:2.0.0'
+    compile 'com.github.florent37:viewanimator:1.0.3@aar'
+    compile 'com.github.dbachelder:CreditCardEntry:1.4.7'
+    compile 'com.github.ajalt.reprint:core:2.5.6@aar'
+    compile 'com.shootr:KMNumbers:1.0.0'
     compile project(':tooltips')
 }

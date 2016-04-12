@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyDashes">
 
+    <string name="facebook_app_id" translatable="false">152779318256915</string>
+
     <string name="GLOBAL_OR">ou</string>
     <string name="GLOBAL_OK">OK</string>
     <string name="GLOBAL_BY">par</string>
@@ -95,6 +97,7 @@
     <string name="CASHOUT_BUTTON">Virer %s</string>
 
     <string name="NEW_TRANSACTION">Flooz</string>
+    <string name="NEW_COLLECT">Cagnotte</string>
 
     <string name="INFORMATIONS_WHY">Sécurité</string>
     <string name="INFORMATIONS_TERMS">Conditions d\'utilisation</string>
@@ -165,7 +168,7 @@
     <string name="FIELD_TRANSACTION_TITLE_PLACEHOLDER">Restaurant entre amis</string>
     <string name="FIELD_TRANSACTION_TO">À :</string>
     <string name="FIELD_TRANSACTION_TO_PLACEHOLDER">Personnes à notifier</string>
-    <string name="FIELD_TRANSACTION_CONTENT_PLACEHOLDER">Ajouter un commentaire…</string>
+    <string name="FIELD_TRANSACTION_CONTENT_PLACEHOLDER">Ajouter une description…</string>
     <string name="FIELD_TRANSACTION_EVENT_PLACEHOLDER">Ajouter plus d\'info…</string>
     <string name="FIELD_TRANSACTION_SELECT_FRIEND">A qui ?</string>
     <string name="FIELD_TRANSACTION_HIDE">Masquer ma participation</string>
@@ -183,7 +186,8 @@
 
     <string name="MENU_EDIT_PROFILE">Éditer mon profil</string>
     <string name="MENU_PAYMENT">Payer</string>
-    <string name="MENU_COLLECT">Réclamer</string>
+    <string name="MENU_CHARGE">Réclamer</string>
+    <string name="MENU_COLLECT">Créer</string>
     <string name="MENU_NEW_FLOOZ">Floozer @%s</string>
     <string name="MENU_ADD_FRIENDS">Ajouter aux amis</string>
     <string name="MENU_REMOVE_FRIENDS">Supprimer des amis</string>

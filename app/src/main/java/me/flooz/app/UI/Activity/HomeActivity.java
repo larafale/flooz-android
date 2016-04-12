@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.hardware.input.InputManager;
+import android.media.Image;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -30,6 +31,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import jp.wasabeef.blurry.Blurry;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLShareText;
 import me.flooz.app.Model.FLTrigger;
@@ -124,6 +126,11 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
     private ProgressBar imageViewerProgress;
     private ImageView imageViewerImage;
     private PhotoViewAttacher imageViewerAttacher;
+
+    private RelativeLayout homeButtonView;
+    private ImageView homeButtonBackground;
+    private ImageView homeButtonClose;
+    private TextView homeButtonTitle;
 
     private InputMethodManager imm;
 
@@ -230,6 +237,11 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
         this.shareTabBadge = (TextView) this.findViewById(R.id.share_tab_badge);
         this.accountTabBadge = (TextView) this.findViewById(R.id.account_tab_badge);
 
+        this.homeButtonView = (RelativeLayout) this.findViewById(R.id.home_menu_container);
+        this.homeButtonBackground = (ImageView) this.findViewById(R.id.home_menu_background);
+        this.homeButtonClose = (ImageView) this.findViewById(R.id.home_menu_close);
+        this.homeButtonTitle = (TextView) this.findViewById(R.id.home_menu_title);
+
         int clearColor = this.getResources().getColor(R.color.placeholder);
         Typeface titleTypeface = CustomFonts.customContentLight(this);
         Typeface badgeTypeface = CustomFonts.customContentRegular(this);
@@ -238,6 +250,7 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
         this.notifTabText.setTypeface(titleTypeface);
         this.shareTabText.setTypeface(titleTypeface);
         this.accountTabText.setTypeface(titleTypeface);
+        this.homeButtonTitle.setTypeface(titleTypeface);
 
         this.homeTabBadge.setTypeface(badgeTypeface);
         this.notifTabBadge.setTypeface(badgeTypeface);
@@ -325,24 +338,26 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
         this.floozTabImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (FloozRestClient.getInstance().currentUser.ux != null
-                        && FloozRestClient.getInstance().currentUser.ux.has("homeButton")) {
+//                homeButtonView.setVisibility(View.VISIBLE);
+//                Blurry.with(HomeActivity.this)
+//                        .radius(35)
+//                        .sampling(1)
+//                        .async()
+//                        .capture(findViewById(R.id.content_view))
+//                        .into(homeButtonBackground);
 
-                    if (FloozRestClient.getInstance().currentUser.ux.has("homeButton")) {
-                        if (FloozRestClient.getInstance().currentUser.ux.opt("homeButton") instanceof JSONArray) {
-                            FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(FloozRestClient.getInstance().currentUser.ux.optJSONArray("homeButton")));
-                        } else if (FloozRestClient.getInstance().currentUser.ux.opt("homeButton") instanceof JSONObject) {
-                            FLTrigger tmp = new FLTrigger(FloozRestClient.getInstance().currentUser.ux.optJSONObject("homeButton"));
 
-                            if (tmp.valid)
-                                FLTriggerManager.getInstance().executeTrigger(tmp);
-                        }
-                    }
-                } else {
-                    Intent intent = new Intent(instance, NewTransactionActivity.class);
+                    Intent intent = new Intent(instance, NewCollectActivity.class);
                     instance.startActivity(intent);
                     instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-                }
+
+            }
+        });
+
+        this.homeButtonClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                homeButtonView.setVisibility(View.GONE);
             }
         });
 
@@ -458,6 +473,13 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
                 }
             }, 100);
         }
+
+        Blurry.with(HomeActivity.this)
+                .radius(35)
+                .sampling(1)
+                .async()
+                .capture(findViewById(R.id.content_view))
+                .into(homeButtonBackground);
     }
 
     protected void onPause() {

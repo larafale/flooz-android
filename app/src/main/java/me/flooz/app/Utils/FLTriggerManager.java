@@ -19,7 +19,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +43,7 @@ import me.flooz.app.UI.Activity.CashoutActivity;
 import me.flooz.app.UI.Activity.EditProfileActivity;
 import me.flooz.app.UI.Activity.FriendRequestActivity;
 import me.flooz.app.UI.Activity.HomeActivity;
+import me.flooz.app.UI.Activity.NewCollectActivity;
 import me.flooz.app.UI.Activity.NewTransactionActivity;
 import me.flooz.app.UI.Activity.NotificationActivity;
 import me.flooz.app.UI.Activity.SearchActivity;
@@ -803,6 +803,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
         this.binderKeyActivity = new HashMap<String, Class>() {{
             put("app:cashout", CashoutActivity.class);
             put("app:flooz", NewTransactionActivity.class);
+            put("app:pot", NewCollectActivity.class);
             put("app:promo", SponsorActivity.class);
             put("app:search", SearchActivity.class);
             put("app:notifs", NotificationActivity.class);
@@ -853,6 +854,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
         this.binderKeyType = new HashMap<String, String>() {{
             put("app:cashout", "modal");
             put("app:flooz", "modal");
+            put("app:pot", "modal");
             put("app:promo", "modal");
             put("app:search", "modal");
             put("app:notifs", "root");
