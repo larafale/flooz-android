@@ -28,4 +28,10 @@ public class CustomNotificationIntents
 
     public static Intent reloadInvitation() {return new Intent("NotificationReloadInvitation");}
     public static IntentFilter filterReloadInvitation() {return new IntentFilter("NotificationReloadInvitation");}
+
+    public static Intent reloadCollect() {return new Intent("NotificationReloadCollect");}
+    public static IntentFilter filterReloadCollect() {return new IntentFilter("NotificationReloadCollect");}
+
+    public static Intent reloadTransaction() {return new Intent("NotificationReloadTransaction");}
+    public static IntentFilter filterReloadTransaction() {return new IntentFilter("NotificationReloadTransaction");}
 }

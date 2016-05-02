@@ -31,6 +31,7 @@ import cz.msebera.android.httpclient.message.BasicHeader;
 import cz.msebera.android.httpclient.protocol.HTTP;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
+import me.flooz.app.Model.FLReport;
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Model.FLTrigger;
 import me.flooz.app.Model.FLUser;
@@ -79,6 +80,9 @@ import me.flooz.app.UI.Fragment.Home.TabFragments.TabBarFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.TimelineFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.TransactionCardFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.WebFragment;
+import me.flooz.app.UI.Tools.ActionSheet;
+import me.flooz.app.UI.Tools.ActionSheetItem;
+import me.flooz.app.UI.Tools.CustomToast;
 import me.flooz.app.UI.View.CustomDialog;
 
 /**
@@ -487,6 +491,26 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
                         FLTriggerManager.this.executeTriggerList(trigger.triggers);
                     }
                 }, null);
+            } else if (this.trigger.categoryView.contentEquals("app:alert")) {
+                FLError errorContent = new FLError(trigger.data);
+                CustomToast.show(FloozApplication.getAppContext(), errorContent);
+            } else if (this.trigger.categoryView.contentEquals("app:list")) {
+                List<ActionSheetItem> items = new ArrayList<>();
+
+                JSONArray itemArray = trigger.data.optJSONArray("items");
+
+                for (int i = 0; i < itemArray.length(); i++) {
+                    final JSONObject itemData = itemArray.optJSONObject(i);
+
+                    items.add(new ActionSheetItem(FloozApplication.getAppContext(), itemData.optString("name"), new ActionSheetItem.ActionSheetItemClickListener() {
+                        @Override
+                        public void onClick() {
+                            FLTriggerManager.this.executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(itemData.optJSONArray("triggers")));
+                        }
+                    }));
+                }
+
+                ActionSheet.showWithItems(FloozApplication.getInstance().getCurrentActivity(), items);
             } else if (this.trigger.categoryView.contentEquals("app:sms")) {
                 if (this.trigger.data != null && this.trigger.data.has("recipients") && this.trigger.data.has("body")) {
                     String uri = "smsto:";
@@ -764,7 +788,19 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
                     });
                     break;
                 case "flooz":
-                    FloozApplication.performLocalNotification(CustomNotificationIntents.reloadTimeline());
+                    Intent intent = CustomNotificationIntents.reloadTimeline();
+
+                    intent.putExtra("id", trigger.data.optString("_id"));
+
+                    FloozApplication.performLocalNotification(intent);
+                    FLTriggerManager.this.executeTriggerList(trigger.triggers);
+                    break;
+                case "pot":
+                    Intent intentCollect = CustomNotificationIntents.reloadTimeline();
+
+                    intentCollect.putExtra("id", trigger.data.optString("_id"));
+
+                    FloozApplication.performLocalNotification(intentCollect);
                     FLTriggerManager.this.executeTriggerList(trigger.triggers);
                     break;
                 case "profile":

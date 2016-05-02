@@ -59,6 +59,7 @@ public class FLTransaction {
 
     public TransactionScope scope;
     public String title;
+    public String name;
     public String content;
     public String attachmentURL;
     public String attachmentThumbURL;
@@ -67,21 +68,31 @@ public class FLTransaction {
 
     public List text3d;
 
-    public Boolean isPrivate;
     public Boolean isCancelable;
     public Boolean isAcceptable;
+
+    public Boolean isAvailable;
+    public Boolean isClosable;
+
+    public Boolean isCollect;
+    public Boolean isParticipation;
 
     public MomentDate date;
 
     public FLUser from;
     public FLUser to;
     public FLUser starter;
+    public FLUser creator;
+
+    public List<FLUser> participants;
 
     public FLSocial social;
 
     public List comments;
 
     public Boolean haveAction;
+
+    public JSONObject actions;
 
     public JSONObject json;
 
@@ -112,11 +123,17 @@ public class FLTransaction {
                 if (json.has("state"))
                     this.status = transactionStatusParamToEnum(json.getString("state"));
 
+                this.isCollect = json.optBoolean("isPot");
+                this.isParticipation = json.optBoolean("isParticipation");
+
                 if (json.has("amount")) {
                     this.amount = json.getDouble("amount");
-                    if (!this.amount.equals(0) && json.getBoolean("payer"))
+                    if (!this.amount.equals(0) && !this.isCollect && json.getBoolean("payer"))
                         this.amount = this.amount.floatValue() * -1.0;
                 }
+
+                this.isCollect = json.optBoolean("isPot");
+                this.isParticipation = json.optBoolean("isParticipation");
 
                 this.amountText = json.optString("amountText");
 
@@ -125,41 +142,73 @@ public class FLTransaction {
                 if (this.avatarURL.equals("/img/nopic.png"))
                     this.avatarURL = null;
 
-                this.title = json.getString("text");
-                this.content = json.getString("why");
+                this.name = json.optString("name");
+                this.title = json.optString("text");
+                this.content = json.optString("why");
 
                 this.attachmentURL = json.optString("pic");
                 this.attachmentThumbURL = json.optString("picMini");
 
                 this.social = new FLSocial(json);
 
-                this.isPrivate = json.getString("scopeString").contentEquals("private");
 
                 this.scope = transactionScopeParamToEnum(json.getString("scopeString"));
 
                 this.isCancelable = false;
                 this.isAcceptable = false;
 
-                this.haveAction = this.isPrivate && this.status == TransactionStatus.TransactionStatusPending;
+                this.isAvailable = false;
+                this.isClosable = false;
 
-                if (this.status == TransactionStatus.TransactionStatusPending) {
-                    if (json.has("actions")) {
-                        if (json.getJSONObject("actions").length() == 1)
-                            this.isCancelable = true;
-                        else if (json.getJSONObject("actions").length() == 2)
-                            this.isAcceptable = true;
+                this.haveAction = this.status == TransactionStatus.TransactionStatusPending;
+
+                if (json.has("actions") && json.get("actions") instanceof JSONObject)
+                    this.actions = json.optJSONObject("actions");
+
+                if (this.isCollect && this.actions != null) {
+                    if (this.actions.has("participate"))
+                        isAvailable = true;
+
+                    if (this.actions.has("close"))
+                        isClosable = true;
+                }
+
+                if (!this.isCollect && this.actions != null) {
+                    if (this.actions.has("accept"))
+                        isAcceptable = true;
+
+                    if (this.actions.has("decline"))
+                        isCancelable = true;
+                }
+
+                if (json.has("from"))
+                    this.from = new FLUser(json.optJSONObject("from"));
+
+                if (json.has("to"))
+                    this.to = new FLUser(json.optJSONObject("to"));
+
+                if (json.has("creator") && json.get("creator") instanceof JSONObject) {
+                    this.creator = new FLUser(json.optJSONObject("creator"));
+                }
+
+                if (json.has("participants")) {
+                    this.participants = new ArrayList<>();
+
+                    JSONArray arrayParticipants = json.getJSONArray("participants");
+
+                    for (int i = 0; i < arrayParticipants.length(); i++) {
+                        this.participants.add(new FLUser(arrayParticipants.getJSONObject(i)));
                     }
                 }
 
-                this.from = new FLUser(json.getJSONObject("from"));
-                this.to = new FLUser(json.getJSONObject("to"));
+                if (!this.isCollect) {
+                    String starterId = json.optJSONObject("starter").optString("_id");
 
-                String starterId = json.optJSONObject("starter").optString("_id");
-
-                if (starterId.contentEquals(this.from.userId))
-                    this.starter = this.from;
-                else
-                    this.starter = this.to;
+                    if (starterId.contentEquals(this.from.userId))
+                        this.starter = this.from;
+                    else
+                        this.starter = this.to;
+                }
 
                 this.date = new MomentDate(FloozApplication.getAppContext(), json.getString("cAt"));
 

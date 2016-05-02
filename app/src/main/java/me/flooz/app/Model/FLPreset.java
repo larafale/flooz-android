@@ -15,12 +15,15 @@ public class FLPreset {
 
     public FLUser to;
     public Number amount;
+    public String presetId;
     public String why;
     public String name;
     public String whyPlaceholder;
     public String title;
     public Map payload;
     public String image;
+    public String collectName;
+    public boolean isParticipation = false;
     public boolean blockAmount = false;
     public boolean blockTo = false;
     public boolean close = true;
@@ -39,8 +42,18 @@ public class FLPreset {
     }
 
     private void setJson(JSONObject json) {
-        if (json.has("to"))
-            this.to = new FLUser(json.optJSONObject("to"));
+
+        if (json.has("isParticipation"))
+            this.isParticipation = json.optBoolean("isParticipation");
+
+        if (this.isParticipation) {
+            this.collectName = json.optString("to");
+        } else {
+            if (json.has("to"))
+                this.to = new FLUser(json.optJSONObject("to"));
+        }
+
+        this.presetId = json.optString("_id");
 
         if (json.has("amount"))
             this.amount = json.optDouble("amount");

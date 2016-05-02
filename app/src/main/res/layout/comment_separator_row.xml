@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/background">
+
+    <LinearLayout
+        android:layout_centerVertical="true"
+        android:id="@+id/social_separator_like"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/social_separator_like_img"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:scaleType="centerInside"
+            android:padding="@dimen/dimen_medium"
+            android:layout_marginLeft="@dimen/dimen_medium"
+            android:src="@drawable/social_like"/>
+
+        <TextView
+            android:id="@+id/social_separator_like_text"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:textSize="13sp"
+            android:gravity="center_vertical|left"
+            android:minWidth="40dp"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/social_separator_comment"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="@dimen/dimen_medium"
+        android:layout_toRightOf="@id/social_separator_like">
+
+        <ImageView
+            android:id="@+id/social_separator_comment_img"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="@dimen/dimen_medium"
+            android:scaleType="centerInside"
+            android:layout_marginLeft="@dimen/dimen_medium"
+            android:src="@drawable/social_comment"/>
+
+        <TextView
+            android:id="@+id/social_separator_comment_text"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:textSize="13sp"
+            android:gravity="center_vertical|left"
+            android:minWidth="40dp"/>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/social_separator_more"
+        android:layout_alignParentRight="true"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:padding="@dimen/dimen_medium"
+        android:layout_centerVertical="true"
+        android:scaleType="centerInside"
+        android:layout_marginRight="@dimen/dimen_large"
+        android:src="@drawable/social_more"/>
+
+</RelativeLayout>

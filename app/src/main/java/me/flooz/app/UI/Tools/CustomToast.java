@@ -112,7 +112,7 @@ public class CustomToast {
                             ++showTentative[0];
                             final Activity currentActivity = FloozApplication.getInstance().getCurrentActivity();
 
-                            if (currentActivity != null && currentActivity.getWindow().isActive() && currentActivity instanceof BaseActivity
+                            if (currentActivity != null && currentActivity.getWindow().isActive() && currentActivity instanceof BaseActivity && !currentActivity.isFinishing()
                                     && ((BaseActivity)currentActivity).currentState == BaseActivity.FLActivityState.FLActivityStateResumed) {
                                 showTentative[0] = 0;
 

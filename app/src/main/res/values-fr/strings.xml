@@ -31,6 +31,7 @@
     <string name="GLOBAL_LOADING">chargement…</string>
 
     <string name="SHARE_FLOOZ">Partager ce Flooz</string>
+    <string name="SHARE_COLLECT">Partager cette cagnotte</string>
 
     <string name="LOGOUT_INFO">Êtes-vous sûr de vouloir vous déconnecter ?</string>
 

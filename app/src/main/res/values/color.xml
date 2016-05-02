@@ -8,6 +8,7 @@
     <color name="background_social_button">#4A5565</color>
     <color name="green">#7AC283</color>
     <color name="red">#E17272</color>
+    <color name="red_alpha">#7FE17272</color>
     <color name="pink">#E26292</color>
     <color name="red_notifications">#D42E2E</color>
     <color name="yellow">#D5D17A</color>

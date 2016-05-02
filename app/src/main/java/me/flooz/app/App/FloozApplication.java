@@ -40,10 +40,12 @@ import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.CollectActivity;
 import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.StartActivity;
 import me.flooz.app.UI.Activity.TransactionActivity;
 import me.flooz.app.UI.Activity.UserProfileActivity;
+import me.flooz.app.UI.Fragment.Home.TabFragments.CollectFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.ProfileCardFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.TransactionCardFragment;
 import me.flooz.app.UI.Tools.ActionSheet;
@@ -377,6 +379,41 @@ public class FloozApplication extends BranchApp
                 Intent intent = new Intent(activity, TransactionActivity.class);
                 intent.putExtra("insertComment", insertComment);
                 intent.putExtra("transaction", transaction.json.toString());
+                activity.startActivity(intent);
+                activity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+            }
+        }
+    }
+
+
+    public void showCollect(FLTransaction collect) {
+        this.showCollect(collect, false, null);
+    }
+
+    public void showCollect(FLTransaction collect, Runnable completion) {
+        this.showCollect(collect, false, completion);
+    }
+
+    public void showCollect(FLTransaction collect, Boolean insertComment) {
+        this.showCollect(collect, insertComment, null);
+    }
+
+    public void showCollect(FLTransaction collect, Boolean insertComment, Runnable completion) {
+        Activity activity = this.getCurrentActivity();
+
+        if (activity != null) {
+            if (activity instanceof HomeActivity) {
+                FloozRestClient.getInstance().readNotification(collect.transactionId, null);
+                CollectFragment collectFragment = new CollectFragment();
+
+                collectFragment.insertComment = insertComment;
+                collectFragment.transaction = collect;
+
+                ((HomeActivity) activity).pushFragmentInCurrentTab(collectFragment, completion);
+            } else {
+                Intent intent = new Intent(activity, CollectActivity.class);
+                intent.putExtra("insertComment", insertComment);
+                intent.putExtra("collect", collect.json.toString());
                 activity.startActivity(intent);
                 activity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
             }

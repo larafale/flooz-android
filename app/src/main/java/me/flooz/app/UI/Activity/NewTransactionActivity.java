@@ -126,6 +126,7 @@ public class NewTransactionActivity extends BaseActivity implements ToolTipScope
     private ImageView scopePic;
     private TextView chargeButton;
     private TextView payButton;
+    private TextView participateButton;
     private ImageView capturePicButton;
     private ImageView locationButton;
 
@@ -167,8 +168,11 @@ public class NewTransactionActivity extends BaseActivity implements ToolTipScope
         this.currentPicture = null;
         this.havePicture = false;
 
-        if (this.preset.to != null)
-            this.currentReceiver = this.preset.to;
+        if (!this.preset.isParticipation) {
+            if (this.preset.to != null) {
+                this.currentReceiver = this.preset.to;
+            }
+        }
 
         if (this.preset.amount != null)
             this.savedAmount = this.preset.amount.toString();
@@ -261,6 +265,7 @@ public class NewTransactionActivity extends BaseActivity implements ToolTipScope
         this.locationButton = (ImageView) this.findViewById(R.id.new_transac_geo_button);
         this.chargeButton = (TextView) this.findViewById(R.id.new_transac_collect);
         this.payButton = (TextView) this.findViewById(R.id.new_transac_paid);
+        this.participateButton = (TextView) this.findViewById(R.id.new_transac_participate);
         this.tipContainer = (ToolTipLayout) this.findViewById(R.id.new_transac_tooltip_container);
         this.demoContainer = (ToolTipLayout) this.findViewById(R.id.new_transac_demo_container);
         RelativeLayout contentContainer = (RelativeLayout) this.findViewById(R.id.new_transac_content);
@@ -291,6 +296,7 @@ public class NewTransactionActivity extends BaseActivity implements ToolTipScope
         this.contentTextfield.setTypeface(CustomFonts.customContentRegular(this));
         this.chargeButton.setTypeface(CustomFonts.customTitleLight(this));
         this.payButton.setTypeface(CustomFonts.customTitleLight(this));
+        this.participateButton.setTypeface(CustomFonts.customTitleLight(this));
         this.headerBalance.setTypeface(CustomFonts.customTitleLight(this));
         this.toPicker.setTypeface(CustomFonts.customContentRegular(this));
         this.locationText.setTypeface(CustomFonts.customContentRegular(this));
@@ -412,6 +418,8 @@ public class NewTransactionActivity extends BaseActivity implements ToolTipScope
 
         if (this.currentReceiver != null)
             this.toPicker.addObject(this.currentReceiver);
+        else if (this.preset != null && this.preset.isParticipation)
+            this.toPicker.addObject(null, this.preset.collectName);
 
         if (this.preset != null && this.preset.blockTo) {
             this.toPicker.setFocusable(false);

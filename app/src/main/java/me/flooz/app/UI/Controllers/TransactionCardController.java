@@ -128,6 +128,26 @@ public class TransactionCardController extends BaseController {
         }
     };
 
+    private BroadcastReceiver reloadTransaction = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.hasExtra("id") && intent.getStringExtra("id").contentEquals(transaction.transactionId)) {
+                FloozRestClient.getInstance().transactionWithId(transaction.transactionId, new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        FLTransaction transac = new FLTransaction(((JSONObject) response).optJSONObject("item"));
+                        setTransaction(transac);
+                    }
+
+                    @Override
+                    public void failure(int statusCode, FLError error) {
+
+                    }
+                });
+            }
+        }
+    };
+
     public TransactionCardController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
@@ -410,6 +430,9 @@ public class TransactionCardController extends BaseController {
 
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadTransactionReceiver,
                 CustomNotificationIntents.filterReloadTimeline());
+
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadTransaction,
+                CustomNotificationIntents.filterReloadTransaction());
     }
 
     @Override

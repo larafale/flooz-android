@@ -40,6 +40,7 @@ import me.flooz.app.R;
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.UI.Activity.Settings.CreditCardSettingsActivity;
+import me.flooz.app.UI.Fragment.Home.TabFragments.CollectFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.NotificationsFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.ProfileCardFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.ProfileFragment;
@@ -204,8 +205,14 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
 
             @Override
             public void onSoftKeyboardHide() {
-                if (FloozApplication.getInstance().getCurrentActivity() instanceof HomeActivity)
-                    showTabBar();
+                if (FloozApplication.getInstance().getCurrentActivity() instanceof HomeActivity) {
+                    if ((currentFragment instanceof TransactionCardFragment || currentFragment instanceof CollectFragment)) {
+                        if (tabBar.getVisibility() == View.VISIBLE) {
+                            hideTabBar();
+                        }
+                    } else
+                        showTabBar();
+                }
             }
         });
 
@@ -347,9 +354,9 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
 //                        .into(homeButtonBackground);
 
 
-                    Intent intent = new Intent(instance, NewCollectActivity.class);
-                    instance.startActivity(intent);
-                    instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                Intent intent = new Intent(instance, NewCollectActivity.class);
+                instance.startActivity(intent);
+                instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
 
             }
         });
@@ -715,6 +722,14 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
         this.currentTabHistory.add(fragment);
         this.currentFragment = fragment;
 
+        if ((this.currentFragment instanceof TransactionCardFragment || this.currentFragment instanceof CollectFragment)) {
+            if (this.tabBar.getVisibility() == View.VISIBLE) {
+                this.hideTabBar();
+            }
+        } else if (this.tabBar.getVisibility() == View.VISIBLE) {
+            this.showTabBar();
+        }
+
         if (completion != null) {
             this.getFragmentManager().executePendingTransactions();
             Handler handler = new Handler(Looper.getMainLooper());
@@ -753,6 +768,14 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
 
             this.currentFragment = fragment;
 
+            if ((this.currentFragment instanceof TransactionCardFragment || this.currentFragment instanceof CollectFragment)) {
+                if (this.tabBar.getVisibility() == View.VISIBLE) {
+                    this.hideTabBar();
+                }
+            } else if (this.tabBar.getVisibility() == View.VISIBLE) {
+                this.showTabBar();
+            }
+
             if (completion != null) {
                 this.getFragmentManager().executePendingTransactions();
                 Handler handler = new Handler(Looper.getMainLooper());
@@ -776,12 +799,18 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
 
     @Override
     public void onItemSelected(FLTransaction transac) {
-        FloozApplication.getInstance().showTransactionCard(transac);
+        if (transac.isCollect)
+            FloozApplication.getInstance().showCollect(transac);
+        else
+            FloozApplication.getInstance().showTransactionCard(transac);
     }
 
     @Override
     public void onItemCommentSelected(FLTransaction transac) {
-        FloozApplication.getInstance().showTransactionCard(transac, true);
+        if (transac.isCollect)
+            FloozApplication.getInstance().showCollect(transac, true);
+        else
+            FloozApplication.getInstance().showTransactionCard(transac, true);
     }
 
     @Override

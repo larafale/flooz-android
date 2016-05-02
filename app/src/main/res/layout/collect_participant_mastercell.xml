@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:background="@color/background_header">
+
+<TextView
+        android:id="@+id/participant_mastercell_text"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:layout_centerVertical="true"
+        android:textSize="15sp"
+        android:gravity="center_vertical|left"
+        android:layout_marginLeft="@dimen/dimen_large"
+        android:layout_toRightOf="@+id/participant_mastercell_user_1"
+        android:layout_alignParentLeft="true"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="@dimen/dimen_large"
+        android:layout_marginBottom="@dimen/dimen_large"/>
+
+    <ImageView
+        android:id="@+id/participant_mastercell_arrow"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:src="@drawable/arrow_right"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="@dimen/dimen_medium"/>
+    
+    <com.makeramen.roundedimageview.RoundedImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/participant_mastercell_user_5"
+        android:layout_marginTop="@dimen/dimen_xsmall"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_toLeftOf="@id/participant_mastercell_arrow"
+        android:layout_marginRight="@dimen/dimen_large"
+        android:layout_centerVertical="true"
+        android:src="@drawable/avatar_default"
+        app:riv_oval="true"
+        app:riv_corner_radius="10dp"
+        />
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/participant_mastercell_user_4"
+        android:layout_marginTop="@dimen/dimen_xsmall"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_toLeftOf="@id/participant_mastercell_user_5"
+        android:layout_marginRight="-3dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/avatar_default"
+        app:riv_oval="true"
+        app:riv_corner_radius="10dp"
+        />
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/participant_mastercell_user_3"
+        android:layout_marginTop="@dimen/dimen_xsmall"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_toLeftOf="@id/participant_mastercell_user_4"
+        android:layout_marginRight="-3dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/avatar_default"
+        app:riv_oval="true"
+        app:riv_corner_radius="10dp"
+        />
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/participant_mastercell_user_2"
+        android:layout_marginTop="@dimen/dimen_xsmall"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_toLeftOf="@id/participant_mastercell_user_3"
+        android:layout_marginRight="-3dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/avatar_default"
+        app:riv_oval="true"
+        app:riv_corner_radius="10dp"
+        />
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/participant_mastercell_user_1"
+        android:layout_marginTop="@dimen/dimen_xsmall"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_toLeftOf="@id/participant_mastercell_user_2"
+        android:layout_marginRight="-3dp"
+        android:layout_centerVertical="true"
+        android:src="@drawable/avatar_default"
+        app:riv_oval="true"
+        app:riv_corner_radius="10dp"
+        />
+
+</RelativeLayout>

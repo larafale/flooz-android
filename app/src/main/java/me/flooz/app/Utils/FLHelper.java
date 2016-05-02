@@ -13,6 +13,7 @@ import java.util.NavigableMap;
 import java.util.Random;
 import java.util.TreeMap;
 
+import me.flooz.app.App.FloozApplication;
 import me.flooz.app.BuildConfig;
 import me.flooz.app.Network.FloozRestClient;
 
@@ -20,6 +21,17 @@ import me.flooz.app.Network.FloozRestClient;
  * Created by Flooz on 1/8/15.
  */
 public class FLHelper {
+
+
+    public static int getResourceId(String pVariableName, String pResourcename, String pPackageName)
+    {
+        try {
+            return FloozApplication.getAppContext().getResources().getIdentifier(pVariableName, pResourcename, pPackageName);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return -1;
+        }
+    }
 
     /**
      * This method converts dp unit to equivalent pixels, depending on device density.

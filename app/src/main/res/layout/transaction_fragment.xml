@@ -267,6 +267,18 @@
                         android:paddingBottom="@dimen/dimen_small">
 
                         <TextView
+                            android:id="@+id/new_transac_participate"
+                            android:layout_width="0dp"
+                            android:layout_height="match_parent"
+                            android:layout_weight="1"
+                            android:text="Participer"
+                            android:layout_margin="@dimen/dimen_medium"
+                            android:textColor="@android:color/white"
+                            android:background="@drawable/background_action_button"
+                            android:gravity="center"
+                            android:enabled="false"/>
+
+                        <TextView
                             android:id="@+id/new_transac_collect"
                             android:layout_width="0dp"
                             android:layout_height="match_parent"

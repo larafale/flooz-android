@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:background="@color/background_header">
+
+    <TextView
+        android:id="@+id/collect_header_view_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dimen_medium"
+        android:textColor="@android:color/white"
+        android:layout_marginLeft="@dimen/dimen_large"
+        android:layout_marginRight="@dimen/dimen_large"
+        android:textSize="25sp"
+        android:text="Test Cagnotte"/>
+
+    <LinearLayout
+        android:id="@+id/collect_header_view_amount_container"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:orientation="horizontal"
+        android:layout_below="@+id/collect_header_view_title"
+        android:layout_marginTop="@dimen/dimen_large"
+        android:gravity="top">
+
+        <TextView
+            android:id="@+id/collect_header_view_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="25sp"
+            android:textColor="@color/blue"
+            android:text="100"/>
+
+        <TextView
+            android:id="@+id/collect_header_view_currency"
+            android:layout_width="wrap_content"
+            android:layout_height="fill_parent"
+            android:textSize="15sp"
+            android:textColor="@color/blue"
+            android:text="@string/GLOBAL_EURO"
+            android:layout_marginLeft="@dimen/dimen_small"
+            />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/collect_header_view_collected_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="13sp"
+        android:textColor="@color/blue"
+        android:text="collecté(s)"
+        android:layout_below="@+id/collect_header_view_amount_container"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/dimen_small"
+        android:layout_marginBottom="@dimen/dimen_large"/>
+
+    <me.flooz.app.UI.View.LoadingImageView
+        android:id="@+id/collect_header_view_attachment"
+        android:layout_width="fill_parent"
+        android:layout_height="150dp"
+        android:layout_below="@id/collect_header_view_collected_label"/>
+
+    <RelativeLayout
+        android:id="@+id/collect_header_view_content"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="@dimen/dimen_large"
+        android:paddingRight="@dimen/dimen_large"
+        android:paddingBottom="@dimen/dimen_large"
+        android:paddingTop="@dimen/dimen_large"
+        android:background="@color/background"
+        android:layout_below="@+id/collect_header_view_attachment">
+
+        <TextView
+            android:id="@+id/collect_header_view_close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true"
+            android:textSize="14sp"
+            android:textColor="@android:color/holo_red_light"
+            android:text="Cagnotte terminée"
+            android:paddingBottom="@dimen/dimen_large"/>
+
+        <TextView
+            android:id="@+id/collect_header_view_description_hint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Description :"
+            android:textAllCaps="true"
+            android:textSize="11sp"
+            android:textColor="@color/placeholder"
+            android:layout_below="@+id/collect_header_view_close"/>
+
+        <TextView
+            android:id="@+id/collect_header_view_description"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textSize="15sp"
+            android:paddingTop="@dimen/dimen_medium"
+            android:paddingBottom="@dimen/dimen_medium"
+            android:layout_below="@+id/collect_header_view_description_hint"/>
+
+        <LinearLayout
+            android:id="@+id/collect_header_view_location_layout"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingTop="@dimen/dimen_medium"
+            android:layout_below="@+id/collect_header_view_description">
+
+            <ImageView
+                android:id="@+id/collect_header_view_location_img"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:padding="@dimen/dimen_small"
+                android:src="@drawable/map"
+                android:layout_marginRight="@dimen/dimen_small"/>
+
+            <TextView
+                android:id="@+id/collect_header_view_location_text"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/placeholder"
+                android:textSize="12sp"
+                android:singleLine="true"/>
+
+        </LinearLayout>
+
+
+    </RelativeLayout>
+
+</RelativeLayout>
