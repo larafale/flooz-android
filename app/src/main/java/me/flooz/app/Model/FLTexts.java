@@ -18,6 +18,8 @@ public class FLTexts {
     public JSONObject couponButton;
     public JSONObject menu;
     public List<FLCountry> avalaibleCountries;
+    public List<FLButton> homeButtons;
+    public List<FLButton> cashinButtons;
 
     public FLTexts(JSONObject json) {
         this.setJson(json);
@@ -34,11 +36,31 @@ public class FLTexts {
 
         JSONArray countries = json.optJSONArray("countries");
 
-        this.avalaibleCountries = new ArrayList();
+        this.avalaibleCountries = new ArrayList<>();
 
         if (countries != null) {
             for (int i = 0; i < countries.length(); i++) {
                 this.avalaibleCountries.add(new FLCountry(countries.optJSONObject(i)));
+            }
+        }
+
+        this.cashinButtons = new ArrayList<>();
+
+        JSONArray cashins = json.optJSONArray("cashins");
+
+        if (cashins != null) {
+            for (int i = 0; i < cashins.length(); i++) {
+                this.cashinButtons.add(new FLButton(cashins.optJSONObject(i)));
+            }
+        }
+
+        this.homeButtons = new ArrayList<>();
+
+        JSONArray buttons = json.optJSONArray("homeButtons");
+
+        if (buttons != null) {
+            for (int i = 0; i < buttons.length(); i++) {
+                this.homeButtons.add(new FLButton(buttons.optJSONObject(i)));
             }
         }
 

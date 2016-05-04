@@ -1293,6 +1293,28 @@ public class FloozRestClient
         });
     }
 
+    public void createParticipationValidate(String collectId, Map<String, Object> params, final FloozHttpResponseHandler responseHandler) {
+        if (getSecureCode() != null) {
+            params.put("secureCode", getSecureCode());
+        }
+
+        this.request("/pots/" + collectId + "/participate", HttpRequestType.POST, params, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                if (responseHandler != null) {
+                    responseHandler.success(response);
+                }
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+                if (responseHandler != null)
+                    responseHandler.failure(statusCode, error);
+            }
+        });
+
+    }
+
     public void performTransaction(Map<String, Object> params, final FloozHttpResponseHandler responseHandler) {
 
         if (getSecureCode() != null) {

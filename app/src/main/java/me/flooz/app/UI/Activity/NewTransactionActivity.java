@@ -18,6 +18,7 @@ import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.text.Editable;
+import android.text.InputType;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
@@ -419,14 +420,15 @@ public class NewTransactionActivity extends BaseActivity implements ToolTipScope
         if (this.currentReceiver != null)
             this.toPicker.addObject(this.currentReceiver);
         else if (this.preset != null && this.preset.isParticipation)
-            this.toPicker.addObject(null, this.preset.collectName);
+            this.toPicker.addObject(this.preset.collectName);
 
-        if (this.preset != null && this.preset.blockTo) {
+        if (this.preset != null && (this.preset.blockTo || this.preset.isParticipation)) {
             this.toPicker.setFocusable(false);
             this.toPicker.setFocusableInTouchMode(false);
         }
 
         if (this.preset == null || !this.preset.blockAmount) {
+            this.amountTextfield.setRawInputType(InputType.TYPE_CLASS_TEXT);
             this.amountTextfield.setFocusable(true);
             this.amountTextfield.setFocusableInTouchMode(true);
             amountContainer.setOnClickListener(new View.OnClickListener() {
@@ -529,6 +531,16 @@ public class NewTransactionActivity extends BaseActivity implements ToolTipScope
 
         this.chargeButton.setOnClickListener(chargeTransaction);
         this.payButton.setOnClickListener(payTransaction);
+        this.participateButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getWindow().getDecorView().getRootView().getWindowToken(), 0);
+
+                FloozRestClient.getInstance().showLoadView();
+                FloozRestClient.getInstance().createParticipationValidate(preset.presetId, generateRequestParams(true), null);
+            }
+        });
 
         this.contentTextfield.setFocusable(true);
         this.contentTextfield.setFocusableInTouchMode(true);
@@ -699,8 +711,12 @@ public class NewTransactionActivity extends BaseActivity implements ToolTipScope
         } else
             this.resetPaymentButton();
 
-        this.payButton.setEnabled(true);
-        this.chargeButton.setEnabled(true);
+        if (this.preset != null && this.preset.isParticipation)
+            this.participateButton.setEnabled(true);
+        else {
+            this.payButton.setEnabled(true);
+            this.chargeButton.setEnabled(true);
+        }
     }
 
     public void hideChargeButton(Boolean hidden) {
@@ -711,17 +727,28 @@ public class NewTransactionActivity extends BaseActivity implements ToolTipScope
         this.payButton.setVisibility((hidden ? View.GONE : View.VISIBLE));
     }
 
+    public void hideParticipateButton(Boolean hidden) {
+        this.participateButton.setVisibility((hidden ? View.GONE : View.VISIBLE));
+    }
+
     public void resetPaymentButton() {
         if (this.preset != null) {
-            if (this.preset.type == FLTransaction.TransactionType.TransactionTypePayment) {
+            if (this.preset.isParticipation) {
+                this.hideParticipateButton(false);
                 this.hideChargeButton(true);
-                this.hidePayButton(false);
-            } else if (this.preset.type == FLTransaction.TransactionType.TransactionTypeCharge) {
-                this.hideChargeButton(false);
                 this.hidePayButton(true);
             } else {
-                this.hideChargeButton(false);
-                this.hidePayButton(false);
+                this.hideParticipateButton(true);
+                if (this.preset.type == FLTransaction.TransactionType.TransactionTypePayment) {
+                    this.hideChargeButton(true);
+                    this.hidePayButton(false);
+                } else if (this.preset.type == FLTransaction.TransactionType.TransactionTypeCharge) {
+                    this.hideChargeButton(false);
+                    this.hidePayButton(true);
+                } else {
+                    this.hideChargeButton(false);
+                    this.hidePayButton(false);
+                }
             }
         } else {
             this.hideChargeButton(false);

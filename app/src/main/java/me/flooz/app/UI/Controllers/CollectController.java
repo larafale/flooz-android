@@ -421,6 +421,9 @@ public class CollectController extends BaseController implements CollectAdapter.
             commentButton.performClick();
         }
 
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadCollectReceiver,
+                CustomNotificationIntents.filterReloadTimeline());
+
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadCollect,
                 CustomNotificationIntents.filterReloadTransaction());
 

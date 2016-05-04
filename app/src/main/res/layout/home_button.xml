@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/dimen_medium"
+    android:paddingBottom="@dimen/dimen_medium"
+    android:background="@android:color/transparent">
+
+    <RelativeLayout
+        android:background="@drawable/home_button_background"
+        android:paddingTop="@dimen/dimen_medium"
+        android:paddingBottom="@dimen/dimen_medium"
+        android:paddingLeft="@dimen/dimen_large"
+        android:paddingRight="@dimen/dimen_large"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@+id/home_button_img"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dimen_large"/>
+
+        <TextView
+            android:id="@+id/home_button_title"
+            android:layout_width="match_parent"
+            android:layout_height="25dp"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:layout_toRightOf="@+id/home_button_img"
+            android:layout_toLeftOf="@+id/home_button_arrow"
+            android:singleLine="true"
+            />
+
+        <TextView
+            android:id="@+id/home_button_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:textColor="@color/placeholder"
+            android:textSize="13sp"
+            android:layout_toRightOf="@+id/home_button_img"
+            android:layout_toLeftOf="@+id/home_button_arrow"
+            android:layout_below="@+id/home_button_title"
+            android:maxLines="2"
+            android:layout_marginTop="@dimen/dimen_small"
+            />
+
+        <ImageView
+            android:id="@+id/home_button_arrow"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dimen_large"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/arrow_right"/>
+
+        <TextView
+            android:id="@+id/home_button_available"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/home_button_avalaible_background"
+            android:text="Bientôt disponible"
+            android:paddingBottom="@dimen/dimen_medium"
+            android:paddingTop="@dimen/dimen_medium"
+            android:paddingLeft="@dimen/dimen_large"
+            android:paddingRight="@dimen/dimen_large"
+            android:layout_centerInParent="true"
+            android:rotation="-15"
+            android:textSize="14sp"
+            android:textColor="@android:color/holo_red_light"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

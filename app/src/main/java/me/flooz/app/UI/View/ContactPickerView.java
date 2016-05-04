@@ -26,13 +26,11 @@ public class ContactPickerView extends TokenCompleteTextView {
     @Override
     protected View getViewForObject(Object object) {
         if (object != null) {
-            FLUser p = (FLUser) object;
-
             LayoutInflater l = (LayoutInflater) getContext().getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
             LinearLayout view = (LinearLayout) l.inflate(R.layout.contact_picker_contact_view, (ViewGroup) ContactPickerView.this.getParent(), false);
 
             ((TextView) view.findViewById(R.id.name)).setTypeface(CustomFonts.customContentRegular(getContext()));
-            ((TextView) view.findViewById(R.id.name)).setText(p.toString());
+            ((TextView) view.findViewById(R.id.name)).setText(object.toString());
 
             return view;
         }

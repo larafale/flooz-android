@@ -145,7 +145,10 @@ dependencies {
     compile 'com.viewpagerindicator:library:2.4.1@aar'
     compile 'se.emilsjolander:stickylistheaders:2.+'
     compile 'com.googlecode.libphonenumber:libphonenumber:7.+'
-    compile 'io.socket:socket.io-client:0.+'
+    compile ('io.socket:socket.io-client:0.7.0') {
+        // excluding org.json which is provided by Android
+        exclude group: 'org.json', module: 'json'
+    }
     compile 'com.mixpanel.android:mixpanel-android:4.+@aar'
     compile 'com.google.android.gms:play-services:8.+'
     compile 'info.hoang8f:android-segmented:1.+'

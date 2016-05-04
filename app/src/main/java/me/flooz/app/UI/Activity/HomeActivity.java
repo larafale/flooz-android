@@ -21,9 +21,11 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -32,6 +34,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jp.wasabeef.blurry.Blurry;
+import me.flooz.app.Adapter.HomeButtonListAdapter;
+import me.flooz.app.Model.FLButton;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLShareText;
 import me.flooz.app.Model.FLTrigger;
@@ -132,6 +136,8 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
     private ImageView homeButtonBackground;
     private ImageView homeButtonClose;
     private TextView homeButtonTitle;
+    private ListView homeButtonList;
+    private HomeButtonListAdapter homeButtonListAdapter;
 
     private InputMethodManager imm;
 
@@ -248,6 +254,22 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
         this.homeButtonBackground = (ImageView) this.findViewById(R.id.home_menu_background);
         this.homeButtonClose = (ImageView) this.findViewById(R.id.home_menu_close);
         this.homeButtonTitle = (TextView) this.findViewById(R.id.home_menu_title);
+        this.homeButtonList = (ListView) this.findViewById(R.id.home_menu_list);
+
+
+        this.homeButtonListAdapter = new HomeButtonListAdapter(this);
+        this.homeButtonList.setAdapter(this.homeButtonListAdapter);
+
+        this.homeButtonList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                FLButton button = (FLButton) homeButtonListAdapter.getItem(position);
+                if (button.avalaible)
+                    FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(button.triggers));
+
+                homeButtonView.setVisibility(View.GONE);
+            }
+        });
 
         int clearColor = this.getResources().getColor(R.color.placeholder);
         Typeface titleTypeface = CustomFonts.customContentLight(this);
@@ -345,19 +367,18 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
         this.floozTabImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                homeButtonView.setVisibility(View.VISIBLE);
-//                Blurry.with(HomeActivity.this)
-//                        .radius(35)
-//                        .sampling(1)
-//                        .async()
-//                        .capture(findViewById(R.id.content_view))
-//                        .into(homeButtonBackground);
+                homeButtonView.setVisibility(View.VISIBLE);
+                Blurry.with(HomeActivity.this)
+                        .radius(35)
+                        .sampling(1)
+                        .async()
+                        .color(HomeActivity.this.getResources().getColor(R.color.background_header_alpha))
+                        .capture(findViewById(R.id.content_view))
+                        .into(homeButtonBackground);
 
-
-                Intent intent = new Intent(instance, NewCollectActivity.class);
-                instance.startActivity(intent);
-                instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-
+//                Intent intent = new Intent(instance, NewCollectActivity.class);
+//                instance.startActivity(intent);
+//                instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
             }
         });
 
@@ -485,6 +506,7 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
                 .radius(35)
                 .sampling(1)
                 .async()
+                .color(HomeActivity.this.getResources().getColor(R.color.background_header_alpha))
                 .capture(findViewById(R.id.content_view))
                 .into(homeButtonBackground);
     }

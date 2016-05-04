@@ -41,6 +41,7 @@ import me.flooz.app.R;
 import me.flooz.app.UI.Activity.AuthenticationActivity;
 import me.flooz.app.UI.Activity.BaseActivity;
 import me.flooz.app.UI.Activity.CashoutActivity;
+import me.flooz.app.UI.Activity.CollectActivity;
 import me.flooz.app.UI.Activity.EditProfileActivity;
 import me.flooz.app.UI.Activity.FriendRequestActivity;
 import me.flooz.app.UI.Activity.HomeActivity;
@@ -65,6 +66,7 @@ import me.flooz.app.UI.Activity.ValidateSMSActivity;
 import me.flooz.app.UI.Activity.WebContentActivity;
 import me.flooz.app.UI.Fragment.Home.TabFragments.BankFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.CashoutFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.CollectFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.CreditCardFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.DocumentsFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.FriendRequestFragment;
@@ -589,6 +591,28 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
                         }
                     });
                 }
+            } else if (this.trigger.categoryView.contentEquals("timeline:pot")) {
+                if (this.trigger.data != null && this.trigger.data.has("_id")) {
+                    FloozRestClient.getInstance().showLoadView();
+                    FloozRestClient.getInstance().transactionWithId(this.trigger.data.optString("_id"), new FloozHttpResponseHandler() {
+                        @Override
+                        public void success(Object response) {
+                            FLTransaction transac = new FLTransaction(((JSONObject) response).optJSONObject("item"));
+                            pendingShowTrigger = trigger;
+                            FloozApplication.getInstance().showCollect(transac, new Runnable() {
+                                @Override
+                                public void run() {
+                                    FLTriggerManager.this.executeTriggerList(trigger.triggers);
+                                    pendingShowTrigger = null;
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void failure(int statusCode, FLError error) {
+                        }
+                    });
+                }
             } else if (FLTriggerManager.this.isTriggerKeyView(this.trigger)) {
                 Class activityClass = FLTriggerManager.this.binderKeyActivity.get(this.trigger.categoryView);
                 Class fragmentClass = FLTriggerManager.this.binderKeyFragment.get(this.trigger.categoryView);
@@ -859,6 +883,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("settings:privacy", PrivacySettingsActivity.class);
             put("settings:documents", DocumentsSettingsActivity.class);
             put("timeline:flooz", TransactionActivity.class);
+            put("timeline:pot", CollectActivity.class);
             put("web:web", WebContentActivity.class);
             put("phone:validate", ValidateSMSActivity.class);
         }};
@@ -882,6 +907,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("settings:privacy", PrivacyFragment.class);
             put("settings:documents", DocumentsFragment.class);
             put("timeline:flooz", TransactionCardFragment.class);
+            put("timeline:pot", CollectFragment.class);
             put("web:web", WebFragment.class);
         }};
     }
@@ -910,6 +936,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("settings:privacy", "modal");
             put("settings:documents", "modal");
             put("timeline:flooz", "push");
+            put("timeline:pot", "push");
             put("web:web", "modal");
             put("phone:validate", "modal");
         }};

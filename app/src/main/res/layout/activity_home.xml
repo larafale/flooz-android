@@ -150,7 +150,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:src="@drawable/home_button"
+                        android:src="@drawable/plus_white"
                         />
 
                 </LinearLayout>
@@ -292,13 +292,15 @@
         <ImageView
             android:id="@+id/home_menu_background"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:background="@color/background_header_alpha"
+            android:clickable="true"/>
 
         <TextView
             android:id="@+id/home_menu_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_medium"
+            android:layout_marginTop="@dimen/dimen_large"
             android:gravity="center"
             android:textColor="@color/blue"
             android:text="Choisissez une option"
@@ -308,28 +310,22 @@
 
         <LinearLayout
             android:orientation="vertical"
-            android:layout_marginLeft="@dimen/dimen_medium"
-            android:layout_marginRight="@dimen/dimen_medium"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
             android:layout_below="@id/home_menu_title"
-            android:layout_above="@+id/home_menu_close">
+            android:layout_above="@+id/home_menu_close"
+            android:padding="@dimen/dimen_large">
 
-            <RelativeLayout
+            <ListView
+                android:id="@+id/home_menu_list"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingLeft="@dimen/dimen_small"
-                android:paddingRight="@dimen/dimen_small"
-                android:paddingTop="@dimen/dimen_small"
-                android:paddingBottom="@dimen/dimen_small"
-                android:background="@color/red">
-
-                <ImageView
-                    android:layout_width="50dp"
-                    android:layout_height="50dp" />
-
-            </RelativeLayout>
+                android:divider="@android:color/transparent"
+                android:dividerHeight="0dp"
+                android:overScrollMode="never"
+                android:listSelector="@android:color/transparent"
+                />
 
         </LinearLayout>
 
@@ -340,7 +336,8 @@
             android:layout_gravity="center"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:src="@drawable/home_button"
+            android:src="@drawable/plus_white"
+            android:rotation="45"
             />
 
     </RelativeLayout>

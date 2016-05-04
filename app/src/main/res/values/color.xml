@@ -21,6 +21,7 @@
     <color name="blue_light">#6092AC</color>
     <color name="blue_hover">#263B4B</color>
     <color name="placeholder">#87939D</color>
+    <color name="available_label_back">#B3CCCCCC</color>
     <color name="blue_social">#414F61</color>
     <color name="blue_middle">#354452</color>
     <color name="black_alpha">#EE000000</color>
