@@ -40,6 +40,9 @@ import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.AuthenticationActivity;
 import me.flooz.app.UI.Activity.BaseActivity;
+import me.flooz.app.UI.Activity.CashinActivity;
+import me.flooz.app.UI.Activity.CashinAudiotelActivity;
+import me.flooz.app.UI.Activity.CashinCreditCardActivity;
 import me.flooz.app.UI.Activity.CashoutActivity;
 import me.flooz.app.UI.Activity.CollectActivity;
 import me.flooz.app.UI.Activity.EditProfileActivity;
@@ -462,6 +465,35 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
                         mainHandler.post(myRunnable);
                     }
                 }
+            } else if (this.trigger.categoryView.contentEquals("image:pot") && this.trigger.data != null && this.trigger.data.has("_id")) {
+                Activity currentActivity = FloozApplication.getInstance().getCurrentActivity();
+                if (currentActivity instanceof NewCollectActivity) {
+                    NewCollectActivity transactionActivity = (NewCollectActivity) currentActivity;
+
+                    if (transactionActivity.havePicture) {
+                        final Bitmap currentImage = transactionActivity.currentPicture;
+
+                        Handler mainHandler = new Handler(Looper.getMainLooper());
+                        Runnable myRunnable = new Runnable() {
+                            @Override
+                            public void run() {
+                                android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
+                                FloozRestClient.getInstance().uploadTransactionPic(trigger.data.optString("_id"), ImageHelper.convertBitmapInFile(currentImage), new FloozHttpResponseHandler() {
+                                    @Override
+                                    public void success(Object response) {
+                                        FLTriggerManager.this.executeTriggerList(trigger.triggers);
+                                    }
+
+                                    @Override
+                                    public void failure(int statusCode, FLError error) {
+                                        FLTriggerManager.this.executeTriggerList(trigger.triggers);
+                                    }
+                                });
+                            }
+                        };
+                        mainHandler.post(myRunnable);
+                    }
+                }
             }
         }
     };
@@ -772,89 +804,98 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
     private ActionTask syncActionHandler = new ActionTask() {
         @Override
         public void run() {
-            switch (this.trigger.category) {
-                case "app":
-                    if (this.trigger.data != null && this.trigger.data.has("url")) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(FloozApplication.getInstance().getCurrentActivity());
-                        builder.setTitle(R.string.GLOBAL_UPDATE);
-                        builder.setMessage(R.string.MSG_UPDATE);
-                        builder.setPositiveButton(R.string.BTN_UPDATE, new DialogInterface.OnClickListener() {
+            if (this.trigger.view.length() == 0) {
+                switch (this.trigger.category) {
+                    case "app":
+                        if (this.trigger.data != null && this.trigger.data.has("url")) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(FloozApplication.getInstance().getCurrentActivity());
+                            builder.setTitle(R.string.GLOBAL_UPDATE);
+                            builder.setMessage(R.string.MSG_UPDATE);
+                            builder.setPositiveButton(R.string.BTN_UPDATE, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    Activity tmp = FloozApplication.getInstance().getCurrentActivity();
+                                    Intent i = new Intent(Intent.ACTION_VIEW);
+                                    i.setData(Uri.parse(trigger.data.optString("url")));
+                                    tmp.startActivity(i);
+                                    tmp.finish();
+                                }
+                            });
+                            builder.setCancelable(false);
+                            builder.show();
+
+                            FLTriggerManager.this.executeTriggerList(trigger.triggers);
+                        }
+                        break;
+                    case "timeline":
+                        FloozApplication.performLocalNotification(CustomNotificationIntents.reloadTimeline());
+                        FLTriggerManager.this.executeTriggerList(trigger.triggers);
+                        break;
+                    case "invitation":
+                        FloozRestClient.getInstance().getInvitationText(new FloozHttpResponseHandler() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                Activity tmp = FloozApplication.getInstance().getCurrentActivity();
-                                Intent i = new Intent(Intent.ACTION_VIEW);
-                                i.setData(Uri.parse(trigger.data.optString("url")));
-                                tmp.startActivity(i);
-                                tmp.finish();
+                            public void success(Object response) {
+                                FLTriggerManager.this.executeTriggerList(trigger.triggers);
+                            }
+
+                            @Override
+                            public void failure(int statusCode, FLError error) {
+                                FLTriggerManager.this.executeTriggerList(trigger.triggers);
                             }
                         });
-                        builder.setCancelable(false);
-                        builder.show();
+                        break;
+                    case "flooz":
+                        Intent intent = CustomNotificationIntents.reloadTimeline();
 
+                        intent.putExtra("id", trigger.data.optString("_id"));
+
+                        FloozApplication.performLocalNotification(intent);
                         FLTriggerManager.this.executeTriggerList(trigger.triggers);
-                    }
-                    break;
-                case "timeline":
-                    FloozApplication.performLocalNotification(CustomNotificationIntents.reloadTimeline());
-                    FLTriggerManager.this.executeTriggerList(trigger.triggers);
-                    break;
-                case "invitation":
-                    FloozRestClient.getInstance().getInvitationText(new FloozHttpResponseHandler() {
-                        @Override
-                        public void success(Object response) {
-                            FLTriggerManager.this.executeTriggerList(trigger.triggers);
-                        }
+                        break;
+                    case "pot":
+                        Intent intentCollect = CustomNotificationIntents.reloadTimeline();
 
-                        @Override
-                        public void failure(int statusCode, FLError error) {
-                            FLTriggerManager.this.executeTriggerList(trigger.triggers);
-                        }
-                    });
-                    break;
-                case "flooz":
-                    Intent intent = CustomNotificationIntents.reloadTimeline();
+                        intentCollect.putExtra("id", trigger.data.optString("_id"));
 
-                    intent.putExtra("id", trigger.data.optString("_id"));
+                        FloozApplication.performLocalNotification(intentCollect);
+                        FLTriggerManager.this.executeTriggerList(trigger.triggers);
+                        break;
+                    case "profile":
+                        FloozRestClient.getInstance().updateCurrentUser(new FloozHttpResponseHandler() {
+                            @Override
+                            public void success(Object response) {
+                                FLTriggerManager.this.executeTriggerList(trigger.triggers);
+                            }
 
-                    FloozApplication.performLocalNotification(intent);
-                    FLTriggerManager.this.executeTriggerList(trigger.triggers);
-                    break;
-                case "pot":
-                    Intent intentCollect = CustomNotificationIntents.reloadTimeline();
+                            @Override
+                            public void failure(int statusCode, FLError error) {
+                                FLTriggerManager.this.executeTriggerList(trigger.triggers);
+                            }
+                        });
+                        break;
+                    case "notifs":
+                        FloozRestClient.getInstance().updateNotificationFeed(new FloozHttpResponseHandler() {
+                            @Override
+                            public void success(Object response) {
+                                FLTriggerManager.this.executeTriggerList(trigger.triggers);
+                            }
 
-                    intentCollect.putExtra("id", trigger.data.optString("_id"));
+                            @Override
+                            public void failure(int statusCode, FLError error) {
+                                FLTriggerManager.this.executeTriggerList(trigger.triggers);
+                            }
+                        });
+                        break;
+                    default:
+                        break;
+                }
+            } else if (this.trigger.categoryView.contentEquals("cashin:audiotel")) {
+                Intent intentCollect = new Intent(this.trigger.key);
 
-                    FloozApplication.performLocalNotification(intentCollect);
-                    FLTriggerManager.this.executeTriggerList(trigger.triggers);
-                    break;
-                case "profile":
-                    FloozRestClient.getInstance().updateCurrentUser(new FloozHttpResponseHandler() {
-                        @Override
-                        public void success(Object response) {
-                            FLTriggerManager.this.executeTriggerList(trigger.triggers);
-                        }
+                intentCollect.putExtra("code", trigger.data.optString("code"));
 
-                        @Override
-                        public void failure(int statusCode, FLError error) {
-                            FLTriggerManager.this.executeTriggerList(trigger.triggers);
-                        }
-                    });
-                    break;
-                case "notifs":
-                    FloozRestClient.getInstance().updateNotificationFeed(new FloozHttpResponseHandler() {
-                        @Override
-                        public void success(Object response) {
-                            FLTriggerManager.this.executeTriggerList(trigger.triggers);
-                        }
-
-                        @Override
-                        public void failure(int statusCode, FLError error) {
-                            FLTriggerManager.this.executeTriggerList(trigger.triggers);
-                        }
-                    });
-                    break;
-                default:
-                    break;
+                FloozApplication.performLocalNotification(intentCollect);
+                FLTriggerManager.this.executeTriggerList(trigger.triggers);
             }
         }
     };
@@ -863,6 +904,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
         this.binderKeyActivity = new HashMap<String, Class>() {{
             put("app:cashout", CashoutActivity.class);
             put("app:flooz", NewTransactionActivity.class);
+            put("app:cashin", CashinActivity.class);
             put("app:pot", NewCollectActivity.class);
             put("app:promo", SponsorActivity.class);
             put("app:search", SearchActivity.class);
@@ -873,6 +915,8 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("auth:code", AuthenticationActivity.class);
             put("card:3ds", Secure3DActivity.class);
             put("card:card", CreditCardSettingsActivity.class);
+            put("cashin:card", CashinCreditCardActivity.class);
+            put("cashin:audiotel", CashinAudiotelActivity.class);
             put("code:set", SetSecureCodeActivity.class);
             put("friend:pending", FriendRequestActivity.class);
             put("profile:user", UserProfileActivity.class);
@@ -915,6 +959,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
     private void loadBinderKeyType() {
         this.binderKeyType = new HashMap<String, String>() {{
             put("app:cashout", "modal");
+            put("app:cashin", "modal");
             put("app:flooz", "modal");
             put("app:pot", "modal");
             put("app:promo", "modal");
@@ -926,6 +971,8 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("auth:code", "modal");
             put("card:3ds", "modal");
             put("card:card", "modal");
+            put("cashin:card", "modal");
+            put("cashin:audiotel", "modal");
             put("code:set", "modal");
             put("friend:pending", "modal");
             put("profile:user", "push");

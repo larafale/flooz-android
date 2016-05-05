@@ -2,8 +2,10 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/dimen_medium"
-    android:paddingBottom="@dimen/dimen_medium"
+    android:paddingLeft="@dimen/dimen_medium"
+    android:paddingRight="@dimen/dimen_medium"
+    android:paddingTop="@dimen/dimen_large"
+    android:paddingBottom="@dimen/dimen_large"
     android:background="@android:color/transparent">
 
     <RelativeLayout
@@ -19,6 +21,7 @@
             android:id="@+id/home_button_img"
             android:layout_width="50dp"
             android:layout_height="50dp"
+            android:scaleType="centerInside"
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/dimen_large"/>
 
@@ -36,7 +39,7 @@
         <TextView
             android:id="@+id/home_button_subtitle"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="30dp"
             android:textColor="@color/placeholder"
             android:textSize="13sp"
             android:layout_toRightOf="@+id/home_button_img"

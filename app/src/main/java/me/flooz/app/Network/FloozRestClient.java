@@ -1067,6 +1067,19 @@ public class FloozRestClient
     }
 
     /***************************/
+    /********  CASHIN   ********/
+    /***************************/
+
+    public void cashinAudiotel(String code, FloozHttpResponseHandler responseHandler) {
+        Map<String, Object> param = new HashMap<>();
+
+        param.put("code", code);
+
+        this.request("/cashins/audiotel", HttpRequestType.PUT, param, responseHandler);
+    }
+
+
+    /***************************/
     /********  CASHOUT  ********/
     /***************************/
 
@@ -2145,6 +2158,6 @@ public class FloozRestClient
     }
 
     public void closeSockets() {
-        this.socketHandler.postDelayed(this.socketCloseRunnable, 200);
+        this.socketHandler.postDelayed(this.socketCloseRunnable, 5000);
     }
 }

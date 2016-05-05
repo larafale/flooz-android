@@ -62,6 +62,7 @@
     <string name="NAV_EDIT_ACCOUNT">Modifier</string>
     <string name="NAV_INFORMATIONS">Informations</string>
     <string name="NAV_NOTIFICATIONS">Notifications</string>
+    <string name="NAV_CASHIN">Ajouter des fonds</string>
     <string name="NAV_CASHOUT">Virer à ma banque</string>
     <string name="NAV_RIB">RIB</string>
     <string name="NAV_PASSWORD">Mot de passe</string>
@@ -402,8 +403,8 @@
 
     <string name="Send_Button_Mobile">Suivant</string>
     <string name="Invite_Friends_Button">Inviter</string>
-    <string name="ALERT_CONTACT_DENIES_ACCESS">Vous n\'avez pas autorisé à lire les contacts!\nVous passez directement à l\'étape suivante.</string>
-    <string name="ALERT_CONTACT_DENIES_ACCESS_PREVIOUS">Vous n\'avez pas autorisé à lire les contacts précédemment!\nVous passez directement à l\'étape suivante.</string>
+    <string name="ALERT_CONTACT_DENIES_ACCESS">Vous n\'avez pas autorisé l\'accés à vos contacts!\nVous passerez directement à l\'étape suivante.</string>
+    <string name="ALERT_CONTACT_DENIES_ACCESS_PREVIOUS">Vous n\'avez pas autorisé l\'accés à vos contacts précédemment!\nVous passerez directement à l\'étape suivante.</string>
     <string name="ALERT_CONTACT_MESSAGE_FAILED">L\'envoi de votre message a échoué, essayez de recommencer.</string>
 
     <string name="CONTACT_PICKER_NON_FLOOZ">Invitez les sur Flooz</string>
@@ -418,6 +419,23 @@
 
     <string name="NETWORK_UNAVAILABLE_TITLE">Erreur de connexion</string>
     <string name="NETWORK_UNAVAILABLE_TEXT">La connexion internet semble interrompue :(</string>
+
+
+    <string name="CASHIN_INFOS">Ajoutez des fonds sur votre compte Flooz en choisissant l’un des moyens de paiement ci-dessous :</string>
+
+    <string name="CASHIN_CARD_TITLE">Carte bancaire</string>
+    <string name="CASHIN_CARD_SUBTITLE">Ajoutez des fonds via votre CB gratuitement et en toute sécurité</string>
+    <string name="CASHIN_CARD_PAYMENT_INPUT_HINT">Saisissez vos données de carte bancaire :</string>
+    <string name="CASHIN_CARD_CHECKBOX_TEXT">Enregistrer ma carte en toute sécurité</string>
+    <string name="CASHIN_CARD_AMOUNT_INPUT_HINT">Saisissez le montant :</string>
+    <string name="CASHIN_CARD_INFOS">Vos coordonnées bancaire sont stockées et sécurisées à distance chez notre partenaire Rentabiliweb qui accompagne les plus grandes marques comme la Fnac, Spartoo, Winamax et bien d’autres</string>
+
+    <string name="CASHIN_AUDIOTEL_TITLE">Appel téléphonique</string>
+    <string name="CASHIN_AUDIOTEL_SUBTITLE">1,60€ / appel reversés sur votre compte Flooz</string>
+    <string name="CASHIN_AUDIOTEL_INFOS">Chaque appel est facturé 3€ sur votre forfait. Saisissez ci-dessous le code mentionné pendant l’appel pour être crédité de 1.60€ sur votre compte Flooz</string>
+    <string name="CASHIN_AUDIOTEL_AVALAIBLE">Le code vous sera répété deux fois\nVotre code a une validité de 48h</string>
+    <string name="CASHIN_AUDIOTEL_HINT">Veuillez saisir le code reçu :</string>
+    <string name="CASHIN_AUDIOTEL_PLACEHOLDER">• • • • • • • •</string>
 
     <!-- Moment Date Implementation -->
 

@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dimen_medium"
+    android:background="@android:color/transparent">
+
+    <RelativeLayout
+        android:background="@drawable/home_button_background"
+        android:paddingTop="@dimen/dimen_medium"
+        android:paddingBottom="@dimen/dimen_medium"
+        android:paddingLeft="@dimen/dimen_large"
+        android:paddingRight="@dimen/dimen_large"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/dimen_medium"
+        android:layout_marginRight="@dimen/dimen_medium">
+
+        <ImageView
+            android:id="@+id/cashin_row_img"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:scaleType="centerInside"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/dimen_large"/>
+
+        <TextView
+            android:id="@+id/cashin_row_title"
+            android:layout_width="match_parent"
+            android:layout_height="17dp"
+            android:textColor="@android:color/white"
+            android:textSize="15sp"
+            android:layout_toRightOf="@+id/cashin_row_img"
+            android:layout_toLeftOf="@+id/cashin_row_arrow"
+            android:singleLine="true"
+            />
+
+        <TextView
+            android:id="@+id/cashin_row_subtitle"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:textColor="@color/placeholder"
+            android:textSize="12sp"
+            android:layout_toRightOf="@+id/cashin_row_img"
+            android:layout_toLeftOf="@+id/cashin_row_arrow"
+            android:layout_below="@+id/cashin_row_title"
+            android:maxLines="2"
+            android:layout_marginTop="@dimen/dimen_small"
+            />
+
+        <ImageView
+            android:id="@+id/cashin_row_arrow"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="@dimen/dimen_large"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/arrow_right"/>
+
+    </RelativeLayout>
+
+</RelativeLayout>

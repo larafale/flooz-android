@@ -25,6 +25,7 @@ import org.json.JSONException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import me.flooz.app.App.FloozApplication;
@@ -106,7 +107,7 @@ public class ProfileListAdapter extends BaseAdapter implements StickyListHeaders
 
         FLUser currentUser = FloozRestClient.getInstance().currentUser;
 
-        this.userViewHolder.balance.setText("Solde " + FLHelper.trimTrailingZeros(String.format("%.2f", currentUser.amount.floatValue()).replace(',', '.')) + " €");
+        this.userViewHolder.balance.setText("Solde " + FLHelper.trimTrailingZeros( String.format(Locale.US, "%.2f", currentUser.amount.floatValue())) + " €");
 
         if (currentUser.avatarURL != null && !currentUser.avatarURL.isEmpty())
             ImageLoader.getInstance().displayImage(currentUser.avatarURL, this.userViewHolder.imageView);

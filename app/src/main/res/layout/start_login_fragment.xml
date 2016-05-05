@@ -106,18 +106,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"/>
 
-                <!--<EditText-->
-                    <!--android:id="@+id/start_login_phone"-->
-                    <!--android:layout_width="match_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:hint="@string/SIGNUP_PHONE_PLACEHOLDER"-->
-                    <!--android:inputType="phone"-->
-                    <!--android:singleLine="true"-->
-                    <!--android:focusable="true"-->
-                    <!--android:focusableInTouchMode="true"-->
-                    <!--android:textColor="@android:color/white"-->
-                    <!--android:textColorHint="@color/placeholder"/>-->
-
                 <EditText
                     android:id="@+id/start_login_password"
                     android:layout_marginTop="@dimen/dimen_large"

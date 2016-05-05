@@ -20,6 +20,10 @@ public class FLTexts {
     public List<FLCountry> avalaibleCountries;
     public List<FLButton> homeButtons;
     public List<FLButton> cashinButtons;
+    public String audiotelNumber;
+    public String audiotelImage;
+    public String audiotelInfos;
+
 
     public FLTexts(JSONObject json) {
         this.setJson(json);
@@ -27,6 +31,12 @@ public class FLTexts {
 
     private void setJson(JSONObject json) {
         this.json = json;
+
+        if (json.has("audiotel")) {
+            this.audiotelNumber = json.optJSONObject("audiotel").optString("number");
+            this.audiotelImage = json.optJSONObject("audiotel").optString("image");
+            this.audiotelInfos = json.optJSONObject("audiotel").optString("info");
+        }
 
         this.notificationsText = json.optJSONObject("notificationsText");
         this.slider = new FLSlider(json.optJSONObject("slider"));
