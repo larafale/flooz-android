@@ -37,6 +37,7 @@ import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.Settings.PrivacySettingsActivity;
+import me.flooz.app.UI.Activity.ShareCollectAcivity;
 import me.flooz.app.UI.Fragment.Home.TabFragments.CollectParticipantFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.PrivacyFragment;
 import me.flooz.app.UI.Tools.CustomImageViewer;
@@ -290,12 +291,19 @@ public class CollectController extends BaseController implements CollectAdapter.
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent share = new Intent(Intent.ACTION_SEND);
-                share.setType("text/plain");
+                if (collect.actions == null || collect.actions.length() == 0) {
+                    Intent share = new Intent(Intent.ACTION_SEND);
+                    share.setType("text/plain");
 
-                share.putExtra(Intent.EXTRA_TEXT, "https://www.flooz.me/pot/" + collect.transactionId);
+                    share.putExtra(Intent.EXTRA_TEXT, "https://www.flooz.me/pot/" + collect.transactionId);
 
-                parentActivity.startActivity(Intent.createChooser(share, parentActivity.getResources().getString(R.string.SHARE_COLLECT)));
+                    parentActivity.startActivity(Intent.createChooser(share, parentActivity.getResources().getString(R.string.SHARE_COLLECT)));
+                } else {
+                    Intent intent = new Intent(parentActivity, ShareCollectAcivity.class);
+                    intent.putExtra("potId", collect.transactionId);
+                    parentActivity.startActivity(intent);
+                    parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                }
             }
         });
 

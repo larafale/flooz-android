@@ -110,6 +110,8 @@ public class ContactsManager {
         ContentResolver contentResolver = FloozApplication.getAppContext().getContentResolver();
         Cursor contactCursor = contentResolver.query(contentURI, projection, selection, selectionArgs, order);
 
+        int id = 1;
+
         if (contactCursor != null && contactCursor.getCount() > 0) {
             while (contactCursor.moveToNext()) {
                 FLUser user = new FLUser();
@@ -131,8 +133,11 @@ public class ContactsManager {
                             break;
                         }
                     }
-                    if (!alreadyExist)
+                    if (!alreadyExist) {
+                        user.userId = "0x00" + id;
+                        ++id;
                         resultList.add(user);
+                    }
                 }
 
             }

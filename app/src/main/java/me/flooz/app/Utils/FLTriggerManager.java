@@ -24,6 +24,8 @@ import me.flooz.app.UI.Activity.CashinAudiotelActivity;
 import me.flooz.app.UI.Activity.CashinCreditCardActivity;
 import me.flooz.app.UI.Activity.CashoutActivity;
 import me.flooz.app.UI.Activity.CollectActivity;
+import me.flooz.app.UI.Activity.CollectParticipantActivity;
+import me.flooz.app.UI.Activity.CollectParticipationActivity;
 import me.flooz.app.UI.Activity.EditProfileActivity;
 import me.flooz.app.UI.Activity.FriendRequestActivity;
 import me.flooz.app.UI.Activity.HomeActivity;
@@ -40,6 +42,7 @@ import me.flooz.app.UI.Activity.Settings.NotificationsSettingsActivity;
 import me.flooz.app.UI.Activity.Settings.PrivacySettingsActivity;
 import me.flooz.app.UI.Activity.Settings.SetSecureCodeActivity;
 import me.flooz.app.UI.Activity.ShareAppActivity;
+import me.flooz.app.UI.Activity.ShareCollectAcivity;
 import me.flooz.app.UI.Activity.SponsorActivity;
 import me.flooz.app.UI.Activity.TransactionActivity;
 import me.flooz.app.UI.Activity.UserProfileActivity;
@@ -48,6 +51,8 @@ import me.flooz.app.UI.Activity.WebContentActivity;
 import me.flooz.app.UI.Fragment.Home.TabFragments.BankFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.CashoutFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.CollectFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.CollectParticipantFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.CollectParticipationFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.CreditCardFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.DocumentsFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.FriendRequestFragment;
@@ -87,8 +92,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
 
     private static FLTriggerManager instance;
 
-    public static FLTriggerManager getInstance()
-    {
+    public static FLTriggerManager getInstance() {
         if (instance == null)
             instance = new FLTriggerManager();
         return instance;
@@ -231,6 +235,9 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("timeline:pot", CollectActivity.class);
             put("web:web", WebContentActivity.class);
             put("phone:validate", ValidateSMSActivity.class);
+            put("pot:invitation", ShareCollectAcivity.class);
+            put("pot:participant", CollectParticipantActivity.class);
+            put("pot:participation", CollectParticipationActivity.class);
         }};
     }
 
@@ -254,6 +261,8 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("timeline:flooz", TransactionCardFragment.class);
             put("timeline:pot", CollectFragment.class);
             put("web:web", WebFragment.class);
+            put("pot:participant", CollectParticipantFragment.class);
+            put("pot:participation", CollectParticipationFragment.class);
         }};
     }
 
@@ -287,6 +296,9 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("timeline:pot", "push");
             put("web:web", "modal");
             put("phone:validate", "modal");
+            put("pot:invitation", "modal");
+            put("pot:participant", "push");
+            put("pot:participation", "push");
         }};
     }
 

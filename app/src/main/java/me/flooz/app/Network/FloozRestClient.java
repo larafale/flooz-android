@@ -1475,6 +1475,14 @@ public class FloozRestClient
         });
     }
 
+    public void collectInvite(String collectId, List invitations, FloozHttpResponseHandler responseHandler) {
+        Map<String, Object> param = new HashMap<>(1);
+
+        param.put("invitations", invitations);
+
+        this.request("/pots/" + collectId + "/invite", HttpRequestType.POST, param, responseHandler);
+    }
+
     /***************************/
     /*******  SOCIAL  **********/
     /***************************/

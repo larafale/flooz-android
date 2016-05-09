@@ -57,6 +57,7 @@ public class FLUser
     public Boolean isFloozer;
 
     public Boolean isCactus;
+    public Boolean isPot;
 
     public Number totalParticipations;
     public Number countParticipations;
@@ -168,6 +169,7 @@ public class FLUser
             this.isStar = this.json.optBoolean("isStar");
             this.isPro = this.json.optBoolean("isPro");
             this.isComplete = this.json.optBoolean("isComplete");
+            this.isPot = this.json.optBoolean("isPot");
 
             this.isCactus = this.json.optBoolean("isCactus");
             this.isCertified = this.json.optBoolean("isCertified");
@@ -502,5 +504,17 @@ public class FLUser
             return fullname;
         } else
             return phone;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        FLUser other = (FLUser ) obj;
+        return this.userId.contentEquals(other.userId);
     }
 }

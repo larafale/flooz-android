@@ -282,7 +282,23 @@ public class TransactionCardController extends BaseController {
         this.cardToPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FloozApplication.getInstance().showUserProfile(transaction.to);
+                if (transaction.to.isPot) {
+                    FloozRestClient.getInstance().showLoadView();
+                    FloozRestClient.getInstance().transactionWithId(transaction.to.userId, new FloozHttpResponseHandler() {
+                        @Override
+                        public void success(Object response) {
+                            FLTransaction transac = new FLTransaction(((JSONObject) response).optJSONObject("item"));
+                            FloozApplication.getInstance().showCollect(transac);
+                        }
+
+                        @Override
+                        public void failure(int statusCode, FLError error) {
+
+                        }
+                    });
+                } else {
+                    FloozApplication.getInstance().showUserProfile(transaction.to);
+                }
             }
         });
 
@@ -475,12 +491,6 @@ public class TransactionCardController extends BaseController {
         else
             this.cardFromPic.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.avatar_default));
 
-        this.cardToPic.setImageDrawable(null);
-        if (this.transaction.to.avatarURL != null && !this.transaction.to.avatarURL.isEmpty())
-            ImageLoader.getInstance().displayImage(this.transaction.to.avatarURL, this.cardToPic);
-        else
-            this.cardToPic.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.avatar_default));
-
         if (this.transaction.from.username != null) {
             this.cardFromUsername.setVisibility(View.VISIBLE);
             this.cardFromUsername.setText("@" + this.transaction.from.username);
@@ -491,12 +501,23 @@ public class TransactionCardController extends BaseController {
 
         this.cardFromFullname.setText(this.transaction.from.fullname);
 
-        if (this.transaction.to.username != null) {
-            this.cardToUsername.setVisibility(View.VISIBLE);
-            this.cardToUsername.setText("@" + this.transaction.to.username);
-        }
-        else {
+        if (this.transaction.to.isPot) {
             this.cardToUsername.setVisibility(View.INVISIBLE);
+            this.cardToPic.setImageDrawable(parentActivity.getResources().getDrawable(R.drawable.default_pot_avatar));
+        } else {
+            if (this.transaction.to.username != null) {
+                this.cardToUsername.setVisibility(View.VISIBLE);
+                this.cardToUsername.setText("@" + this.transaction.to.username);
+            }
+            else {
+                this.cardToUsername.setVisibility(View.INVISIBLE);
+            }
+
+            this.cardToPic.setImageDrawable(null);
+            if (this.transaction.to.avatarURL != null && !this.transaction.to.avatarURL.isEmpty())
+                ImageLoader.getInstance().displayImage(this.transaction.to.avatarURL, this.cardToPic);
+            else
+                this.cardToPic.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.avatar_default));
         }
 
         this.cardToFullname.setText(this.transaction.to.fullname);
