@@ -12,7 +12,8 @@
         android:layout_height="fill_parent"
         app:refreshColors="@array/refresh_scheme_color"
         app:refreshType="material"
-        android:background="@android:color/transparent">
+        android:background="@android:color/transparent"
+        android:layout_marginTop="@dimen/header_size">
 
         <me.flooz.app.UI.View.TimelineListView
             android:id="@+id/participation_list"

@@ -22,7 +22,7 @@ public class CollectParticipationFragment extends  TabBarFragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.collect_participant_activity, null);
+        View view = inflater.inflate(R.layout.collect_participation_activity, null);
 
         if (this.controller == null) {
             this.controller = new CollectParticipationController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER, this.triggerData);

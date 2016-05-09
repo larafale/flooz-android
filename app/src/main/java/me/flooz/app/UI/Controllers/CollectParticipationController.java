@@ -95,6 +95,13 @@ public class CollectParticipationController extends BaseController implements Ti
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+
+        this.refreshTransactions();
+    }
+
+    @Override
     public void ListItemClick(FLTransaction transac) {
         if (transac.isCollect)
             FloozApplication.getInstance().showCollect(transac);
@@ -158,43 +165,45 @@ public class CollectParticipationController extends BaseController implements Ti
     }
 
     public void refreshTransactions() {
-        FloozRestClient.getInstance().collectTimelineForUser(this.userId, this.collectId, new FloozHttpResponseHandler() {
-            @Override
-            public void success(Object response) {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> responseMap = (Map<String, Object>) response;
+        if (this.userId != null && this.collectId != null && !this.collectId.isEmpty() && !this.userId.isEmpty()) {
+            FloozRestClient.getInstance().collectTimelineForUser(this.userId, this.collectId, new FloozHttpResponseHandler() {
+                @Override
+                public void success(Object response) {
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> responseMap = (Map<String, Object>) response;
 
-                if (responseMap.containsKey("transactions") && responseMap.get("transactions") != null && responseMap.get("transactions") instanceof List) {
-                    if (transactions != null)
-                        transactions.clear();
-                    else
-                        transactions = new ArrayList<>();
+                    if (responseMap.containsKey("transactions") && responseMap.get("transactions") != null && responseMap.get("transactions") instanceof List) {
+                        if (transactions != null)
+                            transactions.clear();
+                        else
+                            transactions = new ArrayList<>();
 
-                    transactions.addAll((List<FLTransaction>) responseMap.get("transactions"));
-                    nextPageUrl = (String) responseMap.get("nextUrl");
+                        transactions.addAll((List<FLTransaction>) responseMap.get("transactions"));
+                        nextPageUrl = (String) responseMap.get("nextUrl");
 
-                    if (timelineAdapter == null) {
-                        timelineAdapter = new TimelineListAdapter(FloozApplication.getAppContext(), transactions);
-                        timelineAdapter.delegate = CollectParticipationController.this;
+                        if (timelineAdapter == null) {
+                            timelineAdapter = new TimelineListAdapter(FloozApplication.getAppContext(), transactions);
+                            timelineAdapter.delegate = CollectParticipationController.this;
+                        }
+
+                        if (nextPageUrl == null || nextPageUrl.isEmpty())
+                            timelineAdapter.hasNextURL = false;
+                        else
+                            timelineAdapter.hasNextURL = true;
+
+                        timelineAdapter.notifyDataSetChanged();
+
+                        refreshContainer.setRefreshing(false);
+                    } else {
+                        refreshContainer.setRefreshing(false);
                     }
+                }
 
-                    if (nextPageUrl == null || nextPageUrl.isEmpty())
-                        timelineAdapter.hasNextURL = false;
-                    else
-                        timelineAdapter.hasNextURL = true;
-
-                    timelineAdapter.notifyDataSetChanged();
-
-                    refreshContainer.setRefreshing(false);
-                } else {
+                @Override
+                public void failure(int statusCode, FLError error) {
                     refreshContainer.setRefreshing(false);
                 }
-            }
-
-            @Override
-            public void failure(int statusCode, FLError error) {
-                refreshContainer.setRefreshing(false);
-            }
-        });
+            });
+        }
     }
 }
