@@ -274,15 +274,7 @@ public class CreditCardController extends BaseController {
                 FloozRestClient.getInstance().createCreditCard(params, false, new FloozHttpResponseHandler() {
                     @Override
                     public void success(Object response) {
-                        creditCard = new FLCreditCard();
-                        creditCard.owner = cardOwner.getText().toString();
-                        creditCard.number = cardNumber.getText().toString();
-                        creditCard.expires = cardExpires.getText().toString();
-                        creditCard.cvv = cardCVV.getText().toString();
 
-                        FloozRestClient.getInstance().currentUser.creditCard = creditCard;
-                        reloadCreditCard();
-                        FloozRestClient.getInstance().updateCurrentUser(null);
                     }
 
                     @Override

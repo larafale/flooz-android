@@ -42,6 +42,7 @@ public class CollectAdapter extends BaseAdapter {
         void collectLikeClicked();
         void collectCommentClicked();
         void collectReport();
+        void collectShowParticipants();
     }
 
     public CollectAdapter(Context ctx) {
@@ -110,6 +111,14 @@ public class CollectAdapter extends BaseAdapter {
         this.participantMasterCellHolder.participantViews.add((RoundedImageView) this.participantMasterCellHolder.cellView.findViewById(R.id.participant_mastercell_user_1));
 
         this.participantMasterCellHolder.participantText.setTypeface(CustomFonts.customContentRegular(context));
+
+        this.participantMasterCellHolder.cellView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (socialDelegate != null)
+                    socialDelegate.collectShowParticipants();
+            }
+        });
     }
 
     public void reload() {

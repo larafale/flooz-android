@@ -26,6 +26,7 @@ import org.w3c.dom.Text;
 import java.util.Locale;
 
 import me.flooz.app.Adapter.CollectAdapter;
+import me.flooz.app.Adapter.CollectParticipantAdapter;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLTransaction;
@@ -34,6 +35,10 @@ import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.HomeActivity;
+import me.flooz.app.UI.Activity.Settings.PrivacySettingsActivity;
+import me.flooz.app.UI.Fragment.Home.TabFragments.CollectParticipantFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.PrivacyFragment;
 import me.flooz.app.UI.Tools.CustomImageViewer;
 import me.flooz.app.UI.View.LoadingImageView;
 import me.flooz.app.Utils.CustomFonts;
@@ -476,6 +481,21 @@ public class CollectController extends BaseController implements CollectAdapter.
 
     public void collectReport() {
         FloozApplication.getInstance().showReportActionMenu(this.collect);
+    }
+
+    public void collectShowParticipants() {
+        if (this.collect.participants.size() > 0) {
+            if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
+                Intent intent = new Intent(parentActivity, CollectParticipantAdapter.class);
+                intent.putExtra("collect", this.collect.json.toString());
+                parentActivity.startActivity(intent);
+                parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+            } else {
+                CollectParticipantFragment fragment = new CollectParticipantFragment();
+                fragment.collect = this.collect;
+                ((HomeActivity) parentActivity).pushFragmentInCurrentTab(fragment);
+            }
+        }
     }
 
     public void setCollect(@NonNull  FLTransaction collect) {

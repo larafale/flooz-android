@@ -791,10 +791,8 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
             this.currentFragment = fragment;
 
             if ((this.currentFragment instanceof TransactionCardFragment || this.currentFragment instanceof CollectFragment)) {
-                if (this.tabBar.getVisibility() == View.VISIBLE) {
-                    this.hideTabBar();
-                }
-            } else if (this.tabBar.getVisibility() == View.VISIBLE) {
+                this.hideTabBar();
+            } else {
                 this.showTabBar();
             }
 

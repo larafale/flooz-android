@@ -23,7 +23,7 @@ public class FLTexts {
     public String audiotelNumber;
     public String audiotelImage;
     public String audiotelInfos;
-
+    public String cardHolder = null;
 
     public FLTexts(JSONObject json) {
         this.setJson(json);
@@ -37,6 +37,11 @@ public class FLTexts {
             this.audiotelImage = json.optJSONObject("audiotel").optString("image");
             this.audiotelInfos = json.optJSONObject("audiotel").optString("info");
         }
+
+        if (json.has("cardHolder"))
+            this.cardHolder = json.optBoolean("cardHolder") ? "true" : "false";
+        else
+            this.cardHolder = null;
 
         this.notificationsText = json.optJSONObject("notificationsText");
         this.slider = new FLSlider(json.optJSONObject("slider"));

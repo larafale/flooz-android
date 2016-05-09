@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="@dimen/dimen_medium"
+    android:paddingTop="@dimen/dimen_medium"
+    android:paddingRight="@dimen/dimen_medium"
+    android:paddingLeft="@dimen/dimen_medium"
+    android:gravity="center_vertical">
+
+    <com.makeramen.roundedimageview.RoundedImageView
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/participant_row_pic"
+        android:src="@drawable/avatar_default"
+        android:scaleType="centerCrop"
+        android:layout_width="@dimen/user_list_row_pic"
+        android:layout_height="@dimen/user_list_row_pic"
+        android:layout_marginLeft="@dimen/dimen_large"
+        android:layout_marginRight="@dimen/dimen_large"
+        android:layout_gravity="center_horizontal|top"
+        app:riv_corner_radius="@dimen/avatar_corner"
+        app:riv_mutate_background="true"
+        android:layout_centerVertical="true"/>
+
+    <TextView
+        android:id="@+id/participant_row_fullname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="14sp"
+        android:textAllCaps="true"
+        android:singleLine="true"
+        android:layout_marginTop="@dimen/dimen_medium"
+        android:textColor="@android:color/white"
+        android:text="FULLNAME"
+        android:layout_toRightOf="@id/participant_row_pic"/>
+    
+    <ImageView
+        android:id="@+id/participant_row_certified"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:src="@drawable/certified"
+        android:layout_toRightOf="@+id/participant_row_fullname"
+        android:layout_marginTop="@dimen/dimen_medium"
+        android:layout_marginLeft="@dimen/dimen_medium"/>
+
+    <TextView
+        android:id="@+id/participant_row_username"
+        android:layout_marginTop="@dimen/dimen_small"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:textSize="12sp"
+        android:text="USERNAME"
+        android:textColor="@color/grey_pseudo"
+        android:layout_toRightOf="@id/participant_row_pic"
+        android:layout_below="@id/participant_row_fullname"/>
+    
+    <ImageView
+        android:id="@+id/participant_row_arrow"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_margin="@dimen/dimen_medium"
+        android:src="@drawable/arrow_right"
+        android:layout_centerVertical="true"/>
+
+    <TextView
+        android:id="@+id/participant_row_amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:text="25 €"
+        android:textColor="@android:color/white"
+        android:layout_toLeftOf="@id/participant_row_arrow"
+        android:layout_marginRight="@dimen/dimen_medium"/>
+
+</RelativeLayout>

@@ -1034,6 +1034,8 @@ public class FloozRestClient
 
         String path = "/cards";
 
+        params.put("validate", true);
+
         if (signup)
             path += "?context=signup";
 
@@ -1059,7 +1061,7 @@ public class FloozRestClient
     }
 
     public void removeCreditCard(String creditCardId, FloozHttpResponseHandler responseHandler) {
-        this.request("/cards/" + creditCardId, HttpRequestType.DELETE, null, responseHandler);
+        this.request("/cards/" + creditCardId + "?validate=true", HttpRequestType.DELETE, null, responseHandler);
     }
 
     public void abort3DSecure() {
@@ -1078,6 +1080,15 @@ public class FloozRestClient
         this.request("/cashins/audiotel", HttpRequestType.PUT, param, responseHandler);
     }
 
+    public void cashinCard(Map<String, Object> param, FloozHttpResponseHandler responseHandler) {
+
+        param.put("validate", true);
+
+        if (this.getSecureCode() != null)
+            param.put("secureCode", this.getSecureCode());
+
+        this.request("/cashins/card", HttpRequestType.POST, param, responseHandler);
+    }
 
     /***************************/
     /********  CASHOUT  ********/
@@ -1203,6 +1214,60 @@ public class FloozRestClient
 
     public void transactionWithId(String transacId, FloozHttpResponseHandler responseHandler) {
         this.request("/flooz/" + transacId, HttpRequestType.GET, null, responseHandler);
+    }
+
+    public void collectTimelineForUser(String userId, String collectId, final FloozHttpResponseHandler responseHandler) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("potId", collectId);
+
+        this.request("/flooz", HttpRequestType.GET, params, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                JSONObject jsonResponse = (JSONObject) response;
+
+                List<FLTransaction> transactions = createTransactionArrayFromResult(jsonResponse);
+                if (responseHandler != null) {
+                    Map<String, Object> ret = new HashMap<>();
+                    ret.put("transactions", transactions);
+                    ret.put("nextUrl", jsonResponse.optString("next"));
+                    responseHandler.success(ret);
+                }
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+                if (responseHandler != null)
+                    responseHandler.failure(statusCode, error);
+            }
+        });
+    }
+
+    public void collectTimelineForUserNextPage(String nextPageUrl, String userId, String collectId, final FloozHttpResponseHandler responseHandler) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("userId", userId);
+        params.put("potId", collectId);
+
+        this.request("nextPageUrl", HttpRequestType.GET, params, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                JSONObject jsonResponse = (JSONObject) response;
+
+                List<FLTransaction> transactions = createTransactionArrayFromResult(jsonResponse);
+                if (responseHandler != null) {
+                    Map<String, Object> ret = new HashMap<>();
+                    ret.put("transactions", transactions);
+                    ret.put("nextUrl", jsonResponse.optString("next"));
+                    responseHandler.success(ret);
+                }
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+                if (responseHandler != null)
+                    responseHandler.failure(statusCode, error);
+            }
+        });
     }
 
     public void timeline(final FLTransaction.TransactionScope scope, final FloozHttpResponseHandler responseHandler) {
@@ -2091,7 +2156,6 @@ public class FloozRestClient
                     }).on("event", new Emitter.Listener() {
                         @Override
                         public void call(Object... args) {
-
                             JSONObject data = (JSONObject) args[0];
                             if (data.has("popup")) {
                                 FLError errorContent = new FLError(data.optJSONObject("popup"));
@@ -2102,13 +2166,11 @@ public class FloozRestClient
                     }).on("session end", new Emitter.Listener() {
                         @Override
                         public void call(Object... args) {
-
                             socket.disconnect();
                         }
                     }).on("feed", new Emitter.Listener() {
                         @Override
                         public void call(Object... args) {
-
                             JSONObject data = (JSONObject) args[0];
 
                             FloozRestClient.getInstance().notificationsManager.nbUnreadNotifications = data.optInt("total");

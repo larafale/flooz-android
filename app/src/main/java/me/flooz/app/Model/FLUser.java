@@ -47,6 +47,7 @@ public class FLUser
     public String distinctId;
     public List<String> actions;
     public Boolean isStar;
+    public Boolean isCertified;
     public Boolean isPro;
 
     public Boolean isComplete;
@@ -56,6 +57,11 @@ public class FLUser
     public Boolean isFloozer;
 
     public Boolean isCactus;
+
+    public Number totalParticipations;
+    public Number countParticipations;
+    public JSONArray participations;
+
 
     public JSONObject blockObject;
     public Map<String, String> address;
@@ -164,6 +170,7 @@ public class FLUser
             this.isComplete = this.json.optBoolean("isComplete");
 
             this.isCactus = this.json.optBoolean("isCactus");
+            this.isCertified = this.json.optBoolean("isCertified");
 
             if (this.json.has("isFriendable"))
                 isFriendable = this.json.optBoolean("isFriendable");
@@ -177,6 +184,12 @@ public class FLUser
                     Log.d("JSON FAILURE", "Cannot retrieve actions");
                     this.actions = null;
                 }
+            }
+
+            if (this.json.has("participations")) {
+                this.totalParticipations = json.optJSONObject("participations").optDouble("amount");
+                this.countParticipations = json.optJSONObject("participations").optDouble("count");
+                this.participations = json.optJSONObject("participations").optJSONArray("list");
             }
 
             if (this.json.has("publicMetrics")) {
