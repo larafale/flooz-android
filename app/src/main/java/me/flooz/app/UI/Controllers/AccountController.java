@@ -36,6 +36,7 @@ import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.CashinActivity;
 import me.flooz.app.UI.Activity.CashoutActivity;
 import me.flooz.app.UI.Activity.EditProfileActivity;
 import me.flooz.app.UI.Activity.FriendRequestActivity;
@@ -153,6 +154,11 @@ public class AccountController extends BaseController implements ProfileListAdap
                                 parentActivity.startActivity(cardIntent);
                                 parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
                             }
+                            break;
+                        case "cashin":
+                                Intent cardIntent = new Intent(parentActivity, CashinActivity.class);
+                                parentActivity.startActivity(cardIntent);
+                                parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
                             break;
                         case "bank":
                             if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
@@ -358,8 +364,14 @@ public class AccountController extends BaseController implements ProfileListAdap
         TextView title = (TextView) dialog.findViewById(R.id.dialog_wallet_title);
         title.setTypeface(CustomFonts.customContentRegular(parentActivity), Typeface.BOLD);
 
+        if (FloozRestClient.getInstance().currentTexts.balancePopupTitle != null)
+            title.setText(FloozRestClient.getInstance().currentTexts.balancePopupTitle);
+
         TextView text = (TextView) dialog.findViewById(R.id.dialog_wallet_msg);
         text.setTypeface(CustomFonts.customContentRegular(parentActivity));
+
+        if (FloozRestClient.getInstance().currentTexts.balancePopupText != null)
+            text.setText(FloozRestClient.getInstance().currentTexts.balancePopupText);
 
         Button close = (Button) dialog.findViewById(R.id.dialog_wallet_btn);
 

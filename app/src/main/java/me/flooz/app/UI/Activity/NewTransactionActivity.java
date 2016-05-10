@@ -986,59 +986,39 @@ public class NewTransactionActivity extends BaseActivity implements ToolTipScope
     private void updateBalanceIndicator() {
         float amount = FloozRestClient.getInstance().currentUser.amount.floatValue();
 
-        if (!this.amountTextfield.getText().toString().isEmpty()) {
-            float tmp = 0;
-
-            try {
-                tmp = Float.parseFloat(this.amountTextfield.getText().toString());
-            } catch (NumberFormatException e) {
-
-            }
-
-            amount = amount - tmp;
-        }
+//        if (!this.amountTextfield.getText().toString().isEmpty()) {
+//            float tmp = 0;
+//
+//            try {
+//                tmp = Float.parseFloat(this.amountTextfield.getText().toString());
+//            } catch (NumberFormatException e) {
+//
+//            }
+//
+//            amount = amount - tmp;
+//        }
 
         if (this.preset != null && this.preset.blockBalance) {
             this.headerBalance.setVisibility(View.GONE);
             this.headerCB.setVisibility(View.GONE);
         } else {
-            if (amount > 0) {
+//            if (amount > 0) {
                 this.headerCB.setVisibility(View.GONE);
                 this.headerBalance.setVisibility(View.VISIBLE);
                 this.headerBalance.setText(FLHelper.trimTrailingZeros(String.format(Locale.US, "%.2f", amount)) + " €");
-            } else {
-                this.headerCB.setVisibility(View.VISIBLE);
-                this.headerBalance.setVisibility(View.GONE);
-            }
+//            } else {
+//                this.headerCB.setVisibility(View.VISIBLE);
+//                this.headerBalance.setVisibility(View.GONE);
+//            }
         }
     }
 
     private void showBalanceDialog() {
-        InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), 0);
-
-        final Dialog dialog = new Dialog(this);
-
-        dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        dialog.setContentView(R.layout.custom_dialog_balance);
-
-        TextView title = (TextView) dialog.findViewById(R.id.dialog_wallet_title);
-        title.setTypeface(CustomFonts.customContentRegular(this), Typeface.BOLD);
-
-        TextView text = (TextView) dialog.findViewById(R.id.dialog_wallet_msg);
-        text.setTypeface(CustomFonts.customContentRegular(this));
-
-        Button close = (Button) dialog.findViewById(R.id.dialog_wallet_btn);
-
-        close.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.dismiss();
-            }
-        });
-
-        dialog.setCanceledOnTouchOutside(true);
-        dialog.show();
+        if (FloozRestClient.getInstance().currentTexts.cashinButtons != null && FloozRestClient.getInstance().currentTexts.cashinButtons.size() > 0) {
+            Intent cardIntent = new Intent(this, CashinActivity.class);
+            this.startActivity(cardIntent);
+            this.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+        }
     }
 
     private void saveData() {

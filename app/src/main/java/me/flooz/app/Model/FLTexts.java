@@ -24,6 +24,9 @@ public class FLTexts {
     public String audiotelImage;
     public String audiotelInfos;
     public String cardHolder = null;
+    public String balancePopupTitle = null;
+    public String balancePopupText = null;
+
 
     public FLTexts(JSONObject json) {
         this.setJson(json);
@@ -31,6 +34,11 @@ public class FLTexts {
 
     private void setJson(JSONObject json) {
         this.json = json;
+
+        if (json.has("balance")) {
+            this.balancePopupTitle = json.optJSONObject("balance").optString("title");
+            this.balancePopupText = json.optJSONObject("balance").optString("text");
+        }
 
         if (json.has("audiotel")) {
             this.audiotelNumber = json.optJSONObject("audiotel").optString("number");

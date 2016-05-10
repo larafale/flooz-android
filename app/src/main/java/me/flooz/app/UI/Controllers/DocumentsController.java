@@ -53,6 +53,7 @@ public class DocumentsController extends BaseController {
     private ImageView cniVersoButton;
     private ImageView justificatoryButton;
     private ImageView justificatory2Button;
+    private ImageView cardButton;
 
     private String currentDoc;
     private Uri tmpUriImage;
@@ -86,13 +87,16 @@ public class DocumentsController extends BaseController {
         this.cniVersoButton = (ImageView) this.currentView.findViewById(R.id.settings_identity_verso);
         EditText justificatoryTextfield = (EditText) this.currentView.findViewById(R.id.settings_coord_justificatory);
         EditText justificatory2Textfield = (EditText) this.currentView.findViewById(R.id.settings_coord_justificatory2);
+        EditText cardTextfield = (EditText) this.currentView.findViewById(R.id.settings_coord_card);
         this.justificatory2Button = (ImageView) this.currentView.findViewById(R.id.settings_coord_justificatory2_button);
         this.justificatoryButton = (ImageView) this.currentView.findViewById(R.id.settings_coord_justificatory_button);
+        this.cardButton = (ImageView) this.currentView.findViewById(R.id.settings_coord_card_button);
         TextView infos = (TextView) this.currentView.findViewById(R.id.documents_infos);
 
         cniRectoTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         justificatoryTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         justificatory2Textfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
+        cardTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         infos.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
 
         infos.setText(FloozRestClient.getInstance().currentTexts.json.optJSONObject("menu").optJSONObject("documents").optString("info"));
@@ -194,6 +198,30 @@ public class DocumentsController extends BaseController {
                 }
             }
         });
+
+        cardTextfield.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+                if (currentUser.checkDocuments.get("card").equals(0) || currentUser.checkDocuments.get("card").equals(3)) {
+                    currentDoc = "card";
+                    showImageActionMenu();
+                }
+            }
+        });
+
+        this.cardButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+                if (currentUser.checkDocuments.get("card").equals(0) || currentUser.checkDocuments.get("card").equals(3)) {
+                    currentDoc = "card";
+                    showImageActionMenu();
+                }
+            }
+        });
     }
 
     private void reloadDocuments() {
@@ -226,6 +254,13 @@ public class DocumentsController extends BaseController {
             this.justificatory2Button.setImageResource(R.drawable.friends_add);
         else
             this.justificatory2Button.setImageResource(R.drawable.friends_accepted);
+
+        if (currentUser.checkDocuments.get("card").equals(0))
+            this.cardButton.setImageResource(R.drawable.document_refused);
+        else if (currentUser.checkDocuments.get("card").equals(3))
+            this.cardButton.setImageResource(R.drawable.friends_add);
+        else
+            this.cardButton.setImageResource(R.drawable.friends_accepted);
     }
 
     @Override

@@ -1,8 +1,10 @@
 package me.flooz.app.UI.Controllers;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -23,12 +25,15 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 import me.flooz.app.Adapter.CollectAdapter;
 import me.flooz.app.Adapter.CollectParticipantAdapter;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
+import me.flooz.app.Model.FLReport;
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Model.FLTrigger;
 import me.flooz.app.Model.FLUser;
@@ -40,6 +45,8 @@ import me.flooz.app.UI.Activity.Settings.PrivacySettingsActivity;
 import me.flooz.app.UI.Activity.ShareCollectAcivity;
 import me.flooz.app.UI.Fragment.Home.TabFragments.CollectParticipantFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.PrivacyFragment;
+import me.flooz.app.UI.Tools.ActionSheet;
+import me.flooz.app.UI.Tools.ActionSheetItem;
 import me.flooz.app.UI.Tools.CustomImageViewer;
 import me.flooz.app.UI.View.LoadingImageView;
 import me.flooz.app.Utils.CustomFonts;
@@ -299,10 +306,30 @@ public class CollectController extends BaseController implements CollectAdapter.
 
                     parentActivity.startActivity(Intent.createChooser(share, parentActivity.getResources().getString(R.string.SHARE_COLLECT)));
                 } else {
-                    Intent intent = new Intent(parentActivity, ShareCollectAcivity.class);
-                    intent.putExtra("potId", collect.transactionId);
-                    parentActivity.startActivity(intent);
-                    parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                    List<ActionSheetItem> items = new ArrayList<>();
+                    items.add(new ActionSheetItem(parentActivity, "Inviter vos amis", new ActionSheetItem.ActionSheetItemClickListener() {
+                        @Override
+                        public void onClick() {
+                            Intent intent = new Intent(parentActivity, ShareCollectAcivity.class);
+                            intent.putExtra("potId", collect.transactionId);
+                            parentActivity.startActivity(intent);
+                            parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                        }
+                    }));
+
+                    items.add(new ActionSheetItem(parentActivity, "Partager le lien", new ActionSheetItem.ActionSheetItemClickListener() {
+                        @Override
+                        public void onClick() {
+                            Intent share = new Intent(Intent.ACTION_SEND);
+                            share.setType("text/plain");
+
+                            share.putExtra(Intent.EXTRA_TEXT, "https://www.flooz.me/pot/" + collect.transactionId);
+
+                            parentActivity.startActivity(Intent.createChooser(share, parentActivity.getResources().getString(R.string.SHARE_COLLECT)));
+                        }
+                    }));
+
+                    ActionSheet.showWithItems(parentActivity, items);
                 }
             }
         });

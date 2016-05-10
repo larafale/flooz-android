@@ -165,6 +165,14 @@ public class ProfileListAdapter extends BaseAdapter implements StickyListHeaders
         item2.put("headerID", 1);
         menuData.add(item2);
 
+        if (FloozRestClient.getInstance().currentTexts.cashinButtons != null && FloozRestClient.getInstance().currentTexts.cashinButtons.size() > 0) {
+            Map<String, Object> item3 = new HashMap<>();
+            item3.put("title", this.context.getResources().getString(R.string.NAV_CASHIN));
+            item3.put("action", "cashin");
+            item3.put("headerID", 1);
+            menuData.add(item3);
+        }
+
         Map<String, Object> item5 = new HashMap<>();
         item5.put("title", this.context.getResources().getString(R.string.SETTINGS_COORD));
         item5.put("action", "coords");
@@ -189,12 +197,14 @@ public class ProfileListAdapter extends BaseAdapter implements StickyListHeaders
             menuData.add(item7);
         }
 
-        Map<String, Object> item3 = new HashMap<>();
-        item3.put("title", this.context.getResources().getString(R.string.SETTINGS_CARD));
-        item3.put("action", "card");
-        item3.put("notif", cardNotifs);
-        item3.put("headerID", 2);
-        menuData.add(item3);
+        if (FloozRestClient.getInstance().currentTexts.cashinButtons == null || FloozRestClient.getInstance().currentTexts.cashinButtons.size() == 0) {
+            Map<String, Object> item3 = new HashMap<>();
+            item3.put("title", this.context.getResources().getString(R.string.SETTINGS_CARD));
+            item3.put("action", "card");
+            item3.put("notif", cardNotifs);
+            item3.put("headerID", 2);
+            menuData.add(item3);
+        }
 
         Map<String, Object> item4 = new HashMap<>();
         item4.put("title", this.context.getResources().getString(R.string.SETTINGS_RIB));

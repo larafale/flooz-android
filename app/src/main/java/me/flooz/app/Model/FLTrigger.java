@@ -5,6 +5,7 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
+import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.Utils.FLTriggerManager;
 
 import static me.flooz.app.Model.FLTrigger.FLTriggerAction.*;
@@ -52,6 +53,12 @@ public class FLTrigger {
 
         if (this.key == null)
             return false;
+
+        if (this.key.contentEquals("card:card:show") && FloozRestClient.getInstance().currentTexts.cashinButtons != null && FloozRestClient.getInstance().currentTexts.cashinButtons.size() > 0)
+            this.key = "cashin:card:show";
+
+        if (this.key.contentEquals("card:card:hide") && FloozRestClient.getInstance().currentTexts.cashinButtons != null && FloozRestClient.getInstance().currentTexts.cashinButtons.size() > 0)
+            this.key = "card:card:hide";
 
         String[] splitKey = this.key.split(":");
 

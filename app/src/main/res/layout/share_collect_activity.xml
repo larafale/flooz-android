@@ -19,7 +19,7 @@
             android:minHeight="40dp"
             android:padding="@dimen/dimen_medium"
             android:gravity="center_vertical"
-            android:hint="@string/TRANSACTION_CONTACT_PICKER_HINT"
+            android:hint="rechercher"
             android:textColorHint="@color/placeholder"
             android:background="@color/background"
             android:textSize="16sp"
