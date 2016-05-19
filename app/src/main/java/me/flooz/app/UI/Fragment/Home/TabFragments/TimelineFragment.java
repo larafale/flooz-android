@@ -47,14 +47,10 @@ import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.SearchActivity;
-import me.flooz.app.UI.Activity.Settings.IdentitySettingsActivity;
-import me.flooz.app.UI.Controllers.SearchController;
-import me.flooz.app.UI.View.RadioButtonCenter;
 import me.flooz.app.UI.View.TimelineListView;
 import me.flooz.app.UI.View.ToolTipFilterViewDelegate;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
-import me.flooz.app.Utils.FLHelper;
 
 /**
  * Created by Flooz on 9/23/14.

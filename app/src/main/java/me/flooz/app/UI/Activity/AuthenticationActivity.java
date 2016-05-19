@@ -55,7 +55,7 @@ public class AuthenticationActivity extends BaseActivity {
 
     public Boolean changeSecureCode = false;
 
-    public int resultCode = -1;
+    public int resultCode = RESULT_CANCELED;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {

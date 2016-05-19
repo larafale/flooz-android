@@ -34,11 +34,23 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.security.KeyManagementException;
+import java.security.NoSuchAlgorithmException;
+import java.security.SecureRandom;
+import java.security.cert.CertificateException;
+import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
 
 import io.socket.client.IO;
 import io.socket.client.Socket;
@@ -399,7 +411,17 @@ public class FloozRestClient
             this.request("/users/logout", HttpRequestType.GET, param, null);
         }
 
-        this.socketSendSessionEnd();
+        JSONObject obj = new JSONObject();
+        try {
+            if (currentUser != null)
+                obj.put("nick", currentUser.username);
+
+            obj.put("token", accessToken);
+            this.socket.emit("session end", obj);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         this.clearLogin();
         FloozApplication.getInstance().didDisconnected();
     }
@@ -2127,6 +2149,26 @@ public class FloozRestClient
     /******  SOCKET IO  ********/
     /***************************/
 
+    private TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+        public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+            return new java.security.cert.X509Certificate[] {};
+        }
+
+        public void checkClientTrusted(X509Certificate[] chain,
+                                       String authType) throws CertificateException {
+        }
+
+        public void checkServerTrusted(X509Certificate[] chain,
+                                       String authType) throws CertificateException {
+        }
+    } };
+
+    public static class RelaxedHostNameVerifier implements HostnameVerifier {
+        public boolean verify(String hostname, SSLSession session) {
+            return true;
+        }
+    }
+
     public void initializeSockets() {
         this.socketHandler.removeCallbacks(this.socketCloseRunnable);
         if (this.currentUser != null) {
@@ -2142,8 +2184,14 @@ public class FloozRestClient
 
                     String url = BASE_URL;
 
-                    if (!BuildConfig.DEBUG_API)
-                        url = "http://api.flooz.me";
+                    if (!BuildConfig.DEBUG_API) {
+                        SSLContext sc = SSLContext.getInstance("TLS");
+                        sc.init(null, trustAllCerts, new SecureRandom());
+                        IO.setDefaultSSLContext(sc);
+                        HttpsURLConnection.setDefaultHostnameVerifier(new RelaxedHostNameVerifier());
+                        options.port = 443;
+                        options.secure = true;
+                    }
 
                     this.socket = IO.socket(url, options);
                     this.socket.on(Socket.EVENT_CONNECT, new Emitter.Listener() {
@@ -2208,12 +2256,16 @@ public class FloozRestClient
                     this.socket.connect();
             } catch (URISyntaxException e) {
                 e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (KeyManagementException e) {
+                e.printStackTrace();
             }
         }
     }
 
     public void socketSendSessionEnd() {
-        if (this.socket != null && this.accessToken != null && this.socket.connected()) {
+        if (this.socket != null && this.accessToken != null && this.socket.connected() && !FloozApplication.appInForeground) {
             JSONObject obj = new JSONObject();
             try {
                 if (currentUser != null)
