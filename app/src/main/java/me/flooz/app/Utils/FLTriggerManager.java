@@ -32,6 +32,8 @@ import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.NewCollectActivity;
 import me.flooz.app.UI.Activity.NewTransactionActivity;
 import me.flooz.app.UI.Activity.NotificationActivity;
+import me.flooz.app.UI.Activity.PaymentAudiotelActivity;
+import me.flooz.app.UI.Activity.PaymentSourceActivity;
 import me.flooz.app.UI.Activity.SearchActivity;
 import me.flooz.app.UI.Activity.Secure3DActivity;
 import me.flooz.app.UI.Activity.Settings.BankSettingsActivity;
@@ -224,6 +226,9 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("cashin:audiotel", CashinAudiotelActivity.class);
             put("code:set", SetSecureCodeActivity.class);
             put("friend:pending", FriendRequestActivity.class);
+            put("pay:source", PaymentSourceActivity.class);
+            put("pay:audiotel", PaymentAudiotelActivity.class);
+            put("pay:card", CreditCardSettingsActivity.class);
             put("profile:user", UserProfileActivity.class);
             put("profile:edit", EditProfileActivity.class);
             put("settings:iban", BankSettingsActivity.class);
@@ -285,6 +290,9 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("cashin:audiotel", "modal");
             put("code:set", "modal");
             put("friend:pending", "modal");
+            put("pay:source", "modal");
+            put("pay:audiotel", "modal");
+            put("pay:card", "modal");
             put("profile:user", "push");
             put("profile:edit", "modal");
             put("settings:iban", "modal");

@@ -368,17 +368,6 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
             @Override
             public void onClick(View v) {
                 homeButtonView.setVisibility(View.VISIBLE);
-                Blurry.with(HomeActivity.this)
-                        .radius(35)
-                        .sampling(1)
-                        .async()
-                        .color(HomeActivity.this.getResources().getColor(R.color.background_header_alpha))
-                        .capture(findViewById(R.id.content_view))
-                        .into(homeButtonBackground);
-
-//                Intent intent = new Intent(instance, NewCollectActivity.class);
-//                instance.startActivity(intent);
-//                instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
             }
         });
 
@@ -501,14 +490,6 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
                 }
             }, 100);
         }
-
-        Blurry.with(HomeActivity.this)
-                .radius(35)
-                .sampling(1)
-                .async()
-                .color(HomeActivity.this.getResources().getColor(R.color.background_header_alpha))
-                .capture(findViewById(R.id.content_view))
-                .into(homeButtonBackground);
     }
 
     protected void onPause() {

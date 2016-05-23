@@ -20,6 +20,7 @@ public class FLTexts {
     public List<FLCountry> avalaibleCountries;
     public List<FLButton> homeButtons;
     public List<FLButton> cashinButtons;
+    public List<FLButton> paymentSources;
     public String audiotelNumber;
     public String audiotelImage;
     public String audiotelInfos;
@@ -84,6 +85,16 @@ public class FLTexts {
         if (buttons != null) {
             for (int i = 0; i < buttons.length(); i++) {
                 this.homeButtons.add(new FLButton(buttons.optJSONObject(i)));
+            }
+        }
+
+        this.paymentSources = new ArrayList<>();
+
+        JSONArray sources = json.optJSONArray("sources");
+
+        if (sources != null) {
+            for (int i = 0; i < sources.length(); i++) {
+                this.paymentSources.add(new FLButton(sources.optJSONObject(i)));
             }
         }
 

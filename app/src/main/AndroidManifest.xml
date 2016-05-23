@@ -45,8 +45,7 @@
         <activity
             android:label="@string/app_name"
             android:screenOrientation="portrait"
-            android:name=".UI.Activity.LoadingActivity"
-            android:launchMode="singleTask">
+            android:name=".UI.Activity.LoadingActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -66,6 +65,13 @@
             android:windowSoftInputMode="adjustResize|stateHidden"
             android:configChanges="orientation|screenSize">
         </activity>
+
+        <activity
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:name="io.card.payment.CardIOActivity"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:configChanges="keyboardHidden|orientation" />
 
         <activity
             android:label="@string/app_name"
@@ -113,6 +119,20 @@
             android:label="@string/app_name"
             android:screenOrientation="portrait"
             android:name=".UI.Activity.CashoutActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+        </activity>
+
+        <activity
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:name=".UI.Activity.PaymentSourceActivity"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+        </activity>
+
+        <activity
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:name=".UI.Activity.PaymentAudiotelActivity"
             android:windowSoftInputMode="stateHidden|adjustResize">
         </activity>
 

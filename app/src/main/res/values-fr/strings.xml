@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyDashes">
 
+    <string name="facebook_app_id" translatable="false">152779318256915</string>
+
     <string name="GLOBAL_OR">ou</string>
     <string name="GLOBAL_OK">OK</string>
     <string name="GLOBAL_BY">par</string>
@@ -62,6 +64,7 @@
     <string name="NAV_NOTIFICATIONS">Notifications</string>
     <string name="NAV_CASHIN">Ajouter des fonds</string>
     <string name="NAV_CASHOUT">Virer à ma banque</string>
+    <string name="NAV_PAYMENTS">Moyens de paiement</string>
     <string name="NAV_RIB">RIB</string>
     <string name="NAV_PASSWORD">Mot de passe</string>
     <string name="NAV_PASSWORD_FORGET">MDP oublié</string>
@@ -420,6 +423,7 @@
 
 
     <string name="CASHIN_INFOS">Ajoutez des fonds sur votre compte Flooz en choisissant l’un des moyens de paiement ci-dessous :</string>
+    <string name="PAYMENTS_INFOS">Choisissez l’un des moyens de paiement ci-dessous :</string>
 
     <string name="CASHIN_CARD_TITLE">Carte bancaire</string>
     <string name="CASHIN_CARD_SUBTITLE">Ajoutez des fonds via votre CB gratuitement et en toute sécurité</string>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center_horizontal"
+    android:paddingTop="@dimen/dimen_large">
+
+    <TextView
+        android:id="@+id/payment_header_infos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:layout_marginLeft="@dimen/dimen_xxlarge"
+        android:layout_marginRight="@dimen/dimen_xxlarge"
+        android:layout_marginTop="@dimen/dimen_xlarge"
+        android:layout_marginBottom="@dimen/dimen_xlarge"
+        android:text="@string/PAYMENTS_INFOS"
+        android:textSize="14sp"
+        android:textColor="@android:color/white"/>
+
+</LinearLayout>

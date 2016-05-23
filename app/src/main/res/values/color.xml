@@ -3,7 +3,7 @@
     <color name="background">#242F3A</color>
     <color name="background_alpha">#7F242F3A</color>
     <color name="background_header">#18212B</color>
-    <color name="background_header_alpha">#AF18212B</color>
+    <color name="background_header_alpha">#CF18212B</color>
     <color name="background_scrollbar_panel">#7F18212B</color>
     <color name="background_social_button">#4A5565</color>
     <color name="green">#7AC283</color>

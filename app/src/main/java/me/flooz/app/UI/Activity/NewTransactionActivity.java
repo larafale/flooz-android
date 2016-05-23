@@ -7,6 +7,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Rect;
@@ -170,7 +171,7 @@ public class NewTransactionActivity extends BaseActivity implements ToolTipScope
         this.havePicture = false;
 
         if (!this.preset.isParticipation) {
-            if (this.preset.to != null) {
+            if (this.preset.to != null && this.preset.to.username != null) {
                 this.currentReceiver = this.preset.to;
             }
         }
@@ -302,6 +303,8 @@ public class NewTransactionActivity extends BaseActivity implements ToolTipScope
         this.toPicker.setTypeface(CustomFonts.customContentRegular(this));
         this.locationText.setTypeface(CustomFonts.customContentRegular(this));
 
+        this.amountTextfield.setRawInputType(Configuration.KEYBOARD_12KEY);
+
         this.headerCB.setColorFilter(this.getResources().getColor(R.color.blue));
         capturePicButton.setColorFilter(this.getResources().getColor(android.R.color.white));
 
@@ -428,7 +431,6 @@ public class NewTransactionActivity extends BaseActivity implements ToolTipScope
         }
 
         if (this.preset == null || !this.preset.blockAmount) {
-            this.amountTextfield.setRawInputType(InputType.TYPE_CLASS_TEXT);
             this.amountTextfield.setFocusable(true);
             this.amountTextfield.setFocusableInTouchMode(true);
             amountContainer.setOnClickListener(new View.OnClickListener() {
