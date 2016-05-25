@@ -20,10 +20,15 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
+
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.CustomNotificationIntents;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.ViewServer;
 
@@ -38,15 +43,26 @@ public class PaymentAudiotelActivity extends BaseActivity {
     private TextView infosTextview;
     private ImageView numberImage;
     private TextView avalaibleTextview;
+    private TextView hintBalance;
+    private TextView balance;
     private TextView hintTextview;
     private EditText codeTextfield;
     private Button sendButton;
+
+    public JSONObject floozData;
 
     private BroadcastReceiver reloadData = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (intent.hasExtra("code"))
                 codeTextfield.setText(intent.getStringExtra("code"));
+        }
+    };
+
+    private BroadcastReceiver reloadBalance = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            balance.setText(FLHelper.trimTrailingZeros( String.format(Locale.US, "%.2f", FloozRestClient.getInstance().currentUser.amount.floatValue())) + " €");
         }
     };
 
@@ -64,6 +80,18 @@ public class PaymentAudiotelActivity extends BaseActivity {
                 e.printStackTrace();
             }
 
+        if (triggerData != null && triggerData.has("flooz")) {
+            if (triggerData.opt("flooz") instanceof JSONObject)
+                this.floozData = triggerData.optJSONObject("flooz");
+            else if (triggerData.opt("flooz") instanceof String) {
+                try {
+                    this.floozData = new JSONObject(triggerData.optString("flooz"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
         floozApp = (FloozApplication) this.getApplicationContext();
         this.setContentView(R.layout.payment_audiotel_activity);
 
@@ -73,6 +101,8 @@ public class PaymentAudiotelActivity extends BaseActivity {
         this.infosTextview = (TextView) this.findViewById(R.id.payment_audiotel_infos);
         this.numberImage = (ImageView) this.findViewById(R.id.payment_audiotel_img);
         this.avalaibleTextview = (TextView) this.findViewById(R.id.payment_audiotel_avalaible);
+        this.hintBalance = (TextView) this.findViewById(R.id.payment_audiotel_balance_hint);
+        this.balance = (TextView) this.findViewById(R.id.payment_audiotel_balance);
         this.hintTextview = (TextView) this.findViewById(R.id.payment_audiotel_hint);
         this.codeTextfield = (EditText) this.findViewById(R.id.payment_audiotel_code);
         this.sendButton = (Button) this.findViewById(R.id.payment_audiotel_button);
@@ -80,6 +110,8 @@ public class PaymentAudiotelActivity extends BaseActivity {
         title.setTypeface(CustomFonts.customTitleLight(this));
         this.infosTextview.setTypeface(CustomFonts.customContentRegular(this));
         this.avalaibleTextview.setTypeface(CustomFonts.customContentRegular(this));
+        this.hintBalance.setTypeface(CustomFonts.customContentRegular(this));
+        this.balance.setTypeface(CustomFonts.customContentRegular(this));
         this.hintTextview.setTypeface(CustomFonts.customContentRegular(this));
         this.codeTextfield.setTypeface(CustomFonts.customContentRegular(this));
         this.sendButton.setTypeface(CustomFonts.customContentRegular(this));
@@ -123,12 +155,20 @@ public class PaymentAudiotelActivity extends BaseActivity {
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(getWindow().getDecorView().getRootView().getWindowToken(), 0);
 
+                Map<String, Object> param = new HashMap<>();
+
+                param.put("code", codeTextfield.getText().toString());
+
+                if (floozData != null)
+                    param.put("flooz", floozData);
+
                 FloozRestClient.getInstance().showLoadView();
-                FloozRestClient.getInstance().cashinAudiotel(codeTextfield.getText().toString(), null);
+                FloozRestClient.getInstance().cashinAudiotel(param, null);
             }
         });
 
         LocalBroadcastManager.getInstance(this).registerReceiver(reloadData, new IntentFilter("cashin:audiotel:sync"));
+        LocalBroadcastManager.getInstance(this).registerReceiver(reloadBalance, CustomNotificationIntents.filterReloadCurrentUser());
     }
 
     @Override
@@ -137,6 +177,8 @@ public class PaymentAudiotelActivity extends BaseActivity {
         if (FLHelper.isDebuggable())
             ViewServer.get(this).setFocusedWindow(this);
         floozApp.setCurrentActivity(this);
+
+        balance.setText(FLHelper.trimTrailingZeros( String.format(Locale.US, "%.2f", FloozRestClient.getInstance().currentUser.amount.floatValue())) + " €");
     }
 
     @Override

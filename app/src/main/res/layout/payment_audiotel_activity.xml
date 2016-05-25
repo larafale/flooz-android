@@ -54,10 +54,34 @@
                 android:layout_marginTop="@dimen/dimen_large"/>
 
             <TextView
+                android:id="@+id/payment_audiotel_balance_hint"
+                android:layout_below="@+id/payment_audiotel_avalaible"
+                android:layout_width="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:textSize="16sp"
+                android:textColor="@android:color/white"
+                android:text="@string/CASHOUT_BALANCE"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_xxlarge"/>
+
+            <TextView
+                android:id="@+id/payment_audiotel_balance"
+                android:layout_below="@+id/payment_audiotel_balance_hint"
+                android:layout_width="wrap_content"
+                android:layout_centerHorizontal="true"
+                android:gravity="center"
+                android:textColor="@color/blue"
+                android:textSize="18sp"
+                android:text="0€"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_large"/>
+
+            <TextView
                 android:id="@+id/payment_audiotel_hint"
                 android:textColor="@android:color/white"
                 android:layout_centerHorizontal="true"
-                android:layout_below="@+id/payment_audiotel_avalaible"
+                android:layout_below="@+id/payment_audiotel_balance"
                 android:layout_width="wrap_content"
                 android:layout_marginTop="@dimen/dimen_xxlarge"
                 android:layout_height="wrap_content"
@@ -126,7 +150,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
-                android:text="@string/NAV_CASHIN"
+                android:text="@string/NAV_AUDIOTEL"
                 android:textColor="@color/blue"
                 android:textSize="@dimen/header_title"/>
 

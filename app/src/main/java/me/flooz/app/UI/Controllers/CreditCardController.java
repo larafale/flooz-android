@@ -1,11 +1,16 @@
 package me.flooz.app.UI.Controllers;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextUtils;
@@ -18,7 +23,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.devmarvel.creditcardentry.library.CreditCardForm;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,26 +34,27 @@ import org.json.JSONObject;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.card.payment.CardIOActivity;
+import io.card.payment.CreditCard;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLCreditCard;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
-import me.flooz.app.UI.Activity.HomeActivity;
+import me.flooz.app.UI.Activity.LocationActivity;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
+import me.flooz.app.Utils.ImageHelper;
 import me.flooz.app.Utils.JSONHelper;
-import scanpay.it.CreditCard;
-import scanpay.it.ScanPay;
-import scanpay.it.ScanPayActivity;
 
 /**
  * Created by Flooz on 9/1/15.
  */
 public class CreditCardController extends BaseController {
 
-    private static int RESULT_SCANPAY_ACTIVITY = 45;
+    private static int RESULT_CARDIO_ACTIVITY = 45;
+    private static final int PERMISSION_CAMERA = 3;
 
     public String cardInfosText;
 
@@ -53,14 +62,18 @@ public class CreditCardController extends BaseController {
     private TextView creditCardNumber;
     private TextView creditCardExpires;
     private LinearLayout removeCardContainer;
-    private LinearLayout createCardContainer;
+    private RelativeLayout createCardContainer;
 
-    private EditText cardOwner;
-    private EditText cardNumber;
-    private EditText cardExpires;
-    private EditText cardCVV;
+    private TextView cardFormHint;
+    private RelativeLayout cardForm;
+    private EditText cardFormOwnerTextfield;
+    private CreditCardForm cardFormInput;
+    private LinearLayout cardFormSaveButton;
+    private ImageView cardFormSaveImage;
+    private TextView cardFormSaveText;
+    private ImageView scanButton;
 
-    private TextView cardInfos;
+    private TextView infosText;
 
     private Button addCardButton;
 
@@ -69,6 +82,9 @@ public class CreditCardController extends BaseController {
     private FLCreditCard creditCard;
 
     public JSONObject floozData;
+    private Boolean saveCard = true;
+    private Boolean hideSaveCard = true;
+
 
     private BroadcastReceiver reloadCurrentUserDataReceiver = new BroadcastReceiver() {
         @Override
@@ -86,6 +102,18 @@ public class CreditCardController extends BaseController {
     public CreditCardController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind, @Nullable JSONObject data) {
         super(mainView, parentActivity, kind, data);
 
+        hideSaveCard = false;
+
+        if (this.triggersData != null) {
+            if (this.triggersData.has("hideSave")) {
+                hideSaveCard = this.triggersData.optBoolean("hideSave");
+            }
+
+            if (this.triggersData.has("save")) {
+                saveCard = this.triggersData.optBoolean("save");
+            }
+        }
+
         this.init();
     }
 
@@ -93,31 +121,79 @@ public class CreditCardController extends BaseController {
     protected void init() {
         super.init();
 
-        this.cardOwner = (EditText) this.currentView.findViewById(R.id.settings_credit_card_create_owner);
-        this.cardNumber = (EditText) this.currentView.findViewById(R.id.settings_credit_card_create_number);
-        this.cardExpires = (EditText) this.currentView.findViewById(R.id.settings_credit_card_create_expires);
-        this.cardCVV = (EditText) this.currentView.findViewById(R.id.settings_credit_card_create_cvv);
-        ImageView scanpayButton = (ImageView) this.currentView.findViewById(R.id.settings_credit_card_create_scanpay);
-        this.addCardButton = (Button) this.currentView.findViewById(R.id.settings_credit_card_create_add);
+        this.cardFormHint = (TextView) this.currentView.findViewById(R.id.settings_credit_card_create_form_hint);
+        this.cardForm = (RelativeLayout) this.currentView.findViewById(R.id.settings_credit_card_create_form_layout);
+        this.cardFormOwnerTextfield = (EditText) this.currentView.findViewById(R.id.settings_credit_card_create_form_owner);
+        this.cardFormInput = (CreditCardForm) this.currentView.findViewById(R.id.settings_credit_card_create_form);
+        this.cardFormSaveButton = (LinearLayout) this.currentView.findViewById(R.id.settings_credit_card_create_form_save);
+        this.cardFormSaveImage = (ImageView) this.currentView.findViewById(R.id.settings_credit_card_create_form_save_image);
+        this.cardFormSaveText = (TextView) this.currentView.findViewById(R.id.settings_credit_card_create_form_save_text);
+        this.infosText = (TextView) this.currentView.findViewById(R.id.settings_credit_card_create_infos_text);
+        this.addCardButton = (Button) this.currentView.findViewById(R.id.settings_credit_card_create_button);
+        this.scanButton = (ImageView) this.currentView.findViewById(R.id.settings_credit_card_create_form_scan);
+
         this.creditCardOwner = (TextView) this.currentView.findViewById(R.id.settings_credit_card_owner);
         this.creditCardNumber = (TextView) this.currentView.findViewById(R.id.settings_credit_card_number);
         this.creditCardExpires = (TextView) this.currentView.findViewById(R.id.settings_credit_card_expires);
         LinearLayout removeCreditCardButton = (LinearLayout) this.currentView.findViewById(R.id.settings_credit_card_remove_button);
         TextView removeCreditCardText = (TextView) this.currentView.findViewById(R.id.settings_credit_card_remove_text);
         this.removeCardContainer = (LinearLayout) this.currentView.findViewById(R.id.settings_credit_card_remove_card_view);
-        this.createCardContainer = (LinearLayout) this.currentView.findViewById(R.id.settings_credit_card_create_card_view);
-        this.cardInfos = (TextView) this.currentView.findViewById(R.id.settings_credit_card_infos);
+        this.createCardContainer = (RelativeLayout) this.currentView.findViewById(R.id.settings_credit_card_create_card_view);
 
         this.creditCardOwner.setTypeface(CustomFonts.customCreditCard(this.parentActivity));
         this.creditCardNumber.setTypeface(CustomFonts.customCreditCard(this.parentActivity));
         this.creditCardExpires.setTypeface(CustomFonts.customCreditCard(this.parentActivity));
         removeCreditCardText.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
-        this.cardOwner.setTypeface(CustomFonts.customContentLight(this.parentActivity));
-        this.cardNumber.setTypeface(CustomFonts.customContentLight(this.parentActivity));
-        this.cardExpires.setTypeface(CustomFonts.customContentLight(this.parentActivity));
-        this.cardCVV.setTypeface(CustomFonts.customContentLight(this.parentActivity));
+        this.cardFormHint.setTypeface(CustomFonts.customContentBold(this.parentActivity));
+        this.cardFormOwnerTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
+        this.cardFormSaveText.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.addCardButton.setTypeface(CustomFonts.customContentLight(this.parentActivity));
-        cardInfos.setTypeface(CustomFonts.customContentLight(this.parentActivity));
+        this.infosText.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
+
+        if (FloozRestClient.getInstance().currentTexts.cardHolder != null) {
+            if (FloozRestClient.getInstance().currentTexts.cardHolder.contentEquals("true")) {
+                this.cardFormOwnerTextfield.setText(FloozRestClient.getInstance().currentUser.fullname);
+            } else {
+                this.cardFormOwnerTextfield.setText("");
+            }
+        } else {
+            this.cardFormOwnerTextfield.setVisibility(View.GONE);
+        }
+
+        this.scanButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (ActivityCompat.checkSelfPermission(parentActivity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+                        || ActivityCompat.checkSelfPermission(parentActivity, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
+//                    // Display UI and wait for user interaction
+//                } else {
+                    ActivityCompat.requestPermissions(parentActivity, new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_CAMERA);
+//                }
+                } else {
+                    Intent scanIntent = new Intent(parentActivity, CardIOActivity.class);
+
+                    scanIntent.putExtra(CardIOActivity.EXTRA_HIDE_CARDIO_LOGO, true);
+                    scanIntent.putExtra(CardIOActivity.EXTRA_SCAN_EXPIRY, true);
+                    scanIntent.putExtra(CardIOActivity.EXTRA_SUPPRESS_MANUAL_ENTRY, true);
+                    scanIntent.putExtra(CardIOActivity.EXTRA_GUIDE_COLOR, R.color.blue);
+                    scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_EXPIRY, false);
+                    scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_CVV, false);
+                    scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_POSTAL_CODE, false);
+                    scanIntent.putExtra(CardIOActivity.EXTRA_KEEP_APPLICATION_THEME, true);
+
+                    parentActivity.startActivityForResult(scanIntent, RESULT_CARDIO_ACTIVITY);
+                }
+            }
+        });
+
+        this.cardFormSaveButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                saveCard = !saveCard;
+                reloadCreditCard();
+            }
+        });
 
         removeCreditCardButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -138,120 +214,6 @@ public class CreditCardController extends BaseController {
             }
         });
 
-        this.cardNumber.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 19)
-                    s.delete(18, s.length() - 1);
-
-                if (s.length() == 5 && s.charAt(4) == ' ')
-                    s.delete(4, 5);
-                else if (s.length() == 5 && s.charAt(4) != ' ')
-                    s.insert(4, " ");
-
-                if (s.length() == 10 && s.charAt(9) == ' ')
-                    s.delete(9, 10);
-                else if (s.length() == 10 && s.charAt(9) != ' ')
-                    s.insert(9, " ");
-
-                if (s.length() == 15 && s.charAt(14) == ' ')
-                    s.delete(14, 15);
-                else if (s.length() == 15 && s.charAt(14) != ' ')
-                    s.insert(14, " ");
-
-                if (s.length() == 19)
-                    cardExpires.requestFocus();
-            }
-        });
-
-        this.cardExpires.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 5)
-                    s.delete(5, s.length() - 1);
-
-
-                if (s.length() == 3 && s.charAt(2) == ' ')
-                    s.delete(2, 3);
-                else if (s.length() == 3 && s.charAt(2) != '-')
-                    s.insert(2, "-");
-
-                if (s.length() == 1 && s.charAt(0) > '1')
-                    s.insert(0, "0");
-
-                if (s.length() == 5)
-                    cardCVV.requestFocus();
-            }
-        });
-
-        this.cardCVV.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (s.length() > 3)
-                    s.delete(3, s.length() - 1);
-
-                if (s.length() == 3) {
-                    cardOwner.clearFocus();
-                    addCardButton.requestFocus();
-                    InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(parentActivity.getWindow().getDecorView().getRootView().getWindowToken(), 0);
-                }
-            }
-        });
-
-        this.cardCVV.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-            @Override
-            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if ((event != null && (event.getKeyCode() == KeyEvent.KEYCODE_ENTER)) || (actionId == EditorInfo.IME_ACTION_DONE)) {
-                    addCardButton.performClick();
-                }
-                return false;
-            }
-        });
-
-        scanpayButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent scanActivity = new Intent(parentActivity, ScanPayActivity.class);
-                scanActivity.putExtra(ScanPay.EXTRA_TOKEN, "be38035037ed6ca3cba7089b");
-
-                scanActivity.putExtra(ScanPay.EXTRA_SHOULD_SHOW_CONFIRMATION_VIEW, false);
-                scanActivity.putExtra(ScanPay.EXTRA_SHOULD_SHOW_MANUAL_ENTRY_BUTTON, false);
-
-                parentActivity.startActivityForResult(scanActivity, RESULT_SCANPAY_ACTIVITY);
-            }
-        });
-
         this.addCardButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -259,10 +221,15 @@ public class CreditCardController extends BaseController {
 
                 Map<String, Object> params = new HashMap<>(4);
 
-                params.put("holder", cardOwner.getText().toString());
-                params.put("number", cardNumber.getText().toString().replace(" ", ""));
-                params.put("expires", cardExpires.getText().toString());
-                params.put("cvv", cardCVV.getText().toString());
+                if (FloozRestClient.getInstance().currentTexts.cardHolder != null)
+                    params.put("holder", cardFormOwnerTextfield.getText().toString());
+
+                params.put("number", cardFormInput.getCreditCard().getCardNumber());
+                params.put("expires", cardFormInput.getCreditCard().getExpDate());
+                params.put("cvv", cardFormInput.getCreditCard().getSecurityCode());
+
+                if (!hideSaveCard)
+                    params.put("hidden", !saveCard);
 
                 if (floozData != null)
                     try {
@@ -301,19 +268,24 @@ public class CreditCardController extends BaseController {
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == RESULT_SCANPAY_ACTIVITY && resultCode == ScanPay.RESULT_SCAN_SUCCESS)
-        {
-            CreditCard creditCard = data.getParcelableExtra(ScanPay.EXTRA_CREDIT_CARD);
-            creditCardNumber.setText(creditCard.number);
-            cardExpires.setText(creditCard.month + "/" + creditCard.year);
-            cardCVV.setText(creditCard.cvv);
+        if (requestCode == RESULT_CARDIO_ACTIVITY) {
+            String resultDisplayStr;
+            if (data != null && data.hasExtra(CardIOActivity.EXTRA_SCAN_RESULT)) {
+                CreditCard scanResult = data.getParcelableExtra(CardIOActivity.EXTRA_SCAN_RESULT);
+
+                cardFormInput.setCardNumber(scanResult.cardNumber, true);
+
+                if (scanResult.isExpiryValid())
+                    cardFormInput.setExpDate(scanResult.expiryMonth + "/" + scanResult.expiryYear, true);
+
+            }
         }
     }
 
     @Override
     public void onStart() {
         if (!TextUtils.isEmpty(cardInfosText))
-            cardInfos.setText(cardInfosText);
+            infosText.setText(cardInfosText);
     }
 
     @Override
@@ -354,19 +326,35 @@ public class CreditCardController extends BaseController {
             this.removeCardContainer.setVisibility(View.GONE);
             this.createCardContainer.setVisibility(View.VISIBLE);
 
-            if (this.creditCard != null) {
-                this.cardOwner.setText(this.creditCard.owner);
-                this.cardNumber.setText(this.creditCard.number);
-                this.cardExpires.setText(this.creditCard.expires);
-                this.cardCVV.setText(this.creditCard.cvv);
+            if (hideSaveCard) {
+                cardFormSaveButton.setVisibility(View.GONE);
             } else {
-                this.cardOwner.setText(FloozRestClient.getInstance().currentUser.fullname);
-                this.cardNumber.setText("");
-                this.cardCVV.setText("");
-                this.cardExpires.setText("");
-            }
+                cardFormSaveButton.setVisibility(View.VISIBLE);
 
-            this.cardNumber.requestFocus();
+                if (saveCard)
+                    cardFormSaveImage.setImageDrawable(parentActivity.getResources().getDrawable(R.drawable.check_on));
+                else
+                    cardFormSaveImage.setImageDrawable(parentActivity.getResources().getDrawable(R.drawable.check_off));
+            }
+        }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PERMISSION_CAMERA) {
+            if (grantResults.length == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED ) {
+                Intent scanIntent = new Intent(parentActivity, CardIOActivity.class);
+
+                scanIntent.putExtra(CardIOActivity.EXTRA_HIDE_CARDIO_LOGO, true);
+                scanIntent.putExtra(CardIOActivity.EXTRA_SCAN_EXPIRY, true);
+                scanIntent.putExtra(CardIOActivity.EXTRA_SUPPRESS_MANUAL_ENTRY, true);
+                scanIntent.putExtra(CardIOActivity.EXTRA_GUIDE_COLOR, R.color.blue);
+                scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_EXPIRY, false);
+                scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_CVV, false);
+                scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_POSTAL_CODE, false);
+                scanIntent.putExtra(CardIOActivity.EXTRA_KEEP_APPLICATION_THEME, true);
+
+                parentActivity.startActivityForResult(scanIntent, RESULT_CARDIO_ACTIVITY);
+            }
         }
     }
 }

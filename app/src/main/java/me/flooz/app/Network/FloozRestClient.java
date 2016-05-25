@@ -1094,10 +1094,7 @@ public class FloozRestClient
     /********  CASHIN   ********/
     /***************************/
 
-    public void cashinAudiotel(String code, FloozHttpResponseHandler responseHandler) {
-        Map<String, Object> param = new HashMap<>();
-
-        param.put("code", code);
+    public void cashinAudiotel(Map<String, Object> param, FloozHttpResponseHandler responseHandler) {
 
         this.request("/cashins/audiotel", HttpRequestType.PUT, param, responseHandler);
     }

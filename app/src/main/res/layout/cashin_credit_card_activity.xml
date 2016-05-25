@@ -71,7 +71,8 @@
                         app:card_number_hint="•••• •••• •••• ••••"
                         app:include_helper="false"
                         app:include_zip="false"
-                        app:input_background="@drawable/credit_card_from_background"/>
+                        app:input_background="@android:color/transparent"
+                        />
 
                     <LinearLayout
                         android:id="@+id/cashin_credit_card_form_save"

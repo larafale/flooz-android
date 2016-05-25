@@ -21,7 +21,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 
 import me.flooz.app.Adapter.CashinAdapter;
 import me.flooz.app.App.FloozApplication;
@@ -128,8 +130,12 @@ public class CashinAudiotelActivity extends BaseActivity {
                 InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(getWindow().getDecorView().getRootView().getWindowToken(), 0);
 
+                Map<String, Object> param = new HashMap<>();
+
+                param.put("code", codeTextfield.getText().toString());
+
                 FloozRestClient.getInstance().showLoadView();
-                FloozRestClient.getInstance().cashinAudiotel(codeTextfield.getText().toString(), null);
+                FloozRestClient.getInstance().cashinAudiotel(param, null);
             }
         });
 

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -12,7 +13,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
-        android:visibility="visible"
+        android:visibility="gone"
         android:layout_marginTop="@dimen/header_size"
         android:gravity="center_horizontal">
 
@@ -115,7 +116,7 @@
         </RelativeLayout>
     </LinearLayout>
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/settings_credit_card_create_card_view"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
@@ -123,108 +124,150 @@
         android:layout_marginTop="@dimen/header_size"
         android:paddingLeft="@dimen/dimen_xlarge"
         android:paddingRight="@dimen/dimen_xlarge"
-        android:visibility="gone">
+        android:visibility="visible"
+        android:paddingTop="@dimen/dimen_xlarge">
+
+        <TextView
+            android:id="@+id/settings_credit_card_create_form_hint"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/CASHIN_CARD_PAYMENT_INPUT_HINT"
+            android:textColor="@color/placeholder"
+            android:textSize="15sp"
+            android:layout_marginLeft="@dimen/dimen_large"
+            android:layout_marginRight="@dimen/dimen_large"
+            />
 
         <EditText
-            android:id="@+id/settings_credit_card_create_owner"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_medium"
+            android:id="@+id/settings_credit_card_create_form_owner"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
             android:singleLine="true"
-            android:hint="@string/SIGNUP_FIELD_CARD_OWNER_PLACEHOLDER"
+            android:layout_marginLeft="7dp"
+            android:layout_marginRight="7dp"
+            android:hint="Nom du titulaire"
+            android:layout_marginTop="@dimen/dimen_medium"
             android:textColorHint="@color/placeholder"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
+            android:textSize="15sp"
+            android:layout_below="@+id/settings_credit_card_create_form_hint"
             android:textColor="@android:color/white"/>
-
 
         <RelativeLayout
-            android:layout_width="fill_parent"
+            android:id="@+id/settings_credit_card_create_form_layout"
+            android:layout_below="@+id/settings_credit_card_create_form_owner"
+            android:layout_marginLeft="@dimen/dimen_large"
+            android:layout_marginRight="@dimen/dimen_large"
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/dimen_large"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_medium">
+            android:gravity="center_vertical">
 
-            <EditText
-                android:id="@+id/settings_credit_card_create_number"
-                android:layout_width="fill_parent"
+            <com.devmarvel.creditcardentry.library.CreditCardForm
+                android:id="@+id/settings_credit_card_create_form"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:singleLine="true"
-                android:inputType="number|text"
-                android:hint="@string/SIGNUP_FIELD_CARD_NUMBER_PLACEHOLDER"
-                android:textColorHint="@color/placeholder"
                 android:layout_alignParentLeft="true"
-                android:layout_centerVertical="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:textColor="@android:color/white"/>
+                android:layout_toLeftOf="@+id/settings_credit_card_create_form_scan"
+                app:text_color="@android:color/white"
+                app:hint_text_color="@color/placeholder"
+                app:cursor_color="@android:color/white"
+                app:card_number_hint="•••• •••• •••• ••••"
+                app:include_helper="false"
+                app:include_zip="false"
+                app:input_background="@android:color/transparent"/>
 
             <ImageView
-                android:id="@+id/settings_credit_card_create_scanpay"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/camera"
+                android:id="@+id/settings_credit_card_create_form_scan"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
                 android:layout_alignParentRight="true"
-                android:layout_marginRight="@dimen/dimen_large"
+                android:src="@drawable/camera_grey"
                 android:layout_centerVertical="true"
-                android:visibility="gone"/>
+                android:padding="@dimen/dimen_small"/>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="0.5dp"
+                android:background="@color/placeholder"
+                android:layout_below="@+id/settings_credit_card_create_form"/>
+            
         </RelativeLayout>
 
-        <EditText
-            android:id="@+id/settings_credit_card_create_expires"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_medium"
-            android:singleLine="true"
-            android:inputType="date"
-            android:hint="@string/SIGNUP_FIELD_CARD_EXPIRES_PLACEHOLDER"
-            android:textColorHint="@color/placeholder"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:textColor="@android:color/white"/>
-
-        <EditText
-            android:id="@+id/settings_credit_card_create_cvv"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_medium"
-            android:singleLine="true"
-            android:inputType="number|text"
-            android:hint="@string/SIGNUP_FIELD_CARD_CVV_PLACEHOLDER"
-            android:textColorHint="@color/placeholder"
-            android:focusable="true"
-            android:focusableInTouchMode="true"
-            android:textColor="@android:color/white"/>
-
-        <Button
-            android:id="@+id/settings_credit_card_create_add"
-            android:layout_marginTop="@dimen/dimen_xlarge"
-            android:layout_width="fill_parent"
-            android:layout_height="@dimen/signup_button_height"
-            android:gravity="center"
-            android:background="@drawable/background_action_button"
-            android:text="@string/SIGNUP_VIEW_IGNORE_BUTTON_2"
-            android:layout_marginBottom="@dimen/dimen_xlarge"
-            android:textSize="20sp"
-            android:textColor="@drawable/text_color_action_button"/>
-
         <LinearLayout
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:gravity="bottom|center_horizontal"
-            android:paddingTop="@dimen/dimen_xxxlarge">
+            android:id="@+id/settings_credit_card_create_form_save"
+            android:layout_below="@+id/settings_credit_card_create_form_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/dimen_large"
+            android:orientation="horizontal"
+            android:paddingLeft="@dimen/dimen_large"
+            android:paddingRight="@dimen/dimen_large"
+            android:paddingTop="@dimen/dimen_small"
+            android:paddingBottom="@dimen/dimen_small"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/settings_credit_card_create_form_save_image"
+                android:layout_width="20dp"
+                android:layout_height="20dp"
+                android:src="@drawable/check_off"
+                />
 
             <TextView
-                android:id="@+id/settings_credit_card_infos"
-                android:layout_width="fill_parent"
+                android:id="@+id/settings_credit_card_create_form_save_text"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/CREDIT_CARD_INFOS"
-                android:gravity="center"
-                android:textColor="@color/placeholder"
-                android:layout_marginTop="@dimen/dimen_large"/>
+                android:textSize="15sp"
+                android:textColor="@android:color/white"
+                android:text="@string/CASHIN_CARD_CHECKBOX_TEXT"
+                android:layout_marginLeft="@dimen/dimen_large"/>
 
         </LinearLayout>
 
-    </LinearLayout>
+        <Button
+            android:id="@+id/settings_credit_card_create_button"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/signup_button_height"
+            android:layout_marginLeft="@dimen/dimen_xxlarge"
+            android:layout_marginRight="@dimen/dimen_xxlarge"
+            android:gravity="center"
+            android:background="@drawable/background_action_button"
+            android:text="@string/GLOBAL_VALIDATE"
+            android:textSize="20sp"
+            android:textColor="@drawable/text_color_action_button"
+            android:layout_below="@id/settings_credit_card_create_form_save"
+            android:layout_marginTop="@dimen/dimen_xlarge"
+            />
+
+        <RelativeLayout
+            android:id="@+id/settings_credit_card_create_bottom_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/settings_credit_card_create_button"
+            android:layout_marginTop="@dimen/dimen_xlarge">
+
+            <ImageView
+                android:id="@+id/settings_credit_card_create_infos_image"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:src="@drawable/cards"/>
+
+            <TextView
+                android:id="@+id/settings_credit_card_create_infos_text"
+                android:layout_marginTop="@dimen/dimen_large"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/dimen_large"
+                android:layout_marginRight="@dimen/dimen_large"
+                android:layout_below="@+id/settings_credit_card_create_infos_image"
+                android:text="@string/CASHIN_CARD_INFOS"
+                android:gravity="center"
+                android:textColor="@color/placeholder"
+                android:textSize="14sp"/>
+
+        </RelativeLayout>
+
+    </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="fill_parent"
