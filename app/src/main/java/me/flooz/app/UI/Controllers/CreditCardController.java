@@ -171,18 +171,7 @@ public class CreditCardController extends BaseController {
                     ActivityCompat.requestPermissions(parentActivity, new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_CAMERA);
 //                }
                 } else {
-                    Intent scanIntent = new Intent(parentActivity, CardIOActivity.class);
-
-                    scanIntent.putExtra(CardIOActivity.EXTRA_HIDE_CARDIO_LOGO, true);
-                    scanIntent.putExtra(CardIOActivity.EXTRA_SCAN_EXPIRY, true);
-                    scanIntent.putExtra(CardIOActivity.EXTRA_SUPPRESS_MANUAL_ENTRY, true);
-                    scanIntent.putExtra(CardIOActivity.EXTRA_GUIDE_COLOR, R.color.blue);
-                    scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_EXPIRY, false);
-                    scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_CVV, false);
-                    scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_POSTAL_CODE, false);
-                    scanIntent.putExtra(CardIOActivity.EXTRA_KEEP_APPLICATION_THEME, true);
-
-                    parentActivity.startActivityForResult(scanIntent, RESULT_CARDIO_ACTIVITY);
+                    showCardIO();
                 }
             }
         });
@@ -264,12 +253,22 @@ public class CreditCardController extends BaseController {
         this.reloadCreditCard();
     }
 
+    public void showCardIO() {
+        Intent scanIntent = new Intent(parentActivity, CardIOActivity.class);
+
+        scanIntent.putExtra(CardIOActivity.EXTRA_HIDE_CARDIO_LOGO, true);
+        scanIntent.putExtra(CardIOActivity.EXTRA_SUPPRESS_MANUAL_ENTRY, true);
+        scanIntent.putExtra(CardIOActivity.EXTRA_SUPPRESS_CONFIRMATION, true);
+        scanIntent.putExtra(CardIOActivity.EXTRA_GUIDE_COLOR, parentActivity.getResources().getColor(R.color.blue));
+
+        parentActivity.startActivityForResult(scanIntent, RESULT_CARDIO_ACTIVITY);
+    }
+
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data)
     {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == RESULT_CARDIO_ACTIVITY) {
-            String resultDisplayStr;
             if (data != null && data.hasExtra(CardIOActivity.EXTRA_SCAN_RESULT)) {
                 CreditCard scanResult = data.getParcelableExtra(CardIOActivity.EXTRA_SCAN_RESULT);
 
@@ -342,18 +341,7 @@ public class CreditCardController extends BaseController {
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == PERMISSION_CAMERA) {
             if (grantResults.length == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED ) {
-                Intent scanIntent = new Intent(parentActivity, CardIOActivity.class);
-
-                scanIntent.putExtra(CardIOActivity.EXTRA_HIDE_CARDIO_LOGO, true);
-                scanIntent.putExtra(CardIOActivity.EXTRA_SCAN_EXPIRY, true);
-                scanIntent.putExtra(CardIOActivity.EXTRA_SUPPRESS_MANUAL_ENTRY, true);
-                scanIntent.putExtra(CardIOActivity.EXTRA_GUIDE_COLOR, R.color.blue);
-                scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_EXPIRY, false);
-                scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_CVV, false);
-                scanIntent.putExtra(CardIOActivity.EXTRA_REQUIRE_POSTAL_CODE, false);
-                scanIntent.putExtra(CardIOActivity.EXTRA_KEEP_APPLICATION_THEME, true);
-
-                parentActivity.startActivityForResult(scanIntent, RESULT_CARDIO_ACTIVITY);
+                showCardIO();
             }
         }
     }

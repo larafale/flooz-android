@@ -16,16 +16,22 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.flooz.app.Adapter.SettingsDocumentAdapter;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLUser;
@@ -49,11 +55,12 @@ public class DocumentsController extends BaseController {
     private static final int PERMISSION_CAMERA = 3;
     private static final int PERMISSION_STORAGE = 4;
 
-    private ImageView cniRectoButton;
-    private ImageView cniVersoButton;
-    private ImageView justificatoryButton;
-    private ImageView justificatory2Button;
-    private ImageView cardButton;
+    private TextView contentLabel;
+    private ImageView pic;
+    private TextView infoLabel;
+
+    private ListView listView;
+    private SettingsDocumentAdapter listAdapter;
 
     private String currentDoc;
     private Uri tmpUriImage;
@@ -61,7 +68,7 @@ public class DocumentsController extends BaseController {
     private BroadcastReceiver reloadCurrentUserDataReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            reloadDocuments();
+            listAdapter.notifyDataSetChanged();
         }
     };
 
@@ -81,194 +88,67 @@ public class DocumentsController extends BaseController {
     protected void init() {
         super.init();
 
-        EditText cniRectoTextfield = (EditText) this.currentView.findViewById(R.id.settings_identity_cni_recto);
-        EditText cniVersoTextfield = (EditText) this.currentView.findViewById(R.id.settings_identity_cni_verso);
-        this.cniRectoButton = (ImageView) this.currentView.findViewById(R.id.settings_identity_recto);
-        this.cniVersoButton = (ImageView) this.currentView.findViewById(R.id.settings_identity_verso);
-        EditText justificatoryTextfield = (EditText) this.currentView.findViewById(R.id.settings_coord_justificatory);
-        EditText justificatory2Textfield = (EditText) this.currentView.findViewById(R.id.settings_coord_justificatory2);
-        EditText cardTextfield = (EditText) this.currentView.findViewById(R.id.settings_coord_card);
-        this.justificatory2Button = (ImageView) this.currentView.findViewById(R.id.settings_coord_justificatory2_button);
-        this.justificatoryButton = (ImageView) this.currentView.findViewById(R.id.settings_coord_justificatory_button);
-        this.cardButton = (ImageView) this.currentView.findViewById(R.id.settings_coord_card_button);
-        TextView infos = (TextView) this.currentView.findViewById(R.id.documents_infos);
+        this.contentLabel = (TextView) this.currentView.findViewById(R.id.documents_content);
+        this.pic = (ImageView) this.currentView.findViewById(R.id.documents_pic);
+        this.listView = (ListView) this.currentView.findViewById(R.id.documents_list);
+        this.infoLabel = (TextView) this.currentView.findViewById(R.id.documents_infos);
 
-        cniRectoTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
-        justificatoryTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
-        justificatory2Textfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
-        cardTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
-        infos.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
+        this.contentLabel.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
+        this.infoLabel.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
 
-        infos.setText(FloozRestClient.getInstance().currentTexts.json.optJSONObject("menu").optJSONObject("documents").optString("info"));
+        String contentString = FloozRestClient.getInstance().currentTexts.json.optJSONObject("menu").optJSONObject("documents").optString("content");
 
-        this.reloadDocuments();
+        if (this.triggersData != null && this.triggersData.optString("content") != null && !this.triggersData.optString("content").isEmpty())
+            contentString = this.triggersData.optString("content");
 
-        cniRectoTextfield.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FLUser currentUser = FloozRestClient.getInstance().currentUser;
-
-                if (currentUser.checkDocuments.get("cniRecto").equals(0) || currentUser.checkDocuments.get("cniRecto").equals(3)) {
-                    currentDoc = "cniRecto";
-                    showImageActionMenu();
-                }
-            }
-        });
-
-        this.cniRectoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FLUser currentUser = FloozRestClient.getInstance().currentUser;
-
-                if (currentUser.checkDocuments.get("cniRecto").equals(0) || currentUser.checkDocuments.get("cniRecto").equals(3)) {
-                    currentDoc = "cniRecto";
-                    showImageActionMenu();
-                }
-            }
-        });
-
-        cniVersoTextfield.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FLUser currentUser = FloozRestClient.getInstance().currentUser;
-
-                if (currentUser.checkDocuments.get("cniVerso").equals(0) || currentUser.checkDocuments.get("cniVerso").equals(3)) {
-                    currentDoc = "cniVerso";
-                    showImageActionMenu();
-                }
-            }
-        });
-
-        this.cniVersoButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FLUser currentUser = FloozRestClient.getInstance().currentUser;
-
-                if (currentUser.checkDocuments.get("cniVerso").equals(0) || currentUser.checkDocuments.get("cniVerso").equals(3)) {
-                    currentDoc = "cniVerso";
-                    showImageActionMenu();
-                }
-            }
-        });
-
-        justificatoryTextfield.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FLUser currentUser = FloozRestClient.getInstance().currentUser;
-
-                if (currentUser.checkDocuments.get("justificatory").equals(0) || currentUser.checkDocuments.get("justificatory").equals(3)) {
-                    currentDoc = "justificatory";
-                    showImageActionMenu();
-                }
-            }
-        });
-
-        this.justificatoryButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FLUser currentUser = FloozRestClient.getInstance().currentUser;
-
-                if (currentUser.checkDocuments.get("justificatory").equals(0) || currentUser.checkDocuments.get("justificatory").equals(3)) {
-                    currentDoc = "justificatory";
-                    showImageActionMenu();
-                }
-            }
-        });
-
-        justificatory2Textfield.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FLUser currentUser = FloozRestClient.getInstance().currentUser;
-
-                if (currentUser.checkDocuments.get("justificatory2").equals(0) || currentUser.checkDocuments.get("justificatory2").equals(3)) {
-                    currentDoc = "justificatory2";
-                    showImageActionMenu();
-                }
-            }
-        });
-
-        this.justificatory2Button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FLUser currentUser = FloozRestClient.getInstance().currentUser;
-
-                if (currentUser.checkDocuments.get("justificatory2").equals(0) || currentUser.checkDocuments.get("justificatory2").equals(3)) {
-                    currentDoc = "justificatory2";
-                    showImageActionMenu();
-                }
-            }
-        });
-
-        cardTextfield.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FLUser currentUser = FloozRestClient.getInstance().currentUser;
-
-                if (currentUser.checkDocuments.get("card").equals(0) || currentUser.checkDocuments.get("card").equals(3)) {
-                    currentDoc = "card";
-                    showImageActionMenu();
-                }
-            }
-        });
-
-        this.cardButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FLUser currentUser = FloozRestClient.getInstance().currentUser;
-
-                if (currentUser.checkDocuments.get("card").equals(0) || currentUser.checkDocuments.get("card").equals(3)) {
-                    currentDoc = "card";
-                    showImageActionMenu();
-                }
-            }
-        });
-    }
-
-    private void reloadDocuments() {
-        FLUser currentUser = FloozRestClient.getInstance().currentUser;
-
-        if (currentUser.checkDocuments.get("cniRecto").equals(0))
-            cniRectoButton.setImageResource(R.drawable.document_refused);
-        else if (currentUser.checkDocuments.get("cniRecto").equals(3))
-            cniRectoButton.setImageResource(R.drawable.friends_add);
+        if (contentString != null && !contentString.isEmpty())
+            this.contentLabel.setText(contentString);
         else
-            cniRectoButton.setImageResource(R.drawable.friends_accepted);
+            this.contentLabel.setVisibility(View.GONE);
 
-        if (currentUser.checkDocuments.get("cniVerso").equals(0))
-            cniVersoButton.setImageResource(R.drawable.document_refused);
-        else if (currentUser.checkDocuments.get("cniVerso").equals(3))
-            cniVersoButton.setImageResource(R.drawable.friends_add);
-        else
-            cniVersoButton.setImageResource(R.drawable.friends_accepted);
+        String picString = FloozRestClient.getInstance().currentTexts.json.optJSONObject("menu").optJSONObject("documents").optString("pic");
 
-        if (currentUser.checkDocuments.get("justificatory").equals(0))
-            this.justificatoryButton.setImageResource(R.drawable.document_refused);
-        else if (currentUser.checkDocuments.get("justificatory").equals(3))
-            this.justificatoryButton.setImageResource(R.drawable.friends_add);
-        else
-            this.justificatoryButton.setImageResource(R.drawable.friends_accepted);
+        if (this.triggersData != null && this.triggersData.optString("pic") != null && !this.triggersData.optString("pic").isEmpty())
+            picString = this.triggersData.optString("pic");
 
-        if (currentUser.checkDocuments.get("justificatory2").equals(0))
-            this.justificatory2Button.setImageResource(R.drawable.document_refused);
-        else if (currentUser.checkDocuments.get("justificatory2").equals(3))
-            this.justificatory2Button.setImageResource(R.drawable.friends_add);
+        if (picString != null && !picString.isEmpty())
+            ImageLoader.getInstance().displayImage(picString, this.pic);
         else
-            this.justificatory2Button.setImageResource(R.drawable.friends_accepted);
+            this.pic.setVisibility(View.GONE);
 
-        if (currentUser.checkDocuments.get("card").equals(0))
-            this.cardButton.setImageResource(R.drawable.document_refused);
-        else if (currentUser.checkDocuments.get("card").equals(3))
-            this.cardButton.setImageResource(R.drawable.friends_add);
+        JSONArray items = FloozRestClient.getInstance().currentTexts.json.optJSONObject("menu").optJSONObject("documents").optJSONArray("items");
+
+        if (this.triggersData != null && this.triggersData.optJSONArray("items") != null && this.triggersData.optJSONArray("items").length() != 0)
+            items = this.triggersData.optJSONArray("items");
+
+        this.listAdapter = new SettingsDocumentAdapter(parentActivity, items);
+        this.listView.setAdapter(this.listAdapter);
+
+        String infoString = FloozRestClient.getInstance().currentTexts.json.optJSONObject("menu").optJSONObject("documents").optString("info");
+
+        if (this.triggersData != null && this.triggersData.optString("info") != null && !this.triggersData.optString("info").isEmpty())
+            infoString = this.triggersData.optString("info");
+
+        if (infoString != null && !infoString.isEmpty())
+            this.infoLabel.setText(infoString);
         else
-            this.cardButton.setImageResource(R.drawable.friends_accepted);
+            this.infoLabel.setVisibility(View.GONE);
+
+        this.listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                currentDoc = listAdapter.getItemKey(position);
+                showImageActionMenu();
+            }
+        });
     }
 
     @Override
     public void onResume() {
-        this.reloadDocuments();
-
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadCurrentUserDataReceiver,
                 CustomNotificationIntents.filterReloadCurrentUser());
+
+        listAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -277,6 +157,11 @@ public class DocumentsController extends BaseController {
     }
 
     public void showImageActionMenu() {
+        FLUser currentUser = FloozRestClient.getInstance().currentUser;
+
+        if (currentUser.settings.containsKey(currentDoc) && (currentUser.checkDocuments.get(currentDoc).equals(1) || currentUser.checkDocuments.get(currentDoc).equals(2)))
+            return;
+
         List<ActionSheetItem> items = new ArrayList<>();
 
         items.add(new ActionSheetItem(this.parentActivity, R.string.GLOBAL_CAMERA, showCamera));
@@ -360,7 +245,7 @@ public class DocumentsController extends BaseController {
                     handler.post(new Runnable() {
                         @Override
                         public void run() {
-                            reloadDocuments();
+                            listAdapter.notifyDataSetChanged();
                         }
                     });
 
@@ -374,7 +259,7 @@ public class DocumentsController extends BaseController {
                                 FloozRestClient.getInstance().uploadDocument(currentDoc, new File(imagePath), new FloozHttpResponseHandler() {
                                     @Override
                                     public void success(Object response) {
-                                        reloadDocuments();
+                                        listAdapter.notifyDataSetChanged();
                                     }
 
                                     @Override
@@ -382,7 +267,7 @@ public class DocumentsController extends BaseController {
                                         FloozRestClient.getInstance().updateCurrentUser(new FloozHttpResponseHandler() {
                                             @Override
                                             public void success(Object response) {
-                                                reloadDocuments();
+                                                listAdapter.notifyDataSetChanged();
                                             }
 
                                             @Override
