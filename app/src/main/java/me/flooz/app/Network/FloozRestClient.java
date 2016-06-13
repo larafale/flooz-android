@@ -1231,6 +1231,28 @@ public class FloozRestClient
         });
     }
 
+    public void getUserCollects(String userId, final FloozHttpResponseHandler responseHandler) {
+        this.request("/users/" + userId + "/pots", HttpRequestType.GET, null, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                JSONObject jsonResponse = (JSONObject) response;
+
+                List<FLTransaction> transactions = createTransactionArrayFromResult(jsonResponse);
+                if (responseHandler != null) {
+                    Map<String, Object> ret = new HashMap<>();
+                    ret.put("transactions", transactions);
+                    ret.put("nextUrl", jsonResponse.optString("next"));
+                    responseHandler.success(ret);
+                }
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+
+            }
+        });
+    }
+
     public void transactionWithId(String transacId, FloozHttpResponseHandler responseHandler) {
         this.request("/flooz/" + transacId, HttpRequestType.GET, null, responseHandler);
     }

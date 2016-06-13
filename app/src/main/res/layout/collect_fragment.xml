@@ -49,7 +49,7 @@
                 android:layout_margin="@dimen/dimen_medium"
                 android:src="@drawable/share_native"
                 android:layout_centerVertical="true"
-                android:padding="@dimen/dimen_medium"/>
+                android:padding="8dp"/>
 
             <EditText
                 android:id="@+id/collect_view_comment_textfield"

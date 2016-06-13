@@ -51,6 +51,7 @@ public class TimelineListAdapter extends BaseAdapter {
     public Boolean hasNextURL;
     public Boolean loading;
     public Boolean showEmpty;
+    public Boolean isCollectTimeline = false;
 
     public interface TimelineListRowDelegate {
         void ListItemClick(FLTransaction transac);
@@ -138,7 +139,12 @@ public class TimelineListAdapter extends BaseAdapter {
             TextView emptyText = (TextView) empty.findViewById(R.id.empty_row_text);
 
             emptyText.setTypeface(CustomFonts.customContentRegular(context));
-            emptyText.setText(context.getResources().getString(R.string.EMPTY_FLOOZ_CELL));
+
+            if (this.isCollectTimeline) {
+                emptyText.setText(context.getResources().getString(R.string.EMPTY_POT_CELL));
+            } else {
+                emptyText.setText(context.getResources().getString(R.string.EMPTY_FLOOZ_CELL));
+            }
 
             return empty;
         }

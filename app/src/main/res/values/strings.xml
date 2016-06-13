@@ -253,7 +253,8 @@
     <string name="EDIT_ACCOUNT_FACEBOOK">Facebook</string>
 
     <string name="EMPTY_FLOOZ_CELL">Aucun Flooz</string>
-    <string name="EMPTY_FRIEND_CELL">Aucun Ami</string>
+    <string name="EMPTY_FRIEND_CELL">Aucun ami</string>
+    <string name="EMPTY_POT_CELL">Aucune cagnotte</string>
 
     <string name="CELL_SOCIAL_COMMENT">Commenter</string>
     <string name="CELL_SOCIAL_LIKE">J\'aime</string>

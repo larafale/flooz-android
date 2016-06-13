@@ -57,6 +57,7 @@
     <string name="NAV_LOGIN">Se connecter</string>
     <string name="NAV_SIGNUP">S\'inscrire</string>
     <string name="NAV_ACCOUNT">Mon profil</string>
+    <string name="NAV_AUDIOTEL">Audiotel</string>
     <string name="NAV_SETTINGS">Paramètres</string>
     <string name="NAV_TIMELINE">Flooz</string>
     <string name="NAV_EDIT_ACCOUNT">Modifier</string>
@@ -253,6 +254,7 @@
 
     <string name="EMPTY_FLOOZ_CELL">Aucun Flooz</string>
     <string name="EMPTY_FRIEND_CELL">Aucun Ami</string>
+    <string name="EMPTY_POT_CELL">Aucune Cagnotte</string>
 
     <string name="CELL_SOCIAL_COMMENT">Commenter</string>
     <string name="CELL_SOCIAL_LIKE">J\'aime</string>

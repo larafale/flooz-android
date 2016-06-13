@@ -100,6 +100,7 @@ public class FLUser
         public int nbFriends;
         public int nbFollowers;
         public int nbFollowings;
+        public int nbCollects;
     }
 
     public enum UserKind {
@@ -204,6 +205,8 @@ public class FLUser
                     this.publicMetrics.nbFollowers = (int)pubMetrics.get("followers");
                 if (pubMetrics.containsKey("followings"))
                     this.publicMetrics.nbFollowings = (int)pubMetrics.get("followings");
+                if (pubMetrics.containsKey("pots"))
+                    this.publicMetrics.nbCollects = (int)pubMetrics.get("pots");
             }
 
             if (this.json.has("block"))

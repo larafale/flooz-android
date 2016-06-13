@@ -105,17 +105,22 @@ public class ProfileController extends BaseController implements TimelineListAda
     private TextView editProfileBadge;
     private RadioButton settingsFloozButton;
     private RadioButton settingsFollowingButton;
+    private RadioButton settingsPotsButton;
     private LinearLayout buttonRequestPending;
     private RelativeLayout stickyCoverContainer;
     private View listHeader;
 
     private TimelineListAdapter timelineAdapter;
     private UserListAdapter friendAdapter;
+    private TimelineListAdapter collectAdapter;
 
     private UserProfileListView mainListContainer;
 
     private List<FLTransaction> transactions = new ArrayList<>(0);
     private String nextPageUrl;
+
+    private List<FLTransaction> collects = new ArrayList<>(0);
+    private String nextPotPageUrl;
 
     private Typeface regContent;
     private Typeface boldContent;
@@ -197,6 +202,7 @@ public class ProfileController extends BaseController implements TimelineListAda
         this.addPendingButtonText = (TextView) listHeader.findViewById(R.id.add_pending_profile_text);
         this.settingsFloozButton = (RadioButton) listHeader.findViewById(R.id.settings_segment_flooz);
         this.settingsFollowingButton = (RadioButton) listHeader.findViewById(R.id.settings_segment_following);
+        this.settingsPotsButton = (RadioButton) listHeader.findViewById(R.id.settings_segment_pots);
 
         this.imageSize = this.profileImage.getLayoutParams().height;
 
@@ -225,6 +231,14 @@ public class ProfileController extends BaseController implements TimelineListAda
 
         if (friendAdapter == null) {
             friendAdapter = new UserListAdapter(FloozApplication.getAppContext(), this.flUser);
+        }
+
+        if (collectAdapter == null) {
+            collectAdapter = new TimelineListAdapter(FloozApplication.getAppContext(), collects);
+            this.collectAdapter.delegate = this;
+            this.collectAdapter.loading = true;
+            this.collectAdapter.showEmpty = true;
+            this.collectAdapter.isCollectTimeline = true;
         }
 
         this.regContent = CustomFonts.customContentRegular(parentActivity);
@@ -265,6 +279,8 @@ public class ProfileController extends BaseController implements TimelineListAda
                 mainListContainer.preLast = 0;
                 mainListContainer.setAdapter(timelineAdapter);
                 isSegmentDefault = true;
+
+                timelineAdapter.notifyDataSetChanged();
             }
         });
 
@@ -274,6 +290,19 @@ public class ProfileController extends BaseController implements TimelineListAda
                 mainListContainer.preLast = 0;
                 mainListContainer.setAdapter(friendAdapter);
                 isSegmentDefault = false;
+
+                friendAdapter.notifyDataSetChanged();
+            }
+        });
+
+        this.settingsPotsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mainListContainer.preLast = 0;
+                mainListContainer.setAdapter(collectAdapter);
+                isSegmentDefault = false;
+
+                collectAdapter.notifyDataSetChanged();
             }
         });
 
@@ -535,6 +564,33 @@ public class ProfileController extends BaseController implements TimelineListAda
 
             }
         });
+
+        FloozRestClient.getInstance().getUserCollects(this.flUser.userId, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                HashMap<String, Object> resp = (HashMap<String, Object>) response;
+                collects.clear();
+                collects.addAll((List<FLTransaction>) resp.get("transactions"));
+                nextPotPageUrl = (String) resp.get("nextUrl");
+                collectAdapter.setTransactions(collects);
+                collectAdapter.loading = false;
+
+                if (nextPotPageUrl == null || nextPotPageUrl.isEmpty())
+                    collectAdapter.hasNextURL = false;
+                else
+                    collectAdapter.hasNextURL = true;
+
+                if (settingsPotsButton.isChecked())
+                    collectAdapter.notifyDataSetChanged();
+
+                mainListContainer.preLast = 0;
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+
+            }
+        });
     }
 
     private void reloadUserInfos() {
@@ -671,40 +727,81 @@ public class ProfileController extends BaseController implements TimelineListAda
 
         this.settingsFloozButton.setTypeface(regContent);
         this.settingsFollowingButton.setTypeface(regContent);
+        this.settingsPotsButton.setTypeface(regContent);
+
         SpannableString floozString = new SpannableString(flUser.publicMetrics.nbFlooz + "\nFlooz");
         floozString.setSpan(new StyleSpan(Typeface.BOLD), 0, FLHelper.numLength(flUser.publicMetrics.nbFlooz), 0);
+
         SpannableString friendsString = new SpannableString(flUser.publicMetrics.nbFriends + "\nAmis");
         friendsString.setSpan(new StyleSpan(Typeface.BOLD), 0, FLHelper.numLength(flUser.publicMetrics.nbFriends), 0);
+
+        String potsSuffix = "Cagnottes";
+        if (flUser.publicMetrics.nbCollects < 2)
+            potsSuffix = "Cagnotte";
+
+        SpannableString potsString = new SpannableString(flUser.publicMetrics.nbCollects + "\n" + potsSuffix);
+        friendsString.setSpan(new StyleSpan(Typeface.BOLD), 0, FLHelper.numLength(flUser.publicMetrics.nbFriends), 0);
+
         this.settingsFloozButton.setText(floozString);
         this.settingsFollowingButton.setText(friendsString);
+        this.settingsPotsButton.setText(potsString);
     }
 
     private void loadNextPage() {
-        if (nextPageUrl == null || nextPageUrl.isEmpty())
-            return;
+        if (this.settingsFloozButton.isChecked()) {
+            if (nextPageUrl == null || nextPageUrl.isEmpty())
+                return;
 
-        FloozRestClient.getInstance().timelineNextPage(this.nextPageUrl, new FloozHttpResponseHandler() {
-            @Override
-            public void success(Object response) {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> responseMap = (Map<String, Object>) response;
+            FloozRestClient.getInstance().timelineNextPage(this.nextPageUrl, new FloozHttpResponseHandler() {
+                @Override
+                public void success(Object response) {
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> responseMap = (Map<String, Object>) response;
 
-                transactions.addAll((List<FLTransaction>) responseMap.get("transactions"));
-                nextPageUrl = (String) responseMap.get("nextUrl");
+                    transactions.addAll((List<FLTransaction>) responseMap.get("transactions"));
+                    nextPageUrl = (String) responseMap.get("nextUrl");
 
-                if (nextPageUrl == null || nextPageUrl.isEmpty())
-                    timelineAdapter.hasNextURL = false;
-                else
-                    timelineAdapter.hasNextURL = true;
+                    if (nextPageUrl == null || nextPageUrl.isEmpty())
+                        timelineAdapter.hasNextURL = false;
+                    else
+                        timelineAdapter.hasNextURL = true;
 
-                timelineAdapter.notifyDataSetChanged();
-            }
+                    timelineAdapter.notifyDataSetChanged();
+                }
 
-            @Override
-            public void failure(int statusCode, FLError error) {
+                @Override
+                public void failure(int statusCode, FLError error) {
 
-            }
-        });
+                }
+            });
+        } else if (this.settingsPotsButton.isChecked()) {
+            if (nextPotPageUrl == null || nextPotPageUrl.isEmpty())
+                return;
+
+            FloozRestClient.getInstance().timelineNextPage(this.nextPotPageUrl, new FloozHttpResponseHandler() {
+                @Override
+                public void success(Object response) {
+                    @SuppressWarnings("unchecked")
+                    Map<String, Object> responseMap = (Map<String, Object>) response;
+
+                    collects.addAll((List<FLTransaction>) responseMap.get("transactions"));
+                    nextPotPageUrl = (String) responseMap.get("nextUrl");
+
+                    if (nextPotPageUrl == null || nextPotPageUrl.isEmpty())
+                        collectAdapter.hasNextURL = false;
+                    else
+                        collectAdapter.hasNextURL = true;
+
+                    if (settingsPotsButton.isChecked())
+                        collectAdapter.notifyDataSetChanged();
+                }
+
+                @Override
+                public void failure(int statusCode, FLError error) {
+
+                }
+            });
+        }
     }
 
     private void settingsClearVision() {
