@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyDashes">
-
-    <string name="facebook_app_id" translatable="false">152779318256915</string>
-
     <string name="GLOBAL_OR">ou</string>
     <string name="GLOBAL_OK">OK</string>
     <string name="GLOBAL_BY">par</string>

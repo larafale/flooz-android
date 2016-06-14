@@ -731,6 +731,7 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
                 this.hideTabBar();
             }
         } else if (this.tabBar.getVisibility() == View.VISIBLE) {
+            this.getFragmentManager().executePendingTransactions();
             this.showTabBar();
         }
 

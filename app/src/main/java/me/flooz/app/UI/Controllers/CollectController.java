@@ -22,6 +22,7 @@ import android.widget.TextView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Text;
 
@@ -103,20 +104,54 @@ public class CollectController extends BaseController implements CollectAdapter.
 
     private BroadcastReceiver reloadCollect = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(Context context, final Intent intent) {
             if (intent.hasExtra("id") && intent.getStringExtra("id").contentEquals(collect.transactionId)) {
-                FloozRestClient.getInstance().transactionWithId(collect.transactionId, new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
-                        FLTransaction transac = new FLTransaction(((JSONObject) response).optJSONObject("item"));
+                if (intent.hasExtra("flooz")) {
+                    try {
+                        JSONObject floozData = new JSONObject(intent.getStringExtra("flooz"));
+                        FLTransaction transac = new FLTransaction(floozData);
                         setCollect(transac);
-                    }
 
-                    @Override
-                    public void failure(int statusCode, FLError error) {
+                        if (intent.hasExtra("commentId")) {
+                            scrollListViewToBottom();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        FloozRestClient.getInstance().transactionWithId(collect.transactionId, new FloozHttpResponseHandler() {
+                            @Override
+                            public void success(Object response) {
+                                FLTransaction transac = new FLTransaction(((JSONObject) response).optJSONObject("item"));
+                                setCollect(transac);
 
+                                if (intent.hasExtra("commentId")) {
+                                    scrollListViewToBottom();
+                                }
+                            }
+
+                            @Override
+                            public void failure(int statusCode, FLError error) {
+
+                            }
+                        });
                     }
-                });
+                } else {
+                    FloozRestClient.getInstance().transactionWithId(collect.transactionId, new FloozHttpResponseHandler() {
+                        @Override
+                        public void success(Object response) {
+                            FLTransaction transac = new FLTransaction(((JSONObject) response).optJSONObject("item"));
+                            setCollect(transac);
+
+                            if (intent.hasExtra("commentId")) {
+                                scrollListViewToBottom();
+                            }
+                        }
+
+                        @Override
+                        public void failure(int statusCode, FLError error) {
+
+                        }
+                    });
+                }
             }
         }
     };
@@ -531,6 +566,15 @@ public class CollectController extends BaseController implements CollectAdapter.
                 ((HomeActivity) parentActivity).pushFragmentInCurrentTab(fragment);
             }
         }
+    }
+
+    private void scrollListViewToBottom() {
+        listView.post(new Runnable() {
+            @Override
+            public void run() {
+                listView.setSelection(listAdapter.getCount() - 1);
+            }
+        });
     }
 
     public void setCollect(@NonNull  FLTransaction collect) {

@@ -61,17 +61,29 @@ public class SyncTask extends ActionTask {
                     });
                     break;
                 case "flooz":
-                    Intent intent = CustomNotificationIntents.reloadTimeline();
+                    Intent intent = CustomNotificationIntents.reloadTransaction();
 
                     intent.putExtra("id", trigger.data.optString("_id"));
+
+                    if (trigger.data.has("commentId"))
+                        intent.putExtra("commentId", trigger.data.optString("commentId"));
+
+                    if (trigger.data.has("flooz"))
+                        intent.putExtra("flooz", trigger.data.optJSONObject("flooz").toString());
 
                     FloozApplication.performLocalNotification(intent);
                     FLTriggerManager.getInstance().executeTriggerList(trigger.triggers);
                     break;
                 case "pot":
-                    Intent intentCollect = CustomNotificationIntents.reloadTimeline();
+                    Intent intentCollect = CustomNotificationIntents.reloadCollect();
 
                     intentCollect.putExtra("id", trigger.data.optString("_id"));
+
+                    if (trigger.data.has("commentId"))
+                        intentCollect.putExtra("commentId", trigger.data.optString("commentId"));
+
+                    if (trigger.data.has("flooz"))
+                        intentCollect.putExtra("flooz", trigger.data.optJSONObject("flooz").toString());
 
                     FloozApplication.performLocalNotification(intentCollect);
                     FLTriggerManager.getInstance().executeTriggerList(trigger.triggers);

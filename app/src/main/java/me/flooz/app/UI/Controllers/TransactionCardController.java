@@ -32,6 +32,7 @@ import android.widget.TextView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.text.SimpleDateFormat;
@@ -130,20 +131,54 @@ public class TransactionCardController extends BaseController {
 
     private BroadcastReceiver reloadTransaction = new BroadcastReceiver() {
         @Override
-        public void onReceive(Context context, Intent intent) {
+        public void onReceive(Context context, final Intent intent) {
             if (intent.hasExtra("id") && intent.getStringExtra("id").contentEquals(transaction.transactionId)) {
-                FloozRestClient.getInstance().transactionWithId(transaction.transactionId, new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
-                        FLTransaction transac = new FLTransaction(((JSONObject) response).optJSONObject("item"));
+                if (intent.hasExtra("flooz")) {
+                    try {
+                        JSONObject floozData = new JSONObject(intent.getStringExtra("flooz"));
+                        FLTransaction transac = new FLTransaction(floozData);
                         setTransaction(transac);
-                    }
 
-                    @Override
-                    public void failure(int statusCode, FLError error) {
+                        if (intent.hasExtra("commentId")) {
+                            scrollListViewToBottom();
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                        FloozRestClient.getInstance().transactionWithId(transaction.transactionId, new FloozHttpResponseHandler() {
+                            @Override
+                            public void success(Object response) {
+                                FLTransaction transac = new FLTransaction(((JSONObject) response).optJSONObject("item"));
+                                setTransaction(transac);
 
+                                if (intent.hasExtra("commentId")) {
+                                    scrollListViewToBottom();
+                                }
+                            }
+
+                            @Override
+                            public void failure(int statusCode, FLError error) {
+
+                            }
+                        });
                     }
-                });
+                } else {
+                    FloozRestClient.getInstance().transactionWithId(transaction.transactionId, new FloozHttpResponseHandler() {
+                        @Override
+                        public void success(Object response) {
+                            FLTransaction transac = new FLTransaction(((JSONObject) response).optJSONObject("item"));
+                            setTransaction(transac);
+
+                            if (intent.hasExtra("commentId")) {
+                                scrollListViewToBottom();
+                            }
+                        }
+
+                        @Override
+                        public void failure(int statusCode, FLError error) {
+
+                        }
+                    });
+                }
             }
         }
     };
@@ -691,5 +726,14 @@ public class TransactionCardController extends BaseController {
         this.transaction = transac;
         if (this.viewCreated)
             this.reloadView();
+    }
+
+    private void scrollListViewToBottom() {
+        cardScroll.post(new Runnable() {
+            @Override
+            public void run() {
+                cardScroll.fullScroll(View.FOCUS_DOWN);
+            }
+        });
     }
 }
