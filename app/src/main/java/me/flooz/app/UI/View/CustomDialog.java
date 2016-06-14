@@ -11,6 +11,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -93,6 +94,8 @@ public class CustomDialog {
                     dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
                     dialog.setContentView(R.layout.custom_dialog_trigger);
 
+                    ImageView close = (ImageView) dialog.findViewById(R.id.dialog_trigger_close);
+
                     TextView title = (TextView) dialog.findViewById(R.id.dialog_trigger_title);
                     title.setTypeface(CustomFonts.customContentRegular(floozApp.getCurrentActivity()), Typeface.BOLD);
 
@@ -102,6 +105,19 @@ public class CustomDialog {
                     } else {
                         title.setVisibility(View.GONE);
                     }
+
+                    if (data.has("close") && data.optBoolean("close")) {
+                        close.setVisibility(View.VISIBLE);
+                    } else {
+                        close.setVisibility(View.GONE);
+                    }
+
+                    close.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            dialog.dismiss();
+                        }
+                    });
 
                     TextView text = (TextView) dialog.findViewById(R.id.dialog_trigger_msg);
                     text.setTypeface(CustomFonts.customContentRegular(floozApp.getCurrentActivity()));
