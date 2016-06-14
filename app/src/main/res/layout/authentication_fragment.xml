@@ -40,7 +40,7 @@
 
     </RelativeLayout>
 
-    <FrameLayout
+    <me.flooz.app.UI.View.CustomFrameLayout
         android:id="@+id/authentication_fragment_container"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"/>

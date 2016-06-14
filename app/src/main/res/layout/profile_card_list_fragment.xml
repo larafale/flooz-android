@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<me.flooz.app.UI.View.SlidableRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <me.flooz.app.UI.View.UserProfileListView
         android:id="@+id/profile_list_container"
-        android:orientation="vertical" android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
-        android:overScrollMode="never">
-    </me.flooz.app.UI.View.UserProfileListView>
+        android:overScrollMode="never"/>
 
     <RelativeLayout
         android:id="@+id/sticky_cover_container"
@@ -69,4 +70,4 @@
         android:src="@drawable/nav_cross"
         android:layout_alignParentLeft="true"/>
 
-</RelativeLayout>
+</me.flooz.app.UI.View.SlidableRelativeLayout>

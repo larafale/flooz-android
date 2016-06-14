@@ -56,6 +56,7 @@ import me.flooz.app.UI.Tools.ActionSheetItem;
 import me.flooz.app.UI.Tools.CustomImageViewer;
 import me.flooz.app.UI.Tools.CustomToast;
 import me.flooz.app.Network.FloozRestClient;
+import me.flooz.app.UI.View.CustomFrameLayout;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
 import me.flooz.app.UI.Fragment.Home.TabFragments.TransactionCardFragment;
@@ -99,7 +100,7 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
 
     private SoftKeyboardHandledRelativeLayout mainView;
 
-    private FrameLayout fragmentContainer;
+    private CustomFrameLayout fragmentContainer;
     private int fragmentContainerTabBarMargin;
 
     private LinearLayout tabBar;
@@ -222,7 +223,7 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
             }
         });
 
-        this.fragmentContainer = (FrameLayout) this.findViewById(R.id.fragment_container);
+        this.fragmentContainer = (CustomFrameLayout) this.findViewById(R.id.fragment_container);
         ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) fragmentContainer.getLayoutParams();
         this.fragmentContainerTabBarMargin = layoutParams.bottomMargin;
 

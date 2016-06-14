@@ -265,7 +265,7 @@ public class NewCollectActivity extends BaseActivity implements ToolTipScopeView
         }
 
         headerTitle.setTypeface(CustomFonts.customTitleExtraLight(this));
-        this.nameTextfield.setTypeface(CustomFonts.customTitleExtraLight(this));
+        this.nameTextfield.setTypeface(CustomFonts.customContentRegular(this));
         this.contentTextfield.setTypeface(CustomFonts.customContentRegular(this));
         this.createButton.setTypeface(CustomFonts.customTitleLight(this));
         this.locationText.setTypeface(CustomFonts.customContentRegular(this));

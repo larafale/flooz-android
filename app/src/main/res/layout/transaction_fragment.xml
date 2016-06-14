@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<me.flooz.app.UI.View.SlidableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/new_transac_base"
     android:orientation="vertical"
     android:layout_width="match_parent"
@@ -363,4 +363,4 @@
 
     </RelativeLayout>
 
-</LinearLayout>
+</me.flooz.app.UI.View.SlidableLinearLayout>
