@@ -54,12 +54,6 @@ public class FLTrigger {
         if (this.key == null)
             return false;
 
-        if (this.key.contentEquals("card:card:show") && FloozRestClient.getInstance().currentTexts.cashinButtons != null && FloozRestClient.getInstance().currentTexts.cashinButtons.size() > 0)
-            this.key = "cashin:card:show";
-
-        if (this.key.contentEquals("card:card:hide") && FloozRestClient.getInstance().currentTexts.cashinButtons != null && FloozRestClient.getInstance().currentTexts.cashinButtons.size() > 0)
-            this.key = "card:card:hide";
-
         String[] splitKey = this.key.split(":");
 
         if (splitKey.length != 3)

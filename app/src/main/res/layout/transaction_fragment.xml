@@ -283,7 +283,7 @@
                             android:layout_width="0dp"
                             android:layout_height="match_parent"
                             android:layout_weight="1"
-                            android:text="@string/MENU_COLLECT"
+                            android:text="@string/MENU_CHARGE"
                             android:layout_margin="@dimen/dimen_medium"
                             android:textColor="@android:color/white"
                             android:background="@drawable/background_action_button"

@@ -44,6 +44,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.RunnableFuture;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -2238,11 +2239,6 @@ public class FloozRestClient
                             }
                             handleRequestTriggers(data);
                         }
-                    }).on("session end", new Emitter.Listener() {
-                        @Override
-                        public void call(Object... args) {
-                            socket.disconnect();
-                        }
                     }).on("feed", new Emitter.Listener() {
                         @Override
                         public void call(Object... args) {
@@ -2292,6 +2288,13 @@ public class FloozRestClient
 
                 obj.put("token", accessToken);
                 this.socket.emit("session end", obj);
+                new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        socket.disconnect();
+                    }
+                }, 500);
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -2299,6 +2302,6 @@ public class FloozRestClient
     }
 
     public void closeSockets() {
-        this.socketHandler.postDelayed(this.socketCloseRunnable, 5000);
+        this.socketHandler.postDelayed(this.socketCloseRunnable, 4000);
     }
 }

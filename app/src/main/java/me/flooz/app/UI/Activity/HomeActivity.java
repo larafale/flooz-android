@@ -726,17 +726,17 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
         this.currentTabHistory.add(fragment);
         this.currentFragment = fragment;
 
+        this.getFragmentManager().executePendingTransactions();
+
         if ((this.currentFragment instanceof TransactionCardFragment || this.currentFragment instanceof CollectFragment)) {
             if (this.tabBar.getVisibility() == View.VISIBLE) {
                 this.hideTabBar();
             }
-        } else if (this.tabBar.getVisibility() == View.VISIBLE) {
-            this.getFragmentManager().executePendingTransactions();
+        } else {
             this.showTabBar();
         }
 
         if (completion != null) {
-            this.getFragmentManager().executePendingTransactions();
             Handler handler = new Handler(Looper.getMainLooper());
             handler.post(completion);
         }
@@ -773,14 +773,17 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
 
             this.currentFragment = fragment;
 
+            this.getFragmentManager().executePendingTransactions();
+
             if ((this.currentFragment instanceof TransactionCardFragment || this.currentFragment instanceof CollectFragment)) {
-                this.hideTabBar();
+                if (this.tabBar.getVisibility() == View.VISIBLE) {
+                    this.hideTabBar();
+                }
             } else {
                 this.showTabBar();
             }
 
             if (completion != null) {
-                this.getFragmentManager().executePendingTransactions();
                 Handler handler = new Handler(Looper.getMainLooper());
                 handler.post(completion);
             }
