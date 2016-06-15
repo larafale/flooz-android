@@ -85,8 +85,8 @@ public class ShareCollectAcivity extends BaseActivity {
                 this.headerBackButton.setVisibility(View.GONE);
             }
 
-            if (triggerData.has("potId"))
-                this.collectId = triggerData.optString("potId");
+            if (triggerData.has("_id"))
+                this.collectId = triggerData.optString("_id");
         }
 
         if (getIntent() != null && getIntent().hasExtra("potId"))
