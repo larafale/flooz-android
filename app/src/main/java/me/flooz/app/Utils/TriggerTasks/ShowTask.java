@@ -63,6 +63,7 @@ public class ShowTask extends ActionTask {
         } else if (this.trigger.categoryView.contentEquals("app:alert")) {
             FLError errorContent = new FLError(trigger.data);
             CustomToast.show(FloozApplication.getAppContext(), errorContent);
+            FLTriggerManager.getInstance().executeTriggerList(trigger.triggers);
         } else if (this.trigger.categoryView.contentEquals("app:list")) {
             List<ActionSheetItem> items = new ArrayList<>();
 

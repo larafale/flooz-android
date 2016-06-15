@@ -24,29 +24,36 @@
             android:layout_centerVertical="true"
             android:layout_marginRight="@dimen/dimen_large"/>
 
-        <TextView
-            android:id="@+id/cashin_row_title"
-            android:layout_width="match_parent"
-            android:layout_height="17dp"
-            android:textColor="@android:color/white"
-            android:textSize="15sp"
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/cashin_row_img"
             android:layout_toLeftOf="@+id/cashin_row_arrow"
-            android:singleLine="true"
-            />
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="@dimen/dimen_small"
+            android:paddingBottom="@dimen/dimen_small">
 
-        <TextView
-            android:id="@+id/cashin_row_subtitle"
-            android:layout_width="match_parent"
-            android:layout_height="30dp"
-            android:textColor="@color/placeholder"
-            android:textSize="12sp"
-            android:layout_toRightOf="@+id/cashin_row_img"
-            android:layout_toLeftOf="@+id/cashin_row_arrow"
-            android:layout_below="@+id/cashin_row_title"
-            android:maxLines="2"
-            android:layout_marginTop="@dimen/dimen_small"
-            />
+            <TextView
+                android:id="@+id/cashin_row_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                android:singleLine="true"
+                />
+
+            <TextView
+                android:id="@+id/cashin_row_subtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/placeholder"
+                android:textSize="12sp"
+                android:maxLines="2"
+                android:layout_marginTop="@dimen/dimen_small"
+                />
+
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/cashin_row_arrow"

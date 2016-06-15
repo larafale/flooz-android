@@ -25,11 +25,14 @@ import java.util.Locale;
 import java.util.Map;
 
 import me.flooz.app.App.FloozApplication;
+import me.flooz.app.Model.FLError;
+import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
 import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.JSONHelper;
 import me.flooz.app.Utils.ViewServer;
 
 /**
@@ -160,10 +163,24 @@ public class PaymentAudiotelActivity extends BaseActivity {
                 param.put("code", codeTextfield.getText().toString());
 
                 if (floozData != null)
-                    param.put("flooz", floozData);
+                    try {
+                        param.put("flooz", JSONHelper.toMap(floozData));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
                 FloozRestClient.getInstance().showLoadView();
-                FloozRestClient.getInstance().cashinAudiotel(param, null);
+                FloozRestClient.getInstance().cashinAudiotel(param, new FloozHttpResponseHandler() {
+                    @Override
+                    public void success(Object response) {
+                        codeTextfield.setText("");
+                    }
+
+                    @Override
+                    public void failure(int statusCode, FLError error) {
+
+                    }
+                });
             }
         });
 
