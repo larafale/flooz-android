@@ -54,6 +54,7 @@ import me.flooz.app.UI.View.LoadingImageView;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
 import me.flooz.app.Utils.FLHelper;
+import me.flooz.app.Utils.FLTriggerManager;
 
 /**
  * Created by Wapazz on 17/09/15.
@@ -278,32 +279,14 @@ public class TransactionCardController extends BaseController {
         this.cardActionBarDecline.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FloozRestClient.getInstance().updateTransaction(transaction, FLTransaction.TransactionStatus.TransactionStatusRefused, new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
-                        setTransaction(new FLTransaction(((JSONObject) response).optJSONObject("item")));
-                    }
-
-                    @Override
-                    public void failure(int statusCode, FLError error) {
-                    }
-                });
+                FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(transaction.actions.optJSONArray("decline")));
             }
         });
 
         this.cardActionBarAccept.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FloozRestClient.getInstance().updateTransactionValidate(transaction, FLTransaction.TransactionStatus.TransactionStatusAccepted, new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
-
-                    }
-
-                    @Override
-                    public void failure(int statusCode, FLError error) {
-                    }
-                });
+                FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(transaction.actions.optJSONArray("accept")));
             }
         });
 
