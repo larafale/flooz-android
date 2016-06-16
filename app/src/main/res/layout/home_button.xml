@@ -48,7 +48,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="@color/placeholder"
                 android:textSize="13sp"
-                android:maxLines="2"
+                android:maxLines="3"
                 android:layout_marginTop="@dimen/dimen_small"
                 />
 
@@ -74,7 +74,7 @@
             android:paddingLeft="@dimen/dimen_large"
             android:paddingRight="@dimen/dimen_large"
             android:layout_centerInParent="true"
-            android:rotation="-15"
+            android:rotation="-10"
             android:textSize="14sp"
             android:textColor="@android:color/holo_red_light"/>
 

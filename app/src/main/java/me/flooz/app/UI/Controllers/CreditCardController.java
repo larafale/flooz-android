@@ -96,13 +96,16 @@ public class CreditCardController extends BaseController {
     public CreditCardController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
 
+        hideSaveCard = true;
+
         this.init();
     }
 
     public CreditCardController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind, @Nullable JSONObject data) {
         super(mainView, parentActivity, kind, data);
 
-        hideSaveCard = false;
+        if (data != null)
+            hideSaveCard = false;
 
         if (this.triggersData != null) {
             if (this.triggersData.has("hideSave")) {
@@ -160,6 +163,9 @@ public class CreditCardController extends BaseController {
             this.cardFormOwnerTextfield.setVisibility(View.GONE);
         }
 
+        if (hideSaveCard)
+            cardFormSaveButton.setVisibility(View.GONE);
+
         this.scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -191,8 +197,7 @@ public class CreditCardController extends BaseController {
                 FloozRestClient.getInstance().removeCreditCard(creditCard.cardId, new FloozHttpResponseHandler() {
                     @Override
                     public void success(Object response) {
-                        FloozRestClient.getInstance().currentUser.creditCard = null;
-                        reloadCreditCard();
+
                     }
 
                     @Override

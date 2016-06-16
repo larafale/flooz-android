@@ -1886,11 +1886,8 @@ public class FloozRestClient
     }
 
     public void request(String path, HttpRequestType type, Map<String, Object> params, final FloozHttpResponseHandler responseHandler) {
-
-        ConnectivityManager conMgr = (ConnectivityManager) floozApp.getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetwork = conMgr.getActiveNetworkInfo();
-
-        if (activeNetwork != null && activeNetwork.isConnected()) {
+        
+        if (this.isConnected()) {
 
             if (BuildConfig.DEBUG_API) {
                 Log.d(type.toString() + "Request", path + " - " + (params != null ? params.toString() : "(null)"));
@@ -2040,6 +2037,7 @@ public class FloozRestClient
                 error.text = floozApp.getApplicationContext().getResources().getString(R.string.NETWORK_UNAVAILABLE_TEXT);
                 error.type = FLError.ErrorType.ErrorTypeError;
                 error.time = 5;
+                error.delay = 0;
 
                 CustomToast.show(floozApp.getApplicationContext(), error);
             }
@@ -2302,6 +2300,6 @@ public class FloozRestClient
     }
 
     public void closeSockets() {
-        this.socketHandler.postDelayed(this.socketCloseRunnable, 4000);
+        this.socketHandler.postDelayed(this.socketCloseRunnable, 6000);
     }
 }

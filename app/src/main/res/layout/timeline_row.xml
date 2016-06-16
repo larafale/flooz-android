@@ -168,7 +168,8 @@
             android:layout_weight="1.5"
             android:layout_height="wrap_content"
             android:paddingRight="@dimen/dimen_medium"
-            android:gravity="center">
+            android:gravity="center"
+            android:visibility="gone">
 
             <ImageView
                 android:id="@+id/timelineTransactionShareButtonImg"

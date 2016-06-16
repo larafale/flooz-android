@@ -587,9 +587,11 @@ public class NewTransactionActivity extends BaseActivity implements ToolTipScope
 
             if (this.preset.type == FLTransaction.TransactionType.TransactionTypeCharge) {
                 this.payButton.setVisibility(View.GONE);
+                this.participateButton.setVisibility(View.GONE);
             }
             else if (this.preset.type == FLTransaction.TransactionType.TransactionTypePayment) {
                 this.chargeButton.setVisibility(View.GONE);
+                this.participateButton.setVisibility(View.GONE);
             }
         }
 
@@ -753,6 +755,7 @@ public class NewTransactionActivity extends BaseActivity implements ToolTipScope
                 }
             }
         } else {
+            this.hideParticipateButton(true);
             this.hideChargeButton(false);
             this.hidePayButton(false);
         }

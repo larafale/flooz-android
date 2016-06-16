@@ -97,9 +97,9 @@ public class CollectParticipantAdapter extends BaseAdapter {
                 holder.username.setText("@" + user.username);
 
             if (user.isCertified)
-                holder.certified.setVisibility(View.GONE);
-            else
                 holder.certified.setVisibility(View.VISIBLE);
+            else
+                holder.certified.setVisibility(View.GONE);
 
             holder.avatar.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
             if (user.avatarURL != null && !user.avatarURL.isEmpty())
