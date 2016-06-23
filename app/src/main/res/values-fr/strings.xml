@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyDashes">
+
     <string name="GLOBAL_OR">ou</string>
     <string name="GLOBAL_OK">OK</string>
     <string name="GLOBAL_BY">par</string>
@@ -250,8 +251,8 @@
     <string name="EDIT_ACCOUNT_FACEBOOK">Facebook</string>
 
     <string name="EMPTY_FLOOZ_CELL">Aucun Flooz</string>
-    <string name="EMPTY_FRIEND_CELL">Aucun Ami</string>
-    <string name="EMPTY_POT_CELL">Aucune Cagnotte</string>
+    <string name="EMPTY_FRIEND_CELL">Aucun ami</string>
+    <string name="EMPTY_POT_CELL">Aucune cagnotte</string>
 
     <string name="CELL_SOCIAL_COMMENT">Commenter</string>
     <string name="CELL_SOCIAL_LIKE">J\'aime</string>
@@ -274,19 +275,12 @@
     <string name="TRANSACTION_CONTACT_LIST_EMPTY_1">Sélectionnez un contact</string>
     <string name="TRANSACTION_CONTACT_LIST_EMPTY_2">ou entrez un n° de mobile</string>
 
-    <string name="TRANSACTION_ACTION_ACCEPT">ACCEPTER</string>
-    <string name="TRANSACTION_ACTION_REFUSE">REFUSER</string>
-    <string name="TRANSACTION_ACTION_CANCEL">ANNULER</string>
+    <string name="TRANSACTION_ACTION_ACCEPT">Accepter</string>
+    <string name="TRANSACTION_ACTION_REFUSE">Refuser</string>
+    <string name="TRANSACTION_ACTION_CANCEL">Annuler</string>
+    <string name="TRANSACTION_ACTION_JOIN">Participer</string>
+    <string name="TRANSACTION_ACTION_CLOSE">Clôturer</string>
     <string name="TRANSACTION_ACTION_WAITING">EN ATTENTE</string>
-
-    <string name="TRANSACTION_STATUS_ACCEPTED">Accepted</string>
-    <string name="TRANSACTION_STATUS_REFUSED">Refused</string>
-    <string name="TRANSACTION_STATUS_PENDING">Waiting</string>
-    <string name="TRANSACTION_STATUS_CANCELED">Canceled</string>
-    <string name="TRANSACTION_STATUS_EXPIRED">Expired</string>
-
-    <string name="TRANSACTION_TYPE_PAYMENT">PAYMENT</string>
-    <string name="TRANSACTION_TYPE_COLLECTION">COLLECTION</string>
 
     <string name="TRANSACTION_SCOPE_TITLE">Qui peut voir ce Flooz :</string>
     <string name="TRANSACTION_SCOPE_PUBLIC">Tout le monde</string>

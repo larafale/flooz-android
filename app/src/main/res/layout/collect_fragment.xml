@@ -17,10 +17,7 @@
             android:layout_height="fill_parent"
             android:layout_above="@+id/collect_view_toolbar"
             android:overScrollMode="never"
-            android:dividerHeight="0dp">
-
-
-        </ListView>
+            android:dividerHeight="0dp"/>
 
         <View
             android:layout_width="fill_parent"
@@ -97,7 +94,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:background="@drawable/background_action_button"
-                    android:text="Participer"
+                    android:text="@string/TRANSACTION_ACTION_JOIN"
                     android:textSize="20sp"
                     android:textAllCaps="false"
                     android:textColor="@drawable/text_color_action_button"/>
@@ -114,7 +111,7 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:background="@drawable/background_close_button"
-                    android:text="Clôturer"
+                    android:text="@string/TRANSACTION_ACTION_CLOSE"
                     android:textSize="20sp"
                     android:textAllCaps="false"
                     android:textColor="@drawable/text_color_action_button"/>

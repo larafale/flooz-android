@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<me.flooz.app.UI.View.SlidableLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<me.flooz.app.UI.View.SlidableRelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -8,575 +8,190 @@
     android:clickable="true">
 
     <RelativeLayout
-        android:id="@+id/transac_card_header"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/header_size"
-        android:background="@color/background_header"
-        android:gravity="center_vertical">
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="@dimen/header_size">
 
-        <ImageView
-            android:id="@+id/transac_card_header_report"
-            android:layout_width="40dp"
-            android:padding="@dimen/dimen_large"
-            android:layout_height="fill_parent"
-            android:src="@drawable/cog"
-            android:layout_alignParentRight="true"/>
-
-        <LinearLayout
-            android:id="@+id/transac_card_header_infos"
-            android:orientation="horizontal"
+        <ListView
+            android:id="@+id/transaction_comment_list"
             android:layout_width="match_parent"
             android:layout_height="fill_parent"
-            android:gravity="center">
+            android:layout_above="@+id/transaction_view_toolbar"
+            android:overScrollMode="never"
+            android:dividerHeight="0dp"/>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/header_shadow"
+            android:background="@drawable/tab_bar_background"
+            android:layout_above="@+id/transaction_view_toolbar"/>
+
+        <RelativeLayout
+            android:id="@+id/transaction_view_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true">
 
             <ImageView
-                android:id="@+id/transac_card_header_scope"
-                android:layout_width="15dp"
-                android:layout_height="15dp"
-                android:layout_marginRight="@dimen/dimen_medium"/>
+                android:id="@+id/transaction_view_comment_close"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="@dimen/dimen_medium"
+                android:src="@drawable/nav_cross"
+                android:layout_centerVertical="true"
+                android:padding="@dimen/dimen_medium"/>
+
+            <ImageView
+                android:id="@+id/transaction_view_share"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="@dimen/dimen_medium"
+                android:src="@drawable/share_native"
+                android:layout_centerVertical="true"
+                android:padding="8dp"/>
+
+            <EditText
+                android:id="@+id/transaction_view_comment_textfield"
+                android:inputType="textMultiLine|textLongMessage"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/SEND_COMMENT"
+                android:textSize="@dimen/card_comment_textfield"
+                android:layout_marginRight="@dimen/dimen_medium"
+                android:layout_marginLeft="@dimen/dimen_medium"
+                android:paddingTop="@dimen/dimen_medium"
+                android:paddingBottom="@dimen/dimen_medium"
+                android:paddingLeft="@dimen/dimen_large"
+                android:paddingRight="@dimen/dimen_large"
+                android:background="@drawable/card_comment_input_background"
+                android:focusable="true"
+                android:gravity="center_vertical|left"
+                android:focusableInTouchMode="true"
+                android:textColor="@android:color/white"
+                android:textColorHint="@color/placeholder"
+                android:layout_toRightOf="@+id/transaction_view_comment_close"
+                android:layout_toLeftOf="@+id/transaction_view_comment_send"
+                android:layout_marginTop="@dimen/dimen_large"
+                android:minHeight="30dp"
+                android:maxHeight="140dp"
+                android:layout_marginBottom="@dimen/dimen_large"
+                />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:id="@+id/transaction_view_action"
+                android:layout_toRightOf="@+id/transaction_view_comment_close"
+                android:layout_toLeftOf="@+id/transaction_view_comment"
+                android:layout_width="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="@dimen/dimen_medium"
+                android:layout_marginLeft="@dimen/dimen_medium"
+                android:layout_height="wrap_content">
+
+                <Button
+                    android:id="@+id/transaction_view_accept_button"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:background="@drawable/background_action_button"
+                    android:text="@string/TRANSACTION_ACTION_ACCEPT"
+                    android:textSize="20sp"
+                    android:textAllCaps="false"
+                    android:textColor="@drawable/text_color_action_button"/>
+
+                <View
+                    android:id="@+id/transaction_view_action_separator"
+                    android:layout_width="@dimen/dimen_large"
+                    android:layout_height="match_parent"/>
+
+                <Button
+                    android:id="@+id/transaction_view_decline_button"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:background="@drawable/background_close_button"
+                    android:text="@string/TRANSACTION_ACTION_REFUSE"
+                    android:textSize="20sp"
+                    android:textAllCaps="false"
+                    android:textColor="@drawable/text_color_action_button"/>
+
+            </LinearLayout>
 
             <TextView
-                android:id="@+id/transac_card_header_date"
+                android:id="@+id/transaction_view_comment_send"
                 android:layout_width="wrap_content"
-                android:paddingTop="@dimen/dimen_xsmall"
-                android:textSize="@dimen/card_header_date"
-                android:layout_marginLeft="@dimen/dimen_small"
-                android:layout_height="wrap_content"/>
+                android:layout_height="wrap_content"
+                android:text="@string/GLOBAL_SEND"
+                android:textSize="13sp"
+                android:textColor="@android:color/white"
+                android:gravity="center"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="@dimen/dimen_medium"
+                android:padding="@dimen/dimen_medium"/>
 
-        </LinearLayout>
+            <ImageView
+                android:id="@+id/transaction_view_comment"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_margin="@dimen/dimen_medium"
+                android:src="@drawable/speech_bubble"
+                android:padding="@dimen/dimen_medium"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"/>
 
-        <ImageView
-            android:id="@+id/header_item_left"
-            android:layout_width="@dimen/card_header_close"
-            android:padding="@dimen/dimen_large"
-            android:layout_height="fill_parent"
-            android:src="@drawable/nav_cross"
-            android:layout_alignParentLeft="true"/>
+        </RelativeLayout>
 
     </RelativeLayout>
 
-    <View
+    <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="@dimen/header_shadow"
-        android:background="@drawable/header_background_shadow"
-        android:layout_alignParentBottom="true"/>
+        android:layout_height="@dimen/header_height">
 
-    <ScrollView
-        android:id="@+id/card_scroll"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:fillViewport="true"
-        android:overScrollMode="never">
-
-        <LinearLayout
-            android:orientation="vertical"
+        <RelativeLayout
+            android:id="@+id/transac_card_header"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-
-            <LinearLayout
-                android:id="@+id/card_content_layout"
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_large">
-
-                    <com.makeramen.roundedimageview.RoundedImageView
-                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/transac_card_from_pic"
-                        android:scaleType="centerCrop"
-                        android:layout_width="@dimen/profile_pic_large"
-                        android:layout_height="@dimen/profile_pic_large"
-                        android:layout_marginRight="@dimen/dimen_large"
-                        android:src="@drawable/avatar_default"
-                        app:riv_corner_radius="@dimen/avatar_corner"
-                        app:riv_mutate_background="true"/>
-
-                    <ImageView
-                        android:layout_width="@dimen/card_link_arrow_width"
-                        android:layout_height="wrap_content"
-                        android:padding="@dimen/dimen_large"
-                        android:src="@drawable/card_arrow"/>
-
-                    <com.makeramen.roundedimageview.RoundedImageView
-                        xmlns:app="http://schemas.android.com/apk/res-auto"
-                        android:id="@+id/transac_card_to_pic"
-                        android:scaleType="centerCrop"
-                        android:layout_width="@dimen/profile_pic_large"
-                        android:layout_height="@dimen/profile_pic_large"
-                        android:src="@drawable/avatar_default"
-                        android:layout_marginLeft="@dimen/dimen_large"
-                        app:riv_corner_radius="@dimen/avatar_corner"
-                        app:riv_mutate_background="true"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="horizontal"
-                    android:gravity="center"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_large"
-                    android:layout_marginBottom="@dimen/dimen_large">
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="@dimen/card_profile_infos_width"
-                        android:layout_height="wrap_content"
-                        android:gravity="center">
-
-                        <TextView
-                            android:id="@+id/transac_card_from_fullname"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAllCaps="true"
-                            android:textSize="@dimen/card_user_fullname"
-                            android:textColor="@android:color/white"
-                            android:gravity="center_horizontal"
-                            android:singleLine="true"/>
-
-                        <TextView
-                            android:id="@+id/transac_card_from_username"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="@dimen/card_user_username"
-                            android:textColor="@color/blue"
-                            android:gravity="center_horizontal"
-                            android:singleLine="true"/>
-
-                    </LinearLayout>
-
-                    <View
-                        android:layout_width="@dimen/card_link_arrow_width"
-                        android:layout_height="0dp"/>
-
-                    <LinearLayout
-                        android:orientation="vertical"
-                        android:layout_width="@dimen/card_profile_infos_width"
-                        android:layout_height="wrap_content"
-                        android:gravity="center">
-
-                        <TextView
-                            android:id="@+id/transac_card_to_fullname"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textAllCaps="true"
-                            android:textSize="@dimen/card_user_fullname"
-                            android:textColor="@android:color/white"
-                            android:gravity="center_horizontal"
-                            android:singleLine="true"/>
-
-                        <TextView
-                            android:id="@+id/transac_card_to_username"
-                            android:layout_width="wrap_content"
-                            android:textSize="@dimen/card_user_username"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/blue"
-                            android:gravity="center_horizontal"
-                            android:singleLine="true"/>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/transac_card_actionBar"
-                    android:orientation="horizontal"
-                    android:layout_width="match_parent"
-                    android:layout_height="@dimen/card_action_height"
-                    android:background="@drawable/card_action_background"
-                    android:gravity="center">
-
-                    <TextView
-                        android:id="@+id/transac_card_actionBar_decline"
-                        android:layout_width="@dimen/card_action_button_width"
-                        android:layout_height="@dimen/card_action_button_height"
-                        android:background="@drawable/card_action_left_shadow"
-                        android:textAllCaps="true"
-                        android:textColor="@android:color/white"
-                        android:text="@string/TRANSACTION_ACTION_REFUSE"
-                        android:gravity="center"/>
-
-                    <TextView
-                        android:id="@+id/transac_card_actionBar_accept"
-                        android:layout_width="@dimen/card_action_button_width"
-                        android:layout_height="@dimen/card_action_button_height"
-                        android:background="@drawable/card_action_right_shadow"
-                        android:textAllCaps="true"
-                        android:text="@string/TRANSACTION_ACTION_ACCEPT"
-                        android:textColor="@android:color/white"
-                        android:gravity="center"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingTop="@dimen/dimen_large"
-                    android:paddingBottom="@dimen/dimen_large"
-                    android:paddingLeft="@dimen/dimen_xlarge"
-                    android:paddingRight="@dimen/dimen_xlarge"
-                    android:background="@color/background">
-
-                    <LinearLayout
-                        android:orientation="horizontal"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content">
-
-                        <TextView
-                            android:id="@+id/transac_card_3dText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:textSize="@dimen/card_3d_text"
-                            android:inputType="none"/>
-
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/transac_card_desc"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dimen_medium"
-                        android:textColor="@android:color/white"
-                        android:textSize="@dimen/card_content"/>
-
-                    <me.flooz.app.UI.View.LoadingImageView
-                        android:id="@+id/transac_card_pic"
-                        android:layout_width="fill_parent"
-                        android:layout_height="150dp"/>
-
-                    <LinearLayout
-                        android:id="@+id/transac_card_location"
-                        android:orientation="horizontal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:paddingTop="@dimen/dimen_medium">
-
-                        <ImageView
-                            android:id="@+id/transac_card_location_img"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:padding="@dimen/dimen_small"
-                            android:src="@drawable/map"
-                            android:layout_marginRight="@dimen/dimen_small"/>
-
-                        <TextView
-                            android:id="@+id/transac_card_location_text"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/placeholder"
-                            android:textSize="12sp"/>
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/transac_card_likes_container"
-                        android:orientation="horizontal"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_vertical"
-                        android:paddingTop="@dimen/dimen_medium">
-
-                        <ImageView
-                            android:id="@+id/transac_card_likes_img"
-                            android:layout_width="18dp"
-                            android:layout_height="18dp"
-                            android:padding="@dimen/dimen_small"
-                            android:src="@drawable/social_like"
-                            android:layout_marginRight="@dimen/dimen_small"/>
-
-                        <TextView
-                            android:id="@+id/transac_card_likes_text"
-                            android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
-                            android:textColor="@color/placeholder"
-                            android:textSize="12sp"/>
-
-                    </LinearLayout>
-
-                    <!--<LinearLayout-->
-                        <!--android:id="@+id/transac_card_social_container"-->
-                        <!--android:orientation="horizontal"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:gravity="center_vertical"-->
-                        <!--android:paddingTop="@dimen/dimen_large">-->
-
-                        <!--<TextView-->
-                            <!--android:id="@+id/transac_card_likes_text"-->
-                            <!--android:layout_width="wrap_content"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:textColor="@android:color/white"-->
-                            <!--android:textSize="@dimen/timeline_cell_social_label"-->
-                            <!--android:layout_marginRight="@dimen/dimen_large"/>-->
-
-                        <!--<TextView-->
-                            <!--android:id="@+id/transac_card_comments_text"-->
-                            <!--android:layout_width="wrap_content"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:textColor="@android:color/white"-->
-                            <!--android:textSize="@dimen/timeline_cell_social_label"/>-->
-
-                    <!--</LinearLayout>-->
-
-                    <LinearLayout
-                        android:id="@+id/transac_card_social"
-                        android:orientation="horizontal"
-                        android:layout_width="fill_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="@dimen/dimen_medium"
-                        android:paddingRight="@dimen/dimen_large"
-                        android:gravity="center_vertical">
-
-                        <LinearLayout
-                            android:id="@+id/transac_card_social_like"
-                            android:orientation="horizontal"
-                            android:layout_width="0dp"
-                            android:layout_weight="3"
-                            android:layout_height="wrap_content"
-                            android:paddingRight="@dimen/dimen_medium"
-                            android:gravity="center_vertical">
-
-                            <ImageView
-                                android:id="@+id/transac_card_social_like_img"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:padding="@dimen/dimen_small"
-                                android:src="@drawable/social_like"
-                                android:layout_marginRight="@dimen/dimen_small"/>
-
-                            <TextView
-                                android:id="@+id/transac_card_social_like_text"
-                                android:layout_width="fill_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="left"
-                                android:textColor="@color/placeholder"
-                                android:textSize="@dimen/timeline_cell_action_social_label"/>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/transac_card_social_comment"
-                            android:orientation="horizontal"
-                            android:layout_width="0dp"
-                            android:layout_weight="3"
-                            android:layout_height="wrap_content"
-                            android:paddingRight="@dimen/dimen_medium"
-                            android:gravity="center_vertical">
-
-                            <ImageView
-                                android:id="@+id/transac_card_social_comment_img"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:padding="@dimen/dimen_small"
-                                android:src="@drawable/social_comment"
-                                android:layout_marginRight="@dimen/dimen_small"/>
-
-                            <TextView
-                                android:id="@+id/transac_card_social_comment_text"
-                                android:layout_width="fill_parent"
-                                android:layout_height="wrap_content"
-                                android:textColor="@color/placeholder"
-                                android:gravity="left"
-                                android:textSize="@dimen/timeline_cell_action_social_label"/>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/transac_card_social_share"
-                            android:orientation="horizontal"
-                            android:layout_width="0dp"
-                            android:layout_weight="1.5"
-                            android:layout_height="wrap_content"
-                            android:paddingRight="@dimen/dimen_medium"
-                            android:gravity="center">
-
-                            <ImageView
-                                android:id="@+id/transac_card_social_share_img"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:padding="@dimen/dimen_small"
-                                android:src="@drawable/social_share"
-                                android:layout_marginRight="@dimen/dimen_small"/>
-
-                        </LinearLayout>
-
-                        <LinearLayout
-                            android:id="@+id/transac_card_social_more"
-                            android:orientation="horizontal"
-                            android:layout_width="0dp"
-                            android:layout_weight="1.5"
-                            android:layout_height="wrap_content"
-                            android:paddingRight="@dimen/dimen_medium"
-                            android:gravity="center"
-                            android:visibility="gone">
-
-                            <ImageView
-                                android:id="@+id/transac_card_social_more_img"
-                                android:layout_width="27dp"
-                                android:layout_height="27dp"
-                                android:padding="@dimen/dimen_small"
-                                android:src="@drawable/social_more"
-                                android:layout_marginRight="@dimen/dimen_small"/>
-
-                        </LinearLayout>
-
-                        <TextView
-                            android:id="@+id/transac_card_value"
-                            android:layout_width="0dp"
-                            android:layout_weight="4"
-                            android:layout_height="wrap_content"
-                            android:gravity="right"
-                            android:textColor="@android:color/white"
-                            android:textSize="@dimen/timeline_cell_title"/>
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-                <!--<LinearLayout-->
-                    <!--android:orientation="horizontal"-->
-                    <!--android:layout_width="fill_parent"-->
-                    <!--android:layout_height="wrap_content"-->
-                    <!--android:background="@color/background"-->
-                    <!--android:paddingBottom="@dimen/dimen_large"-->
-                    <!--android:paddingRight="@dimen/dimen_xlarge"-->
-                    <!--android:paddingLeft="@dimen/dimen_xlarge"-->
-                    <!--android:gravity="center_vertical">-->
-
-                    <!--<LinearLayout-->
-                        <!--android:id="@+id/transac_card_likes_button"-->
-                        <!--android:orientation="horizontal"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:paddingTop="@dimen/dimen_small"-->
-                        <!--android:paddingLeft="@dimen/dimen_medium"-->
-                        <!--android:paddingRight="@dimen/dimen_medium"-->
-                        <!--android:paddingBottom="@dimen/dimen_small"-->
-                        <!--android:gravity="center_vertical"-->
-                        <!--android:background="@drawable/timeline_row_action_button_background">-->
-
-                        <!--<ImageView-->
-                            <!--android:id="@+id/transac_card_likes_button_picto"-->
-                            <!--android:layout_width="@dimen/timeline_cell_action_social_picto"-->
-                            <!--android:layout_height="@dimen/timeline_cell_action_social_picto"-->
-                            <!--android:src="@drawable/social_like"/>-->
-
-                        <!--<TextView-->
-                            <!--android:id="@+id/transac_card_likes_button_text"-->
-                            <!--android:layout_width="wrap_content"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:paddingTop="@dimen/dimen_xsmall"-->
-                            <!--android:layout_marginLeft="@dimen/dimen_small"-->
-                            <!--android:textColor="@color/placeholder"-->
-                            <!--android:textSize="@dimen/timeline_cell_action_social_label"-->
-                            <!--android:text="@string/CELL_SOCIAL_LIKE"/>-->
-
-                    <!--</LinearLayout>-->
-
-                    <!--<LinearLayout-->
-                        <!--android:id="@+id/transac_card_comments_button"-->
-                        <!--android:orientation="horizontal"-->
-                        <!--android:layout_width="wrap_content"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:paddingTop="@dimen/dimen_small"-->
-                        <!--android:paddingLeft="@dimen/dimen_medium"-->
-                        <!--android:paddingRight="@dimen/dimen_medium"-->
-                        <!--android:paddingBottom="@dimen/dimen_small"-->
-                        <!--android:layout_marginLeft="@dimen/dimen_large"-->
-                        <!--android:gravity="center_vertical"-->
-                        <!--android:background="@drawable/timeline_row_action_button_background">-->
-
-                        <!--<ImageView-->
-                            <!--android:id="@+id/transac_card_comments_button_picto"-->
-                            <!--android:layout_width="@dimen/timeline_cell_action_social_picto"-->
-                            <!--android:layout_height="@dimen/timeline_cell_action_social_picto"-->
-                            <!--android:src="@drawable/social_comment"/>-->
-
-                        <!--<TextView-->
-                            <!--android:id="@+id/transac_card_comments_button_text"-->
-                            <!--android:layout_marginLeft="@dimen/dimen_small"-->
-                            <!--android:layout_width="wrap_content"-->
-                            <!--android:paddingTop="@dimen/dimen_xsmall"-->
-                            <!--android:layout_height="wrap_content"-->
-                            <!--android:textColor="@color/placeholder"-->
-                            <!--android:text="@string/CELL_SOCIAL_COMMENT"-->
-                            <!--android:background="@drawable/timeline_row_action_button_background"-->
-                            <!--android:textSize="@dimen/timeline_cell_action_social_label"/>-->
-
-                    <!--</LinearLayout>-->
-
-                    <!--<TextView-->
-                        <!--android:id="@+id/transac_card_value"-->
-                        <!--android:layout_width="fill_parent"-->
-                        <!--android:layout_height="wrap_content"-->
-                        <!--android:gravity="right"-->
-                        <!--android:textColor="@android:color/white"-->
-                        <!--android:textSize="@dimen/timeline_cell_title"/>-->
-
-                <!--</LinearLayout>-->
-
-                <LinearLayout
-                    android:id="@+id/transac_card_comments_container"
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_medium"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_horizontal|bottom"
-                android:layout_marginTop="@dimen/dimen_large"
-                android:layout_marginBottom="@dimen/dimen_large"
-                android:paddingLeft="@dimen/dimen_xlarge"
-                android:paddingRight="@dimen/dimen_xlarge"
-                android:paddingTop="@dimen/dimen_small"
-                android:paddingBottom="@dimen/dimen_large"
-                android:orientation="horizontal">
-
-                <EditText
-                    android:inputType="textMultiLine|textLongMessage"
-                    android:id="@+id/transac_card_comments_textfield"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="5"
-                    android:hint="@string/SEND_COMMENT"
-                    android:textSize="@dimen/card_comment_textfield"
-                    android:layout_marginRight="@dimen/dimen_medium"
-                    android:paddingTop="@dimen/dimen_medium"
-                    android:paddingBottom="@dimen/dimen_medium"
-                    android:paddingLeft="@dimen/dimen_xlarge"
-                    android:paddingRight="@dimen/dimen_large"
-                    android:background="@drawable/card_comment_input_background"
-                    android:focusable="true"
-                    android:focusableInTouchMode="true"
-                    android:textColor="@android:color/white"
-                    android:textColorHint="@color/placeholder"/>
+            android:layout_height="@dimen/header_size"
+            android:background="@color/background_header"
+            android:gravity="center_vertical">
+
+            <ImageView
+                android:id="@+id/transac_card_header_scope"
+                android:layout_width="35dp"
+                android:padding="@dimen/dimen_large"
+                android:layout_height="fill_parent"
+                android:src="@drawable/scope_public"
+                android:layout_alignParentRight="true"/>
 
                 <TextView
-                    android:id="@+id/transac_card_comments_send"
-                    android:layout_width="0dp"
+                    android:id="@+id/transac_card_header_date"
+                    android:layout_width="wrap_content"
+                    android:paddingTop="@dimen/dimen_xsmall"
+                    android:textSize="@dimen/card_header_date"
+                    android:layout_marginLeft="@dimen/dimen_small"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:text="@string/GLOBAL_SEND"
-                    android:textSize="12sp"
-                    android:textColor="@android:color/white"
-                    android:gravity="center"/>
+                    android:layout_centerInParent="true"
+                    android:textColor="@android:color/white"/>
 
-            </LinearLayout>
 
-        </LinearLayout>
+            <ImageView
+                android:id="@+id/header_item_left"
+                android:layout_width="@dimen/card_header_close"
+                android:padding="@dimen/dimen_large"
+                android:layout_height="fill_parent"
+                android:src="@drawable/nav_cross"
+                android:layout_alignParentLeft="true"/>
 
-    </ScrollView>
+        </RelativeLayout>
 
-</me.flooz.app.UI.View.SlidableLinearLayout>
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/header_shadow"
+            android:background="@drawable/header_background_shadow"
+            android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+
+</me.flooz.app.UI.View.SlidableRelativeLayout>

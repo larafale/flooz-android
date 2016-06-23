@@ -211,7 +211,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
         this.binderKeyActivity = new HashMap<String, Class>() {{
             put("app:cashout", CashoutActivity.class);
             put("app:flooz", NewTransactionActivity.class);
-            put("app:cashin", CashinActivity.class);
+//            put("app:cashin", CashinActivity.class);
             put("app:pot", NewCollectActivity.class);
             put("app:promo", SponsorActivity.class);
             put("app:search", SearchActivity.class);
@@ -222,8 +222,8 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("auth:code", AuthenticationActivity.class);
             put("card:3ds", Secure3DActivity.class);
             put("card:card", CreditCardSettingsActivity.class);
-            put("cashin:card", CashinCreditCardActivity.class);
-            put("cashin:audiotel", CashinAudiotelActivity.class);
+//            put("cashin:card", CashinCreditCardActivity.class);
+//            put("cashin:audiotel", CashinAudiotelActivity.class);
             put("code:set", SetSecureCodeActivity.class);
             put("friend:pending", FriendRequestActivity.class);
             put("pay:source", PaymentSourceActivity.class);
@@ -274,7 +274,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
     public void loadBinderKeyType() {
         this.binderKeyType = new HashMap<String, String>() {{
             put("app:cashout", "modal");
-            put("app:cashin", "modal");
+//            put("app:cashin", "modal");
             put("app:flooz", "modal");
             put("app:pot", "modal");
             put("app:promo", "modal");
@@ -286,8 +286,8 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("auth:code", "modal");
             put("card:3ds", "modal");
             put("card:card", "modal");
-            put("cashin:card", "modal");
-            put("cashin:audiotel", "modal");
+//            put("cashin:card", "modal");
+//            put("cashin:audiotel", "modal");
             put("code:set", "modal");
             put("friend:pending", "modal");
             put("pay:source", "modal");
