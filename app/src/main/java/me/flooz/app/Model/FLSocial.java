@@ -4,6 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 import me.flooz.app.Network.FloozRestClient;
 
 /**
@@ -25,6 +27,8 @@ public class FLSocial {
     public String likeText;
     public String commentText;
     public SocialScope scope;
+    public ArrayList<FLUser> likes;
+    public ArrayList<FLComment> comments;
 
     public FLSocial(JSONObject json) {
         super();
@@ -44,8 +48,14 @@ public class FLSocial {
             this.isCommented = false;
             this.isLiked = false;
 
+            this.comments = new ArrayList<>();
+            this.likes = new ArrayList<>();
+
             if (FloozRestClient.getInstance().currentUser != null) {
                 for (int i = 0; i < comments.length(); i++) {
+
+                    this.comments.add(new FLComment(comments.optJSONObject(i)));
+
                     String userId = FloozRestClient.getInstance().currentUser.userId;
                     if (comments.optJSONObject(i).optString("userId").equals(userId)) {
                         this.isCommented = true;
@@ -54,7 +64,12 @@ public class FLSocial {
                 }
 
                 for (int i = 0; i < likes.length(); i++) {
-                    if (likes.optJSONObject(i).optString("userId").equals(FloozRestClient.getInstance().currentUser.userId)) {
+                    FLUser tmp = new FLUser(likes.optJSONObject(i));
+                    tmp.userId = likes.optJSONObject(i).optString("userId");
+
+                    this.likes.add(tmp);
+
+                    if (tmp.userId.equals(FloozRestClient.getInstance().currentUser.userId)) {
                         this.isLiked = true;
                         break;
                     }
