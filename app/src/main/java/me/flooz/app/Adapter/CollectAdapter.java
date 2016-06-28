@@ -1,16 +1,24 @@
 package me.flooz.app.Adapter;
 
 import android.content.Context;
+import android.graphics.Typeface;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.StyleSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +51,9 @@ public class CollectAdapter extends BaseAdapter {
         void collectCommentClicked();
         void collectReport();
         void collectShowParticipants();
+        void collectShareClicked();
+        void collectShowLikes();
+        void collectShowInvited();
     }
 
     public CollectAdapter(Context ctx) {
@@ -57,20 +68,39 @@ public class CollectAdapter extends BaseAdapter {
 
         this.likeCellHolder.cellView = LayoutInflater.from(context).inflate(R.layout.comment_separator_row, null, false);
 
-        this.likeCellHolder.likeLayout = (LinearLayout) this.likeCellHolder.cellView.findViewById(R.id.social_separator_like);
-        this.likeCellHolder.likeImg = (ImageView) this.likeCellHolder.cellView.findViewById(R.id.social_separator_like_img);
-        this.likeCellHolder.likeText = (TextView) this.likeCellHolder.cellView.findViewById(R.id.social_separator_like_text);
-        this.likeCellHolder.commentLayout = (LinearLayout) this.likeCellHolder.cellView.findViewById(R.id.social_separator_comment);
-        this.likeCellHolder.commentImg = (ImageView) this.likeCellHolder.cellView.findViewById(R.id.social_separator_comment_img);
-        this.likeCellHolder.commentText = (TextView) this.likeCellHolder.cellView.findViewById(R.id.social_separator_comment_text);
-        this.likeCellHolder.moreButton = (ImageView) this.likeCellHolder.cellView.findViewById(R.id.social_separator_more);
+        this.likeCellHolder.labelsContainer = (RelativeLayout) this.likeCellHolder.cellView.findViewById(R.id.social_separator_labels);
+        this.likeCellHolder.likesLabel = (TextView) this.likeCellHolder.cellView.findViewById(R.id.social_separator_like_label);
+        this.likeCellHolder.commentsLabel = (TextView) this.likeCellHolder.cellView.findViewById(R.id.social_separator_comment_label);
 
-        this.likeCellHolder.likeText.setTypeface(CustomFonts.customContentRegular(this.context));
-        this.likeCellHolder.commentText.setTypeface(CustomFonts.customContentRegular(this.context));
+        this.likeCellHolder.likesButton = (LinearLayout) this.likeCellHolder.cellView.findViewById(R.id.social_separator_like);
+        this.likeCellHolder.likesButtonImg = (ImageView) this.likeCellHolder.cellView.findViewById(R.id.social_separator_like_img);
 
-        this.likeCellHolder.moreButton.setColorFilter(this.context.getResources().getColor(R.color.placeholder));
+        this.likeCellHolder.commentButton = (LinearLayout) this.likeCellHolder.cellView.findViewById(R.id.social_separator_comment);
+        this.likeCellHolder.commentButtonImg = (ImageView) this.likeCellHolder.cellView.findViewById(R.id.social_separator_comment_img);
 
-        this.likeCellHolder.likeLayout.setOnClickListener(new View.OnClickListener() {
+        this.likeCellHolder.shareButton = (LinearLayout) this.likeCellHolder.cellView.findViewById(R.id.social_separator_share);
+        this.likeCellHolder.shareButtonImg = (ImageView) this.likeCellHolder.cellView.findViewById(R.id.social_separator_share_img);
+
+        this.likeCellHolder.moreButton = (LinearLayout) this.likeCellHolder.cellView.findViewById(R.id.social_separator_more);
+        this.likeCellHolder.moreButtonImg = (ImageView) this.likeCellHolder.cellView.findViewById(R.id.social_separator_more_img);
+
+        this.likeCellHolder.likesLabel.setTypeface(CustomFonts.customContentRegular(this.context));
+        this.likeCellHolder.commentsLabel.setTypeface(CustomFonts.customContentRegular(this.context));
+
+        this.likeCellHolder.likesButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
+        this.likeCellHolder.commentButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
+        this.likeCellHolder.shareButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
+        this.likeCellHolder.moreButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
+
+        this.likeCellHolder.likesLabel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (socialDelegate != null)
+                    socialDelegate.collectShowLikes();
+            }
+        });
+
+        this.likeCellHolder.likesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (socialDelegate != null)
@@ -78,11 +108,19 @@ public class CollectAdapter extends BaseAdapter {
             }
         });
 
-        this.likeCellHolder.commentLayout.setOnClickListener(new View.OnClickListener() {
+        this.likeCellHolder.commentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (socialDelegate != null)
                     socialDelegate.collectCommentClicked();
+            }
+        });
+
+        this.likeCellHolder.shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (socialDelegate != null)
+                    socialDelegate.collectShareClicked();
             }
         });
 
@@ -162,34 +200,84 @@ public class CollectAdapter extends BaseAdapter {
             if (this.likeCellHolder != null) {
                 FLSocial social = this.collect.social;
 
-                if (social.isLiked) {
-                    this.likeCellHolder.likeText.setTextColor(this.context.getResources().getColor(R.color.pink));
-                    this.likeCellHolder.likeImg.setColorFilter(this.context.getResources().getColor(R.color.pink));
-                } else {
-                    this.likeCellHolder.likeText.setTextColor(this.context.getResources().getColor(R.color.placeholder));
-                    this.likeCellHolder.likeImg.setColorFilter(this.context.getResources().getColor(R.color.placeholder));
-                }
+                if (social != null) {
+                    if (social.likesCount.intValue() > 0 || social.commentsCount.intValue() > 0) {
+                        this.likeCellHolder.labelsContainer.setVisibility(View.VISIBLE);
 
-                if (social.likesCount.longValue() > 0) {
-                    this.likeCellHolder.likeText.setVisibility(View.VISIBLE);
-                    this.likeCellHolder.likeText.setText(FLHelper.formatUserNumber(social.likesCount.longValue()));
-                } else {
-                    this.likeCellHolder.likeText.setVisibility(View.INVISIBLE);
-                }
+                        if (social.likesCount.intValue() > 0) {
+                            this.likeCellHolder.likesLabel.setVisibility(View.VISIBLE);
 
-                if (social.isCommented) {
-                    this.likeCellHolder.commentText.setTextColor(this.context.getResources().getColor(R.color.blue));
-                    this.likeCellHolder.commentImg.setColorFilter(this.context.getResources().getColor(R.color.blue));
-                } else {
-                    this.likeCellHolder.commentText.setTextColor(this.context.getResources().getColor(R.color.placeholder));
-                    this.likeCellHolder.commentImg.setColorFilter(this.context.getResources().getColor(R.color.placeholder));
-                }
+                            String number = FLHelper.formatUserNumber(social.likesCount.longValue());
+                            String likeText = " J'AIME";
 
-                if (social.commentsCount.longValue() > 0) {
-                    this.likeCellHolder.commentText.setVisibility(View.VISIBLE);
-                    this.likeCellHolder.commentText.setText(FLHelper.formatUserNumber(social.commentsCount.longValue()));
+                            final SpannableStringBuilder likeSb = new SpannableStringBuilder(number + likeText);
+
+                            final ForegroundColorSpan likeNumberColor = new ForegroundColorSpan(context.getResources().getColor(android.R.color.white));
+                            final ForegroundColorSpan likeTextColor = new ForegroundColorSpan(context.getResources().getColor(R.color.placeholder));
+                            final StyleSpan likeStyle = new StyleSpan(Typeface.BOLD);
+
+                            int likePos = 0;
+
+                            likeSb.setSpan(likeNumberColor, likePos, likePos + number.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                            likeSb.setSpan(likeStyle, likePos, likePos + number.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+                            likePos += number.length();
+
+                            likeSb.setSpan(likeTextColor, likePos, likePos + likeText.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+                            this.likeCellHolder.likesLabel.setText(likeSb);
+                        } else {
+                            this.likeCellHolder.likesLabel.setVisibility(View.GONE);
+                        }
+
+                        if (social.commentsCount.intValue() > 0) {
+                            this.likeCellHolder.commentsLabel.setVisibility(View.VISIBLE);
+
+                            final ForegroundColorSpan commentNumberColor = new ForegroundColorSpan(this.context.getResources().getColor(android.R.color.white));
+                            final ForegroundColorSpan commentTextColor = new ForegroundColorSpan(this.context.getResources().getColor(R.color.placeholder));
+                            final StyleSpan commentStyle = new StyleSpan(Typeface.BOLD);
+
+                            String number = FLHelper.formatUserNumber(social.commentsCount.longValue());
+
+                            String commentText = " COMMENTAIRE";
+
+                            if (social.commentsCount.intValue() > 1)
+                                commentText = " COMMENTAIRES";
+
+                            final SpannableStringBuilder commentSb = new SpannableStringBuilder(number + commentText);
+
+                            int commentPos = 0;
+
+                            commentSb.setSpan(commentNumberColor, commentPos, commentPos + number.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+                            commentSb.setSpan(commentStyle, commentPos, commentPos + number.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+                            commentPos += number.length();
+
+                            commentSb.setSpan(commentTextColor, commentPos, commentPos + commentText.length(), Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+
+                            this.likeCellHolder.commentsLabel.setText(commentSb);
+                        } else {
+                            this.likeCellHolder.commentsLabel.setVisibility(View.GONE);
+                        }
+                    } else {
+                       this.likeCellHolder.labelsContainer.setVisibility(View.GONE);
+                    }
+
+                    if (social.isLiked) {
+                        likeCellHolder.likesButtonImg.setColorFilter(this.context.getResources().getColor(R.color.pink));
+                    } else {
+                        likeCellHolder.likesButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
+                    }
+
+                    if (social.isCommented) {
+                        likeCellHolder.commentButtonImg.setColorFilter(this.context.getResources().getColor(R.color.blue));
+                    } else {
+                        likeCellHolder.commentButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
+                    }
                 } else {
-                    this.likeCellHolder.commentText.setVisibility(View.INVISIBLE);
+                    this.likeCellHolder.labelsContainer.setVisibility(View.GONE);
+                    likeCellHolder.likesButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
+                    likeCellHolder.commentButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
                 }
             }
         }
@@ -286,15 +374,31 @@ public class CollectAdapter extends BaseAdapter {
     class LikeCellHolder {
         View cellView;
 
-        LinearLayout likeLayout;
-        TextView likeText;
-        ImageView likeImg;
+        RelativeLayout labelsContainer;
+        TextView likesLabel;
+        TextView commentsLabel;
 
-        LinearLayout commentLayout;
-        TextView commentText;
-        ImageView commentImg;
+        LinearLayout likesButton;
+        ImageView likesButtonImg;
 
-        ImageView moreButton;
+        LinearLayout commentButton;
+        ImageView commentButtonImg;
+
+        LinearLayout shareButton;
+        ImageView shareButtonImg;
+
+        LinearLayout moreButton;
+        ImageView moreButtonImg;
+
+//        LinearLayout likeLayout;
+//        TextView likeText;
+//        ImageView likeImg;
+//
+//        LinearLayout commentLayout;
+//        TextView commentText;
+//        ImageView commentImg;
+//
+//        ImageView moreButton;
     }
 
     class ParticipantMasterCellHolder {

@@ -93,6 +93,7 @@ public class FLTransaction {
     public Boolean haveAction;
 
     public JSONObject actions;
+    public JSONArray settings;
 
     public JSONObject json;
 
@@ -235,56 +236,12 @@ public class FLTransaction {
                         this.text3d.add(array.get(i));
                 }
 
+                this.settings = json.optJSONArray("settings");
+
             } catch (JSONException | ParseException e) {
                 e.printStackTrace();
             }
         }
-    }
-
-    public String statusText()
-    {
-        int stringId = 0;
-
-        switch (this.status) {
-            case TransactionStatusAccepted:
-                stringId = R.string.TRANSACTION_STATUS_ACCEPTED;
-                break;
-            case TransactionStatusRefused:
-                stringId = R.string.TRANSACTION_STATUS_REFUSED;
-                break;
-            case TransactionStatusPending:
-                stringId = R.string.TRANSACTION_STATUS_PENDING;
-                break;
-            case TransactionStatusCanceled:
-                stringId = R.string.TRANSACTION_STATUS_CANCELED;
-                break;
-            case TransactionStatusExpired:
-                stringId = R.string.TRANSACTION_STATUS_EXPIRED;
-                break;
-            default:
-                break;
-        }
-
-        if (stringId != 0)
-            return (FloozApplication.getAppContext().getString(stringId));
-        else
-            return "";
-    }
-
-    public String typeText()
-    {
-        int stringId;
-
-        switch (this.type) {
-            case TransactionTypePayment:
-                stringId = R.string.TRANSACTION_TYPE_PAYMENT;
-                break;
-            default:
-                stringId = R.string.TRANSACTION_TYPE_COLLECTION;
-                break;
-        }
-
-        return (FloozApplication.getAppContext().getString(stringId));
     }
 
     public static TransactionType transactionsTypeParamToEnum(String param)

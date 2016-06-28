@@ -13,6 +13,7 @@ import me.flooz.app.R;
 import me.flooz.app.UI.Controllers.NotificationsController;
 import me.flooz.app.UI.Controllers.SearchController;
 import me.flooz.app.UI.Controllers.TransactionCardController;
+import me.flooz.app.UI.Controllers.TransactionController;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.ViewServer;
 
@@ -22,7 +23,7 @@ import me.flooz.app.Utils.ViewServer;
 public class TransactionActivity  extends BaseActivity {
 
     private FloozApplication floozApp;
-    public TransactionCardController controller;
+    public TransactionController controller;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,7 +47,7 @@ public class TransactionActivity  extends BaseActivity {
                 e.printStackTrace();
             }
 
-        this.controller = new TransactionCardController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER, triggerData);
+        this.controller = new TransactionController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER, triggerData);
         this.controller.insertComment = insertComment;
 
         try {

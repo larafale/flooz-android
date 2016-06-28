@@ -333,39 +333,7 @@ public class CollectController extends BaseController implements CollectAdapter.
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (collect.actions == null || collect.actions.length() == 0) {
-                    Intent share = new Intent(Intent.ACTION_SEND);
-                    share.setType("text/plain");
-
-                    share.putExtra(Intent.EXTRA_TEXT, "https://www.flooz.me/pot/" + collect.transactionId);
-
-                    parentActivity.startActivity(Intent.createChooser(share, parentActivity.getResources().getString(R.string.SHARE_COLLECT)));
-                } else {
-                    List<ActionSheetItem> items = new ArrayList<>();
-                    items.add(new ActionSheetItem(parentActivity, "Inviter vos amis", new ActionSheetItem.ActionSheetItemClickListener() {
-                        @Override
-                        public void onClick() {
-                            Intent intent = new Intent(parentActivity, ShareCollectAcivity.class);
-                            intent.putExtra("potId", collect.transactionId);
-                            parentActivity.startActivity(intent);
-                            parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-                        }
-                    }));
-
-                    items.add(new ActionSheetItem(parentActivity, "Partager le lien", new ActionSheetItem.ActionSheetItemClickListener() {
-                        @Override
-                        public void onClick() {
-                            Intent share = new Intent(Intent.ACTION_SEND);
-                            share.setType("text/plain");
-
-                            share.putExtra(Intent.EXTRA_TEXT, "https://www.flooz.me/pot/" + collect.transactionId);
-
-                            parentActivity.startActivity(Intent.createChooser(share, parentActivity.getResources().getString(R.string.SHARE_COLLECT)));
-                        }
-                    }));
-
-                    ActionSheet.showWithItems(parentActivity, items);
-                }
+                collectShareClicked();
             }
         });
 
@@ -552,7 +520,51 @@ public class CollectController extends BaseController implements CollectAdapter.
     }
 
     public void collectReport() {
-        FloozApplication.getInstance().showReportActionMenu(this.collect);
+        FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(collect.settings));
+    }
+
+    public void collectShowLikes() {
+
+    }
+
+    public void collectShowInvited() {
+
+    }
+
+    public void collectShareClicked() {
+        if (collect.actions == null || collect.actions.length() == 0) {
+            Intent share = new Intent(Intent.ACTION_SEND);
+            share.setType("text/plain");
+
+            share.putExtra(Intent.EXTRA_TEXT, "https://www.flooz.me/pot/" + collect.transactionId);
+
+            parentActivity.startActivity(Intent.createChooser(share, parentActivity.getResources().getString(R.string.SHARE_COLLECT)));
+        } else {
+            List<ActionSheetItem> items = new ArrayList<>();
+            items.add(new ActionSheetItem(parentActivity, "Inviter vos amis", new ActionSheetItem.ActionSheetItemClickListener() {
+                @Override
+                public void onClick() {
+                    Intent intent = new Intent(parentActivity, ShareCollectAcivity.class);
+                    intent.putExtra("potId", collect.transactionId);
+                    parentActivity.startActivity(intent);
+                    parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                }
+            }));
+
+            items.add(new ActionSheetItem(parentActivity, "Partager le lien", new ActionSheetItem.ActionSheetItemClickListener() {
+                @Override
+                public void onClick() {
+                    Intent share = new Intent(Intent.ACTION_SEND);
+                    share.setType("text/plain");
+
+                    share.putExtra(Intent.EXTRA_TEXT, "https://www.flooz.me/pot/" + collect.transactionId);
+
+                    parentActivity.startActivity(Intent.createChooser(share, parentActivity.getResources().getString(R.string.SHARE_COLLECT)));
+                }
+            }));
+
+            ActionSheet.showWithItems(parentActivity, items);
+        }
     }
 
     public void collectShowParticipants() {

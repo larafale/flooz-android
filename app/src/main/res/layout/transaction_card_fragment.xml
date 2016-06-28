@@ -159,7 +159,7 @@
 
             <ImageView
                 android:id="@+id/transac_card_header_scope"
-                android:layout_width="35dp"
+                android:layout_width="40dp"
                 android:padding="@dimen/dimen_large"
                 android:layout_height="fill_parent"
                 android:src="@drawable/scope_public"

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@android:color/transparent">
 
     <LinearLayout
         android:id="@+id/transac_card_floozers"
@@ -23,6 +24,7 @@
             app:riv_mutate_background="true"/>
 
         <ImageView
+            android:id="@+id/transac_card_arrow"
             android:layout_width="@dimen/card_link_arrow_width"
             android:layout_height="wrap_content"
             android:padding="@dimen/dimen_medium"
@@ -53,10 +55,15 @@
         android:layout_marginTop="@dimen/dimen_large"
         android:layout_marginBottom="@dimen/dimen_large">
 
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="0dp"/>
+
         <RelativeLayout
-            android:layout_width="@dimen/card_profile_infos_width"
-            android:layout_height="wrap_content"
-            android:gravity="center">
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/transac_card_from_fullname"
@@ -66,6 +73,7 @@
                 android:textSize="@dimen/card_user_fullname"
                 android:textColor="@android:color/white"
                 android:gravity="center_horizontal"
+                android:layout_centerHorizontal="true"
                 android:text="Olivier M."
                 android:singleLine="true"/>
 
@@ -86,18 +94,20 @@
                 android:textSize="@dimen/card_user_username"
                 android:textColor="@color/blue"
                 android:gravity="center_horizontal"
+                android:layout_centerHorizontal="true"
                 android:singleLine="true"/>
 
         </RelativeLayout>
 
         <View
-            android:layout_width="@dimen/card_link_arrow_width"
+            android:layout_width="0dp"
+            android:layout_weight="1"
             android:layout_height="0dp"/>
 
         <RelativeLayout
-            android:layout_width="@dimen/card_profile_infos_width"
-            android:layout_height="wrap_content"
-            android:gravity="center">
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="wrap_content">
 
             <TextView
                 android:id="@+id/transac_card_to_fullname"
@@ -107,6 +117,7 @@
                 android:textSize="@dimen/card_user_fullname"
                 android:textColor="@android:color/white"
                 android:gravity="center_horizontal"
+                android:layout_centerHorizontal="true"
                 android:text="Olivier M."
                 android:singleLine="true"/>
 
@@ -126,10 +137,16 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/card_user_username"
                 android:textColor="@color/blue"
+                android:layout_centerHorizontal="true"
                 android:gravity="center_horizontal"
                 android:singleLine="true"/>
 
         </RelativeLayout>
+
+        <View
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="0dp"/>
 
     </LinearLayout>
 
@@ -178,7 +195,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:layout_marginLeft="@dimen/dimen_large"
+            android:layout_marginLeft="@dimen/dimen_medium"
             android:layout_marginRight="@dimen/dimen_large"
             android:layout_marginTop="@dimen/dimen_medium">
 
@@ -208,7 +225,8 @@
             android:textSize="@dimen/card_content"
             android:layout_below="@+id/transac_card_location"
             android:layout_marginLeft="@dimen/dimen_large"
-            android:layout_marginRight="@dimen/dimen_large"/>
+            android:layout_marginRight="@dimen/dimen_large"
+            android:layout_marginBottom="@dimen/dimen_small"/>
 
         <RelativeLayout
             android:id="@+id/transac_card_social_labels"
@@ -222,7 +240,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dimen_large"
-                android:textSize="13sp"
+                android:textSize="12sp"
+                android:inputType="none"
                 android:layout_centerVertical="true"/>
 
             <TextView
@@ -231,7 +250,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/dimen_large"
                 android:layout_toRightOf="@+id/transac_card_social_like_label"
-                android:textSize="13sp"
+                android:textSize="12sp"
+                android:inputType="none"
                 android:layout_centerVertical="true"/>
             
             <View
@@ -250,8 +270,7 @@
             android:orientation="horizontal"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/dimen_medium"
-            android:paddingRight="@dimen/dimen_large"
+            android:layout_marginTop="@dimen/dimen_small"
             android:gravity="center_vertical"
             android:layout_marginLeft="@dimen/dimen_large"
             android:layout_marginRight="@dimen/dimen_large">
@@ -266,8 +285,8 @@
 
                 <ImageView
                     android:id="@+id/transac_card_social_like_img"
-                    android:layout_width="27dp"
-                    android:layout_height="27dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:padding="@dimen/dimen_small"
                     android:src="@drawable/social_like"/>
 
@@ -283,8 +302,8 @@
 
                 <ImageView
                     android:id="@+id/transac_card_social_comment_img"
-                    android:layout_width="27dp"
-                    android:layout_height="27dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:padding="@dimen/dimen_small"
                     android:src="@drawable/social_comment"/>
 
@@ -300,8 +319,8 @@
 
                 <ImageView
                     android:id="@+id/transac_card_social_share_img"
-                    android:layout_width="27dp"
-                    android:layout_height="27dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:padding="@dimen/dimen_small"
                     android:src="@drawable/social_share"/>
 
@@ -317,8 +336,8 @@
 
                 <ImageView
                     android:id="@+id/transac_card_social_more_img"
-                    android:layout_width="27dp"
-                    android:layout_height="27dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:padding="@dimen/dimen_small"
                     android:src="@drawable/social_more"/>
 

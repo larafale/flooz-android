@@ -412,15 +412,17 @@ public class FloozRestClient
             this.request("/users/logout", HttpRequestType.GET, param, null);
         }
 
-        JSONObject obj = new JSONObject();
-        try {
-            if (currentUser != null)
-                obj.put("nick", currentUser.username);
+        if (this.socket != null && this.socket.connected()) {
+            JSONObject obj = new JSONObject();
+            try {
+                if (currentUser != null)
+                    obj.put("nick", currentUser.username);
 
-            obj.put("token", accessToken);
-            this.socket.emit("session end", obj);
-        } catch (JSONException e) {
-            e.printStackTrace();
+                obj.put("token", accessToken);
+                this.socket.emit("session end", obj);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
 
         this.clearLogin();
