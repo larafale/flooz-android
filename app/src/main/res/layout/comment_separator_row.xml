@@ -15,21 +15,23 @@
         <TextView
             android:id="@+id/social_separator_like_label"
             android:layout_width="wrap_content"
-            android:layout_height="25dp"
+            android:layout_height="30dp"
             android:layout_marginLeft="@dimen/dimen_large"
             android:textSize="12sp"
             android:inputType="none"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"/>
 
         <TextView
             android:id="@+id/social_separator_comment_label"
             android:layout_width="wrap_content"
-            android:layout_height="25dp"
+            android:layout_height="30dp"
             android:layout_marginLeft="@dimen/dimen_large"
             android:layout_toRightOf="@+id/social_separator_like_label"
             android:textSize="12sp"
             android:inputType="none"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            android:gravity="center_vertical"/>
 
         <View
             android:layout_width="match_parent"

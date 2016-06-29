@@ -52,6 +52,7 @@ public class FLUser
 
     public Boolean isComplete;
     public Boolean isFriendable;
+    public Boolean isFriend;
 
     public Boolean isIdentified;
     public Boolean isFloozer;
@@ -171,6 +172,7 @@ public class FLUser
             this.isPro = this.json.optBoolean("isPro");
             this.isComplete = this.json.optBoolean("isComplete");
             this.isPot = this.json.optBoolean("isPot");
+            this.isFriend = this.json.optBoolean("isFriend");
 
             this.isCactus = this.json.optBoolean("isCactus");
             this.isCertified = this.json.optBoolean("isCertified");

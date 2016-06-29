@@ -215,8 +215,12 @@ public class SearchListAdapter extends BaseAdapter implements StickyListHeadersA
         if (user.avatarURL != null && !user.avatarURL.isEmpty())
             ImageLoader.getInstance().displayImage(user.avatarURL, holder.pic);
 
-        this.setFriendButton(holder.button, !user.isFriendable);
-        holder.button.setVisibility(View.VISIBLE);
+        if (!user.isFriendable)
+            holder.button.setVisibility(View.GONE);
+        else {
+            this.setFriendButton(holder.button, user.isFriend);
+            holder.button.setVisibility(View.VISIBLE);
+        }
 
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
