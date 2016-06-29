@@ -40,7 +40,10 @@ public class CollectInvitedActivity extends BaseActivity {
                 e.printStackTrace();
             }
 
+        String collectId = getIntent().getStringExtra("collectId");
+
         this.controller = new CollectInvitedController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER, triggerData);
+        this.controller.collectId = collectId;
     }
 
     @Override

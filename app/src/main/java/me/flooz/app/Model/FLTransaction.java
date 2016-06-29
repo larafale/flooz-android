@@ -85,6 +85,7 @@ public class FLTransaction {
     public FLUser creator;
 
     public List<FLUser> participants;
+    public List<String> invitations;
 
     public FLSocial social;
 
@@ -152,7 +153,6 @@ public class FLTransaction {
 
                 this.social = new FLSocial(json);
 
-
                 this.scope = transactionScopeParamToEnum(json.getString("scopeString"));
 
                 this.isCancelable = false;
@@ -199,6 +199,18 @@ public class FLTransaction {
 
                     for (int i = 0; i < arrayParticipants.length(); i++) {
                         this.participants.add(new FLUser(arrayParticipants.getJSONObject(i)));
+                    }
+                }
+
+                if (json.has("invitations")) {
+                    this.invitations = new ArrayList<>();
+
+                    JSONArray arrayInvitations = json.getJSONArray("invitations");
+                    for (int i = 0; i < arrayInvitations.length(); i++) {
+                        String tmp = arrayInvitations.optString(i);
+
+                        if (!tmp.contains("+"))
+                            this.invitations.add(tmp);
                     }
                 }
 

@@ -45,6 +45,7 @@ import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.Settings.PrivacySettingsActivity;
 import me.flooz.app.UI.Activity.ShareCollectAcivity;
 import me.flooz.app.UI.Activity.SocialLikesActivity;
+import me.flooz.app.UI.Fragment.Home.TabFragments.CollectInvitedFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.CollectParticipantFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.PrivacyFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.SocialLikesFragment;
@@ -478,6 +479,22 @@ public class CollectController extends BaseController implements CollectAdapter.
                 CustomNotificationIntents.filterReloadCollect());
     }
 
+    @Override
+    public void onResume() {
+        FloozRestClient.getInstance().transactionWithId(collect.transactionId, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                FLTransaction transac = new FLTransaction(((JSONObject) response).optJSONObject("item"));
+                setCollect(transac);
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+
+            }
+        });
+    }
+
     public void collectLikeClicked() {
         if (this.collect.social.isLiked) {
             this.collect.social.isLiked = false;
@@ -540,7 +557,18 @@ public class CollectController extends BaseController implements CollectAdapter.
     }
 
     public void collectShowInvited() {
-
+        if (this.collect.invitations.size() > 0) {
+            if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
+                Intent intent = new Intent(parentActivity, CollectInvitedController.class);
+                intent.putExtra("collectId", this.collect.transactionId);
+                parentActivity.startActivity(intent);
+                parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+            } else {
+                CollectInvitedFragment fragment = new CollectInvitedFragment();
+//                fragment.collect = this.collect;
+                ((HomeActivity) parentActivity).pushFragmentInCurrentTab(fragment);
+            }
+        }
     }
 
     public void collectShareClicked() {

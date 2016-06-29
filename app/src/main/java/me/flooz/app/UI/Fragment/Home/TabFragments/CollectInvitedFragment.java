@@ -16,14 +16,17 @@ import me.flooz.app.UI.Controllers.FriendRequestController;
  */
 public class CollectInvitedFragment extends TabBarFragment {
 
+    String collectId;
     CollectInvitedController controller;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.collect_invited_fragment, null);
 
-        if (this.controller == null)
+        if (this.controller == null) {
             this.controller = new CollectInvitedController(view, tabBarActivity, BaseController.ControllerKind.FRAGMENT_CONTROLLER, this.triggerData);
+            this.controller.collectId = collectId;
+        }
 
         return this.controller.currentView;
     }

@@ -45,6 +45,7 @@ public class CollectAdapter extends BaseAdapter {
 
     private LikeCellHolder likeCellHolder;
     private ParticipantMasterCellHolder participantMasterCellHolder;
+    private ParticipantMasterCellHolder invitedMasterCellHolder;
 
     public interface CollectSocialDelegate {
         void collectLikeClicked();
@@ -159,6 +160,36 @@ public class CollectAdapter extends BaseAdapter {
         });
     }
 
+    private void loadInvitedMastercell(ViewGroup parent) {
+        this.invitedMasterCellHolder = new ParticipantMasterCellHolder();
+
+        this.invitedMasterCellHolder.cellView = LayoutInflater.from(context).inflate(R.layout.collect_participant_mastercell, parent, false);
+
+        this.invitedMasterCellHolder.participantText = (TextView) this.invitedMasterCellHolder.cellView.findViewById(R.id.participant_mastercell_text);
+        this.invitedMasterCellHolder.arrow = (ImageView) this.invitedMasterCellHolder.cellView.findViewById(R.id.participant_mastercell_arrow);
+
+        this.invitedMasterCellHolder.participantViews = new ArrayList<>(5);
+        this.invitedMasterCellHolder.participantViews.add((RoundedImageView) this.invitedMasterCellHolder.cellView.findViewById(R.id.participant_mastercell_user_5));
+        this.invitedMasterCellHolder.participantViews.add((RoundedImageView) this.invitedMasterCellHolder.cellView.findViewById(R.id.participant_mastercell_user_4));
+        this.invitedMasterCellHolder.participantViews.add((RoundedImageView) this.invitedMasterCellHolder.cellView.findViewById(R.id.participant_mastercell_user_3));
+        this.invitedMasterCellHolder.participantViews.add((RoundedImageView) this.invitedMasterCellHolder.cellView.findViewById(R.id.participant_mastercell_user_2));
+        this.invitedMasterCellHolder.participantViews.add((RoundedImageView) this.invitedMasterCellHolder.cellView.findViewById(R.id.participant_mastercell_user_1));
+
+        this.invitedMasterCellHolder.participantText.setTypeface(CustomFonts.customContentRegular(context));
+
+        this.invitedMasterCellHolder.cellView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (socialDelegate != null)
+                    socialDelegate.collectShowInvited();
+            }
+        });
+
+        for (RoundedImageView imageView: this.invitedMasterCellHolder.participantViews) {
+            imageView.setVisibility(View.INVISIBLE);
+        }
+    }
+
     public void reload() {
 
         if (this.collect != null) {
@@ -174,7 +205,11 @@ public class CollectAdapter extends BaseAdapter {
                 } else {
                     this.participantMasterCellHolder.arrow.setVisibility(View.VISIBLE);
 
-                    this.participantMasterCellHolder.participantText.setText(this.collect.participants.size() + " participant(s)");
+                    if (this.collect.participants.size() > 1) {
+                        this.participantMasterCellHolder.participantText.setText(this.collect.participants.size() + " participants");
+                    } else {
+                        this.participantMasterCellHolder.participantText.setText(this.collect.participants.size() + " participant");
+                    }
 
                     for (RoundedImageView imageView: this.participantMasterCellHolder.participantViews) {
                         imageView.setVisibility(View.INVISIBLE);
@@ -280,6 +315,23 @@ public class CollectAdapter extends BaseAdapter {
                     likeCellHolder.commentButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
                 }
             }
+
+            if (this.invitedMasterCellHolder != null) {
+                if (this.collect.invitations == null || this.collect.invitations.size() == 0) {
+                    this.invitedMasterCellHolder.participantText.setText("0 invité");
+
+                    this.invitedMasterCellHolder.arrow.setVisibility(View.INVISIBLE);
+
+                } else {
+                    this.invitedMasterCellHolder.arrow.setVisibility(View.VISIBLE);
+
+                    if (this.collect.invitations.size() > 1) {
+                        this.invitedMasterCellHolder.participantText.setText(this.collect.invitations.size() + " invités");
+                    } else {
+                        this.invitedMasterCellHolder.participantText.setText(this.collect.invitations.size() + " invité");
+                    }
+                }
+            }
         }
 
         this.notifyDataSetChanged();
@@ -294,16 +346,16 @@ public class CollectAdapter extends BaseAdapter {
     public int getCount() {
         if (this.collect != null) {
             if (this.collect.social.commentsCount.intValue() > 0) {
-                return 2 + this.collect.social.commentsCount.intValue();
+                return 3 + this.collect.social.commentsCount.intValue();
             }
-            return 2;
+            return 3;
         }
         return 0;
     }
 
     @Override
     public FLComment getItem(int i) {
-        return (FLComment) this.collect.comments.get(i - 2);
+        return (FLComment) this.collect.comments.get(i - 3);
     }
 
     @Override
@@ -323,9 +375,16 @@ public class CollectAdapter extends BaseAdapter {
             this.reload();
         }
 
+        if (this.invitedMasterCellHolder == null) {
+            this.loadInvitedMastercell(parent);
+            this.reload();
+        }
+
         if (position == 0)
             return this.participantMasterCellHolder.cellView;
         else if (position == 1) {
+            return this.invitedMasterCellHolder.cellView;
+        } else if (position == 2) {
             return this.likeCellHolder.cellView;
         } else {
             final FLComment comment = this.getItem(position);
@@ -389,16 +448,6 @@ public class CollectAdapter extends BaseAdapter {
 
         LinearLayout moreButton;
         ImageView moreButtonImg;
-
-//        LinearLayout likeLayout;
-//        TextView likeText;
-//        ImageView likeImg;
-//
-//        LinearLayout commentLayout;
-//        TextView commentText;
-//        ImageView commentImg;
-//
-//        ImageView moreButton;
     }
 
     class ParticipantMasterCellHolder {

@@ -1527,6 +1527,23 @@ public class FloozRestClient
         this.request("/pots/" + collectId + "/invite", HttpRequestType.POST, param, responseHandler);
     }
 
+    public void collectInvitations(String collectId, final FloozHttpResponseHandler responseHandler) {
+        this.request("/pots/" + collectId + "/invitations", HttpRequestType.GET, null, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                if (responseHandler != null) {
+                    responseHandler.success(createUserArrayFromResult((JSONObject) response));
+                }
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+                if (responseHandler != null)
+                    responseHandler.failure(statusCode, error);
+            }
+        });
+    }
+
     /***************************/
     /*******  SOCIAL  **********/
     /***************************/
