@@ -39,6 +39,9 @@ import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.UI.Activity.HomeActivity;
+import me.flooz.app.UI.Activity.SocialLikesActivity;
+import me.flooz.app.UI.Fragment.Home.TabFragments.SocialLikesFragment;
 import me.flooz.app.UI.Tools.CustomImageViewer;
 import me.flooz.app.UI.View.LoadingImageView;
 import me.flooz.app.Utils.CustomFonts;
@@ -286,6 +289,23 @@ public class TransactionController extends BaseController {
             @Override
             public void onClick(View v) {
                 CustomImageViewer.start(parentActivity, transaction.attachmentURL);
+            }
+        });
+
+        this.socialLikesLabel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentKind == ControllerKind.FRAGMENT_CONTROLLER) {
+                    SocialLikesFragment fragment = new SocialLikesFragment();
+                    fragment.transaction = transaction;
+
+                    ((HomeActivity)parentActivity).pushFragmentInCurrentTab(fragment);
+                } else {
+                    Intent likeIntent = new Intent(parentActivity, SocialLikesActivity.class);
+                    likeIntent.putExtra("transaction", transaction.json.toString());
+                    parentActivity.startActivity(likeIntent);
+                    parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                }
             }
         });
 

@@ -200,42 +200,6 @@ public class TransactionCardController extends BaseController {
     protected void init() {
         super.init();
 
-//        this.cardScroll = (ScrollView) this.currentView.findViewById(R.id.card_scroll);
-//        this.cardHeader = (RelativeLayout) this.currentView.findViewById(R.id.transac_card_header);
-//        this.cardHeaderScope = (ImageView) this.currentView.findViewById(R.id.transac_card_header_scope);
-//        this.cardHeaderDate = (TextView) this.currentView.findViewById(R.id.transac_card_header_date);
-//        this.cardHeaderReportButton = (ImageView) this.currentView.findViewById(R.id.transac_card_header_report);
-//        this.cardFromPic = (RoundedImageView) this.currentView.findViewById(R.id.transac_card_from_pic);
-//        this.cardToPic = (RoundedImageView) this.currentView.findViewById(R.id.transac_card_to_pic);
-//        this.cardFromUsername = (TextView) this.currentView.findViewById(R.id.transac_card_from_username);
-//        this.cardFromFullname = (TextView) this.currentView.findViewById(R.id.transac_card_from_fullname);
-//        this.cardToUsername = (TextView) this.currentView.findViewById(R.id.transac_card_to_username);
-//        this.cardToFullname = (TextView) this.currentView.findViewById(R.id.transac_card_to_fullname);
-//        this.cardValue = (TextView) this.currentView.findViewById(R.id.transac_card_value);
-//        this.cardActionBar = (LinearLayout) this.currentView.findViewById(R.id.transac_card_actionBar);
-//        this.cardActionBarDecline = (TextView) this.currentView.findViewById(R.id.transac_card_actionBar_decline);
-//        this.cardActionBarAccept = (TextView) this.currentView.findViewById(R.id.transac_card_actionBar_accept);
-//        this.card3dText = (TextView) this.currentView.findViewById(R.id.transac_card_3dText);
-//        this.cardDesc = (TextView) this.currentView.findViewById(R.id.transac_card_desc);
-//        this.cardPic = (LoadingImageView) this.currentView.findViewById(R.id.transac_card_pic);
-//        this.cardCommentsContainer = (LinearLayout) this.currentView.findViewById(R.id.transac_card_comments_container);
-//        this.cardCommentsSendButton = (TextView) this.currentView.findViewById(R.id.transac_card_comments_send);
-//        this.cardCommentsTextfield = (EditText) this.currentView.findViewById(R.id.transac_card_comments_textfield);
-//        this.cardLocationImg = (ImageView) this.currentView.findViewById(R.id.transac_card_location_img);
-//        this.cardLocationLayout = (LinearLayout) this.currentView.findViewById(R.id.transac_card_location);
-//        this.cardLocationText = (TextView) this.currentView.findViewById(R.id.transac_card_location_text);
-//        this.cardLikesImg = (ImageView) this.currentView.findViewById(R.id.transac_card_likes_img);
-//        this.cardLikesText = (TextView) this.currentView.findViewById(R.id.transac_card_likes_text);
-//        this.cardLikesLayout = (LinearLayout) this.currentView.findViewById(R.id.transac_card_likes_container);
-//
-//        this.cardLikesButton = (LinearLayout) this.currentView.findViewById(R.id.transac_card_social_like);
-//        this.cardLikesButtonText = (TextView) this.currentView.findViewById(R.id.transac_card_social_like_text);
-//        this.cardLikesButtonPicto = (ImageView) this.currentView.findViewById(R.id.transac_card_social_like_img);
-//
-//        this.cardCommentsButton = (LinearLayout) this.currentView.findViewById(R.id.transac_card_social_comment);
-//        this.cardCommentsButtonText = (TextView) this.currentView.findViewById(R.id.transac_card_social_comment_text);
-//        this.cardCommentsButtonPicto = (ImageView) this.currentView.findViewById(R.id.transac_card_social_comment_img);
-
         this.cardShareButton = (LinearLayout) this.currentView.findViewById(R.id.transac_card_social_share);
         this.cardShareButtonImg = (ImageView) this.currentView.findViewById(R.id.transac_card_social_share_img);
 
@@ -326,6 +290,8 @@ public class TransactionCardController extends BaseController {
                 CustomImageViewer.start(parentActivity, transaction.attachmentURL);
             }
         });
+
+
 
         this.cardLikesButton.setOnClickListener(new View.OnClickListener() {
             @Override

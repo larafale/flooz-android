@@ -14,6 +14,7 @@ import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Model.FLUser;
 import me.flooz.app.R;
+import me.flooz.app.Utils.FLHelper;
 
 /**
  * Created by Flooz on 28/06/16.
@@ -63,5 +64,7 @@ public class SocialLikesController extends BaseController {
     public void onResume() {
         this.listAdapter.pendingList = this.transaction.social.likes;
         this.listAdapter.notifyDataSetChanged();
+
+        this.titleLabel.setText(FLHelper.formatUserNumber(this.transaction.social.likesCount.longValue()) + " J'AIME");
     }
 }

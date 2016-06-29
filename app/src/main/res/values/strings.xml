@@ -82,7 +82,7 @@
     <string name="NAV_FRIEND_PICKER">Choisir un destinataire</string>
     <string name="NAV_SCANNER">Scanner un code</string>
     <string name="NAV_FRIEND_REQUEST">Demandes d\'ami</string>
-    <string name="NAV_SOCIAL_LIKES">J'AIME</string>
+    <string name="NAV_SOCIAL_LIKES">J\'AIME</string>
     <string name="NAV_COLLECT_INVITED">Invités</string>
 
     <string name="MENU_HOME">Accueil</string>

@@ -44,8 +44,10 @@ import me.flooz.app.R;
 import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.Settings.PrivacySettingsActivity;
 import me.flooz.app.UI.Activity.ShareCollectAcivity;
+import me.flooz.app.UI.Activity.SocialLikesActivity;
 import me.flooz.app.UI.Fragment.Home.TabFragments.CollectParticipantFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.PrivacyFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.SocialLikesFragment;
 import me.flooz.app.UI.Tools.ActionSheet;
 import me.flooz.app.UI.Tools.ActionSheetItem;
 import me.flooz.app.UI.Tools.CustomImageViewer;
@@ -524,7 +526,17 @@ public class CollectController extends BaseController implements CollectAdapter.
     }
 
     public void collectShowLikes() {
+        if (currentKind == ControllerKind.FRAGMENT_CONTROLLER) {
+            SocialLikesFragment fragment = new SocialLikesFragment();
+            fragment.transaction = collect;
 
+            ((HomeActivity)parentActivity).pushFragmentInCurrentTab(fragment);
+        } else {
+            Intent likeIntent = new Intent(parentActivity, SocialLikesActivity.class);
+            likeIntent.putExtra("transaction", collect.json.toString());
+            parentActivity.startActivity(likeIntent);
+            parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+        }
     }
 
     public void collectShowInvited() {

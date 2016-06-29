@@ -59,7 +59,6 @@ public class FLSocial {
                     String userId = FloozRestClient.getInstance().currentUser.userId;
                     if (comments.optJSONObject(i).optString("userId").equals(userId)) {
                         this.isCommented = true;
-                        break;
                     }
                 }
 
@@ -71,7 +70,6 @@ public class FLSocial {
 
                     if (tmp.userId.equals(FloozRestClient.getInstance().currentUser.userId)) {
                         this.isLiked = true;
-                        break;
                     }
                 }
             }
