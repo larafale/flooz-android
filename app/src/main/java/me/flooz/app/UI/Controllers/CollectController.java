@@ -85,7 +85,7 @@ public class CollectController extends BaseController implements CollectAdapter.
     private TextView headerCurrency;
     private TextView headerCollectedLabel;
     private LoadingImageView contentAttachmentView;
-    private TextView contentCloseLabel;
+    private TextView closeLabel;
     private TextView contentDescriptionHint;
     private TextView contentDescription;
     private LinearLayout contentLocationView;
@@ -209,7 +209,7 @@ public class CollectController extends BaseController implements CollectAdapter.
         headerAmount = (TextView) headerListView.findViewById(R.id.collect_header_view_amount);
         headerCurrency = (TextView) headerListView.findViewById(R.id.collect_header_view_currency);
         headerCollectedLabel = (TextView) headerListView.findViewById(R.id.collect_header_view_collected_label);
-        contentCloseLabel = (TextView) headerListView.findViewById(R.id.collect_header_view_close);
+        closeLabel = (TextView) currentView.findViewById(R.id.collect_view_close_label);
         contentDescriptionHint = (TextView) headerListView.findViewById(R.id.collect_header_view_description_hint);
         contentDescription = (TextView) headerListView.findViewById(R.id.collect_header_view_description);
         contentLocation = (TextView) headerListView.findViewById(R.id.collect_header_view_location_text);
@@ -234,7 +234,7 @@ public class CollectController extends BaseController implements CollectAdapter.
         headerAmount.setTypeface(CustomFonts.customContentBold(parentActivity));
         headerCurrency.setTypeface(CustomFonts.customContentBold(parentActivity));
         headerCollectedLabel.setTypeface(CustomFonts.customContentRegular(parentActivity));
-        contentCloseLabel.setTypeface(CustomFonts.customContentBold(parentActivity));
+        closeLabel.setTypeface(CustomFonts.customContentRegular(parentActivity));
         contentDescriptionHint.setTypeface(CustomFonts.customContentBold(parentActivity));
         contentDescription.setTypeface(CustomFonts.customContentRegular(parentActivity));
         contentLocation.setTypeface(CustomFonts.customContentRegular(parentActivity));
@@ -380,12 +380,6 @@ public class CollectController extends BaseController implements CollectAdapter.
             this.contentAttachmentView.setVisibility(View.GONE);
         }
 
-        if (this.collect.status == FLTransaction.TransactionStatus.TransactionStatusPending) {
-            this.contentCloseLabel.setVisibility(View.VISIBLE);
-        } else {
-            this.contentCloseLabel.setVisibility(View.GONE);
-        }
-
         this.contentDescription.setText(this.collect.content);
 
         if (this.collect.location != null && !this.collect.location.isEmpty()) {
@@ -402,6 +396,7 @@ public class CollectController extends BaseController implements CollectAdapter.
             sendCommentButton.setVisibility(View.VISIBLE);
             commentButton.setVisibility(View.INVISIBLE);
             shareButton.setVisibility(View.INVISIBLE);
+            closeLabel.setVisibility(View.GONE);
         } else {
             if (this.collect.isAvailable && this.collect.isClosable) {
                 actionLayout.setVisibility(View.VISIBLE);
@@ -413,6 +408,7 @@ public class CollectController extends BaseController implements CollectAdapter.
                 sendCommentButton.setVisibility(View.INVISIBLE);
                 commentButton.setVisibility(View.VISIBLE);
                 shareButton.setVisibility(View.VISIBLE);
+                closeLabel.setVisibility(View.GONE);
 
                 participateButton.setTextSize(16);
                 closeCollectButton.setTextSize(16);
@@ -426,6 +422,7 @@ public class CollectController extends BaseController implements CollectAdapter.
                 sendCommentButton.setVisibility(View.INVISIBLE);
                 commentButton.setVisibility(View.VISIBLE);
                 shareButton.setVisibility(View.VISIBLE);
+                closeLabel.setVisibility(View.GONE);
 
                 participateButton.setTextSize(20);
                 closeCollectButton.setTextSize(20);
@@ -439,9 +436,19 @@ public class CollectController extends BaseController implements CollectAdapter.
                 sendCommentButton.setVisibility(View.INVISIBLE);
                 commentButton.setVisibility(View.VISIBLE);
                 shareButton.setVisibility(View.VISIBLE);
+                closeLabel.setVisibility(View.GONE);
 
                 participateButton.setTextSize(20);
                 closeCollectButton.setTextSize(20);
+            } else if (this.collect.status == FLTransaction.TransactionStatus.TransactionStatusPending) {
+                actionLayout.setVisibility(View.GONE);
+                closeLabel.setVisibility(View.VISIBLE);
+
+                commentTextField.setVisibility(View.GONE);
+                closeCommentButton.setVisibility(View.INVISIBLE);
+                sendCommentButton.setVisibility(View.INVISIBLE);
+                commentButton.setVisibility(View.VISIBLE);
+                shareButton.setVisibility(View.VISIBLE);
             } else {
                 actionLayout.setVisibility(View.GONE);
 
@@ -453,6 +460,7 @@ public class CollectController extends BaseController implements CollectAdapter.
                     shareButton.setVisibility(View.VISIBLE);
                 }
 
+                closeLabel.setVisibility(View.GONE);
                 commentTextField.setVisibility(View.VISIBLE);
                 sendCommentButton.setVisibility(View.VISIBLE);
                 commentButton.setVisibility(View.INVISIBLE);
@@ -565,7 +573,7 @@ public class CollectController extends BaseController implements CollectAdapter.
                 parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
             } else {
                 CollectInvitedFragment fragment = new CollectInvitedFragment();
-//                fragment.collect = this.collect;
+                fragment.collectId = this.collect.transactionId;
                 ((HomeActivity) parentActivity).pushFragmentInCurrentTab(fragment);
             }
         }

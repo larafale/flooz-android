@@ -112,44 +112,45 @@ public class CollectInvitedAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 if (user.isFriendable) {
-                    user.isFriendable = false;
-                    notifyDataSetChanged();
-                    user.selectedCanal = FLUser.FLUserSelectedCanal.SuggestionCanal;
-                    FloozRestClient.getInstance().sendFriendRequest(user.userId, user.getSelectedCanal(), new FloozHttpResponseHandler() {
-                        @Override
-                        public void success(Object response) {
-                            FloozRestClient.getInstance().updateCurrentUser(null);
-                        }
+                    if (!user.isFriend) {
+                        user.isFriend = true;
+                        notifyDataSetChanged();
+                        FloozRestClient.getInstance().sendFriendRequest(user.userId, user.getSelectedCanal(), new FloozHttpResponseHandler() {
+                            @Override
+                            public void success(Object response) {
+                                FloozRestClient.getInstance().updateCurrentUser(null);
+                            }
 
-                        @Override
-                        public void failure(int statusCode, FLError error) {
-                            user.isFriendable = true;
-                            notifyDataSetChanged();
-                        }
-                    });
-                } else {
-                    List<ActionSheetItem> items = new ArrayList<>();
-                    items.add(new ActionSheetItem(context, R.string.MENU_REMOVE_FRIENDS, new ActionSheetItem.ActionSheetItemClickListener() {
-                        @Override
-                        public void onClick() {
-                            user.isFriendable = true;
-                            notifyDataSetChanged();
-                            FloozRestClient.getInstance().performActionOnFriend(user.userId, FloozRestClient.FriendAction.Delete, new FloozHttpResponseHandler() {
-                                @Override
-                                public void success(Object response) {
-                                    FloozRestClient.getInstance().updateCurrentUser(null);
-                                }
+                            @Override
+                            public void failure(int statusCode, FLError error) {
+                                user.isFriendable = true;
+                                notifyDataSetChanged();
+                            }
+                        });
+                    } else {
+                        List<ActionSheetItem> items = new ArrayList<>();
+                        items.add(new ActionSheetItem(context, R.string.MENU_REMOVE_FRIENDS, new ActionSheetItem.ActionSheetItemClickListener() {
+                            @Override
+                            public void onClick() {
+                                user.isFriend = false;
+                                notifyDataSetChanged();
+                                FloozRestClient.getInstance().performActionOnFriend(user.userId, FloozRestClient.FriendAction.Delete, new FloozHttpResponseHandler() {
+                                    @Override
+                                    public void success(Object response) {
+                                        FloozRestClient.getInstance().updateCurrentUser(null);
+                                    }
 
-                                @Override
-                                public void failure(int statusCode, FLError error) {
-                                    user.isFriendable = false;
-                                    notifyDataSetChanged();
-                                }
-                            });
-                        }
-                    }));
+                                    @Override
+                                    public void failure(int statusCode, FLError error) {
+                                        user.isFriend = true;
+                                        notifyDataSetChanged();
+                                    }
+                                });
+                            }
+                        }));
 
-                    ActionSheet.showWithItems(context, items);
+                        ActionSheet.showWithItems(context, items);
+                    }
                 }
             }
         });

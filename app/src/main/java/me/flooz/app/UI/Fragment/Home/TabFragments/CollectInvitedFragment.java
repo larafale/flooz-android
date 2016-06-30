@@ -16,7 +16,7 @@ import me.flooz.app.UI.Controllers.FriendRequestController;
  */
 public class CollectInvitedFragment extends TabBarFragment {
 
-    String collectId;
+    public String collectId;
     CollectInvitedController controller;
 
     @Override

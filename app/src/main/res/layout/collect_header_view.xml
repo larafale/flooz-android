@@ -75,24 +75,13 @@
         android:layout_below="@+id/collect_header_view_attachment">
 
         <TextView
-            android:id="@+id/collect_header_view_close"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:textSize="14sp"
-            android:textColor="@android:color/holo_red_light"
-            android:text="Cagnotte terminée"
-            android:paddingBottom="@dimen/dimen_large"/>
-
-        <TextView
             android:id="@+id/collect_header_view_description_hint"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Description :"
             android:textAllCaps="true"
             android:textSize="11sp"
-            android:textColor="@color/placeholder"
-            android:layout_below="@+id/collect_header_view_close"/>
+            android:textColor="@color/placeholder"/>
 
         <TextView
             android:id="@+id/collect_header_view_description"

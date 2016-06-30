@@ -285,6 +285,36 @@ public class TransactionController extends BaseController {
         listView.addHeaderView(headerListView);
         listView.setAdapter(listAdapter);
 
+        this.fromPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FloozApplication.getInstance().showUserProfile(transaction.from);
+            }
+        });
+
+        this.toPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (transaction.to.isPot) {
+                    FloozRestClient.getInstance().showLoadView();
+                    FloozRestClient.getInstance().transactionWithId(transaction.to.userId, new FloozHttpResponseHandler() {
+                        @Override
+                        public void success(Object response) {
+                            FLTransaction transac = new FLTransaction(((JSONObject) response).optJSONObject("item"));
+                            FloozApplication.getInstance().showCollect(transac);
+                        }
+
+                        @Override
+                        public void failure(int statusCode, FLError error) {
+
+                        }
+                    });
+                } else {
+                    FloozApplication.getInstance().showUserProfile(transaction.to);
+                }
+            }
+        });
+
         this.pic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

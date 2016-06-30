@@ -74,6 +74,22 @@
                 android:minHeight="30dp"
                 android:maxHeight="140dp"
                 android:layout_marginBottom="@dimen/dimen_large"
+                android:visibility="invisible"
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Cagnotte clôturée"
+                android:textSize="14sp"
+                android:textColor="@color/blue"
+                android:id="@+id/collect_view_close_label"
+                android:background="@drawable/frame_action_button"
+                android:paddingTop="@dimen/dimen_medium"
+                android:paddingBottom="@dimen/dimen_medium"
+                android:paddingRight="@dimen/dimen_large"
+                android:paddingLeft="@dimen/dimen_large"
                 />
 
             <LinearLayout
@@ -85,7 +101,9 @@
                 android:layout_centerVertical="true"
                 android:layout_marginRight="@dimen/dimen_medium"
                 android:layout_marginLeft="@dimen/dimen_medium"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:visibility="invisible"
+                >
 
                 <Button
                     android:id="@+id/collect_view_participate_button"
