@@ -27,9 +27,9 @@
 
     <TextView
         android:id="@+id/invited_cell_button"
+        android:layout_alignParentRight="true"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@+id/invited_cell_arrow"
         android:text="Inviter des amis"
         android:paddingLeft="@dimen/dimen_large"
         android:paddingRight="@dimen/dimen_large"
