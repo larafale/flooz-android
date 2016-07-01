@@ -2239,6 +2239,7 @@ public class FloozRestClient
                                     JSONObject obj = new JSONObject();
                                     obj.put("nick", currentUser.username);
                                     obj.put("token", accessToken);
+                                    obj.put("via", "android");
                                     socket.emit("session start", obj);
                                 } catch (JSONException e) {
                                     e.printStackTrace();

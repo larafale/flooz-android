@@ -1019,11 +1019,11 @@ public class NewTransactionActivity extends BaseActivity implements ToolTipScope
     }
 
     private void showBalanceDialog() {
-        if (FloozRestClient.getInstance().currentTexts.cashinButtons != null && FloozRestClient.getInstance().currentTexts.cashinButtons.size() > 0) {
-            Intent cardIntent = new Intent(this, CashinActivity.class);
-            this.startActivity(cardIntent);
-            this.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-        }
+//        if (FloozRestClient.getInstance().currentTexts.cashinButtons != null && FloozRestClient.getInstance().currentTexts.cashinButtons.size() > 0) {
+//            Intent cardIntent = new Intent(this, CashinActivity.class);
+//            this.startActivity(cardIntent);
+//            this.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+//        }
     }
 
     private void saveData() {

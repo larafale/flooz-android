@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.R;
 import me.flooz.app.UI.Controllers.BaseController;
 import me.flooz.app.UI.Controllers.CollectInvitedController;
@@ -16,7 +17,7 @@ import me.flooz.app.UI.Controllers.FriendRequestController;
  */
 public class CollectInvitedFragment extends TabBarFragment {
 
-    public String collectId;
+    public FLTransaction collect;
     CollectInvitedController controller;
 
     @Override
@@ -25,7 +26,7 @@ public class CollectInvitedFragment extends TabBarFragment {
 
         if (this.controller == null) {
             this.controller = new CollectInvitedController(view, tabBarActivity, BaseController.ControllerKind.FRAGMENT_CONTROLLER, this.triggerData);
-            this.controller.collectId = collectId;
+            this.controller.collect = collect;
         }
 
         return this.controller.currentView;

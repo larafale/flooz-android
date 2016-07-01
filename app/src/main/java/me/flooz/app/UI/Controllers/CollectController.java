@@ -568,12 +568,12 @@ public class CollectController extends BaseController implements CollectAdapter.
         if (this.collect.invitations.size() > 0) {
             if (currentKind == ControllerKind.ACTIVITY_CONTROLLER) {
                 Intent intent = new Intent(parentActivity, CollectInvitedController.class);
-                intent.putExtra("collectId", this.collect.transactionId);
+                intent.putExtra("collect", this.collect.json.toString());
                 parentActivity.startActivity(intent);
                 parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
             } else {
                 CollectInvitedFragment fragment = new CollectInvitedFragment();
-                fragment.collectId = this.collect.transactionId;
+                fragment.collect = this.collect;
                 ((HomeActivity) parentActivity).pushFragmentInCurrentTab(fragment);
             }
         }

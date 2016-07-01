@@ -8,6 +8,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import me.flooz.app.App.FloozApplication;
+import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.R;
 import me.flooz.app.UI.Controllers.CollectInvitedController;
 import me.flooz.app.UI.Controllers.NotificationsController;
@@ -40,10 +41,15 @@ public class CollectInvitedActivity extends BaseActivity {
                 e.printStackTrace();
             }
 
-        String collectId = getIntent().getStringExtra("collectId");
+        String collect = getIntent().getStringExtra("collect");
 
         this.controller = new CollectInvitedController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER, triggerData);
-        this.controller.collectId = collectId;
+
+        try {
+            this.controller.collect = new FLTransaction(new JSONObject(collect));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override

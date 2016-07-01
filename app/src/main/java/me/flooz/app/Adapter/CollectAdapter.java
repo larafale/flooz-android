@@ -28,6 +28,7 @@ import me.flooz.app.Model.FLComment;
 import me.flooz.app.Model.FLSocial;
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Model.FLUser;
+import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.FLHelper;
@@ -45,7 +46,7 @@ public class CollectAdapter extends BaseAdapter {
 
     private LikeCellHolder likeCellHolder;
     private ParticipantMasterCellHolder participantMasterCellHolder;
-    private ParticipantMasterCellHolder invitedMasterCellHolder;
+    private InvitedCellHolder invitedMasterCellHolder;
 
     public interface CollectSocialDelegate {
         void collectLikeClicked();
@@ -161,21 +162,16 @@ public class CollectAdapter extends BaseAdapter {
     }
 
     private void loadInvitedMastercell(ViewGroup parent) {
-        this.invitedMasterCellHolder = new ParticipantMasterCellHolder();
+        this.invitedMasterCellHolder = new InvitedCellHolder();
 
-        this.invitedMasterCellHolder.cellView = LayoutInflater.from(context).inflate(R.layout.collect_participant_mastercell, parent, false);
+        this.invitedMasterCellHolder.cellView = LayoutInflater.from(context).inflate(R.layout.collect_invited_cell, parent, false);
 
-        this.invitedMasterCellHolder.participantText = (TextView) this.invitedMasterCellHolder.cellView.findViewById(R.id.participant_mastercell_text);
-        this.invitedMasterCellHolder.arrow = (ImageView) this.invitedMasterCellHolder.cellView.findViewById(R.id.participant_mastercell_arrow);
+        this.invitedMasterCellHolder.invitedText = (TextView) this.invitedMasterCellHolder.cellView.findViewById(R.id.invited_cell_text);
+        this.invitedMasterCellHolder.arrow = (ImageView) this.invitedMasterCellHolder.cellView.findViewById(R.id.invited_cell_arrow);
+        this.invitedMasterCellHolder.inviteButton = (TextView) this.invitedMasterCellHolder.cellView.findViewById(R.id.invited_cell_button);
 
-        this.invitedMasterCellHolder.participantViews = new ArrayList<>(5);
-        this.invitedMasterCellHolder.participantViews.add((RoundedImageView) this.invitedMasterCellHolder.cellView.findViewById(R.id.participant_mastercell_user_5));
-        this.invitedMasterCellHolder.participantViews.add((RoundedImageView) this.invitedMasterCellHolder.cellView.findViewById(R.id.participant_mastercell_user_4));
-        this.invitedMasterCellHolder.participantViews.add((RoundedImageView) this.invitedMasterCellHolder.cellView.findViewById(R.id.participant_mastercell_user_3));
-        this.invitedMasterCellHolder.participantViews.add((RoundedImageView) this.invitedMasterCellHolder.cellView.findViewById(R.id.participant_mastercell_user_2));
-        this.invitedMasterCellHolder.participantViews.add((RoundedImageView) this.invitedMasterCellHolder.cellView.findViewById(R.id.participant_mastercell_user_1));
-
-        this.invitedMasterCellHolder.participantText.setTypeface(CustomFonts.customContentRegular(context));
+        this.invitedMasterCellHolder.invitedText.setTypeface(CustomFonts.customContentRegular(context));
+        this.invitedMasterCellHolder.inviteButton.setTypeface(CustomFonts.customContentRegular(context));
 
         this.invitedMasterCellHolder.cellView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -185,9 +181,13 @@ public class CollectAdapter extends BaseAdapter {
             }
         });
 
-        for (RoundedImageView imageView: this.invitedMasterCellHolder.participantViews) {
-            imageView.setVisibility(View.INVISIBLE);
-        }
+        this.invitedMasterCellHolder.inviteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (socialDelegate != null)
+                    socialDelegate.collectShareClicked();
+            }
+        });
     }
 
     public void reload() {
@@ -295,7 +295,7 @@ public class CollectAdapter extends BaseAdapter {
                             this.likeCellHolder.commentsLabel.setVisibility(View.GONE);
                         }
                     } else {
-                       this.likeCellHolder.labelsContainer.setVisibility(View.GONE);
+                        this.likeCellHolder.labelsContainer.setVisibility(View.GONE);
                     }
 
                     if (social.isLiked) {
@@ -318,17 +318,22 @@ public class CollectAdapter extends BaseAdapter {
 
             if (this.invitedMasterCellHolder != null) {
                 if (this.collect.invitations == null || this.collect.invitations.size() == 0) {
-                    this.invitedMasterCellHolder.participantText.setText("0 invité");
+                    this.invitedMasterCellHolder.invitedText.setText("0 invité");
 
                     this.invitedMasterCellHolder.arrow.setVisibility(View.INVISIBLE);
 
+                    if (FloozRestClient.getInstance().currentUser.userId.contentEquals(this.collect.creator.userId))
+                        this.invitedMasterCellHolder.inviteButton.setVisibility(View.VISIBLE);
+                    else
+                        this.invitedMasterCellHolder.inviteButton.setVisibility(View.GONE);
                 } else {
                     this.invitedMasterCellHolder.arrow.setVisibility(View.VISIBLE);
+                    this.invitedMasterCellHolder.inviteButton.setVisibility(View.GONE);
 
                     if (this.collect.invitations.size() > 1) {
-                        this.invitedMasterCellHolder.participantText.setText(this.collect.invitations.size() + " invités");
+                        this.invitedMasterCellHolder.invitedText.setText(this.collect.invitations.size() + " invités");
                     } else {
-                        this.invitedMasterCellHolder.participantText.setText(this.collect.invitations.size() + " invité");
+                        this.invitedMasterCellHolder.invitedText.setText(this.collect.invitations.size() + " invité");
                     }
                 }
             }
@@ -346,8 +351,13 @@ public class CollectAdapter extends BaseAdapter {
     public int getCount() {
         if (this.collect != null) {
             if (this.collect.social.commentsCount.intValue() > 0) {
+                if (this.collect.status == FLTransaction.TransactionStatus.TransactionStatusPending)
+                    return 2 + this.collect.social.commentsCount.intValue();
                 return 3 + this.collect.social.commentsCount.intValue();
             }
+
+            if (this.collect.status == FLTransaction.TransactionStatus.TransactionStatusPending)
+                return 2;
             return 3;
         }
         return 0;
@@ -355,6 +365,9 @@ public class CollectAdapter extends BaseAdapter {
 
     @Override
     public FLComment getItem(int i) {
+        if (this.collect.status == FLTransaction.TransactionStatus.TransactionStatusPending)
+            return (FLComment) this.collect.comments.get(i - 2);
+
         return (FLComment) this.collect.comments.get(i - 3);
     }
 
@@ -380,48 +393,56 @@ public class CollectAdapter extends BaseAdapter {
             this.reload();
         }
 
-        if (position == 0)
-            return this.participantMasterCellHolder.cellView;
-        else if (position == 1) {
-            return this.invitedMasterCellHolder.cellView;
-        } else if (position == 2) {
-            return this.likeCellHolder.cellView;
-        } else {
-            final FLComment comment = this.getItem(position);
-
-            final ViewHolder holder;
-
-            if (convertView == null || convertView.getTag() == null) {
-                holder = new ViewHolder();
-                convertView = inflater.inflate(R.layout.transaction_card_comment_row, parent, false);
-                holder.commentPic = (RoundedImageView) convertView.findViewById(R.id.card_comment_row_img);
-                holder.commentText = (TextView) convertView.findViewById(R.id.card_comment_row_text);
-                holder.commentInfos = (TextView) convertView.findViewById(R.id.card_comment_row_infos);
-
-                holder.commentText.setTypeface(CustomFonts.customContentRegular(this.context));
-                holder.commentInfos.setTypeface(CustomFonts.customContentLight(this.context));
-                convertView.setTag(holder);
-            } else {
-                holder = (ViewHolder) convertView.getTag();
+        if (this.collect.status == FLTransaction.TransactionStatus.TransactionStatusPending) {
+            if (position == 0) {
+                return this.participantMasterCellHolder.cellView;
+            } else if (position == 1) {
+                return this.likeCellHolder.cellView;
             }
-
-            if (comment.user.avatarURL != null && !comment.user.avatarURL.isEmpty())
-                ImageLoader.getInstance().displayImage(comment.user.avatarURL, holder.commentPic);
-            else
-                holder.commentPic.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
-
-            holder.commentText.setText(comment.content);
-            holder.commentInfos.setText("@" + comment.user.username + " - " + comment.dateText);
-
-            holder.commentPic.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    FloozApplication.getInstance().showUserProfile(comment.user);
-                }
-            });
-
-            return convertView;
+        } else {
+            if (position == 0) {
+                return this.participantMasterCellHolder.cellView;
+            } else if (position == 1) {
+                return this.invitedMasterCellHolder.cellView;
+            } else if (position == 2) {
+                return this.likeCellHolder.cellView;
+            }
         }
+
+        final FLComment comment = this.getItem(position);
+
+        final ViewHolder holder;
+
+        if (convertView == null || convertView.getTag() == null) {
+            holder = new ViewHolder();
+            convertView = inflater.inflate(R.layout.transaction_card_comment_row, parent, false);
+            holder.commentPic = (RoundedImageView) convertView.findViewById(R.id.card_comment_row_img);
+            holder.commentText = (TextView) convertView.findViewById(R.id.card_comment_row_text);
+            holder.commentInfos = (TextView) convertView.findViewById(R.id.card_comment_row_infos);
+
+            holder.commentText.setTypeface(CustomFonts.customContentRegular(this.context));
+            holder.commentInfos.setTypeface(CustomFonts.customContentLight(this.context));
+            convertView.setTag(holder);
+        } else {
+            holder = (ViewHolder) convertView.getTag();
+        }
+
+        if (comment.user.avatarURL != null && !comment.user.avatarURL.isEmpty())
+            ImageLoader.getInstance().displayImage(comment.user.avatarURL, holder.commentPic);
+        else
+            holder.commentPic.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
+
+        holder.commentText.setText(comment.content);
+        holder.commentInfos.setText("@" + comment.user.username + " - " + comment.dateText);
+
+        holder.commentPic.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FloozApplication.getInstance().showUserProfile(comment.user);
+            }
+        });
+
+        return convertView;
     }
 
     class ViewHolder {
@@ -456,6 +477,16 @@ public class CollectAdapter extends BaseAdapter {
         TextView participantText;
 
         List<RoundedImageView> participantViews;
+
+        ImageView arrow;
+    }
+
+    class InvitedCellHolder {
+        View cellView;
+
+        TextView invitedText;
+
+        TextView inviteButton;
 
         ImageView arrow;
     }
