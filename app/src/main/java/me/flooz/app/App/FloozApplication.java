@@ -343,7 +343,7 @@ public class FloozApplication extends BranchApp
                 controller.user = user;
                 homeActivity.pushFragmentInCurrentTab(controller, completion);
             }
-        } else {
+        } else if (currentActivity != null) {
             Intent intent = new Intent(getAppContext(), UserProfileActivity.class);
             intent.putExtra("user", user.json.toString());
             currentActivity.startActivity(intent);

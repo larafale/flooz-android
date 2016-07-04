@@ -8,8 +8,6 @@ import android.os.Looper;
 
 import org.json.JSONArray;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -19,9 +17,6 @@ import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLTrigger;
 import me.flooz.app.UI.Activity.AuthenticationActivity;
 import me.flooz.app.UI.Activity.BaseActivity;
-import me.flooz.app.UI.Activity.CashinActivity;
-import me.flooz.app.UI.Activity.CashinAudiotelActivity;
-import me.flooz.app.UI.Activity.CashinCreditCardActivity;
 import me.flooz.app.UI.Activity.CashoutActivity;
 import me.flooz.app.UI.Activity.CollectActivity;
 import me.flooz.app.UI.Activity.CollectParticipantActivity;

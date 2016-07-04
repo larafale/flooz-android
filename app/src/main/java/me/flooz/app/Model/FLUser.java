@@ -519,7 +519,14 @@ public class FLUser
             return false;
         if (getClass() != obj.getClass())
             return false;
+
         FLUser other = (FLUser ) obj;
+
+        if (this.userId == null)
+            return false;
+        if (other.userId == null)
+            return false;
+
         return this.userId.contentEquals(other.userId);
     }
 }
