@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 
 import com.facebook.FacebookSdk;
+import com.github.ajalt.reprint.core.Reprint;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
@@ -139,6 +140,8 @@ public class FloozApplication extends BranchApp
         OneSignal.enableNotificationsWhenActive(false);
 
         SafeLooper.install();
+
+        Reprint.initialize(this);
 
         this.registerActivityLifecycleCallbacks(FLTriggerManager.getInstance());
     }

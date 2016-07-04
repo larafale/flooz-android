@@ -174,7 +174,8 @@ dependencies {
     compile 'jp.wasabeef:blurry:2.0.0'
     compile 'com.github.florent37:viewanimator:1.0.3@aar'
     compile 'com.github.dbachelder:CreditCardEntry:1.4.7'
-    compile 'com.github.ajalt.reprint:core:2.5.6@aar'
+    compile 'com.github.ajalt.reprint:core:2.7.2@aar'
+    compile 'com.github.ajalt.reprint:reprint_spass:2.7.2@aar'
     compile 'io.card:android-sdk:5.3.4'
     compile project(':tooltips')
 }
