@@ -4,9 +4,16 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.load.resource.drawable.GlideDrawable;
+import com.bumptech.glide.request.RequestListener;
+import com.bumptech.glide.request.target.Target;
+import com.github.silvestrpredko.dotprogressbar.DotProgressBar;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -14,14 +21,15 @@ import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 
 import me.flooz.app.R;
+import me.flooz.app.Utils.CircleTransform;
 
 /**
  * Created by Flooz on 12/8/14.
  */
 public class LoadingImageView extends RelativeLayout {
 
-    private RoundedImageView imageView;
-    private ProgressBar progressBar;
+    private ImageView imageView;
+    private DotProgressBar progressBar;
     private RelativeLayout progressBackground;
     private Context context;
 
@@ -46,10 +54,8 @@ public class LoadingImageView extends RelativeLayout {
         View view = View.inflate(context, R.layout.loading_image_view, this);
 
         this.context = context;
-        this.imageView = (RoundedImageView) view.findViewById(R.id.loading_image_view_img);
-        this.progressBar = (ProgressBar) view.findViewById(R.id.loading_image_view_progress);
-        this.progressBar.setMax(100);
-        this.progressBar.setProgress(0);
+        this.imageView = (ImageView) view.findViewById(R.id.loading_image_view_img);
+        this.progressBar = (DotProgressBar) view.findViewById(R.id.loading_image_view_progress);
         this.progressBackground = (RelativeLayout) view.findViewById(R.id.loading_image_view_container);
     }
 
@@ -59,43 +65,57 @@ public class LoadingImageView extends RelativeLayout {
             progressBackground.setVisibility(GONE);
             imageView.setImageDrawable(this.context.getResources().getDrawable(R.drawable.fake));
         } else {
-            imageView.setVisibility(GONE);
+            imageView.setVisibility(VISIBLE);
+            imageView.setImageDrawable(null);
             progressBackground.setVisibility(VISIBLE);
-            progressBar.setProgress(0);
 
-            ImageLoader.getInstance().displayImage(imgUrl, this.imageView, null, new ImageLoadingListener() {
+            Glide.with(this.context).load(imgUrl).diskCacheStrategy(DiskCacheStrategy.ALL).listener(new RequestListener<String, GlideDrawable>() {
                 @Override
-                public void onLoadingStarted(String imageUri, View view) {
-                    imageView.setVisibility(GONE);
-                    progressBackground.setVisibility(VISIBLE);
-                    progressBar.setProgress(0);
+                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
+                    return false;
                 }
 
                 @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-                }
-
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    imageView.setVisibility(VISIBLE);
+                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
                     progressBackground.setVisibility(GONE);
-                }
 
-                @Override
-                public void onLoadingCancelled(String imageUri, View view) {
-
+                    return false;
                 }
-            }, new ImageLoadingProgressListener() {
-                @Override
-                public void onProgressUpdate(String imageUri, View view, int current, int total) {
-                    float tmp = current;
-                    tmp /= total;
-                    tmp *= 100;
+            }).into(this.imageView);
 
-                    progressBar.setProgress((int) tmp);
-                }
-            });
+//            ImageLoader.getInstance().displayImage(imgUrl, this.imageView, null, new ImageLoadingListener() {
+//                @Override
+//                public void onLoadingStarted(String imageUri, View view) {
+//                    imageView.setVisibility(GONE);
+//                    progressBackground.setVisibility(VISIBLE);
+//                    progressBar.setProgress(0);
+//                }
+//
+//                @Override
+//                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+//
+//                }
+//
+//                @Override
+//                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+//                    imageView.setVisibility(VISIBLE);
+//                    progressBackground.setVisibility(GONE);
+//                }
+//
+//                @Override
+//                public void onLoadingCancelled(String imageUri, View view) {
+//
+//                }
+//            }, new ImageLoadingProgressListener() {
+//                @Override
+//                public void onProgressUpdate(String imageUri, View view, int current, int total) {
+//                    float tmp = current;
+//                    tmp /= total;
+//                    tmp *= 100;
+//
+//                    progressBar.setProgress((int) tmp);
+//                }
+//            });
         }
     }
 }

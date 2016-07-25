@@ -24,7 +24,6 @@ import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.onesignal.OneSignal;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -136,34 +135,11 @@ public class FloozApplication extends BranchApp
 
         activityStateHandler = new Handler(Looper.getMainLooper());
 
-        OneSignal.startInit(this).setNotificationOpenedHandler(new FLNotificationOpenedHandler()).init();
-        OneSignal.enableNotificationsWhenActive(false);
-
         SafeLooper.install();
 
         Reprint.initialize(this);
 
         this.registerActivityLifecycleCallbacks(FLTriggerManager.getInstance());
-    }
-
-    private class FLNotificationOpenedHandler implements OneSignal.NotificationOpenedHandler {
-        @Override
-        public void notificationOpened(String message, JSONObject additionalData, boolean isActive) {
-
-            if (!isActive && additionalData != null) {
-                if (additionalData.has("triggers")) {
-                    try {
-                        final JSONArray data = new JSONArray(additionalData.optString("triggers"));
-
-                        if (data.length() > 0)
-                            pendingTriggers = data;
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            }
-        }
     }
 
     @Override

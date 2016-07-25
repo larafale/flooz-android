@@ -99,8 +99,8 @@ android {
         applicationId "me.flooz.app"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 57
-        versionName "3.0.1"
+        versionCode 58
+        versionName "3.0.2"
         signingConfig signingConfigs.release
         renderscriptTargetApi 20
         renderscriptSupportModeEnabled true
@@ -131,6 +131,7 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
     maven { url "http://jzaccone.github.io/SlidingMenu-aar" }
     maven { url 'https://github.com/500px/500px-android-blur/raw/master/releases/' }
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
 }
 
 dependencies {
@@ -170,12 +171,13 @@ dependencies {
     compile 'com.github.quentin7b:android-location-tracker:3.+'
     compile 'com.android.support:recyclerview-v7:23.+'
     compile "com.daimajia.swipelayout:library:1.+@aar"
-    compile 'com.onesignal:OneSignal:2.+@aar'
     compile 'jp.wasabeef:blurry:2.0.0'
     compile 'com.github.florent37:viewanimator:1.0.3@aar'
     compile 'com.github.dbachelder:CreditCardEntry:1.4.7'
     compile 'com.github.ajalt.reprint:core:2.7.2@aar'
-    compile 'com.github.ajalt.reprint:reprint_spass:2.7.2@aar'
+//    compile 'com.github.ajalt.reprint:reprint_spass:2.7.2@aar'
     compile 'io.card:android-sdk:5.3.4'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.github.silvestrpredko:dot-progress-bar:0.1.4@aar'
     compile project(':tooltips')
 }

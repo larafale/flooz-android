@@ -185,89 +185,91 @@ public class ShowTask extends ActionTask {
                     }
                 });
             }
-        } else if (this.trigger.categoryView.contentEquals("auth:code")) {
-            final Class activityClass = FLTriggerManager.getInstance().binderKeyActivity.get(this.trigger.categoryView);
-            final Activity currentActivity = FloozApplication.getInstance().getCurrentActivity();
-
-            if (Reprint.hasFingerprintRegistered() && Reprint.isHardwarePresent()) {
-                Reprint.authenticate(new AuthenticationListener() {
-                    @Override
-                    public void onSuccess(int moduleTag) {
-                        if (trigger.data != null && trigger.data.has("success")) {
-                            FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(trigger.data.optJSONArray("success")));
-                        }
-                    }
-
-                    @Override
-                    public void onFailure(AuthenticationFailureReason failureReason, boolean fatal, CharSequence errorMessage, int moduleTag, int errorCode) {
-                        if (fatal) {
-                            if (currentActivity != null) {
-                                FLTriggerManager.getInstance().pendingShowTrigger = trigger;
-                                Intent intent = new Intent();
-                                intent.setClass(FloozApplication.getAppContext(), activityClass);
-
-                                if (trigger.data != null)
-                                    intent.putExtra("triggerData", trigger.data.toString());
-
-                                currentActivity.startActivity(intent);
-                                currentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-                            } else {
-                                FLTriggerManager.getInstance().pendingShowTrigger = trigger;
-                                Intent intent = new Intent();
-                                intent.setClass(FloozApplication.getAppContext(), activityClass);
-
-                                if (trigger.data != null)
-                                    intent.putExtra("triggerData", trigger.data.toString());
-
-                                FloozApplication.getInstance().startActivity(intent);
-                            }
-                        }
-                    }
-                });
-            } else {
-                if (currentActivity != null) {
-                    FLTriggerManager.getInstance().pendingShowTrigger = this.trigger;
-                    Intent intent = new Intent();
-                    intent.setClass(FloozApplication.getAppContext(), activityClass);
-
-                    if (this.trigger.data != null)
-                        intent.putExtra("triggerData", this.trigger.data.toString());
-
-                    currentActivity.startActivity(intent);
-                    currentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-                } else {
-                    FLTriggerManager.getInstance().pendingShowTrigger = this.trigger;
-                    Intent intent = new Intent();
-                    intent.setClass(FloozApplication.getAppContext(), activityClass);
-
-                    if (this.trigger.data != null)
-                        intent.putExtra("triggerData", this.trigger.data.toString());
-
-                    FloozApplication.getInstance().startActivity(intent);
-                }
-            }
-
-
-//                FloozRestClient.getInstance().showLoadView();
-//                FloozRestClient.getInstance().transactionWithId(this.trigger.data.optString("_id"), new FloozHttpResponseHandler() {
+        }
+//        else if (this.trigger.categoryView.contentEquals("auth:code")) {
+//            final Class activityClass = FLTriggerManager.getInstance().binderKeyActivity.get(this.trigger.categoryView);
+//            final Activity currentActivity = FloozApplication.getInstance().getCurrentActivity();
+//
+//            if (Reprint.hasFingerprintRegistered() && Reprint.isHardwarePresent()) {
+//                Reprint.authenticate(new AuthenticationListener() {
 //                    @Override
-//                    public void success(Object response) {
-//                        FLTransaction transac = new FLTransaction(((JSONObject) response).optJSONObject("item"));
-//                        FLTriggerManager.getInstance().pendingShowTrigger = trigger;
-//                        FloozApplication.getInstance().showCollect(transac, new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                FLTriggerManager.getInstance().executeTriggerList(trigger.triggers);
-//                                FLTriggerManager.getInstance().pendingShowTrigger = null;
-//                            }
-//                        });
+//                    public void onSuccess(int moduleTag) {
+//                        if (trigger.data != null && trigger.data.has("success")) {
+//                            FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(trigger.data.optJSONArray("success")));
+//                        }
 //                    }
 //
 //                    @Override
-//                    public void failure(int statusCode, FLError error) {
+//                    public void onFailure(AuthenticationFailureReason failureReason, boolean fatal, CharSequence errorMessage, int moduleTag, int errorCode) {
+//                        if (fatal) {
+//                            if (currentActivity != null) {
+//                                FLTriggerManager.getInstance().pendingShowTrigger = trigger;
+//                                Intent intent = new Intent();
+//                                intent.setClass(FloozApplication.getAppContext(), activityClass);
+//
+//                                if (trigger.data != null)
+//                                    intent.putExtra("triggerData", trigger.data.toString());
+//
+//                                currentActivity.startActivity(intent);
+//                                currentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+//                            } else {
+//                                FLTriggerManager.getInstance().pendingShowTrigger = trigger;
+//                                Intent intent = new Intent();
+//                                intent.setClass(FloozApplication.getAppContext(), activityClass);
+//
+//                                if (trigger.data != null)
+//                                    intent.putExtra("triggerData", trigger.data.toString());
+//
+//                                FloozApplication.getInstance().startActivity(intent);
+//                            }
+//                        }
 //                    }
 //                });
-        } else if (FLTriggerManager.getInstance().isTriggerKeyView(this.trigger)) {
+//            } else {
+//                if (currentActivity != null) {
+//                    FLTriggerManager.getInstance().pendingShowTrigger = this.trigger;
+//                    Intent intent = new Intent();
+//                    intent.setClass(FloozApplication.getAppContext(), activityClass);
+//
+//                    if (this.trigger.data != null)
+//                        intent.putExtra("triggerData", this.trigger.data.toString());
+//
+//                    currentActivity.startActivity(intent);
+//                    currentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+//                } else {
+//                    FLTriggerManager.getInstance().pendingShowTrigger = this.trigger;
+//                    Intent intent = new Intent();
+//                    intent.setClass(FloozApplication.getAppContext(), activityClass);
+//
+//                    if (this.trigger.data != null)
+//                        intent.putExtra("triggerData", this.trigger.data.toString());
+//
+//                    FloozApplication.getInstance().startActivity(intent);
+//                }
+//            }
+//
+//
+////                FloozRestClient.getInstance().showLoadView();
+////                FloozRestClient.getInstance().transactionWithId(this.trigger.data.optString("_id"), new FloozHttpResponseHandler() {
+////                    @Override
+////                    public void success(Object response) {
+////                        FLTransaction transac = new FLTransaction(((JSONObject) response).optJSONObject("item"));
+////                        FLTriggerManager.getInstance().pendingShowTrigger = trigger;
+////                        FloozApplication.getInstance().showCollect(transac, new Runnable() {
+////                            @Override
+////                            public void run() {
+////                                FLTriggerManager.getInstance().executeTriggerList(trigger.triggers);
+////                                FLTriggerManager.getInstance().pendingShowTrigger = null;
+////                            }
+////                        });
+////                    }
+////
+////                    @Override
+////                    public void failure(int statusCode, FLError error) {
+////                    }
+////                });
+//        }
+        else if (FLTriggerManager.getInstance().isTriggerKeyView(this.trigger)) {
             Class activityClass = FLTriggerManager.getInstance().binderKeyActivity.get(this.trigger.categoryView);
             Class fragmentClass = FLTriggerManager.getInstance().binderKeyFragment.get(this.trigger.categoryView);
             Activity currentActivity = FloozApplication.getInstance().getCurrentActivity();
