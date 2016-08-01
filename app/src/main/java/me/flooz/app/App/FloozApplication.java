@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 
 import com.facebook.FacebookSdk;
+import com.facebook.drawee.backends.pipeline.Fresco;
 import com.github.ajalt.reprint.core.Reprint;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
@@ -127,7 +128,8 @@ public class FloozApplication extends BranchApp
         gcm = GoogleCloudMessaging.getInstance(this);
         regid = getRegistrationId(context);
 
-        FacebookSdk.sdkInitialize(getApplicationContext());
+        FacebookSdk.sdkInitialize(this);
+        Fresco.initialize(this);
 
         if (regid.isEmpty()) {
             registerInBackground();

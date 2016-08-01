@@ -1,33 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <RelativeLayout
-        android:id="@+id/loading_image_view_container"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
+    <com.github.silvestrpredko.dotprogressbar.DotProgressBar
+        xmlns:custom="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/loading_image_view_progress"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:layout_centerInParent="true"
-        android:background="@drawable/loading_image_view_background">
+        custom:amount="3"
+        custom:duration="@android:integer/config_mediumAnimTime"
+        custom:endColor="@color/blue"
+        custom:startColor="@color/blue"/>
 
-        <com.github.silvestrpredko.dotprogressbar.DotProgressBar
-            xmlns:custom="http://schemas.android.com/apk/res-auto"
-            android:id="@+id/loading_image_view_progress"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_centerInParent="true"
-            custom:amount="3"
-            custom:duration="@android:integer/config_mediumAnimTime"
-            custom:endColor="@color/blue"
-            custom:startColor="@color/blue"/>
-
-    </RelativeLayout>
-
-    <ImageView
+    <com.facebook.drawee.view.SimpleDraweeView
         android:id="@+id/loading_image_view_img"
-        android:scaleType="centerCrop"
         android:layout_width="fill_parent"
         android:layout_height="150dp"
-        android:adjustViewBounds="true"/>
+        android:adjustViewBounds="true"
+        fresco:roundedCornerRadius="@dimen/dimen_small"
+        fresco:roundWithOverlayColor="@color/background_header"/>
 
 </RelativeLayout>

@@ -4,7 +4,10 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Animatable;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -17,6 +20,19 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.controller.ControllerListener;
+import com.facebook.drawee.drawable.ProgressBarDrawable;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
+import com.facebook.drawee.generic.RoundingParams;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.image.ImageInfo;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.github.silvestrpredko.dotprogressbar.DotProgressBar;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
@@ -32,9 +48,8 @@ public class CustomImageViewer extends Activity {
 
     private RelativeLayout imageViewer;
     private ImageView imageViewerClose;
-    private ProgressBar imageViewerProgress;
-    private ImageView imageViewerImage;
-    private PhotoViewAttacher imageViewerAttacher;
+    private DotProgressBar dotProgressBar;
+    private SimpleDraweeView imageView;
 
     private static final String IMAGE_URL = "customViewerUrlImage";
     private static final String IMAGE_BITMAP = "customViewerBitmap";
@@ -58,10 +73,26 @@ public class CustomImageViewer extends Activity {
 
         this.imageViewer = (RelativeLayout) this.findViewById(R.id.main_image_container);
         this.imageViewerClose = (ImageView) this.findViewById(R.id.main_image_close);
-        this.imageViewerProgress = (ProgressBar) this.findViewById(R.id.main_image_progress);
-        this.imageViewerImage = (ImageView) this.findViewById(R.id.main_image_image);
+        this.imageView = (SimpleDraweeView) this.findViewById(R.id.main_image_image);
+        this.dotProgressBar = (DotProgressBar) this.findViewById(R.id.main_image_progress);
 
-        this.imageViewerAttacher = new PhotoViewAttacher(this.imageViewerImage);
+        GenericDraweeHierarchyBuilder builder =
+                new GenericDraweeHierarchyBuilder(getResources());
+
+        RoundingParams roundingParams = RoundingParams.fromCornersRadius(5f);
+        roundingParams.setOverlayColor(this.getResources().getColor(R.color.background_header));
+
+        ProgressBarDrawable progressBar = new ProgressBarDrawable();
+        progressBar.setHideWhenZero(true);
+        progressBar.setColor(this.getResources().getColor(R.color.blue));
+
+        GenericDraweeHierarchy hierarchy = builder
+//                .setProgressBarImage(progressBar)
+                .setRoundingParams(roundingParams)
+                .build();
+
+        this.imageView.setHierarchy(hierarchy);
+
         this.imageViewer.setClickable(true);
 
         String urlImage = this.getIntent().getStringExtra(IMAGE_URL);
@@ -82,23 +113,20 @@ public class CustomImageViewer extends Activity {
     }
 
     private void showImageViewer(final Bitmap image) {
-        Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), android.R.anim.fade_in);
+        Animation anim = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
         anim.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
                 imageViewer.setVisibility(View.VISIBLE);
-                imageViewerProgress.setMax(100);
-                imageViewerProgress.setProgress(0);
-                imageViewerImage.setVisibility(View.GONE);
-                imageViewerProgress.setVisibility(View.GONE);
+                imageView.setVisibility(View.GONE);
+                dotProgressBar.setVisibility(View.GONE);
             }
 
             @Override
             public void onAnimationEnd(Animation animation) {
-                imageViewerImage.setImageBitmap(image);
-                imageViewerImage.setVisibility(View.VISIBLE);
-                imageViewerProgress.setVisibility(View.GONE);
-                imageViewerAttacher.update();
+                imageView.setImageBitmap(image);
+                imageView.setVisibility(View.VISIBLE);
+                dotProgressBar.setVisibility(View.GONE);
             }
 
             @Override
@@ -111,35 +139,55 @@ public class CustomImageViewer extends Activity {
 
     private void showImageViewer(final String url) {
         if (!url.contentEquals("/img/fake")) {
-            Animation anim = AnimationUtils.loadAnimation(getApplicationContext(), android.R.anim.fade_in);
+            Animation anim = AnimationUtils.loadAnimation(this, android.R.anim.fade_in);
             anim.setAnimationListener(new Animation.AnimationListener() {
                 @Override
                 public void onAnimationStart(Animation animation) {
                     imageViewer.setVisibility(View.VISIBLE);
-                    imageViewerProgress.setMax(100);
-                    imageViewerProgress.setProgress(0);
-                    imageViewerImage.setVisibility(View.GONE);
-                    imageViewerProgress.setVisibility(View.GONE);
+                    imageView.setVisibility(View.GONE);
+                    dotProgressBar.setVisibility(View.GONE);
                 }
 
                 @Override
                 public void onAnimationEnd(Animation animation) {
-                    imageViewerProgress.setVisibility(View.VISIBLE);
-                    imageViewerImage.setVisibility(View.VISIBLE);
+                    if (url.contentEquals("/img/fake.png")) {
+                        imageView.setVisibility(View.VISIBLE);
+                        imageView.setImageDrawable(CustomImageViewer.this.getResources().getDrawable(R.drawable.fake));
+                    } else {
+                        imageView.setVisibility(View.VISIBLE);
+                        imageView.setImageDrawable(null);
 
-                    Glide.with(getApplicationContext()).load(url).diskCacheStrategy(DiskCacheStrategy.ALL).listener(new RequestListener<String, GlideDrawable>() {
-                        @Override
-                        public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                            return false;
-                        }
+                        dotProgressBar.setVisibility(View.VISIBLE);
 
-                        @Override
-                        public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                            imageViewerProgress.setVisibility(View.GONE);
+                        ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
+                                .setProgressiveRenderingEnabled(false)
+                                .build();
 
-                            return false;
-                        }
-                    }).into(imageViewerImage);
+                        ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
+                            @Override
+                            public void onFinalImageSet(String id, @Nullable ImageInfo imageInfo, @Nullable Animatable anim) {
+                                if (imageInfo == null) {
+                                    return;
+                                }
+                                dotProgressBar.setVisibility(View.GONE);
+                            }
+
+                            @Override
+                            public void onFailure(String id, Throwable throwable) {
+                                dotProgressBar.setVisibility(View.GONE);
+                            }
+                        };
+
+                        DraweeController controller = Fresco.newDraweeControllerBuilder()
+                                .setControllerListener(controllerListener)
+                                .setImageRequest(request)
+                                .setTapToRetryEnabled(true)
+                                .setAutoPlayAnimations(true)
+                                .setOldController(imageView.getController())
+                                .build();
+
+                        imageView.setController(controller);
+                    }
                 }
 
                 @Override

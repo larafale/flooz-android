@@ -2,6 +2,9 @@ package me.flooz.app.UI.View;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Animatable;
+import android.net.Uri;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -13,6 +16,20 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.load.resource.drawable.GlideDrawable;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import com.facebook.common.logging.FLog;
+import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.drawee.controller.BaseControllerListener;
+import com.facebook.drawee.controller.ControllerListener;
+import com.facebook.drawee.drawable.ProgressBarDrawable;
+import com.facebook.drawee.generic.GenericDraweeHierarchy;
+import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
+import com.facebook.drawee.generic.RoundingParams;
+import com.facebook.drawee.interfaces.DraweeController;
+import com.facebook.drawee.view.SimpleDraweeView;
+import com.facebook.imagepipeline.image.ImageInfo;
+import com.facebook.imagepipeline.image.QualityInfo;
+import com.facebook.imagepipeline.request.ImageRequest;
+import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.github.silvestrpredko.dotprogressbar.DotProgressBar;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -28,9 +45,8 @@ import me.flooz.app.Utils.CircleTransform;
  */
 public class LoadingImageView extends RelativeLayout {
 
-    private ImageView imageView;
-    private DotProgressBar progressBar;
-    private RelativeLayout progressBackground;
+    private DotProgressBar dotProgressBar;
+    private SimpleDraweeView imageView;
     private Context context;
 
     public LoadingImageView(Context context)
@@ -54,68 +70,65 @@ public class LoadingImageView extends RelativeLayout {
         View view = View.inflate(context, R.layout.loading_image_view, this);
 
         this.context = context;
-        this.imageView = (ImageView) view.findViewById(R.id.loading_image_view_img);
-        this.progressBar = (DotProgressBar) view.findViewById(R.id.loading_image_view_progress);
-        this.progressBackground = (RelativeLayout) view.findViewById(R.id.loading_image_view_container);
+        this.imageView = (SimpleDraweeView) view.findViewById(R.id.loading_image_view_img);
+        this.dotProgressBar = (DotProgressBar) view.findViewById(R.id.loading_image_view_progress);
+
+        GenericDraweeHierarchyBuilder builder =
+                new GenericDraweeHierarchyBuilder(getResources());
+
+        RoundingParams roundingParams = RoundingParams.fromCornersRadius(5f);
+        roundingParams.setOverlayColor(context.getResources().getColor(R.color.background_header));
+
+        ProgressBarDrawable progressBar = new ProgressBarDrawable();
+        progressBar.setHideWhenZero(true);
+        progressBar.setColor(context.getResources().getColor(R.color.blue));
+
+        GenericDraweeHierarchy hierarchy = builder
+//                .setProgressBarImage(progressBar)
+                .setRoundingParams(roundingParams)
+                .build();
+
+        this.imageView.setHierarchy(hierarchy);
     }
 
     public void setImageFromUrl(String imgUrl) {
         if (imgUrl.contentEquals("/img/fake.png")) {
             imageView.setVisibility(VISIBLE);
-            progressBackground.setVisibility(GONE);
             imageView.setImageDrawable(this.context.getResources().getDrawable(R.drawable.fake));
         } else {
             imageView.setVisibility(VISIBLE);
             imageView.setImageDrawable(null);
-            progressBackground.setVisibility(VISIBLE);
 
-            Glide.with(this.context).load(imgUrl).diskCacheStrategy(DiskCacheStrategy.ALL).listener(new RequestListener<String, GlideDrawable>() {
+            dotProgressBar.setVisibility(VISIBLE);
+
+            ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(imgUrl))
+                    .setProgressiveRenderingEnabled(false)
+                    .build();
+
+            ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
                 @Override
-                public boolean onException(Exception e, String model, Target<GlideDrawable> target, boolean isFirstResource) {
-                    return false;
+                public void onFinalImageSet(String id, @Nullable ImageInfo imageInfo, @Nullable Animatable anim) {
+                    if (imageInfo == null) {
+                        return;
+                    }
+                    dotProgressBar.setVisibility(GONE);
                 }
 
                 @Override
-                public boolean onResourceReady(GlideDrawable resource, String model, Target<GlideDrawable> target, boolean isFromMemoryCache, boolean isFirstResource) {
-                    progressBackground.setVisibility(GONE);
-
-                    return false;
+                public void onFailure(String id, Throwable throwable) {
+                    dotProgressBar.setVisibility(GONE);
                 }
-            }).into(this.imageView);
+            };
 
-//            ImageLoader.getInstance().displayImage(imgUrl, this.imageView, null, new ImageLoadingListener() {
-//                @Override
-//                public void onLoadingStarted(String imageUri, View view) {
-//                    imageView.setVisibility(GONE);
-//                    progressBackground.setVisibility(VISIBLE);
-//                    progressBar.setProgress(0);
-//                }
-//
-//                @Override
-//                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-//
-//                }
-//
-//                @Override
-//                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-//                    imageView.setVisibility(VISIBLE);
-//                    progressBackground.setVisibility(GONE);
-//                }
-//
-//                @Override
-//                public void onLoadingCancelled(String imageUri, View view) {
-//
-//                }
-//            }, new ImageLoadingProgressListener() {
-//                @Override
-//                public void onProgressUpdate(String imageUri, View view, int current, int total) {
-//                    float tmp = current;
-//                    tmp /= total;
-//                    tmp *= 100;
-//
-//                    progressBar.setProgress((int) tmp);
-//                }
-//            });
+            DraweeController controller = Fresco.newDraweeControllerBuilder()
+                    .setControllerListener(controllerListener)
+                    .setImageRequest(request)
+                    .setTapToRetryEnabled(true)
+                    .setAutoPlayAnimations(true)
+                    .setOldController(imageView.getController())
+                    .build();
+
+            imageView.setController(controller);
         }
     }
 }
