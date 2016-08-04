@@ -154,8 +154,8 @@ public class NewCollectActivity extends BaseActivity implements ToolTipScopeView
         this.currentPicture = null;
         this.havePicture = false;
 
-        if (this.preset.to != null)
-            this.currentReceiver = this.preset.to;
+//        if (this.preset.to != null)
+//            this.currentReceiver = this.preset.to;
 
         if (this.preset.name != null)
             this.savedName = this.preset.name;

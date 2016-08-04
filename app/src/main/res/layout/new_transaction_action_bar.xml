@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/action_bar_geo"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@color/background_header"
+        android:gravity="center_vertical"
+        android:paddingLeft="@dimen/dimen_large"
+        android:paddingRight="@dimen/dimen_large"
+        android:paddingTop="@dimen/dimen_small"
+        android:paddingBottom="@dimen/dimen_small">
+
+        <ImageView
+            android:id="@+id/action_bar_geo_pic"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:src="@drawable/map"
+            android:layout_marginRight="@dimen/dimen_medium"/>
+
+        <TextView
+            android:id="@+id/action_bar_geo_text"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:textColor="@android:color/white"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/new_transac_media_bar"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/blue_middle"
+        android:baselineAligned="false"
+        android:paddingTop="@dimen/dimen_small"
+        android:paddingBottom="@dimen/dimen_small">
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_centerInParent="true"
+                android:id="@+id/action_bar_media_text"
+                android:layout_width="@dimen/new_flooz_main_social_icn"
+                android:layout_height="@dimen/new_flooz_main_social_icn"
+                android:src="@drawable/action_text"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_centerInParent="true"
+                android:id="@+id/action_bar_media_camera"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/new_flooz_main_social_icn"
+                android:src="@drawable/action_camera"/>
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_centerInParent="true"
+                android:id="@+id/action_bar_media_album"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/new_flooz_main_social_icn"
+                android:src="@drawable/action_album"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_centerInParent="true"
+                android:id="@+id/action_bar_media_gif"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/new_flooz_main_social_icn"
+                android:src="@drawable/action_gif"/>
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight="1">
+
+            <ImageView
+                android:layout_centerInParent="true"
+                android:id="@+id/action_bar_media_location"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/new_flooz_main_social_icn"
+                android:src="@drawable/action_location"/>
+
+        </RelativeLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/new_transac_action_bar"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/new_flooz_main_action_zone"
+        android:orientation="horizontal"
+        android:layout_gravity="center_vertical"
+        android:gravity="center_vertical"
+        android:background="@color/blue">
+
+        <TextView
+            android:id="@+id/action_bar_create"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Créer"
+            android:textColor="@android:color/white"
+            android:background="@drawable/background_tab_bar_action_button"
+            android:gravity="center"
+            android:enabled="true"/>
+
+        <TextView
+            android:id="@+id/action_bar_participate"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="Participer"
+            android:textColor="@android:color/white"
+            android:background="@drawable/background_tab_bar_action_button"
+            android:gravity="center"
+            android:enabled="true"/>
+
+        <TextView
+            android:id="@+id/action_bar_charge"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/MENU_CHARGE"
+            android:textColor="@android:color/white"
+            android:background="@drawable/background_tab_bar_action_button"
+            android:gravity="center"
+            android:enabled="true"/>
+
+        <View
+            android:id="@+id/action_bar_payment_separator"
+            android:layout_width="0.8dp"
+            android:layout_height="match_parent"
+            android:background="@android:color/white"
+            android:layout_marginTop="@dimen/dimen_medium"
+            android:layout_marginBottom="@dimen/dimen_medium"/>
+
+        <TextView
+            android:id="@+id/action_bar_pay"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:text="@string/MENU_PAYMENT"
+            android:textColor="@android:color/white"
+            android:background="@drawable/background_tab_bar_action_button"
+            android:gravity="center"
+            android:enabled="true"/>
+
+    </LinearLayout>
+
+</LinearLayout>

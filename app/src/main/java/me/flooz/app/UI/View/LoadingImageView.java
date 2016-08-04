@@ -84,7 +84,6 @@ public class LoadingImageView extends RelativeLayout {
         progressBar.setColor(context.getResources().getColor(R.color.blue));
 
         GenericDraweeHierarchy hierarchy = builder
-//                .setProgressBarImage(progressBar)
                 .setRoundingParams(roundingParams)
                 .build();
 

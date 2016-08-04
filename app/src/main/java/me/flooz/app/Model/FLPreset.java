@@ -13,7 +13,9 @@ import me.flooz.app.Utils.JSONHelper;
  */
 public class FLPreset {
 
-    public FLUser to;
+    public String to;
+    public String toFullname;
+    public String toInfos;
     public Number amount;
     public String presetId;
     public String why;
@@ -50,7 +52,13 @@ public class FLPreset {
             this.collectName = json.optString("to");
         } else {
             if (json.has("to"))
-                this.to = new FLUser(json.optJSONObject("to"));
+                this.to = json.optString("to");
+
+            if (json.has("toFullName"))
+                this.toFullname = json.optString("toFullName");
+
+            if (json.has("contact"))
+                this.toInfos = json.optString("contact");
         }
 
         this.presetId = json.optString("_id");

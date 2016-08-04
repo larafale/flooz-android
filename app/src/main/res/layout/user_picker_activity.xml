@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<me.flooz.app.UI.View.SlidableRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:background="@color/background_header"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/header_size">
+
+        <me.flooz.app.UI.View.ContactPickerView
+            android:id="@+id/user_picker_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="40dp"
+            android:padding="@dimen/dimen_medium"
+            android:gravity="center_vertical"
+            android:hint="Rechercher un ami"
+            android:textColorHint="@color/placeholder"
+            android:background="@color/background"
+            android:textSize="16sp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:textColor="@android:color/white"
+            android:visibility="gone"/>
+
+        <View
+            android:layout_below="@+id/user_picker_search"
+            android:id="@+id/user_picker_separator"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:background="@color/placeholder"
+            android:visibility="gone"/>
+
+        <se.emilsjolander.stickylistheaders.StickyListHeadersListView
+            android:id="@+id/user_picker_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@color/background"
+            android:dividerHeight="1px"
+            android:layout_below="@+id/user_picker_separator"
+            android:listSelector="@android:color/transparent"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/header_height">
+
+        <RelativeLayout
+            android:id="@+id/header"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/header_size">
+
+            <ImageView
+                android:id="@+id/header_item_left"
+                android:layout_width="@dimen/header_item_size"
+                android:layout_height="@dimen/header_item_size"
+                android:padding="@dimen/header_item_padding"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/nav_cross"
+                android:layout_marginLeft="@dimen/header_item_margin"
+                />
+
+            <TextView
+                android:id="@+id/header_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Choisir un destinataire"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/header_title"/>
+
+            <ImageView
+                android:id="@+id/header_item_right"
+                android:layout_width="@dimen/header_item_size"
+                android:layout_height="@dimen/header_item_size"
+                android:padding="8dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentRight="true"
+                android:src="@drawable/search"
+                android:layout_marginRight="@dimen/header_item_margin"
+                />
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/header_shadow"
+            android:background="@drawable/header_background_shadow"
+            android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+
+</me.flooz.app.UI.View.SlidableRelativeLayout>

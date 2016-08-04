@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+<me.flooz.app.UI.View.SlidableRelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clickable="true"
+    android:background="@color/background_header"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/header_size">
+
+        <EditText
+            android:id="@+id/image_picker_search"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:hint="rechercher"
+            android:textColorHint="@color/placeholder"
+            android:background="@drawable/search_bar"
+            android:layout_marginLeft="@dimen/dimen_large"
+            android:layout_marginRight="@dimen/dimen_large"
+            android:layout_marginTop="@dimen/dimen_medium"
+            android:layout_marginBottom="@dimen/dimen_medium"
+            android:paddingLeft="@dimen/dimen_large"
+            android:paddingRight="@dimen/dimen_large"
+            android:paddingTop="@dimen/dimen_medium"
+            android:paddingBottom="@dimen/dimen_medium"
+            android:textSize="16sp"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:textColor="@android:color/white"
+            android:visibility="visible"/>
+
+        <RelativeLayout
+            android:id="@+id/image_picker_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/image_picker_search">
+
+            <TextView
+                android:id="@+id/image_picker_background_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_large"
+                android:textColor="@android:color/white"
+                android:textSize="20sp"
+                android:text="Les plus utilisés"
+                android:gravity="center_horizontal"
+                />
+            
+            <ImageView
+                android:id="@+id/image_picker_background_tm"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:layout_alignParentBottom="true"
+                android:scaleType="centerInside"
+                android:layout_marginBottom="@dimen/dimen_medium"
+                android:src="@drawable/giphy"/>
+
+            <ListView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/image_picker_background_title"
+                android:layout_above="@id/image_picker_background_tm"
+                android:layout_marginBottom="@dimen/dimen_medium"
+                android:layout_marginTop="@dimen/dimen_large"
+                android:overScrollMode="never"/>
+
+
+        </RelativeLayout>
+
+        <GridView
+            android:id="@+id/image_picker_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:numColumns="3"
+            android:verticalSpacing="@dimen/dimen_medium"
+            android:horizontalSpacing="@dimen/dimen_medium"
+            android:stretchMode="columnWidth"
+            android:layout_below="@+id/image_picker_search"
+            android:listSelector="@android:color/transparent"/>
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="fill_parent"
+        android:layout_height="@dimen/header_height">
+
+        <RelativeLayout
+            android:id="@+id/header"
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/header_size">
+
+            <ImageView
+                android:id="@+id/header_item_left"
+                android:layout_width="@dimen/header_item_size"
+                android:layout_height="@dimen/header_item_size"
+                android:padding="@dimen/header_item_padding"
+                android:layout_centerVertical="true"
+                android:layout_alignParentLeft="true"
+                android:src="@drawable/nav_cross"
+                android:layout_marginLeft="@dimen/header_item_margin"
+                />
+
+            <TextView
+                android:id="@+id/header_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="Choisir un GIF"
+                android:textColor="@color/blue"
+                android:textSize="@dimen/header_title"/>
+
+        </RelativeLayout>
+
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="@dimen/header_shadow"
+            android:background="@drawable/header_background_shadow"
+            android:layout_alignParentBottom="true"/>
+
+    </RelativeLayout>
+
+</me.flooz.app.UI.View.SlidableRelativeLayout>

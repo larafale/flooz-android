@@ -42,6 +42,7 @@ import me.flooz.app.UI.Activity.ShareAppActivity;
 import me.flooz.app.UI.Activity.ShareCollectAcivity;
 import me.flooz.app.UI.Activity.SponsorActivity;
 import me.flooz.app.UI.Activity.TransactionActivity;
+import me.flooz.app.UI.Activity.UserPickerActivity;
 import me.flooz.app.UI.Activity.UserProfileActivity;
 import me.flooz.app.UI.Activity.ValidateSMSActivity;
 import me.flooz.app.UI.Activity.WebContentActivity;
@@ -238,6 +239,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("pot:invitation", ShareCollectAcivity.class);
             put("pot:participant", CollectParticipantActivity.class);
             put("pot:participation", CollectParticipationActivity.class);
+            put("user:picker", UserPickerActivity.class);
         }};
     }
 
@@ -302,6 +304,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("pot:invitation", "modal");
             put("pot:participant", "push");
             put("pot:participation", "push");
+            put("user:picker", "modal");
         }};
     }
 
