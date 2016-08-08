@@ -40,7 +40,8 @@ public class FLTransaction {
         TransactionScopePublic,
         TransactionScopeFriend,
         TransactionScopePrivate,
-        TransactionScopeAll
+        TransactionScopeAll,
+        TransactionScopeNone
     }
 
     public enum TransactionPaymentMethod {
@@ -333,7 +334,7 @@ public class FLTransaction {
                 imgId = R.drawable.scope_private;
                 break;
             default:
-                break;
+                return null;
         }
 
         return (FloozApplication.getAppContext().getResources().getDrawable(imgId));
@@ -391,7 +392,7 @@ public class FLTransaction {
             }
         }
 
-        return TransactionScope.TransactionScopeAll;
+        return null;
     }
 
     public static int transactionScopeToFloozParams(TransactionScope scope)
@@ -408,6 +409,20 @@ public class FLTransaction {
         }
 
         return 0;
+    }
+
+    public static TransactionScope transactionScopeIDToScope(int id) {
+        switch (id) {
+            case 0:
+                return TransactionScope.TransactionScopePublic;
+            case 1:
+                return TransactionScope.TransactionScopeFriend;
+            case 2:
+                return TransactionScope.TransactionScopePrivate;
+            case 3:
+                return TransactionScope.TransactionScopeAll;
+        }
+        return null;
     }
 
     public static String transactionTypeToParams(TransactionType type)

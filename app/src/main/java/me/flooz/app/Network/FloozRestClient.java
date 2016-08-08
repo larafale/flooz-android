@@ -1151,6 +1151,36 @@ public class FloozRestClient
     }
 
     /***************************/
+    /*********  IMAGES  ********/
+    /***************************/
+
+    public void imagesSearch(String search, String type, final FloozHttpResponseHandler responseHandler) {
+        HashMap<String, Object> params = new HashMap<>();
+
+        params.put("type", type);
+        params.put("flush", true);
+
+        if (search != null && search.length() > 0)
+            params.put("q", search);
+
+        this.request("/images/search", HttpRequestType.GET, params, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                JSONArray items = ((JSONObject)response).optJSONArray("items");
+
+                if (responseHandler != null)
+                    responseHandler.success(items);
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+                if (responseHandler != null)
+                    responseHandler.failure(statusCode, error);
+            }
+        });
+    }
+
+    /***************************/
     /*********  GEOLOC  ********/
     /***************************/
 

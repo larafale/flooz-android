@@ -286,13 +286,20 @@
     <string name="TRANSACTION_ACTION_CLOSE">Clôturer</string>
     <string name="TRANSACTION_ACTION_WAITING">EN ATTENTE</string>
 
-    <string name="TRANSACTION_SCOPE_TITLE">Qui peut voir ce Flooz :</string>
-    <string name="TRANSACTION_SCOPE_PUBLIC">Tout le monde</string>
-    <string name="TRANSACTION_SCOPE_FRIEND">Mes amis &amp; moi</string>
-    <string name="TRANSACTION_SCOPE_PRIVATE">Moi uniquement</string>
-    <string name="TRANSACTION_SCOPE_PUBLIC_MIN">Public</string>
-    <string name="TRANSACTION_SCOPE_FRIEND_MIN">Amis</string>
-    <string name="TRANSACTION_SCOPE_PRIVATE_MIN">Privé</string>
+    <string name="TRANSACTION_SCOPE_TITLE">Qui peut voir ce Flooz</string>
+    <string name="TRANSACTION_SCOPE_POT_TITLE">Qui peut voir cette cagnotte</string>
+
+    <string name="TRANSACTION_SCOPE_PUBLIC">Public</string>
+    <string name="TRANSACTION_SCOPE_FRIEND">Amis</string>
+    <string name="TRANSACTION_SCOPE_PRIVATE">Privé</string>
+
+    <string name="TRANSACTION_SCOPE_SUB_PUBLIC">Tout le monde sur Flooz</string>
+    <string name="TRANSACTION_SCOPE_SUB_FRIEND">Vos amis sur Flooz</string>
+    <string name="TRANSACTION_SCOPE_SUB_PRIVATE">Le destinataire et moi</string>
+
+    <string name="TRANSACTION_SCOPE_SUB_POT_PUBLIC">Tout le monde sur Flooz</string>
+    <string name="TRANSACTION_SCOPE_SUB_POT_FRIEND">Vos amis sur Flooz</string>
+    <string name="TRANSACTION_SCOPE_SUB_POT_PRIVATE">Seuls les invités et les personnes ayant le lien pourront accéder à la cagnotte</string>
 
     <string name="TRANSACTION_FILTER_TITLE">Filtrer les paiements :</string>
     <string name="TRANSACTION_FILTER_ALL">Tous</string>

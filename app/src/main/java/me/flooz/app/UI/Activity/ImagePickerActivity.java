@@ -14,16 +14,23 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Iterator;
 import java.util.List;
 
+import me.flooz.app.Adapter.ImagePickerAdapter;
+import me.flooz.app.Adapter.ImagePickerSuggestAdapter;
 import me.flooz.app.App.FloozApplication;
+import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLTrigger;
 import me.flooz.app.Model.FLUser;
+import me.flooz.app.Network.FloozHttpResponseHandler;
+import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
+import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.FLTriggerManager;
 import me.flooz.app.Utils.ViewServer;
@@ -44,9 +51,16 @@ public class ImagePickerActivity extends BaseActivity {
     private ImageView trademarkImage;
     private RelativeLayout gridBackground;
 
+    private ImagePickerAdapter gridAdapter;
+    private ImagePickerSuggestAdapter suggestAdapter;
+
     private JSONObject triggerData;
 
     private List<FLTrigger> successTriggers;
+
+    private JSONArray defaultItems;
+
+    private String pickerType;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -57,23 +71,70 @@ public class ImagePickerActivity extends BaseActivity {
 
         this.floozApp = (FloozApplication) this.getApplicationContext();
 
-
-        if (getIntent() != null && getIntent().hasExtra("triggerData"))
-            try {
-                this.triggerData = new JSONObject(getIntent().getStringExtra("triggerData"));
-            } catch (JSONException e) {
-                e.printStackTrace();
+        if (getIntent() != null) {
+            if (getIntent().hasExtra("triggerData")) {
+                try {
+                    this.triggerData = new JSONObject(getIntent().getStringExtra("triggerData"));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
+
+            this.pickerType = getIntent().getStringExtra("type");
+        }
 
         this.setContentView(R.layout.image_picker_activity);
 
         this.headerBackButton = (ImageView) this.findViewById(R.id.header_item_left);
         this.searchTextField = (EditText) this.findViewById(R.id.image_picker_search);
-//        this.resultList = (StickyListHeadersListView) this.findViewById(R.id.user_picker_list);
-//
-//        this.listAdapter = new SelectUserListAdapter(this);
-//
-//        resultList.setAdapter(this.listAdapter);
+        this.gridView = (GridView) this.findViewById(R.id.image_picker_list);
+        this.suggestList = (ListView) this.findViewById(R.id.image_picker_background_list);
+        this.suggestTitle = (TextView) this.findViewById(R.id.image_picker_background_title);
+        this.title = (TextView) this.findViewById(R.id.header_title);
+        this.trademarkImage = (ImageView) this.findViewById(R.id.image_picker_background_tm);
+        this.gridBackground = (RelativeLayout) this.findViewById(R.id.image_picker_background);
+
+        this.gridAdapter = new ImagePickerAdapter(this, this.pickerType);
+
+        this.gridView.setAdapter(this.gridAdapter);
+
+        JSONArray suggests = new JSONArray();
+
+        if (this.pickerType.contentEquals("gif"))
+            suggests = FloozRestClient.getInstance().currentTexts.suggestGifs;
+        else if (this.pickerType.contentEquals("web"))
+            suggests = FloozRestClient.getInstance().currentTexts.suggestWeb;
+
+        this.suggestAdapter = new ImagePickerSuggestAdapter(this, suggests);
+
+        this.suggestList.setAdapter(this.suggestAdapter);
+
+        this.suggestTitle.setTypeface(CustomFonts.customContentLight(this));
+        this.title.setTypeface(CustomFonts.customTitleLight(this));
+
+        this.trademarkImage.setColorFilter(this.getResources().getColor(R.color.placeholder));
+
+        FloozRestClient.getInstance().imagesSearch("", this.pickerType, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                defaultItems = (JSONArray)response;
+                gridAdapter.defaultItems = defaultItems;
+
+                if (searchTextField.getText().length() == 0 && (defaultItems == null || defaultItems.length() == 0)) {
+                    gridView.setVisibility(View.GONE);
+                    gridBackground.setVisibility(View.VISIBLE);
+                } else {
+                    gridView.setVisibility(View.VISIBLE);
+                    gridBackground.setVisibility(View.GONE);
+                    gridAdapter.notifyDataSetChanged();
+                }
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+
+            }
+        });
 
         this.headerBackButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -83,6 +144,16 @@ public class ImagePickerActivity extends BaseActivity {
                 overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
             }
         });
+
+        if (this.pickerType.contentEquals("gif")) {
+            this.title.setText("Choisir un GIF");
+            this.searchTextField.setHint("Rechercher un GIF");
+            this.trademarkImage.setVisibility(View.VISIBLE);
+        } else if (this.pickerType.contentEquals("web")) {
+            this.title.setText("Choisir une image");
+            this.searchTextField.setHint("Rechercher une image");
+            this.trademarkImage.setVisibility(View.GONE);
+        }
 
         this.searchTextField.addTextChangedListener(new TextWatcher() {
             @Override
@@ -97,123 +168,86 @@ public class ImagePickerActivity extends BaseActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-//                if (editable.length() > 0) {
-//                    listAdapter.searchUser(searchTextField.getText().toString());
-//                } else {
-//                    listAdapter.searchUser(editable.toString());
-//                }
+                if (searchTextField.getText().length() == 0 && (defaultItems == null || defaultItems.length() == 0)) {
+                    gridView.setVisibility(View.GONE);
+                    gridBackground.setVisibility(View.VISIBLE);
+                } else {
+                    gridView.setVisibility(View.VISIBLE);
+                    gridBackground.setVisibility(View.GONE);
+                    gridAdapter.search(editable.toString());
+                }
             }
         });
 
-//        this.resultList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-//            @Override
-//            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//                FLUser object = listAdapter.getItem(position);
-//                if (object != null) {
-//                    if (triggerData != null) {
-//                        successTriggers = FLTriggerManager.convertTriggersJSONArrayToList(triggerData.optJSONArray("success"));
-//                        FLTrigger successTrigger = successTriggers.get(0);
-//
-//
-//                        JSONObject data = new JSONObject();
-//
-//                        try {
-//                            if (object.userKind == FLUser.UserKind.FloozUser) {
-//                                data.put("to", object.username);
-//                                data.put("toFullName", object.fullname);
-//
-//                                if (object.blockObject != null)
-//                                    data.put("block", object.blockObject.toString());
-//
-//                            } else {
-//                                data.put("to", object.phone);
-//                                data.put("toFullName", object.fullname);
-//
-//                                if (object.firstname != null || object.lastname != null) {
-//                                    JSONObject contact = new JSONObject();
-//
-//                                    try {
-//                                        if (!object.firstname.isEmpty())
-//                                            contact.put("firstName", object.firstname);
-//
-//                                        if (!object.lastname.isEmpty())
-//                                            contact.put("lastName", object.lastname);
-//
-//
-//                                        data.put("contact", contact.toString());
-//                                    } catch (JSONException e) {
-//                                        e.printStackTrace();
-//                                    }
-//                                }
-//                            }
-//
-//                            if (triggerData.has("in") && !triggerData.optString("in").isEmpty()) {
-//                                JSONObject base = successTrigger.data.optJSONObject(triggerData.optString("in"));
-//
-//                                if (base != null) {
-//                                    Iterator it = base.keys();
-//                                    while (it.hasNext()) {
-//                                        String key = (String) it.next();
-//                                        data.put(key, base.opt(key));
-//                                    }
-//                                }
-//
-//                                successTrigger.data.put(triggerData.optString("in"), data);
-//                            } else {
-//                                Iterator it = data.keys();
-//                                while (it.hasNext()) {
-//                                    String key = (String) it.next();
-//                                    successTrigger.data.put(key, data.opt(key));
-//                                }
-//                            }
-//
-//                            headerBackButton.performClick();
-//
-//                        } catch (JSONException e) {
-//                            e.printStackTrace();
-//                        }
-//                    } else {
-//                        Intent currentIntent = getIntent();
-//
-//                        currentIntent.removeExtra("to");
-//                        currentIntent.removeExtra("toFullName");
-//                        currentIntent.removeExtra("block");
-//                        currentIntent.removeExtra("contact");
-//
-//                        if (object.userKind == FLUser.UserKind.FloozUser) {
-//                            currentIntent.putExtra("to", object.username);
-//                            currentIntent.putExtra("toFullName", object.fullname);
-//
-//                            if (object.blockObject != null)
-//                                currentIntent.putExtra("block", object.blockObject.toString());
-//
-//                        } else {
-//                            currentIntent.putExtra("to", object.phone);
-//                            currentIntent.putExtra("toFullName", object.fullname);
-//
-//                            if (object.firstname != null || object.lastname != null) {
-//                                JSONObject contact = new JSONObject();
-//
-//                                try {
-//                                    if (!object.firstname.isEmpty())
-//                                        contact.put("firstName", object.firstname);
-//
-//                                    if (!object.lastname.isEmpty())
-//                                        contact.put("lastName", object.lastname);
-//
-//
-//                                    currentIntent.putExtra("contact", contact.toString());
-//                                } catch (JSONException e) {
-//                                    e.printStackTrace();
-//                                }
-//                            }
-//                        }
-//
-//                        headerBackButton.performClick();
-//                    }
-//                }
-//            }
-//        });
+        this.suggestList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String tmp = suggestAdapter.getItem(position);
+
+                searchTextField.setText(tmp);
+
+                if (searchTextField.getText().length() == 0 && (defaultItems == null || defaultItems.length() == 0)) {
+                    gridView.setVisibility(View.GONE);
+                    gridBackground.setVisibility(View.VISIBLE);
+                } else {
+                    gridView.setVisibility(View.VISIBLE);
+                    gridBackground.setVisibility(View.GONE);
+                    gridAdapter.search(searchTextField.getText().toString());
+                }
+            }
+        });
+
+        this.gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                JSONObject object = gridAdapter.getItem(position);
+                if (object != null) {
+                    if (triggerData != null) {
+                        successTriggers = FLTriggerManager.convertTriggersJSONArrayToList(triggerData.optJSONArray("success"));
+                        FLTrigger successTrigger = successTriggers.get(0);
+
+                        JSONObject data = new JSONObject();
+
+                        try {
+                            data.put("imageUrl", object.optString("url"));
+
+                            if (triggerData.has("in") && !triggerData.optString("in").isEmpty()) {
+                                JSONObject base = successTrigger.data.optJSONObject(triggerData.optString("in"));
+
+                                if (base != null) {
+                                    Iterator it = base.keys();
+                                    while (it.hasNext()) {
+                                        String key = (String) it.next();
+                                        data.put(key, base.opt(key));
+                                    }
+                                }
+
+                                successTrigger.data.put(triggerData.optString("in"), data);
+                            } else {
+                                Iterator it = data.keys();
+                                while (it.hasNext()) {
+                                    String key = (String) it.next();
+                                    successTrigger.data.put(key, data.opt(key));
+                                }
+                            }
+
+                            headerBackButton.performClick();
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        Intent currentIntent = getIntent();
+
+                        currentIntent.removeExtra("imageUrl");
+
+                        currentIntent.putExtra("imageUrl", object.optString("url"));
+
+                        headerBackButton.performClick();
+                    }
+                }
+            }
+        });
     }
 
     @Override

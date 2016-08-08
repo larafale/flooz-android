@@ -127,8 +127,7 @@
                         <me.flooz.app.UI.View.LoadingImageView
                             android:id="@+id/new_transac_pic"
                             android:layout_width="fill_parent"
-                            android:layout_height="150dp"
-                            android:layout_marginTop="@dimen/dimen_medium"/>
+                            android:layout_height="200dp"/>
 
                         <ImageView
                             android:id="@+id/new_transac_pic_delete"

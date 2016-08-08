@@ -104,7 +104,7 @@ public class LoadingImageView extends RelativeLayout {
                     .setProgressiveRenderingEnabled(false)
                     .build();
 
-            ControllerListener controllerListener = new BaseControllerListener<ImageInfo>() {
+            ControllerListener<ImageInfo> controllerListener = new BaseControllerListener<ImageInfo>() {
                 @Override
                 public void onFinalImageSet(String id, @Nullable ImageInfo imageInfo, @Nullable Animatable anim) {
                     if (imageInfo == null) {

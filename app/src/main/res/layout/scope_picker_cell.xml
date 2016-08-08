@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="@dimen/dimen_large">
+
+    <ImageView
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:id="@+id/scope_picker_cell_image"
+        />
+
+    <ImageView
+        android:id="@+id/scope_picker_cell_check"
+        android:layout_width="15dp"
+        android:layout_height="15dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:src="@drawable/nav_check"
+        />
+
+    <TextView
+        android:id="@+id/scope_picker_cell_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/scope_picker_cell_image"
+        android:layout_toLeftOf="@id/scope_picker_cell_check"
+        android:layout_marginLeft="@dimen/dimen_large"
+        android:layout_marginRight="@dimen/dimen_large"
+        android:textSize="16sp"
+        android:singleLine="true"
+        android:textColor="@android:color/white"
+        />
+
+    <TextView
+        android:id="@+id/scope_picker_cell_subtitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/scope_picker_cell_title"
+        android:layout_toRightOf="@id/scope_picker_cell_image"
+        android:layout_toLeftOf="@id/scope_picker_cell_check"
+        android:layout_marginLeft="@dimen/dimen_large"
+        android:layout_marginRight="@dimen/dimen_large"
+        android:textSize="15sp"
+        android:textColor="@color/placeholder"
+        android:layout_marginTop="@dimen/dimen_small"
+        />
+
+
+</RelativeLayout>

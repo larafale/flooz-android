@@ -27,6 +27,8 @@ public class FLTexts {
     public String cardHolder = null;
     public String balancePopupTitle = null;
     public String balancePopupText = null;
+    public JSONArray suggestWeb = new JSONArray();
+    public JSONArray suggestGifs = new JSONArray();
 
 
     public FLTexts(JSONObject json) {
@@ -100,5 +102,10 @@ public class FLTexts {
 
         if (this.avalaibleCountries.size() == 0)
             this.avalaibleCountries.add(FLCountry.defaultCountry());
+
+        if (this.json.has("suggest")) {
+            this.suggestGifs = this.json.optJSONObject("suggest").optJSONArray("gifs");
+            this.suggestWeb = this.json.optJSONObject("suggest").optJSONArray("webs");
+        }
     }
 }

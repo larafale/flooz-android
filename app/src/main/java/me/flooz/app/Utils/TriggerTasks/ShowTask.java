@@ -57,7 +57,7 @@ public class ShowTask extends ActionTask {
                     e.printStackTrace();
                 }
             }
-        } else if (this.trigger.categoryView.contentEquals("app:popup")) {
+        } else if (this.trigger.categoryView.contentEquals("popup:basic")) {
             CustomDialog.show(FloozApplication.getInstance().getCurrentActivity(), this.trigger.data, new DialogInterface.OnShowListener() {
                 @Override
                 public void onShow(DialogInterface dialog) {

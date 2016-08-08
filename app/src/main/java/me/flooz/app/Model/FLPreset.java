@@ -15,7 +15,7 @@ public class FLPreset {
 
     public String to;
     public String toFullname;
-    public String toInfos;
+    public JSONObject toInfos;
     public Number amount;
     public String presetId;
     public String why;
@@ -36,6 +36,8 @@ public class FLPreset {
     public FLTransaction.TransactionType type = FLTransaction.TransactionType.TransactionTypeNone;
     public JSONArray steps;
     public JSONObject popup;
+    public JSONArray scopes;
+    public FLTransaction.TransactionScope scope = null;
 
     public FLPreset(JSONObject json) {
         super();
@@ -58,7 +60,7 @@ public class FLPreset {
                 this.toFullname = json.optString("toFullName");
 
             if (json.has("contact"))
-                this.toInfos = json.optString("contact");
+                this.toInfos = json.optJSONObject("contact");
         }
 
         this.presetId = json.optString("_id");
@@ -90,6 +92,12 @@ public class FLPreset {
             this.steps = json.optJSONArray("steps");
         else
             this.steps = null;
+
+        if (json.has("scope"))
+            this.scope = FLTransaction.transactionScopeIDToScope(json.optInt("scope"));
+
+        if (json.has("scopes"))
+            this.scopes = json.optJSONArray("scopes");
 
         if (json.has("payload"))
             try {

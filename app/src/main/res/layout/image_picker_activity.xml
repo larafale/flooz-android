@@ -18,13 +18,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            android:hint="rechercher"
+            android:singleLine="true"
+            android:hint="Rechercher un GIF"
             android:textColorHint="@color/placeholder"
             android:background="@drawable/search_bar"
             android:layout_marginLeft="@dimen/dimen_large"
             android:layout_marginRight="@dimen/dimen_large"
-            android:layout_marginTop="@dimen/dimen_medium"
-            android:layout_marginBottom="@dimen/dimen_medium"
+            android:layout_marginTop="@dimen/dimen_large"
+            android:layout_marginBottom="@dimen/dimen_large"
             android:paddingLeft="@dimen/dimen_large"
             android:paddingRight="@dimen/dimen_large"
             android:paddingTop="@dimen/dimen_medium"
@@ -54,22 +55,26 @@
             
             <ImageView
                 android:id="@+id/image_picker_background_tm"
-                android:layout_width="match_parent"
-                android:layout_height="60dp"
+                android:layout_width="230dp"
+                android:layout_height="30dp"
                 android:layout_alignParentBottom="true"
-                android:scaleType="centerInside"
+                android:layout_centerHorizontal="true"
+                android:scaleType="fitCenter"
                 android:layout_marginBottom="@dimen/dimen_medium"
-                android:src="@drawable/giphy"/>
+                android:src="@drawable/giphy"
+                android:padding="5dp"/>
 
             <ListView
+                android:id="@+id/image_picker_background_list"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_below="@id/image_picker_background_title"
                 android:layout_above="@id/image_picker_background_tm"
                 android:layout_marginBottom="@dimen/dimen_medium"
                 android:layout_marginTop="@dimen/dimen_large"
-                android:overScrollMode="never"/>
-
+                android:overScrollMode="never"
+                android:divider="@android:color/transparent"
+                android:listSelector="@android:color/transparent"/>
 
         </RelativeLayout>
 
@@ -80,9 +85,12 @@
             android:numColumns="3"
             android:verticalSpacing="@dimen/dimen_medium"
             android:horizontalSpacing="@dimen/dimen_medium"
+            android:layout_marginLeft="@dimen/dimen_medium"
             android:stretchMode="columnWidth"
+            android:layout_marginRight="@dimen/dimen_medium"
             android:layout_below="@+id/image_picker_search"
-            android:listSelector="@android:color/transparent"/>
+            android:listSelector="@android:color/transparent"
+            android:visibility="gone"/>
 
     </RelativeLayout>
 

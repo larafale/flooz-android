@@ -24,6 +24,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.controller.ControllerListener;
 import com.facebook.drawee.drawable.ProgressBarDrawable;
+import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.generic.RoundingParams;
@@ -88,6 +89,7 @@ public class CustomImageViewer extends Activity {
 
         GenericDraweeHierarchy hierarchy = builder
 //                .setProgressBarImage(progressBar)
+                .setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER)
                 .setRoundingParams(roundingParams)
                 .build();
 

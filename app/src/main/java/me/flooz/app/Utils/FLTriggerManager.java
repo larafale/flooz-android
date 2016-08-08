@@ -29,6 +29,7 @@ import me.flooz.app.UI.Activity.NewTransactionActivity;
 import me.flooz.app.UI.Activity.NotificationActivity;
 import me.flooz.app.UI.Activity.PaymentAudiotelActivity;
 import me.flooz.app.UI.Activity.PaymentSourceActivity;
+import me.flooz.app.UI.Activity.ScopePickerActivity;
 import me.flooz.app.UI.Activity.SearchActivity;
 import me.flooz.app.UI.Activity.Secure3DActivity;
 import me.flooz.app.UI.Activity.Settings.BankSettingsActivity;
@@ -74,6 +75,7 @@ import me.flooz.app.Utils.TriggerTasks.HideTask;
 import me.flooz.app.Utils.TriggerTasks.LoginTask;
 import me.flooz.app.Utils.TriggerTasks.LogoutTask;
 import me.flooz.app.Utils.TriggerTasks.OpenTask;
+import me.flooz.app.Utils.TriggerTasks.PickerTask;
 import me.flooz.app.Utils.TriggerTasks.SendTask;
 import me.flooz.app.Utils.TriggerTasks.ShowTask;
 import me.flooz.app.Utils.TriggerTasks.SyncTask;
@@ -166,6 +168,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put(FLTrigger.FLTriggerAction.FLTriggerActionSend, SendTask.class);
             put(FLTrigger.FLTriggerAction.FLTriggerActionShow, ShowTask.class);
             put(FLTrigger.FLTriggerAction.FLTriggerActionSync, SyncTask.class);
+            put(FLTrigger.FLTriggerAction.FLTriggerActionPicker, PickerTask.class);
         }};
     }
 
@@ -240,6 +243,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("pot:participant", CollectParticipantActivity.class);
             put("pot:participation", CollectParticipationActivity.class);
             put("user:picker", UserPickerActivity.class);
+            put("scope:picker", ScopePickerActivity.class);
         }};
     }
 
@@ -305,6 +309,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("pot:participant", "push");
             put("pot:participation", "push");
             put("user:picker", "modal");
+            put("scope:picker", "modal");
         }};
     }
 

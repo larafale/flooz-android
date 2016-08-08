@@ -24,6 +24,7 @@ public class FLTrigger {
         FLTriggerActionLogout,
         FLTriggerActionOpen,
         FLTriggerActionNone,
+        FLTriggerActionPicker,
         FLTriggerActionSend,
         FLTriggerActionShow,
         FLTriggerActionSync
@@ -120,6 +121,9 @@ public class FLTrigger {
                 break;
             case "sync":
                 this.action = FLTriggerActionSync;
+                break;
+            case "picker":
+                this.action = FLTriggerActionPicker;
                 break;
         }
 

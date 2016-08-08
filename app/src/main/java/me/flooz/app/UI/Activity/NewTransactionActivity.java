@@ -25,10 +25,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -67,7 +63,9 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
     private static final int SELECT_PICTURE = 1;
     private static final int TAKE_PICTURE = 2;
     private static final int PERMISSION_CAMERA = 3;
+    private static final int PICK_SCOPE = 4;
     private static final int PICK_LOCATION = 5;
+    private static final int PICK_IMAGE = 6;
     private static final int PERMISSION_LOCATION = 6;
     private static final int PERMISSION_STORAGE = 7;
 
@@ -76,6 +74,10 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
 
     private FLUser currentReceiver = null;
     private FLPreset preset = null;
+    private String to;
+    private String toFullName;
+    private JSONObject toInfos;
+    private JSONObject blockUser;
 
     private Uri tmpUriImage;
     private String random;
@@ -84,7 +86,7 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
 
     public Boolean havePicture = false;
     public Bitmap currentPicture;
-    public Bitmap currentPictureURL;
+    public String currentPictureURL;
 
     FLTransaction.TransactionType currentType;
     private FLTransaction.TransactionScope currentScope = FLTransaction.TransactionScope.TransactionScopePublic;
@@ -112,6 +114,7 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
         this.preset = null;
         this.currentPicture = null;
         this.havePicture = false;
+        this.blockUser = null;
 
         this.savedAmount = "";
         this.savedWhy = "";
@@ -123,10 +126,13 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
         this.preset = data;
         this.currentPicture = null;
         this.havePicture = false;
+        this.blockUser = null;
 
         if (!this.preset.isParticipation) {
             if (this.preset.to != null) {
-
+                this.to = this.preset.to;
+                this.toFullName = this.preset.toFullname;
+                this.toInfos = this.preset.toInfos;
             }
         }
 
@@ -141,27 +147,8 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
             this.savedWhy = "";
 
         if (this.preset.image != null) {
-            ImageLoader.getInstance().loadImage(this.preset.image, new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted(String imageUri, View view) {
-
-                }
-
-                @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-                }
-
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                    instance.photoTaken(loadedImage);
-                }
-
-                @Override
-                public void onLoadingCancelled(String imageUri, View view) {
-
-                }
-            });
+            havePicture = true;
+            currentPictureURL = this.preset.image;
         }
     }
 
@@ -241,7 +228,15 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
         this.headerScope.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent scopeIntent = new Intent(NewTransactionActivity.this, ScopePickerActivity.class);
 
+                scopeIntent.putExtra("scope", FLTransaction.transactionScopeToParams(currentScope));
+
+                if (preset != null && preset.scopes != null)
+                    scopeIntent.putExtra("scopes", preset.scopes.toString());
+
+                instance.startActivityForResult(scopeIntent, PICK_SCOPE);
+                instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
             }
         });
 
@@ -308,7 +303,6 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
             }
         });
 
-
         this.updateScopeField();
 
         if (getIntent() != null && getIntent().hasExtra("user"))
@@ -320,7 +314,12 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
 
         if (this.havePicture) {
             this.picContainer.setVisibility(View.VISIBLE);
-//            this.pic.setImageBitmap(currentPicture);
+
+            if (this.currentPictureURL != null) {
+                pic.setImageFromUrl(this.currentPictureURL);
+            } else if (this.currentPicture != null) {
+                pic.setImageFromUrl("file://" + imagePath);
+            }
         }
 
         picDeleteButton.setOnClickListener(new View.OnClickListener() {
@@ -380,6 +379,17 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
                 this.contentTextfield.setFocusableInTouchMode(false);
             }
         }
+
+        if (preset != null && preset.scope != null)
+            this.currentScope = this.preset.scope;
+        else {
+            if (FloozRestClient.getInstance().currentUser != null)
+                this.currentScope = FLTransaction.transactionScopeParamToEnum((String) ((Map) FloozRestClient.getInstance().currentUser.settings.get("def")).get("scope"));
+            else
+                this.currentScope = FLTransaction.TransactionScope.TransactionScopePublic;
+        }
+
+        this.updateScopeField();
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -442,6 +452,41 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
                 }
 
                 this.actionBar.setCurrentGeo(currentGeo);
+            } else if (requestCode == PICK_IMAGE) {
+                if (data.hasExtra("imageUrl")) {
+                    currentPicture = null;
+                    imagePath = null;
+                    currentPictureURL = data.getStringExtra("imageUrl");
+
+                    Handler mainHandler = new Handler(this.getMainLooper());
+                    Runnable myRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            if (currentPicture != null)
+                                currentPicture.recycle();
+                            havePicture = true;
+                            picContainer.setVisibility(View.VISIBLE);
+
+                            pic.setImageFromUrl(currentPictureURL);
+                        }
+                    };
+
+                    mainHandler.post(myRunnable);
+                }
+            } else if (requestCode == PICK_SCOPE) {
+                if (data.hasExtra("scope")) {
+                    currentScope = FLTransaction.transactionParamsToScope(data.getStringExtra("scope"));
+
+                    Handler mainHandler = new Handler(this.getMainLooper());
+                    Runnable myRunnable = new Runnable() {
+                        @Override
+                        public void run() {
+                            updateScopeField();
+                        }
+                    };
+
+                    mainHandler.post(myRunnable);
+                }
             }
         }
     }
@@ -449,11 +494,6 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
     @Override
     public void onStart() {
         super.onStart();
-
-        if (FloozRestClient.getInstance().currentUser != null)
-            this.currentScope = FLTransaction.transactionScopeParamToEnum((String) ((Map) FloozRestClient.getInstance().currentUser.settings.get("def")).get("scope"));
-        else
-            this.currentScope = FLTransaction.TransactionScope.TransactionScopePublic;
 
         if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.READ_CONTACTS)) {
@@ -500,7 +540,7 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
     }
 
     private void updateScopeField() {
-//        this.scopePic.setImageDrawable(FLTransaction.transactionScopeToImage(this.currentScope));
+        this.headerScope.setImageDrawable(FLTransaction.transactionScopeToImage(this.currentScope));
     }
 
     private void performTransaction(FLTransaction.TransactionType type) {
@@ -519,87 +559,6 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
             }
         });
     }
-
-    private View.OnClickListener showCamera = new View.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            saveData();
-
-            List<ActionSheetItem> items = new ArrayList<>();
-
-            items.add(new ActionSheetItem(instance, R.string.GLOBAL_CAMERA, new ActionSheetItem.ActionSheetItemClickListener() {
-                @Override
-                public void onClick() {
-                    if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
-                            || ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
-//                    // Display UI and wait for user interaction
-//                } else {
-                        ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_CAMERA);
-//                }
-                    } else {
-                        Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-                        tmpUriImage = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
-                        intent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUriImage);
-
-                        try {
-                            startActivityForResult(intent, TAKE_PICTURE);
-                        } catch (ActivityNotFoundException e) {
-
-                        }
-                    }
-                }
-            }));
-
-            items.add(new ActionSheetItem(instance, R.string.GLOBAL_ALBUMS, new ActionSheetItem.ActionSheetItemClickListener() {
-                @Override
-                public void onClick() {
-                    if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
-//                    // Display UI and wait for user interaction
-//                } else {
-                        ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_STORAGE);
-//                }
-                    } else {
-                        Intent intent = new Intent(Intent.ACTION_PICK);
-                        intent.setType("image/*");
-                        try {
-                            startActivityForResult(Intent.createChooser(intent, ""), SELECT_PICTURE);
-                        } catch (ActivityNotFoundException e) {
-
-                        }
-                    }
-                }
-            }));
-
-            ActionSheet.showWithItems(instance, items);
-
-        }
-    };
-
-    private View.OnClickListener showGeo = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            saveData();
-            if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
-                    || ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
-//                    // Display UI and wait for user interaction
-//                } else {
-                ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.ACCESS_FINE_LOCATION}, PERMISSION_LOCATION);
-//                }
-            } else {
-                Intent intentGeo = new Intent(instance, LocationActivity.class);
-
-                if (currentGeo != null)
-                    intentGeo.putExtra("geo", currentGeo.toString());
-
-                instance.startActivityForResult(intentGeo, PICK_LOCATION);
-                instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-            }
-        }
-    };
 
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         if (requestCode == PERMISSION_CAMERA) {
@@ -638,20 +597,20 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
     }
 
     public void changeUser(FLUser user) {
-//        this.currentReceiver = user;
-//
-//        if (this.currentReceiver != null) {
-//            this.toPicker.clear();
-//            this.toPicker.clearText();
-//            this.toPicker.addObject(this.currentReceiver);
-//            this.contactListAdapter.searchUser("");
-//            if (this.contentTextfield.getText().length() > 0)
-//                this.baseLayout.requestFocus();
-//            else
-//                this.contentTextfield.requestFocus();
-//
-//            this.currentReceiver = user;
-//        }
+        this.currentReceiver = user;
+
+        if (this.currentReceiver != null) {
+            this.to = this.currentReceiver.username;
+            this.toFullName = this.currentReceiver.fullname;
+            this.blockUser = this.currentReceiver.blockObject;
+
+            this.toTextview.setText(this.toFullName);
+
+            if (this.contentTextfield.getText().length() > 0)
+                this.baseLayout.requestFocus();
+            else
+                this.contentTextfield.requestFocus();
+        }
     }
 
     public void photoTaken(final Bitmap photo) {
@@ -664,9 +623,7 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
                 havePicture = true;
                 picContainer.setVisibility(View.VISIBLE);
 
-                int nh = (int) (photo.getHeight() * (256.0 / photo.getWidth()));
-                Bitmap scaled = Bitmap.createScaledBitmap(photo, 256, nh, true);
-//                pic.setImageBitmap(scaled);
+                pic.setImageFromUrl("file://" + imagePath);
 
                 currentPicture = photo;
             }
@@ -679,33 +636,20 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
 
         Map<String, Object> params = new HashMap<>();
         params.put("amount", this.amountTextfield.getText().toString());
-        if (currentReceiver != null) {
-            if (currentReceiver.userKind == FLUser.UserKind.FloozUser)
-                params.put("to", currentReceiver.username);
-            else
-                params.put("to", currentReceiver.phone);
+        if (to != null) {
+            params.put("to", this.to);
 
-            if (currentReceiver.userKind == FLUser.UserKind.PhoneUser) {
-                currentReceiver = ContactsManager.fillUserInformations(currentReceiver);
-
-                Map<String, Object> contact = new HashMap<>();
-                if (currentReceiver.firstname != null && !currentReceiver.firstname.isEmpty())
-                    contact.put("firstName", currentReceiver.firstname);
-
-                if (currentReceiver.lastname != null && !currentReceiver.lastname.isEmpty())
-                    contact.put("lastName", currentReceiver.lastname);
-
-                if (currentReceiver.fullname != null && !currentReceiver.fullname.isEmpty())
-                    contact.put("name", currentReceiver.fullname);
-
-                if (contact.values().size() > 0)
-                    params.put("contact", contact);
-            }
+            if (this.toInfos != null)
+                params.put("contact", this.toInfos);
         } else
             params.put("to", "");
 
-        if (havePicture)
-            params.put("hasImage", true);
+        if (havePicture) {
+            if (currentPicture != null)
+                params.put("hasImage", true);
+            else if (currentPictureURL != null)
+                params.put("imageUrl", currentPictureURL);
+        }
 
         params.put("random", random);
         params.put("method", FLTransaction.transactionTypeToParams(this.currentType));
@@ -763,20 +707,6 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
     public void onBackPressed() {
         if (this.preset == null || this.preset.close)
             this.closeButton.performClick();
-    }
-
-    public void scopeChanged(FLTransaction.TransactionScope scope) {
-//        this.tipContainer.dismiss(true);
-//        this.tipContainer.setVisibility(View.GONE);
-//        this.toolTipScope = null;
-//        this.currentScope = scope;
-//        this.updateScopeField();
-//
-//        if (isDemo && demoCurrentStep < preset.steps.length()) {
-//            NewTransactionActivity.this.showDemoStepPopover(NewTransactionActivity.this.preset.steps.optJSONObject(demoCurrentStep));
-//        }
-//
-//        this.validateView();
     }
 
     @Override
@@ -857,17 +787,26 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
         items.add(new ActionSheetItem(instance, "Rechercher sur le Web", new ActionSheetItem.ActionSheetItemClickListener() {
             @Override
             public void onClick() {
+                Intent intentImage = new Intent(instance, ImagePickerActivity.class);
 
+                intentImage.putExtra("type", "web");
+
+                instance.startActivityForResult(intentImage, PICK_IMAGE);
+                instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
             }
         }));
 
         ActionSheet.showWithItems(instance, items);
-
     }
 
     @Override
     public void presentGIFPicker() {
+        Intent intentGif = new Intent(instance, ImagePickerActivity.class);
 
+        intentGif.putExtra("type", "gif");
+
+        instance.startActivityForResult(intentGif, PICK_IMAGE);
+        instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
     }
 
     @Override

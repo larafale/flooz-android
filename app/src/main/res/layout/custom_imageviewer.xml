@@ -28,7 +28,7 @@
         android:adjustViewBounds="true"
         fresco:roundedCornerRadius="@dimen/dimen_small"
         fresco:roundWithOverlayColor="@color/background_header"
-        fresco:actualImageScaleType="fitCenter"/>
+        fresco:actualImageScaleType="centerInside"/>
 
     <ImageView
         android:id="@+id/main_image_close"
