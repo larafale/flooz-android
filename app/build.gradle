@@ -88,7 +88,7 @@ android {
             buildConfigField "boolean", "LOCAL_API", "false"
             buildConfigField "boolean", "DEBUG_API", "false"
             signingConfig signingConfigs.release
-            debuggable false
+            debuggable true
         }
     }
 

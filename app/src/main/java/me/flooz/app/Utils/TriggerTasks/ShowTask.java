@@ -76,6 +76,9 @@ public class ShowTask extends ActionTask {
             for (int i = 0; i < itemArray.length(); i++) {
                 final JSONObject itemData = itemArray.optJSONObject(i);
 
+                if (itemData.has("noAndroid") && itemData.optBoolean("noAndroid"))
+                    continue;
+
                 items.add(new ActionSheetItem(FloozApplication.getAppContext(), itemData.optString("name"), new ActionSheetItem.ActionSheetItemClickListener() {
                     @Override
                     public void onClick() {

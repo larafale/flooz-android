@@ -1,6 +1,7 @@
 package me.flooz.app.App;
 
 import android.app.IntentService;
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
@@ -8,6 +9,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
@@ -16,6 +18,7 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.LoadingActivity;
+import me.flooz.app.Utils.FLHelper;
 
 /**
  * Created by Flooz on 1/14/15.
@@ -77,6 +80,14 @@ public class GcmIntentService extends IntentService {
                     .setExtras(extras)
                     .setPriority(NotificationCompat.PRIORITY_HIGH)
                     .setCategory(NotificationCompat.CATEGORY_SOCIAL);
+
+            if (extras.getCharSequence("sound") != null && extras.getCharSequence("sound").length() > 0) {
+                int resId = FLHelper.getResourceId(extras.getCharSequence("sound").toString().replace("\"", ""), "raw", getPackageName());
+                Uri sound = Uri.parse("android.resource://" + getPackageName() + "/" + resId);
+                builder.setSound(sound);
+            } else {
+                builder.setDefaults(Notification.DEFAULT_SOUND);
+            }
 
             notificationManager.notify(NOTIFICATION_ID, builder.build());
         }

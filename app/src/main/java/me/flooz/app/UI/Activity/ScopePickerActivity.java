@@ -21,6 +21,7 @@ import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Model.FLTrigger;
 import me.flooz.app.R;
+import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.FLTriggerManager;
 import me.flooz.app.Utils.ViewServer;
@@ -91,6 +92,13 @@ public class ScopePickerActivity extends BaseActivity {
         this.headerBackButton = (ImageView) this.findViewById(R.id.header_item_left);
         this.headerTitle = (TextView) this.findViewById(R.id.header_title);
         this.listView = (ListView) this.findViewById(R.id.scope_picker_list);
+
+        this.headerTitle.setTypeface(CustomFonts.customTitleLight(this));
+
+        if (this.isPot)
+            this.headerTitle.setText(this.getResources().getString(R.string.TRANSACTION_SCOPE_POT_TITLE));
+        else
+            this.headerTitle.setText(this.getResources().getString(R.string.TRANSACTION_SCOPE_TITLE));
 
         this.listAdapter = new ScopePickerAdapter(this, isPot, currentScope, limitedScopes);
 

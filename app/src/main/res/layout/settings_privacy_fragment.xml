@@ -37,7 +37,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/TRANSACTION_SCOPE_PUBLIC_MIN"
+                android:text="@string/TRANSACTION_SCOPE_PUBLIC"
                 style="@style/RadioButton" />
 
             <RadioButton
@@ -45,7 +45,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/TRANSACTION_SCOPE_FRIEND_MIN"
+                android:text="@string/TRANSACTION_SCOPE_FRIEND"
                 style="@style/RadioButton" />
 
             <RadioButton
@@ -53,7 +53,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/TRANSACTION_SCOPE_PRIVATE_MIN"
+                android:text="@string/TRANSACTION_SCOPE_PRIVATE"
                 style="@style/RadioButton" />
 
         </info.hoang8f.android.segmented.SegmentedGroup>
