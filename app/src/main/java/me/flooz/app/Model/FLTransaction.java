@@ -74,6 +74,8 @@ public class FLTransaction {
 
     public Boolean isAvailable;
     public Boolean isClosable;
+    public Boolean isPublishable;
+    public Boolean isShareable;
 
     public Boolean isCollect;
     public Boolean isParticipation;
@@ -154,10 +156,19 @@ public class FLTransaction {
 
                 this.social = new FLSocial(json);
 
-                this.scope = transactionScopeParamToEnum(json.getString("scopeString"));
+                if (json.has("scope"))
+                    this.scope = transactionScopeIDToScope(json.optInt("scope"));
+                else
+                    this.scope = null;
 
                 this.isCancelable = false;
                 this.isAcceptable = false;
+                this.isPublishable = false;
+                this.isShareable = false;
+
+                if (json.has("isShareable")) {
+                    this.isShareable = json.optBoolean("isShareable");
+                }
 
                 this.isAvailable = false;
                 this.isClosable = false;
@@ -173,6 +184,9 @@ public class FLTransaction {
 
                     if (this.actions.has("close"))
                         isClosable = true;
+
+                    if (this.actions.has("publish"))
+                        isPublishable = true;
                 }
 
                 if (!this.isCollect && this.actions != null) {
@@ -181,7 +195,7 @@ public class FLTransaction {
 
                     if (this.actions.has("decline"))
                         isCancelable = true;
-                }
+                 }
 
                 if (json.has("from"))
                     this.from = new FLUser(json.optJSONObject("from"));
@@ -293,10 +307,11 @@ public class FLTransaction {
             return TransactionScope.TransactionScopePrivate;
         else if (param.contentEquals("friend"))
             return TransactionScope.TransactionScopeFriend;
+        else if (param.contentEquals("public"))
+            return TransactionScope.TransactionScopeFriend;
 
-        return TransactionScope.TransactionScopePublic;
+        return null;
     }
-
 
     public static String transactionScopeToText(TransactionScope scope)
     {
@@ -321,6 +336,9 @@ public class FLTransaction {
 
     public static Drawable transactionScopeToImage(TransactionScope scope)
     {
+        if (scope == null)
+            return null;
+
         int imgId = 0;
 
         switch (scope) {

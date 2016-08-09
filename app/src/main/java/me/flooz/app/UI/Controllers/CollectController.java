@@ -52,6 +52,7 @@ import me.flooz.app.UI.Fragment.Home.TabFragments.SocialLikesFragment;
 import me.flooz.app.UI.Tools.ActionSheet;
 import me.flooz.app.UI.Tools.ActionSheetItem;
 import me.flooz.app.UI.Tools.CustomImageViewer;
+import me.flooz.app.UI.Tools.CustomToast;
 import me.flooz.app.UI.View.LoadingImageView;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
@@ -101,6 +102,7 @@ public class CollectController extends BaseController implements CollectAdapter.
     private LinearLayout actionLayout;
     private Button participateButton;
     private Button closeCollectButton;
+    private Button publishButton;
     private View actionSeparator;
 
     private CollectAdapter listAdapter;
@@ -226,6 +228,7 @@ public class CollectController extends BaseController implements CollectAdapter.
         actionLayout = (LinearLayout) currentView.findViewById(R.id.collect_view_action);
         participateButton = (Button) currentView.findViewById(R.id.collect_view_participate_button);
         closeCollectButton = (Button) currentView.findViewById(R.id.collect_view_close_button);
+        publishButton = (Button) currentView.findViewById(R.id.collect_view_publish_button);
         actionSeparator = currentView.findViewById(R.id.collect_view_action_separator);
 
         navbarLabel.setTypeface(CustomFonts.customTitleLight(parentActivity));
@@ -320,6 +323,13 @@ public class CollectController extends BaseController implements CollectAdapter.
             }
         });
 
+        publishButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(collect.actions.optJSONArray("publish")));
+            }
+        });
+
         commentButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -398,7 +408,21 @@ public class CollectController extends BaseController implements CollectAdapter.
             shareButton.setVisibility(View.INVISIBLE);
             closeLabel.setVisibility(View.GONE);
         } else {
-            if (this.collect.isAvailable && this.collect.isClosable) {
+            if (this.collect.isPublishable) {
+                actionLayout.setVisibility(View.VISIBLE);
+                participateButton.setVisibility(View.GONE);
+                closeCollectButton.setVisibility(View.GONE);
+                actionSeparator.setVisibility(View.GONE);
+                commentTextField.setVisibility(View.GONE);
+                closeCommentButton.setVisibility(View.INVISIBLE);
+                sendCommentButton.setVisibility(View.INVISIBLE);
+                commentButton.setVisibility(View.VISIBLE);
+                shareButton.setVisibility(View.VISIBLE);
+                closeLabel.setVisibility(View.GONE);
+                publishButton.setVisibility(View.VISIBLE);
+
+                publishButton.setTextSize(20);
+            } else if (this.collect.isAvailable && this.collect.isClosable) {
                 actionLayout.setVisibility(View.VISIBLE);
                 participateButton.setVisibility(View.VISIBLE);
                 closeCollectButton.setVisibility(View.VISIBLE);
@@ -409,6 +433,7 @@ public class CollectController extends BaseController implements CollectAdapter.
                 commentButton.setVisibility(View.VISIBLE);
                 shareButton.setVisibility(View.VISIBLE);
                 closeLabel.setVisibility(View.GONE);
+                publishButton.setVisibility(View.GONE);
 
                 participateButton.setTextSize(16);
                 closeCollectButton.setTextSize(16);
@@ -423,6 +448,7 @@ public class CollectController extends BaseController implements CollectAdapter.
                 commentButton.setVisibility(View.VISIBLE);
                 shareButton.setVisibility(View.VISIBLE);
                 closeLabel.setVisibility(View.GONE);
+                publishButton.setVisibility(View.GONE);
 
                 participateButton.setTextSize(20);
                 closeCollectButton.setTextSize(20);
@@ -437,6 +463,7 @@ public class CollectController extends BaseController implements CollectAdapter.
                 commentButton.setVisibility(View.VISIBLE);
                 shareButton.setVisibility(View.VISIBLE);
                 closeLabel.setVisibility(View.GONE);
+                publishButton.setVisibility(View.GONE);
 
                 participateButton.setTextSize(20);
                 closeCollectButton.setTextSize(20);
@@ -580,38 +607,50 @@ public class CollectController extends BaseController implements CollectAdapter.
     }
 
     public void collectShareClicked() {
-        if (collect.actions == null || collect.actions.length() == 0) {
-            Intent share = new Intent(Intent.ACTION_SEND);
-            share.setType("text/plain");
+        if (collect.isShareable) {
+            if (collect.actions == null || collect.actions.length() == 0) {
+                Intent share = new Intent(Intent.ACTION_SEND);
+                share.setType("text/plain");
 
-            share.putExtra(Intent.EXTRA_TEXT, "https://www.flooz.me/pot/" + collect.transactionId);
+                share.putExtra(Intent.EXTRA_TEXT, "https://www.flooz.me/pot/" + collect.transactionId);
 
-            parentActivity.startActivity(Intent.createChooser(share, parentActivity.getResources().getString(R.string.SHARE_COLLECT)));
+                parentActivity.startActivity(Intent.createChooser(share, parentActivity.getResources().getString(R.string.SHARE_COLLECT)));
+            } else {
+                List<ActionSheetItem> items = new ArrayList<>();
+                items.add(new ActionSheetItem(parentActivity, "Inviter vos amis", new ActionSheetItem.ActionSheetItemClickListener() {
+                    @Override
+                    public void onClick() {
+                        Intent intent = new Intent(parentActivity, ShareCollectAcivity.class);
+                        intent.putExtra("potId", collect.transactionId);
+                        parentActivity.startActivity(intent);
+                        parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                    }
+                }));
+
+                items.add(new ActionSheetItem(parentActivity, "Partager le lien", new ActionSheetItem.ActionSheetItemClickListener() {
+                    @Override
+                    public void onClick() {
+                        Intent share = new Intent(Intent.ACTION_SEND);
+                        share.setType("text/plain");
+
+                        share.putExtra(Intent.EXTRA_TEXT, "https://www.flooz.me/pot/" + collect.transactionId);
+
+                        parentActivity.startActivity(Intent.createChooser(share, parentActivity.getResources().getString(R.string.SHARE_COLLECT)));
+                    }
+                }));
+
+                ActionSheet.showWithItems(parentActivity, items);
+            }
         } else {
-            List<ActionSheetItem> items = new ArrayList<>();
-            items.add(new ActionSheetItem(parentActivity, "Inviter vos amis", new ActionSheetItem.ActionSheetItemClickListener() {
-                @Override
-                public void onClick() {
-                    Intent intent = new Intent(parentActivity, ShareCollectAcivity.class);
-                    intent.putExtra("potId", collect.transactionId);
-                    parentActivity.startActivity(intent);
-                    parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-                }
-            }));
+            FLError error = new FLError();
 
-            items.add(new ActionSheetItem(parentActivity, "Partager le lien", new ActionSheetItem.ActionSheetItemClickListener() {
-                @Override
-                public void onClick() {
-                    Intent share = new Intent(Intent.ACTION_SEND);
-                    share.setType("text/plain");
+            error.title = "Partage indisponible";
+            error.text = "Veuillez publier votre cagnotte avant de la partager";
+            error.type = FLError.ErrorType.ErrorTypeWarning;
+            error.time = 3;
+            error.delay = 0;
 
-                    share.putExtra(Intent.EXTRA_TEXT, "https://www.flooz.me/pot/" + collect.transactionId);
-
-                    parentActivity.startActivity(Intent.createChooser(share, parentActivity.getResources().getString(R.string.SHARE_COLLECT)));
-                }
-            }));
-
-            ActionSheet.showWithItems(parentActivity, items);
+            CustomToast.show(parentActivity, error);
         }
     }
 

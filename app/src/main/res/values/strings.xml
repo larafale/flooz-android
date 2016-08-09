@@ -283,6 +283,7 @@
     <string name="TRANSACTION_ACTION_REFUSE">Refuser</string>
     <string name="TRANSACTION_ACTION_CANCEL">Annuler</string>
     <string name="TRANSACTION_ACTION_JOIN">Participer</string>
+    <string name="TRANSACTION_ACTION_PUBLISH">Publier</string>
     <string name="TRANSACTION_ACTION_CLOSE">Clôturer</string>
     <string name="TRANSACTION_ACTION_WAITING">EN ATTENTE</string>
 

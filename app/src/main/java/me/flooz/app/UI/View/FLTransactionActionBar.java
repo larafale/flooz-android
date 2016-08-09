@@ -202,11 +202,13 @@ public class FLTransactionActionBar extends LinearLayout {
                 this.participateButton.setVisibility(GONE);
                 this.payButton.setVisibility(GONE);
                 this.chargeButton.setVisibility(GONE);
+                this.actionSeparator.setVisibility(GONE);
                 break;
             case ActionBarTypeParticipation:
                 this.createButton.setVisibility(GONE);
                 this.payButton.setVisibility(GONE);
                 this.chargeButton.setVisibility(GONE);
+                this.actionSeparator.setVisibility(GONE);
                 break;
         }
     }

@@ -59,7 +59,7 @@ import me.flooz.app.Utils.ViewServer;
 /**
  * Created by Flooz on 3/13/15.
  */
-public class NewTransactionActivity extends BaseActivity implements FLTransactionActionBar.FLTransactionActionBarDelegate{
+public class NewTransactionActivity extends BaseActivity implements FLTransactionActionBar.FLTransactionActionBarDelegate {
     private static final int SELECT_PICTURE = 1;
     private static final int TAKE_PICTURE = 2;
     private static final int PERMISSION_CAMERA = 3;
@@ -190,10 +190,14 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
         this.actionBar = (FLTransactionActionBar) this.findViewById(R.id.new_transac_action_bar);
 
         this.pic = (LoadingImageView) this.findViewById(R.id.new_transac_pic);
+
         this.pic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CustomImageViewer.start(NewTransactionActivity.this, "file://" + imagePath);
+                if (currentPicture != null)
+                    CustomImageViewer.start(NewTransactionActivity.this, "file://" + imagePath);
+                else if (currentPictureURL != null)
+                    CustomImageViewer.start(NewTransactionActivity.this, currentPictureURL);
             }
         });
 
@@ -338,23 +342,6 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 actionBar.highlightButton(0, hasFocus);
-            }
-        });
-
-        this.contentTextfield.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-
             }
         });
 
