@@ -533,6 +533,8 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
     private void performTransaction(FLTransaction.TransactionType type) {
         this.currentType = type;
 
+        this.hideKeyboard();
+
         FloozRestClient.getInstance().showLoadView();
         FloozRestClient.getInstance().performTransaction(this.generateRequestParams(true), new FloozHttpResponseHandler() {
             @Override
@@ -821,7 +823,10 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
 
     @Override
     public void validateParticipate() {
+        this.hideKeyboard();
 
+        FloozRestClient.getInstance().showLoadView();
+        FloozRestClient.getInstance().createParticipationValidate(preset.presetId, generateRequestParams(true), null);
     }
 
     @Override

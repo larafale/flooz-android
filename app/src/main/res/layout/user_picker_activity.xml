@@ -20,7 +20,7 @@
             android:minHeight="40dp"
             android:padding="@dimen/dimen_medium"
             android:gravity="center_vertical"
-            android:hint="Rechercher un ami"
+            android:hint="Rechercher un destinataire"
             android:textColorHint="@color/placeholder"
             android:background="@color/background"
             android:textSize="16sp"

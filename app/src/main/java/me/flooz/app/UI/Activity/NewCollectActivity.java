@@ -418,6 +418,8 @@ public class NewCollectActivity extends BaseActivity implements FLTransactionAct
     }
 
     public void createCollect() {
+        this.hideKeyboard();
+
         FloozRestClient.getInstance().showLoadView();
         FloozRestClient.getInstance().createCollect(this.generateRequestParams(true), new FloozHttpResponseHandler() {
             @Override

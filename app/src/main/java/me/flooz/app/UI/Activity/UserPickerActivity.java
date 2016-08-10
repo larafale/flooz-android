@@ -133,7 +133,11 @@ public class UserPickerActivity extends BaseActivity {
                         try {
                             if (object.userKind == FLUser.UserKind.FloozUser) {
                                 data.put("to", object.username);
-                                data.put("toFullName", object.fullname);
+
+                                if (object.isCactus) {
+                                    data.put("toFullName", object.username);
+                                } else
+                                    data.put("toFullName", object.fullname);
 
                                 if (object.blockObject != null)
                                     data.put("block", object.blockObject.toString());
@@ -195,7 +199,11 @@ public class UserPickerActivity extends BaseActivity {
 
                         if (object.userKind == FLUser.UserKind.FloozUser) {
                             currentIntent.putExtra("to", object.username);
-                            currentIntent.putExtra("toFullName", object.fullname);
+
+                            if (object.isCactus) {
+                                currentIntent.putExtra("toFullName", object.username);
+                            } else
+                                currentIntent.putExtra("toFullName", object.fullname);
 
                             if (object.blockObject != null)
                                 currentIntent.putExtra("block", object.blockObject.toString());

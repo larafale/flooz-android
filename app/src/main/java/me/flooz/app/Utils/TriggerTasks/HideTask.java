@@ -3,6 +3,7 @@ package me.flooz.app.Utils.TriggerTasks;
 import android.app.Activity;
 
 import me.flooz.app.App.FloozApplication;
+import me.flooz.app.Model.FLTrigger;
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Fragment.Home.TabFragments.TabBarFragment;
@@ -30,8 +31,10 @@ public class HideTask extends ActionTask {
                                 FLTriggerManager.getInstance().executeTriggerList(trigger.triggers);
                             }
                         });
-                    }
-                }
+                    } else
+                        FLTriggerManager.getInstance().executeTriggerList(this.trigger.triggers);
+                } else
+                    FLTriggerManager.getInstance().executeTriggerList(this.trigger.triggers);
             } else if (FLTriggerManager.getInstance().binderKeyActivity.containsKey(this.trigger.categoryView)) {
                 Class wantedActivityClass = FLTriggerManager.getInstance().binderKeyActivity.get(this.trigger.categoryView);
 
@@ -39,7 +42,8 @@ public class HideTask extends ActionTask {
                     FLTriggerManager.getInstance().pendingHideTrigger = this.trigger;
                     currentActivity.finish();
                     currentActivity.overridePendingTransition(android.R.anim.fade_in, R.anim.slide_down);
-                }
+                } else
+                    FLTriggerManager.getInstance().executeTriggerList(this.trigger.triggers);
             }
         }
     }
