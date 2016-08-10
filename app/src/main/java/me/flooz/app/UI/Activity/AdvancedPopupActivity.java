@@ -168,7 +168,8 @@ public class AdvancedPopupActivity extends BaseActivity {
         }
 
         if (this.triggerData.has("amount")) {
-            amount.setText(FLHelper.trimTrailingZeros(String.format(Locale.US, "%.2f", this.triggerData.optDouble("amount"))));
+            Number amountValue = this.triggerData.optDouble("amount");
+            amount.setText(FLHelper.trimTrailingZeros(String.format(Locale.US, "%.2f €", amountValue.floatValue())));
             amount.setVisibility(View.VISIBLE);
         } else {
             amount.setVisibility(View.GONE);
