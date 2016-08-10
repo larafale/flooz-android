@@ -85,7 +85,10 @@ public class CollectController extends BaseController implements CollectAdapter.
     private TextView headerAmount;
     private TextView headerCurrency;
     private TextView headerCollectedLabel;
+    private RelativeLayout contentAttachmentContainer;
     private LoadingImageView contentAttachmentView;
+    private ImageView contentAttachmentAddImg;
+    private TextView contentAttachmentAddText;
     private TextView closeLabel;
     private TextView contentDescriptionHint;
     private TextView contentDescription;
@@ -215,7 +218,10 @@ public class CollectController extends BaseController implements CollectAdapter.
         contentDescriptionHint = (TextView) headerListView.findViewById(R.id.collect_header_view_description_hint);
         contentDescription = (TextView) headerListView.findViewById(R.id.collect_header_view_description);
         contentLocation = (TextView) headerListView.findViewById(R.id.collect_header_view_location_text);
+        contentAttachmentContainer = (RelativeLayout) headerListView.findViewById(R.id.collect_header_view_attachment_container);
         contentAttachmentView = (LoadingImageView) headerListView.findViewById(R.id.collect_header_view_attachment);
+        contentAttachmentAddImg = (ImageView) headerListView.findViewById(R.id.collect_header_view_attachment_add_img);
+        contentAttachmentAddText = (TextView) headerListView.findViewById(R.id.collect_header_view_attachment_add_text);
         contentLocationView = (LinearLayout) headerListView.findViewById(R.id.collect_header_view_location_layout);
         contentLocationIcon = (ImageView) headerListView.findViewById(R.id.collect_header_view_location_img);
 
@@ -245,6 +251,7 @@ public class CollectController extends BaseController implements CollectAdapter.
         sendCommentButton.setTypeface(CustomFonts.customContentLight(parentActivity));
         participateButton.setTypeface(CustomFonts.customContentRegular(parentActivity));
         closeCollectButton.setTypeface(CustomFonts.customContentRegular(parentActivity));
+        contentAttachmentAddText.setTypeface(CustomFonts.customContentRegular(parentActivity));
 
         contentLocationIcon.setColorFilter(parentActivity.getResources().getColor(R.color.placeholder));
         navbarScope.setColorFilter(parentActivity.getResources().getColor(android.R.color.white));
@@ -280,6 +287,13 @@ public class CollectController extends BaseController implements CollectAdapter.
                     isCommenting = false;
                     reloadView();
                 }
+            }
+        });
+
+        this.contentAttachmentAddText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(collect.triggerImage));
             }
         });
 
@@ -385,9 +399,20 @@ public class CollectController extends BaseController implements CollectAdapter.
         if (this.collect.attachmentURL != null &&!this.collect.attachmentURL.isEmpty()) {
             this.contentAttachmentView.setImageFromUrl(this.collect.attachmentURL);
             this.contentAttachmentView.setVisibility(View.VISIBLE);
+            this.contentAttachmentContainer.setVisibility(View.VISIBLE);
+            this.contentAttachmentAddText.setVisibility(View.GONE);
+            this.contentAttachmentAddImg.setVisibility(View.GONE);
         }
-        else {
+        else if (this.collect.creator.userId.contentEquals(FloozRestClient.getInstance().currentUser.userId) && this.collect.triggerImage != null) {
             this.contentAttachmentView.setVisibility(View.GONE);
+            this.contentAttachmentContainer.setVisibility(View.VISIBLE);
+            this.contentAttachmentAddText.setVisibility(View.VISIBLE);
+            this.contentAttachmentAddImg.setVisibility(View.VISIBLE);
+        } else {
+            this.contentAttachmentView.setVisibility(View.GONE);
+            this.contentAttachmentContainer.setVisibility(View.GONE);
+            this.contentAttachmentAddText.setVisibility(View.GONE);
+            this.contentAttachmentAddImg.setVisibility(View.GONE);
         }
 
         this.contentDescription.setText(this.collect.content);

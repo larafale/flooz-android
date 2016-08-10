@@ -99,8 +99,8 @@ android {
         applicationId "me.flooz.app"
         minSdkVersion 16
         targetSdkVersion 23
-        versionCode 58
-        versionName "3.0.2"
+        versionCode 60
+        versionName "3.1.0"
         signingConfig signingConfigs.release
         renderscriptTargetApi 20
         renderscriptSupportModeEnabled true

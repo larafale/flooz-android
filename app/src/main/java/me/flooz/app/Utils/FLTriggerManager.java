@@ -15,6 +15,7 @@ import java.util.Map;
 
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLTrigger;
+import me.flooz.app.UI.Activity.AdvancedPopupActivity;
 import me.flooz.app.UI.Activity.AuthenticationActivity;
 import me.flooz.app.UI.Activity.BaseActivity;
 import me.flooz.app.UI.Activity.CashoutActivity;
@@ -244,6 +245,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("pot:participation", CollectParticipationActivity.class);
             put("user:picker", UserPickerActivity.class);
             put("scope:picker", ScopePickerActivity.class);
+            put("popup:advance", AdvancedPopupActivity.class);
         }};
     }
 
@@ -310,6 +312,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("pot:participation", "push");
             put("user:picker", "modal");
             put("scope:picker", "modal");
+            put("popup:advance", "modal");
         }};
     }
 

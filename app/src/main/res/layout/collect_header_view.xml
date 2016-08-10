@@ -57,11 +57,39 @@
         android:layout_marginTop="@dimen/dimen_small"
         android:layout_marginBottom="@dimen/dimen_large"/>
 
-    <me.flooz.app.UI.View.LoadingImageView
-        android:id="@+id/collect_header_view_attachment"
-        android:layout_width="fill_parent"
-        android:layout_height="150dp"
-        android:layout_below="@id/collect_header_view_collected_label"/>
+
+    <RelativeLayout
+        android:id="@+id/collect_header_view_attachment_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/collect_header_view_collected_label">
+        
+        <me.flooz.app.UI.View.LoadingImageView
+            android:id="@+id/collect_header_view_attachment"
+            android:layout_width="fill_parent"
+            android:layout_height="150dp"/>
+
+        <ImageView
+            android:id="@+id/collect_header_view_attachment_add_img"
+            android:layout_width="match_parent"
+            android:layout_height="150dp"
+            android:src="@drawable/cover"
+            android:scaleType="centerCrop"/>
+
+        <TextView
+            android:id="@+id/collect_header_view_attachment_add_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:text="Ajouter une image"
+            android:background="@drawable/dashed_action_button_background"
+            android:paddingBottom="@dimen/dimen_large"
+            android:paddingTop="@dimen/dimen_large"
+            android:paddingLeft="@dimen/dimen_xlarge"
+            android:paddingRight="@dimen/dimen_xlarge"
+            android:textSize="19sp"/>
+        
+    </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/collect_header_view_content"
@@ -72,7 +100,7 @@
         android:paddingBottom="@dimen/dimen_large"
         android:paddingTop="@dimen/dimen_large"
         android:background="@color/background"
-        android:layout_below="@+id/collect_header_view_attachment">
+        android:layout_below="@+id/collect_header_view_attachment_container">
 
         <TextView
             android:id="@+id/collect_header_view_description_hint"

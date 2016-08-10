@@ -100,6 +100,7 @@ public class FLTransaction {
     public JSONArray settings;
 
     public JSONObject json;
+    public JSONArray triggerImage;
 
     public FLTransaction(JSONObject json) {
         super();
@@ -264,6 +265,21 @@ public class FLTransaction {
                 }
 
                 this.settings = json.optJSONArray("settings");
+
+                this.triggerImage = null;
+
+                if (this.settings != null && this.settings.length() > 0) {
+                    JSONArray listItems = this.settings.optJSONObject(0).optJSONObject("data").optJSONArray("items");
+
+                    for (int i = 0; i < listItems.length(); i++) {
+                        JSONObject item = listItems.optJSONObject(i);
+
+                        if (item.has("id") && item.optString("id").contentEquals("image")) {
+                            this.triggerImage = item.optJSONArray("triggers");
+                            break;
+                        }
+                    }
+                }
 
             } catch (JSONException | ParseException e) {
                 e.printStackTrace();

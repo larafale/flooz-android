@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:background="@color/black_alpha">
+
+    <RelativeLayout
+        android:layout_centerInParent="true"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="@dimen/dimen_xxlarge"
+        android:layout_marginRight="@dimen/dimen_xxlarge"
+        android:layout_height="wrap_content"
+        android:background="@drawable/tooltip_scope_view"
+        android:gravity="center_horizontal"
+        android:paddingBottom="@dimen/dimen_medium">
+
+        <ImageView
+            android:id="@+id/dialog_trigger_cover"
+            android:layout_width="match_parent"
+            android:layout_height="145dp"
+            android:src="@drawable/cover"
+            android:scaleType="centerCrop"
+            />
+        
+        <ImageView
+            android:id="@+id/dialog_trigger_close"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:padding="@dimen/dimen_medium"
+            android:src="@drawable/image_close"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="@dimen/dimen_medium"
+            android:layout_marginRight="@dimen/dimen_medium"/>
+        
+        <TextView
+            android:id="@+id/dialog_trigger_title"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/dimen_xxlarge"
+            android:shadowColor="@android:color/black"
+            android:shadowDx="-0.5"
+            android:shadowDy="-1"
+            android:shadowRadius="3"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:singleLine="true"
+            android:text="TITLE"/>
+
+        <TextView
+            android:id="@+id/dialog_trigger_subtitle"
+            android:layout_below="@+id/dialog_trigger_title"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:gravity="center"
+            android:layout_marginTop="@dimen/dimen_medium"
+            android:shadowColor="@android:color/black"
+            android:shadowDx="-0.5"
+            android:shadowDy="-1"
+            android:shadowRadius="3"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:singleLine="true"
+            android:text="SUBTITLE"/>
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/dialog_trigger_pic"
+            android:scaleType="centerCrop"
+            android:layout_below="@id/dialog_trigger_subtitle"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="@dimen/dimen_medium"
+            android:layout_width="65dp"
+            android:layout_height="65dp"
+            android:src="@drawable/avatar_default"
+            app:riv_corner_radius="@dimen/avatar_corner"
+            app:riv_mutate_background="true"/>
+        
+        <TextView
+            android:id="@+id/dialog_trigger_amount"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/dialog_trigger_pic"
+            android:gravity="center"
+            android:singleLine="true"
+            android:textSize="27sp"
+            android:textColor="@color/blue"
+            android:layout_marginTop="@dimen/dimen_large"
+            />
+        
+        <TextView
+            android:id="@+id/dialog_trigger_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/dialog_trigger_amount"
+            android:layout_marginLeft="@dimen/dimen_large"
+            android:layout_marginRight="@dimen/dimen_large"
+            android:layout_marginTop="@dimen/dimen_large"/>
+
+        <LinearLayout
+            android:id="@+id/dialog_trigger_container1"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@+id/dialog_trigger_content"
+            android:layout_marginTop="@dimen/dimen_large"
+            android:layout_marginLeft="@dimen/dimen_large"
+            android:layout_marginBottom="@dimen/dimen_medium"
+            android:layout_marginRight="@dimen/dimen_large">
+
+            <Button
+                android:id="@+id/dialog_trigger_btn1"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="@dimen/signup_button_height"
+                android:background="@drawable/background_action_button"
+                android:textColor="@android:color/white"
+                android:text="@string/GLOBAL_OK"
+                android:textStyle="bold"/>
+
+            <View
+                android:id="@+id/dialog_trigger_spacer1"
+                android:layout_width="@dimen/dimen_large"
+                android:layout_height="@dimen/signup_button_height"/>
+
+            <Button
+                android:id="@+id/dialog_trigger_btn2"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="@dimen/signup_button_height"
+                android:background="@drawable/background_action_button"
+                android:textColor="@android:color/white"
+                android:text="@string/GLOBAL_OK"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/dialog_trigger_container2"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginTop="@dimen/dimen_medium"
+            android:layout_below="@id/dialog_trigger_container1"
+            android:layout_marginLeft="@dimen/dimen_large"
+            android:layout_marginBottom="@dimen/dimen_medium"
+            android:layout_marginRight="@dimen/dimen_large">
+
+            <Button
+                android:id="@+id/dialog_trigger_btn3"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="@dimen/signup_button_height"
+                android:background="@drawable/background_action_button"
+                android:textColor="@android:color/white"
+                android:text="@string/GLOBAL_OK"
+                android:textStyle="bold"/>
+
+            <View
+                android:id="@+id/dialog_trigger_spacer2"
+                android:layout_width="@dimen/dimen_large"
+                android:layout_height="@dimen/signup_button_height"/>
+
+            <Button
+                android:id="@+id/dialog_trigger_btn4"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="@dimen/signup_button_height"
+                android:background="@drawable/background_action_button"
+                android:textColor="@android:color/white"
+                android:text="@string/GLOBAL_OK"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+</RelativeLayout>
