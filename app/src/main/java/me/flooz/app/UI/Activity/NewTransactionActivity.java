@@ -23,6 +23,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.json.JSONException;
@@ -186,6 +187,18 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
         TextView currencySymbol = (TextView) this.findViewById(R.id.new_transac_currency_symbol);
         this.contentTextfield = (EditText) this.findViewById(R.id.new_transac_content_textfield);
         this.picContainer = (RelativeLayout) this.findViewById(R.id.new_transac_pic_container);
+
+        ScrollView scrollView = (ScrollView) this.findViewById(R.id.content_scroll);
+
+        scrollView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                contentTextfield.requestFocus();
+
+                final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(contentTextfield, InputMethodManager.SHOW_IMPLICIT);
+            }
+        });
 
         this.actionBar = (FLTransactionActionBar) this.findViewById(R.id.new_transac_action_bar);
 
@@ -751,21 +764,18 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
         items.add(new ActionSheetItem(instance, R.string.GLOBAL_ALBUMS, new ActionSheetItem.ActionSheetItemClickListener() {
             @Override
             public void onClick() {
-                if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
-                        || ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 //                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
 //                    // Display UI and wait for user interaction
 //                } else {
-                    ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_CAMERA);
+                    ActivityCompat.requestPermissions(NewTransactionActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_STORAGE);
 //                }
                 } else {
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-                    tmpUriImage = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUriImage);
+                    Intent intent = new Intent(Intent.ACTION_PICK);
+                    intent.setType("image/*");
 
                     try {
-                        startActivityForResult(intent, TAKE_PICTURE);
+                        startActivityForResult(Intent.createChooser(intent, ""), SELECT_PICTURE);
                     } catch (ActivityNotFoundException e) {
 
                     }

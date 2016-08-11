@@ -233,7 +233,7 @@
             android:layout_marginRight="@dimen/dimen_xxlarge"
             android:gravity="center"
             android:background="@drawable/background_action_button"
-            android:text="@string/GLOBAL_VALIDATE"
+            android:text="@string/GLOBAL_SAVE"
             android:textSize="20sp"
             android:textColor="@drawable/text_color_action_button"
             android:layout_below="@id/settings_credit_card_create_form_save"

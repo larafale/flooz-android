@@ -225,8 +225,8 @@ public class SearchListAdapter extends BaseAdapter implements StickyListHeadersA
         holder.button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (user.isFriendable) {
-                    user.isFriendable = false;
+                if (user.isFriend) {
+                    user.isFriend = false;
                     notifyDataSetChanged();
                     user.selectedCanal = FLUser.FLUserSelectedCanal.SuggestionCanal;
                     FloozRestClient.getInstance().sendFriendRequest(user.userId, user.getSelectedCanal(), new FloozHttpResponseHandler() {
@@ -237,7 +237,7 @@ public class SearchListAdapter extends BaseAdapter implements StickyListHeadersA
 
                         @Override
                         public void failure(int statusCode, FLError error) {
-                            user.isFriendable = true;
+                            user.isFriend = true;
                             notifyDataSetChanged();
                         }
                     });
@@ -246,7 +246,7 @@ public class SearchListAdapter extends BaseAdapter implements StickyListHeadersA
                     items.add(new ActionSheetItem(context, R.string.MENU_REMOVE_FRIENDS, new ActionSheetItem.ActionSheetItemClickListener() {
                         @Override
                         public void onClick() {
-                            user.isFriendable = true;
+                            user.isFriend = true;
                             notifyDataSetChanged();
                             FloozRestClient.getInstance().performActionOnFriend(user.userId, FloozRestClient.FriendAction.Delete, new FloozHttpResponseHandler() {
                                 @Override
@@ -256,7 +256,7 @@ public class SearchListAdapter extends BaseAdapter implements StickyListHeadersA
 
                                 @Override
                                 public void failure(int statusCode, FLError error) {
-                                    user.isFriendable = false;
+                                    user.isFriend = false;
                                     notifyDataSetChanged();
                                 }
                             });
@@ -274,7 +274,7 @@ public class SearchListAdapter extends BaseAdapter implements StickyListHeadersA
     public void searchUser(String searchString) {
         this.searchHandler.removeCallbacks(searchRunnable);
         this.searchData = searchString;
-        if (searchString.isEmpty()) {
+        if (searchString.isEmpty() || searchString.length() < 3) {
             this.stopSearch();
         } else {
             this.searchHandler.postDelayed(searchRunnable, 500);

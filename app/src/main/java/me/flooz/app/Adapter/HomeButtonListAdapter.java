@@ -54,12 +54,12 @@ public class HomeButtonListAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return this.buttons.size();
+        return FloozRestClient.getInstance().currentTexts.homeButtons.size();
     }
 
     @Override
     public Object getItem(int i) {
-        return this.buttons.get(i);
+        return FloozRestClient.getInstance().currentTexts.homeButtons.get(i);
     }
 
     @Override
@@ -89,7 +89,7 @@ public class HomeButtonListAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        FLButton button = this.buttons.get(i);
+        FLButton button = FloozRestClient.getInstance().currentTexts.homeButtons.get(i);
 
         int id = context.getResources().getIdentifier(button.defaultImg, "drawable", context.getPackageName());
 

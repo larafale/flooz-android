@@ -13,12 +13,13 @@
         android:layout_height="match_parent"
         android:layout_marginTop="@dimen/header_size">
 
-        <me.flooz.app.UI.View.ContactPickerView
+        <EditText
             android:id="@+id/user_picker_search"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="40dp"
             android:padding="@dimen/dimen_medium"
+            android:singleLine="true"
             android:gravity="center_vertical"
             android:hint="Rechercher un destinataire"
             android:textColorHint="@color/placeholder"

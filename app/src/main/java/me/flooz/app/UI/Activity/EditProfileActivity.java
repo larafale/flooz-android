@@ -279,12 +279,11 @@ public class EditProfileActivity extends BaseActivity {
             } else {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
-                tmpUriImage = fileUri;
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                tmpUriImage = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUriImage);
 
                 try {
-                    activity.startActivityForResult(intent, TAKE_PICTURE_AVATAR);
+                    EditProfileActivity.this.startActivityForResult(intent, TAKE_PICTURE_AVATAR);
                 } catch (ActivityNotFoundException e) {
 
                 }
@@ -295,21 +294,21 @@ public class EditProfileActivity extends BaseActivity {
     private ActionSheetItem.ActionSheetItemClickListener takePictureCover = new ActionSheetItem.ActionSheetItemClickListener() {
         @Override
         public void onClick() {
-            if (ActivityCompat.checkSelfPermission(EditProfileActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.checkSelfPermission(EditProfileActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+                    || ActivityCompat.checkSelfPermission(EditProfileActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 //                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
 //                    // Display UI and wait for user interaction
 //                } else {
-                ActivityCompat.requestPermissions(EditProfileActivity.this, new String[]{Manifest.permission.CAMERA}, PERMISSION_CAMERA_COVER);
+                ActivityCompat.requestPermissions(EditProfileActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_CAMERA_COVER);
 //                }
             } else {
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 
-                Uri fileUri = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
-                tmpUriImage = fileUri;
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+                tmpUriImage = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
+                intent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUriImage);
 
                 try {
-                    activity.startActivityForResult(intent, TAKE_PICTURE_COVER);
+                    EditProfileActivity.this.startActivityForResult(intent, TAKE_PICTURE_COVER);
                 } catch (ActivityNotFoundException e) {
 
                 }
@@ -323,7 +322,7 @@ public class EditProfileActivity extends BaseActivity {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
             try {
-                activity.startActivityForResult(Intent.createChooser(intent, ""), SELECT_PICTURE_AVATAR);
+                EditProfileActivity.this.startActivityForResult(Intent.createChooser(intent, ""), SELECT_PICTURE_AVATAR);
             } catch (ActivityNotFoundException e) {
 
             }
@@ -336,7 +335,7 @@ public class EditProfileActivity extends BaseActivity {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
             try {
-                activity.startActivityForResult(Intent.createChooser(intent, ""), SELECT_PICTURE_COVER);
+                EditProfileActivity.this.startActivityForResult(Intent.createChooser(intent, ""), SELECT_PICTURE_COVER);
             } catch (ActivityNotFoundException e) {
 
             }
@@ -418,13 +417,11 @@ public class EditProfileActivity extends BaseActivity {
                 containerAvatar = 2;
 
             if (containerAvatar != 0) {
-                Uri imageUri = Uri.EMPTY;
-                if (data == null || data.getData() == null)
+                Uri imageUri;
+                if (data == null || data.getData() == null) {
                     imageUri = this.tmpUriImage;
-                else
+                } else
                     imageUri = data.getData();
-
-                this.tmpUriImage = null;
 
                 final Uri selectedImageUri = imageUri;
                 if (selectedImageUri != null) {
@@ -436,19 +433,29 @@ public class EditProfileActivity extends BaseActivity {
                             String path = ImageHelper.getPath(EditProfileActivity.this, selectedImageUri);
                             if (path != null) {
                                 File image = new File(path);
-                                BitmapFactory.Options bmOptions = new BitmapFactory.Options();
-                                Bitmap photo = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
+                                Bitmap photo = null;
+                                BitmapFactory.Options bmOptions;
+
+                                try {
+                                    photo = BitmapFactory.decodeFile(image.getAbsolutePath());
+                                } catch (OutOfMemoryError e) {
+                                    try {
+                                        bmOptions = new BitmapFactory.Options();
+                                        bmOptions.inSampleSize = 2;
+                                        photo = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
+                                    } catch (Exception f) {
+                                        f.printStackTrace();
+                                    }
+                                }
 
                                 if (photo != null) {
                                     int rotation = ImageHelper.getRotation(EditProfileActivity.this, selectedImageUri);
                                     if (rotation != 0) {
                                         photo = ImageHelper.rotateBitmap(photo, rotation);
                                     }
-                                    int nh = (int) (photo.getHeight() * (512.0 / photo.getWidth()));
-                                    Bitmap scaled = Bitmap.createScaledBitmap(photo, 512, nh, true);
 
                                     if (finalContainerAvatar == 1) {
-                                        profileAvatar.setImageBitmap(scaled);
+                                        profileAvatar.setImageBitmap(photo);
                                         FloozRestClient.getInstance().showLoadView();
                                         FloozRestClient.getInstance().uploadDocument("picId", image, new FloozHttpResponseHandler() {
                                             @Override
@@ -467,7 +474,7 @@ public class EditProfileActivity extends BaseActivity {
                                             }
                                         });
                                     } else if (finalContainerAvatar == 2) {
-                                        profileCover.setImageBitmap(scaled);
+                                        profileCover.setImageBitmap(photo);
                                         FloozRestClient.getInstance().showLoadView();
                                         FloozRestClient.getInstance().uploadDocument("coverId", image, new FloozHttpResponseHandler() {
                                             @Override

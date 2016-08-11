@@ -223,7 +223,6 @@ public class FloozApplication extends BranchApp
 
     public void didConnected() {
         FloozRestClient.getInstance().textObjectFromApi(null);
-        FloozRestClient.getInstance().updateNotificationFeed(null);
 
         mixpanelAPI.getPeople().identify(FloozRestClient.getInstance().currentUser.userId);
         mixpanelAPI.getPeople().initPushHandling("202597897110");

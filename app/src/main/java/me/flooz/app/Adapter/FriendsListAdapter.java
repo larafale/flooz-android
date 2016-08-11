@@ -341,7 +341,7 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
     public void searchUser(String searchString) {
         this.searchHandler.removeCallbacks(searchRunnable);
         this.searchData = searchString;
-        if (searchString.isEmpty()) {
+        if (searchString.isEmpty() || searchString.length() < 3) {
             this.stopSearch();
         } else {
             this.searchHandler.postDelayed(searchRunnable, 500);

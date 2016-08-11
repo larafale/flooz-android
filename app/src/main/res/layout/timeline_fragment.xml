@@ -84,8 +84,8 @@
                 android:layout_height="match_parent"
                 android:src="@drawable/flooz_full"
                 android:padding="@dimen/dimen_small"
-                android:layout_marginLeft="@dimen/dimen_xxlarge"
-                android:layout_marginRight="@dimen/dimen_xxlarge"
+                android:layout_marginLeft="@dimen/dimen_xxxlarge"
+                android:layout_marginRight="@dimen/dimen_xxxlarge"
                 android:layout_centerInParent="true"/>
 
             <ImageView

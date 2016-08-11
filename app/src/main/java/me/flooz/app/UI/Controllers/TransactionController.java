@@ -393,6 +393,7 @@ public class TransactionController extends BaseController {
                         public void success(Object response) {
                             transaction.setJson((JSONObject) response);
                             reloadView();
+                            scrollListViewToBottom();
                         }
 
                         @Override
@@ -724,9 +725,6 @@ public class TransactionController extends BaseController {
     @Override
     public void onStart() {
         super.onStart();
-        if (this.insertComment) {
-            commentButton.performClick();
-        }
 
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadTransactionReceiver,
                 CustomNotificationIntents.filterReloadTimeline());
@@ -736,6 +734,33 @@ public class TransactionController extends BaseController {
 
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadTransaction,
                 CustomNotificationIntents.filterReloadCollect());
+    }
+
+    @Override
+    public void onResume() {
+        if (this.insertComment) {
+            reloadView();
+
+            commentTextField.requestFocus();
+            InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(commentTextField, InputMethodManager.SHOW_FORCED);
+
+            this.insertComment = false;
+        }
+
+        FloozRestClient.getInstance().transactionWithId(transaction.transactionId, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                FLTransaction transac = new FLTransaction(((JSONObject) response).optJSONObject("item"));
+                setTransaction(transac);
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+
+            }
+        });
     }
 
     public void transactionLikeClicked() {

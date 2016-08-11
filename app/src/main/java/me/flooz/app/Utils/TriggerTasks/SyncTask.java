@@ -6,8 +6,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
 
+import org.json.JSONObject;
+
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
+import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
@@ -61,32 +64,66 @@ public class SyncTask extends ActionTask {
                     });
                     break;
                 case "flooz":
-                    Intent intent = CustomNotificationIntents.reloadTransaction();
+                    final Intent intent = CustomNotificationIntents.reloadTransaction();
 
                     intent.putExtra("id", trigger.data.optString("_id"));
 
                     if (trigger.data.has("commentId"))
                         intent.putExtra("commentId", trigger.data.optString("commentId"));
 
-                    if (trigger.data.has("flooz"))
+                    if (trigger.data.has("flooz")) {
                         intent.putExtra("flooz", trigger.data.optJSONObject("flooz").toString());
 
-                    FloozApplication.performLocalNotification(intent);
-                    FLTriggerManager.getInstance().executeTriggerList(trigger.triggers);
+                        FloozApplication.performLocalNotification(intent);
+                        FLTriggerManager.getInstance().executeTriggerList(trigger.triggers);
+                    } else {
+                        FloozRestClient.getInstance().transactionWithId(trigger.data.optString("_id"), new FloozHttpResponseHandler() {
+                            @Override
+                            public void success(Object response) {
+                                    intent.putExtra("flooz", ((JSONObject) response).optJSONObject("item").toString());
+
+
+                                FloozApplication.performLocalNotification(intent);
+                                FLTriggerManager.getInstance().executeTriggerList(trigger.triggers);
+                            }
+
+                            @Override
+                            public void failure(int statusCode, FLError error) {
+
+                            }
+                        });
+                    }
                     break;
                 case "pot":
-                    Intent intentCollect = CustomNotificationIntents.reloadCollect();
+                    final Intent intentCollect = CustomNotificationIntents.reloadCollect();
 
                     intentCollect.putExtra("id", trigger.data.optString("_id"));
 
                     if (trigger.data.has("commentId"))
                         intentCollect.putExtra("commentId", trigger.data.optString("commentId"));
 
-                    if (trigger.data.has("flooz"))
+                    if (trigger.data.has("flooz")) {
                         intentCollect.putExtra("flooz", trigger.data.optJSONObject("flooz").toString());
 
-                    FloozApplication.performLocalNotification(intentCollect);
-                    FLTriggerManager.getInstance().executeTriggerList(trigger.triggers);
+                        FloozApplication.performLocalNotification(intentCollect);
+                        FLTriggerManager.getInstance().executeTriggerList(trigger.triggers);
+                    } else {
+                        FloozRestClient.getInstance().transactionWithId(trigger.data.optString("_id"), new FloozHttpResponseHandler() {
+                            @Override
+                            public void success(Object response) {
+                                intentCollect.putExtra("flooz", ((JSONObject) response).optJSONObject("item").toString());
+
+
+                                FloozApplication.performLocalNotification(intentCollect);
+                                FLTriggerManager.getInstance().executeTriggerList(trigger.triggers);
+                            }
+
+                            @Override
+                            public void failure(int statusCode, FLError error) {
+
+                            }
+                        });
+                    }
                     break;
                 case "profile":
                     FloozRestClient.getInstance().updateCurrentUser(new FloozHttpResponseHandler() {

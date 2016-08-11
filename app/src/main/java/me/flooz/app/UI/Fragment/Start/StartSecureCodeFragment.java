@@ -58,9 +58,18 @@ public class StartSecureCodeFragment extends StartBaseFragment implements Numeri
         this.codeChar3 = (ImageView) view.findViewById(R.id.start_secure_code_char_3);
         this.codeChar4 = (ImageView) view.findViewById(R.id.start_secure_code_char_4);
         this.keyboard = (NumericKeyboard) view.findViewById(R.id.start_secure_code_keypad);
+        TextView infos = (TextView) view.findViewById(R.id.start_secure_code_infos);
 
         title.setTypeface(CustomFonts.customTitleLight(inflater.getContext()));
         hintText.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+        infos.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+
+        if (FloozRestClient.getInstance().currentTexts.json.has("secureCode")) {
+            infos.setText(FloozRestClient.getInstance().currentTexts.json.optString("secureCode"));
+            infos.setVisibility(View.VISIBLE);
+        } else {
+            infos.setVisibility(View.INVISIBLE);
+        }
 
         if (this.initData != null && this.initData.has("confirm"))
             this.needConfirm = this.initData.optBoolean("confirm");

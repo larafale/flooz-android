@@ -711,6 +711,7 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
     }
 
     public void pushFragmentInCurrentTab(TabBarFragment fragment, int animIn, int animOut, Runnable completion) {
+        imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
         imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
         fragment.tabBarActivity = this;
@@ -757,6 +758,7 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
     public void popFragmentInCurrentTab(int animIn, int animOut, Runnable completion) {
         if (this.currentTabHistory.size() > 1) {
 
+            imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
             imm.hideSoftInputFromWindow(this.getWindow().getDecorView().getRootView().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 
             this.currentTabHistory.remove(this.currentTabHistory.size() - 1);

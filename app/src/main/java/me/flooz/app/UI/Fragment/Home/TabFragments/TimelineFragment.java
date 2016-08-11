@@ -14,6 +14,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
+import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -128,6 +129,9 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
         this.logoButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                final MediaPlayer mp = MediaPlayer.create(tabBarActivity, R.raw.coin);
+                mp.start();
+
                 final Dialog dialog = new Dialog(tabBarActivity);
 
                 dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);

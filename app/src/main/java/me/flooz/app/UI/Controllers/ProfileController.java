@@ -824,8 +824,10 @@ public class ProfileController extends BaseController implements TimelineListAda
 
     @Override
     public void ListItemCommentClick(FLTransaction transac) {
-        FloozApplication.getInstance().showTransactionCard(transac, true);
-
+        if (transac.isCollect)
+            FloozApplication.getInstance().showCollect(transac, true);
+        else
+            FloozApplication.getInstance().showTransactionCard(transac, true);
     }
 
     @Override

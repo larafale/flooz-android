@@ -166,6 +166,8 @@ public class CreditCardController extends BaseController {
         if (hideSaveCard)
             cardFormSaveButton.setVisibility(View.GONE);
 
+        this.infosText.setText(FloozRestClient.getInstance().currentTexts.cardInfos);
+
         this.scanButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

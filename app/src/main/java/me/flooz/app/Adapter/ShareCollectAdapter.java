@@ -215,7 +215,7 @@ public class ShareCollectAdapter extends BaseAdapter implements StickyListHeader
     public void searchUser(String searchString) {
         this.searchHandler.removeCallbacks(searchRunnable);
         this.searchData = searchString;
-        if (searchString.length() == 0) {
+        if (searchString.length() < 3) {
             this.filteredContacts = new ArrayList<>();
 
             this.filteredContacts.addAll(this.friends);

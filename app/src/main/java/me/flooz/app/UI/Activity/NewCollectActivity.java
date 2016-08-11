@@ -34,6 +34,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -264,6 +265,18 @@ public class NewCollectActivity extends BaseActivity implements FLTransactionAct
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
                 actionBar.highlightButton(0, hasFocus);
+            }
+        });
+
+        ScrollView scrollView = (ScrollView) this.findViewById(R.id.content_scroll);
+
+        scrollView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                contentTextfield.requestFocus();
+
+                final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.showSoftInput(contentTextfield, InputMethodManager.SHOW_IMPLICIT);
             }
         });
 
@@ -610,21 +623,18 @@ public class NewCollectActivity extends BaseActivity implements FLTransactionAct
         items.add(new ActionSheetItem(NewCollectActivity.this, R.string.GLOBAL_ALBUMS, new ActionSheetItem.ActionSheetItemClickListener() {
             @Override
             public void onClick() {
-                if (ActivityCompat.checkSelfPermission(NewCollectActivity.this, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
-                        || ActivityCompat.checkSelfPermission(NewCollectActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                if (ActivityCompat.checkSelfPermission(NewCollectActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
 //                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
 //                    // Display UI and wait for user interaction
 //                } else {
-                    ActivityCompat.requestPermissions(NewCollectActivity.this, new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_CAMERA);
+                    ActivityCompat.requestPermissions(NewCollectActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_STORAGE);
 //                }
                 } else {
-                    Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-
-                    tmpUriImage = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_IMAGE);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUriImage);
+                    Intent intent = new Intent(Intent.ACTION_PICK);
+                    intent.setType("image/*");
 
                     try {
-                        startActivityForResult(intent, TAKE_PICTURE);
+                        startActivityForResult(Intent.createChooser(intent, ""), SELECT_PICTURE);
                     } catch (ActivityNotFoundException e) {
 
                     }

@@ -306,6 +306,7 @@ public class CollectController extends BaseController implements CollectAdapter.
                         public void success(Object response) {
                             collect.setJson((JSONObject) response);
                             reloadView();
+                            scrollListViewToBottom();
                         }
 
                         @Override
@@ -525,9 +526,6 @@ public class CollectController extends BaseController implements CollectAdapter.
     @Override
     public void onStart() {
         super.onStart();
-        if (this.insertComment) {
-            commentButton.performClick();
-        }
 
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadCollectReceiver,
                 CustomNotificationIntents.filterReloadTimeline());
@@ -541,6 +539,17 @@ public class CollectController extends BaseController implements CollectAdapter.
 
     @Override
     public void onResume() {
+        if (this.insertComment) {
+            reloadView();
+
+            commentTextField.requestFocus();
+            InputMethodManager imm = (InputMethodManager) parentActivity.getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(commentTextField, InputMethodManager.SHOW_FORCED);
+
+            this.insertComment = false;
+        }
+
         FloozRestClient.getInstance().transactionWithId(collect.transactionId, new FloozHttpResponseHandler() {
             @Override
             public void success(Object response) {
@@ -633,7 +642,7 @@ public class CollectController extends BaseController implements CollectAdapter.
 
     public void collectShareClicked() {
         if (collect.isShareable) {
-            if (collect.actions == null || collect.actions.length() == 0) {
+            if (this.collect.status == FLTransaction.TransactionStatus.TransactionStatusPending) {
                 Intent share = new Intent(Intent.ACTION_SEND);
                 share.setType("text/plain");
 

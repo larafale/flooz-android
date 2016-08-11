@@ -128,7 +128,7 @@ public class ProfileListAdapter extends BaseAdapter implements StickyListHeaders
             if (missingFields.contains("cniVerso"))
                 ++docNotifs;
             if (missingFields.contains("justificatory"))
-                ++coordsNotifs;
+                ++docNotifs;
             if (missingFields.contains("address"))
                 ++coordsNotifs;
         } catch (JSONException e) {

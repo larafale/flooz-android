@@ -1,11 +1,13 @@
 package me.flooz.app.UI.Activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -53,7 +55,6 @@ public class UserPickerActivity extends BaseActivity {
 
         this.floozApp = (FloozApplication) this.getApplicationContext();
 
-
         if (getIntent() != null && getIntent().hasExtra("triggerData"))
             try {
                 this.triggerData = new JSONObject(getIntent().getStringExtra("triggerData"));
@@ -90,6 +91,11 @@ public class UserPickerActivity extends BaseActivity {
                 if (searchTextField.getVisibility() == View.GONE) {
                     searchTextField.setVisibility(View.VISIBLE);
                     searchSeparator.setVisibility(View.VISIBLE);
+
+                    searchTextField.requestFocus();
+
+                    final InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.showSoftInput(searchTextField, InputMethodManager.SHOW_IMPLICIT);
                 } else {
                     searchTextField.setVisibility(View.GONE);
                     searchSeparator.setVisibility(View.GONE);
@@ -140,7 +146,7 @@ public class UserPickerActivity extends BaseActivity {
                                     data.put("toFullName", object.fullname);
 
                                 if (object.blockObject != null)
-                                    data.put("block", object.blockObject.toString());
+                                    data.put("block", object.blockObject);
 
                             } else {
                                 data.put("to", object.phone);
@@ -155,7 +161,6 @@ public class UserPickerActivity extends BaseActivity {
 
                                         if (!object.lastname.isEmpty())
                                             contact.put("lastName", object.lastname);
-
 
                                         data.put("contact", contact.toString());
                                     } catch (JSONException e) {

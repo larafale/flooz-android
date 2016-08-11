@@ -1832,8 +1832,12 @@ public class FloozRestClient
         JSONArray notifications = jsonObject.optJSONArray("items");
 
         if (notifications != null && notifications.length() > 0) {
-            for (int i = 0; i < notifications.length(); i++)
-                ret.add(new FLNotification(notifications.optJSONObject(i)));
+            for (int i = 0; i < notifications.length(); i++) {
+                JSONObject notificationData = notifications.optJSONObject(i);
+
+                if (notificationData.has("text") && notificationData.optString("text").length() > 0)
+                    ret.add(new FLNotification(notificationData));
+            }
         }
 
         return ret;
@@ -1843,8 +1847,13 @@ public class FloozRestClient
         List<FLNotification> ret = new ArrayList<>();
 
         if (notifications != null && notifications.length() > 0) {
-            for (int i = 0; i < notifications.length(); i++)
-                ret.add(new FLNotification(notifications.optJSONObject(i)));
+            for (int i = 0; i < notifications.length(); i++) {
+                JSONObject notificationData = notifications.optJSONObject(i);
+
+                if (notificationData.has("text") && notificationData.optString("text").length() > 0)
+                    ret.add(new FLNotification(notificationData));
+
+            }
         }
 
         return ret;

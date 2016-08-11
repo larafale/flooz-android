@@ -72,6 +72,18 @@
                 />
 
         </LinearLayout>
+
+         <TextView
+             android:id="@+id/start_secure_code_infos"
+             android:gravity="center_horizontal"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_marginTop="@dimen/dimen_xlarge"
+             android:layout_marginLeft="@dimen/dimen_xlarge"
+             android:layout_marginRight="@dimen/dimen_xlarge"
+             android:textColor="@color/placeholder"
+             android:textSize="16sp"/>
+
     </LinearLayout>
 
     <me.flooz.app.UI.View.NumericKeyboard

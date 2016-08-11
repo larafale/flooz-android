@@ -9,9 +9,9 @@
         android:id="@+id/payment_list"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:divider="@drawable/timeline_dividers"
+        android:divider="@android:color/transparent"
         android:layout_marginTop="@dimen/header_size"
-        android:dividerHeight="1px"
+        android:dividerHeight="0px"
         android:overScrollMode="never"
         android:listSelector="@android:color/transparent"/>
 

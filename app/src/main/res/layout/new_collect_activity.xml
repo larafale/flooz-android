@@ -52,7 +52,9 @@
 
             <ScrollView
                 android:layout_width="fill_parent"
-                android:layout_height="fill_parent">
+                android:layout_height="fill_parent"
+                android:id="@+id/content_scroll"
+                android:layout_above="@+id/new_collect_action_bar">
 
                 <LinearLayout
                     android:id="@+id/content_background"
@@ -61,7 +63,8 @@
                     android:padding="@dimen/dimen_large"
                     android:layout_height="match_parent"
                     android:baselineAligned="false"
-                    android:layout_marginBottom="65dp">
+                    android:layout_marginBottom="65dp"
+                    >
 
                     <EditText
                         android:id="@+id/new_collect_content_textfield"
