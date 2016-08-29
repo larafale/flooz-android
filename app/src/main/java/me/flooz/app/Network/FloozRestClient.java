@@ -64,6 +64,7 @@ import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLNotification;
 import me.flooz.app.Model.FLReport;
 import me.flooz.app.Model.FLShareText;
+import me.flooz.app.Model.FLShopItem;
 import me.flooz.app.Model.FLTexts;
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Model.FLTrigger;
@@ -1181,6 +1182,32 @@ public class FloozRestClient
     }
 
     /***************************/
+    /*********   SHOP   ********/
+    /***************************/
+
+    public void shopList(String url, final FloozHttpResponseHandler responseHandler) {
+        this.request(url, HttpRequestType.GET, null, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                JSONObject jsonResponse = (JSONObject) response;
+
+                List<FLShopItem> transactions = createShopItemArrayFromResult(jsonResponse);
+                if (responseHandler != null) {
+                    Map<String, Object> ret = new HashMap<>();
+                    ret.put("shopItems", transactions);
+                    ret.put("nextUrl", jsonResponse.optString("next"));
+                    responseHandler.success(ret);
+                }
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+
+            }
+        });
+    }
+
+    /***************************/
     /*********  GEOLOC  ********/
     /***************************/
 
@@ -1807,6 +1834,20 @@ public class FloozRestClient
                 FLTransaction tmp = new FLTransaction(transactions.optJSONObject(i));
                 if (tmp.transactionId != null && tmp.text3d != null)
                     ret.add(tmp);
+            }
+        }
+
+        return ret;
+    }
+
+    private List<FLShopItem> createShopItemArrayFromResult(JSONObject jsonObject) {
+        List<FLShopItem> ret = new ArrayList<>();
+        JSONArray shopItems = jsonObject.optJSONArray("items");
+
+        if (shopItems != null && shopItems.length() > 0) {
+            for (int i = 0; i < shopItems.length(); i++) {
+                FLShopItem tmp = new FLShopItem(shopItems.optJSONObject(i));
+                ret.add(tmp);
             }
         }
 

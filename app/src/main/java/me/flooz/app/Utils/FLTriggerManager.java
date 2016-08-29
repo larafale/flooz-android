@@ -42,6 +42,7 @@ import me.flooz.app.UI.Activity.Settings.PrivacySettingsActivity;
 import me.flooz.app.UI.Activity.Settings.SetSecureCodeActivity;
 import me.flooz.app.UI.Activity.ShareAppActivity;
 import me.flooz.app.UI.Activity.ShareCollectAcivity;
+import me.flooz.app.UI.Activity.ShopListActivity;
 import me.flooz.app.UI.Activity.SponsorActivity;
 import me.flooz.app.UI.Activity.TransactionActivity;
 import me.flooz.app.UI.Activity.UserPickerActivity;
@@ -246,6 +247,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("user:picker", UserPickerActivity.class);
             put("scope:picker", ScopePickerActivity.class);
             put("popup:advance", AdvancedPopupActivity.class);
+            put("shop:list", ShopListActivity.class);
         }};
     }
 
@@ -277,7 +279,6 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
     public void loadBinderKeyType() {
         this.binderKeyType = new HashMap<String, String>() {{
             put("app:cashout", "modal");
-//            put("app:cashin", "modal");
             put("app:flooz", "modal");
             put("app:pot", "modal");
             put("app:promo", "modal");
@@ -289,8 +290,6 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("auth:code", "modal");
             put("card:3ds", "modal");
             put("card:card", "modal");
-//            put("cashin:card", "modal");
-//            put("cashin:audiotel", "modal");
             put("code:set", "modal");
             put("friend:pending", "modal");
             put("pay:source", "modal");
@@ -312,7 +311,8 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("pot:participation", "push");
             put("user:picker", "modal");
             put("scope:picker", "modal");
-            put("popup:advance", "modal");
+            put("popup:advanced", "modal");
+            put("shop:list", "modal");
         }};
     }
 

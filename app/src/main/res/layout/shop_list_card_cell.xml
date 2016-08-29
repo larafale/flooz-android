@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.percent.PercentRelativeLayout
+        android:id="@+id/shop_card_cell_pic_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_large"
+        android:layout_marginBottom="@dimen/dimen_large"
+        android:layout_marginLeft="@dimen/dimen_xlarge"
+        android:layout_marginRight="@dimen/dimen_xlarge">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/shop_card_cell_pic"
+            android:scaleType="centerCrop"
+            app:layout_widthPercent="100%"
+            app:layout_aspectRatio="@fraction/card_aspectRatio"
+            app:riv_corner_radius="5dp"
+            app:riv_mutate_background="true"/>
+
+    </android.support.percent.PercentRelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/shop_card_cell_label"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/dimen_large"
+        android:paddingRight="@dimen/dimen_xlarge"
+        android:paddingTop="@dimen/dimen_medium"
+        android:paddingBottom="@dimen/dimen_medium"
+        android:paddingLeft="@dimen/dimen_xxlarge"
+        android:gravity="center_vertical|right"
+        android:background="@color/blue">
+
+        <TextView
+            android:id="@+id/shop_card_cell_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="19sp"
+            android:textColor="@android:color/white"
+            android:gravity="right"
+            android:text="Carte Amazon"/>
+
+        <TextView
+            android:id="@+id/shop_card_cell_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="19sp"
+            android:textColor="@android:color/white"
+            android:paddingTop="@dimen/dimen_medium"
+            android:gravity="right"
+            android:text="20€"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

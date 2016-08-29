@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <android.support.percent.PercentRelativeLayout
+        android:id="@+id/shop_category_cell_pic_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/dimen_large"
+        android:layout_marginBottom="@dimen/dimen_large"
+        android:layout_marginLeft="@dimen/dimen_xlarge"
+        android:layout_marginRight="@dimen/dimen_xlarge">
+
+        <com.makeramen.roundedimageview.RoundedImageView
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            android:id="@+id/shop_category_cell_pic"
+            android:scaleType="centerCrop"
+            app:layout_widthPercent="100%"
+            app:layout_aspectRatio="@fraction/card_aspectRatio"
+            app:riv_corner_radius="@dimen/avatar_corner"
+            app:riv_mutate_background="true"/>
+
+    </android.support.percent.PercentRelativeLayout>
+
+    <TextView
+        android:id="@+id/shop_category_cell_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:textSize="24sp"
+        android:layout_margin="@dimen/dimen_xxlarge"
+        android:textColor="@android:color/white"
+        android:shadowColor="@android:color/black"
+        android:shadowRadius="0"
+        android:shadowDy="-1"/>
+
+</RelativeLayout>
