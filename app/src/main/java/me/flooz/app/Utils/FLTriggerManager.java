@@ -42,6 +42,7 @@ import me.flooz.app.UI.Activity.Settings.PrivacySettingsActivity;
 import me.flooz.app.UI.Activity.Settings.SetSecureCodeActivity;
 import me.flooz.app.UI.Activity.ShareAppActivity;
 import me.flooz.app.UI.Activity.ShareCollectAcivity;
+import me.flooz.app.UI.Activity.ShopItemActivity;
 import me.flooz.app.UI.Activity.ShopListActivity;
 import me.flooz.app.UI.Activity.SponsorActivity;
 import me.flooz.app.UI.Activity.TransactionActivity;
@@ -248,6 +249,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("scope:picker", ScopePickerActivity.class);
             put("popup:advance", AdvancedPopupActivity.class);
             put("shop:list", ShopListActivity.class);
+            put("shop:item", ShopItemActivity.class);
         }};
     }
 
@@ -313,6 +315,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("scope:picker", "modal");
             put("popup:advanced", "modal");
             put("shop:list", "modal");
+            put("shop:item", "modal");
         }};
     }
 

@@ -31,7 +31,8 @@
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/shop_item_buy_button">
+            android:layout_above="@id/shop_item_buy_button"
+            android:overScrollMode="never">
 
             <RelativeLayout
                 android:layout_width="match_parent"

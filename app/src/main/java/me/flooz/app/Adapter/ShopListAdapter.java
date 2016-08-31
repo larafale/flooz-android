@@ -17,7 +17,6 @@ import com.nostra13.universalimageloader.core.assist.FailReason;
 import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import net.qiujuer.genius.blur.StackBlur;
-import net.qiujuer.genius.kit.Kit;
 
 import java.util.List;
 import java.util.Map;
@@ -203,7 +202,7 @@ public class ShopListAdapter extends BaseAdapter {
                         @Override
                         public void run() {
                             try {
-                                final Bitmap image = StackBlur.blurNatively(loadedImage, 10, true);
+                                final Bitmap image = StackBlur.blur(loadedImage, 10, true);
 
                                 ShopListAdapter.this.activity.runOnUiThread(new Runnable() {
                                     @Override
@@ -334,6 +333,53 @@ public class ShopListAdapter extends BaseAdapter {
         } else {
             this.searchHandler.postDelayed(searchRunnable, 500);
         }
+    }
+
+    private void loadNextPageDefault() {
+        FloozRestClient.getInstance().shopList(nextURL, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                Map<String, Object> ret = (Map<String, Object>) response;
+
+                defaultItems.addAll((List<FLShopItem>) ret.get("shopItems"));
+                nextURL = (String) ret.get("nextUrl");
+
+                notifyDataSetChanged();
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+
+            }
+        });
+    }
+
+    private void loadNextPageSearch() {
+        FloozRestClient.getInstance().shopList(nextSearchURL, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                Map<String, Object> ret = (Map<String, Object>) response;
+
+                items.addAll((List<FLShopItem>) ret.get("shopItems"));
+                nextSearchURL = (String) ret.get("nextUrl");
+
+                if (isSearchActive)
+                    notifyDataSetChanged();
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+
+            }
+        });
+    }
+
+    public void loadNextPage() {
+        if (isSearchActive && nextSearchURL != null && !nextSearchURL.isEmpty())
+            loadNextPageSearch();
+
+        if (!isSearchActive && nextURL != null && !nextURL.isEmpty())
+            loadNextPageDefault();
     }
 
     public void stopSearch() {

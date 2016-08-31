@@ -47,6 +47,7 @@ import me.flooz.app.UI.Activity.Settings.IdentitySettingsActivity;
 import me.flooz.app.UI.Activity.Settings.PreferencesSettingsActivity;
 import me.flooz.app.UI.Activity.Settings.SecuritySettingsActivity;
 import me.flooz.app.UI.Activity.SponsorActivity;
+import me.flooz.app.UI.Activity.WebContentActivity;
 import me.flooz.app.UI.Fragment.Home.TabFragments.BankFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.CashoutFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.CreditCardFragment;
@@ -229,7 +230,7 @@ public class AccountController extends BaseController implements ProfileListAdap
                                 webFragment.url = "https://www.flooz.me/faq?layout=webview";
                                 ((HomeActivity)parentActivity).pushFragmentInCurrentTab(webFragment);
                             } else {
-                                Intent faqIntent = new Intent(parentActivity, SecuritySettingsActivity.class);
+                                Intent faqIntent = new Intent(parentActivity, WebContentActivity.class);
                                 faqIntent.putExtra("title", (String) item.get("title"));
                                 faqIntent.putExtra("url", "https://www.flooz.me/faq?layout=webview");
                                 parentActivity.startActivity(faqIntent);
@@ -243,7 +244,7 @@ public class AccountController extends BaseController implements ProfileListAdap
                                 webFragment.url = "https://www.flooz.me/cgu?layout=webview";
                                 ((HomeActivity)parentActivity).pushFragmentInCurrentTab(webFragment);
                             } else {
-                                Intent cguIntent = new Intent(parentActivity, SecuritySettingsActivity.class);
+                                Intent cguIntent = new Intent(parentActivity, WebContentActivity.class);
                                 cguIntent.putExtra("title", (String) item.get("title"));
                                 cguIntent.putExtra("url", "https://www.flooz.me/cgu?layout=webview");
                                 parentActivity.startActivity(cguIntent);
