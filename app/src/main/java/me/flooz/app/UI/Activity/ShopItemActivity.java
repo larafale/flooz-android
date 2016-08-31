@@ -19,7 +19,6 @@ import org.json.JSONObject;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLShopItem;
 import me.flooz.app.R;
-import me.flooz.app.UI.Activity.Settings.SecuritySettingsActivity;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.FLTriggerManager;

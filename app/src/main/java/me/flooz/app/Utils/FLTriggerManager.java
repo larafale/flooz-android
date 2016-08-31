@@ -44,6 +44,7 @@ import me.flooz.app.UI.Activity.ShareAppActivity;
 import me.flooz.app.UI.Activity.ShareCollectAcivity;
 import me.flooz.app.UI.Activity.ShopItemActivity;
 import me.flooz.app.UI.Activity.ShopListActivity;
+import me.flooz.app.UI.Activity.ShopParamActivity;
 import me.flooz.app.UI.Activity.SponsorActivity;
 import me.flooz.app.UI.Activity.TransactionActivity;
 import me.flooz.app.UI.Activity.UserPickerActivity;
@@ -250,6 +251,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("popup:advance", AdvancedPopupActivity.class);
             put("shop:list", ShopListActivity.class);
             put("shop:item", ShopItemActivity.class);
+            put("shop:param", ShopParamActivity.class);
         }};
     }
 
@@ -316,6 +318,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("popup:advanced", "modal");
             put("shop:list", "modal");
             put("shop:item", "modal");
+            put("shop:param", "modal");
         }};
     }
 
