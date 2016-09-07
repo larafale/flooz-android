@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="60dp">
 
-</LinearLayout>
+    <net.qiujuer.genius.ui.widget.EditText
+        android:id="@+id/shop_param_text_text"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="@dimen/dimen_large"
+        android:layout_marginRight="@dimen/dimen_large"
+        android:layout_marginTop="@dimen/dimen_medium"
+        android:layout_marginBottom="@dimen/dimen_medium"
+        android:paddingLeft="2dp"
+        android:textColor="@android:color/white"
+        android:textColorHint="@color/genius_textfield_hint"
+        android:textSize="16sp"
+        app:gHintTitlePaddingBottom="3dp"
+        app:gLineColor="@color/textfield_line_color"
+        app:gHintTitleTextSize="14sp"
+        />
+
+</RelativeLayout>

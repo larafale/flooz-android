@@ -43,8 +43,8 @@
             android:overScrollMode="never"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@color/background"
-            android:dividerHeight="1px"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0px"
             android:layout_below="@+id/shop_list_separator"
             android:listSelector="@android:color/transparent"/>
 

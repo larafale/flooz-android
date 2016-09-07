@@ -8,116 +8,113 @@
     android:focusable="true"
     android:focusableInTouchMode="true">
 
-    <RelativeLayout
-        android:layout_width="wrap_content"
+    <ScrollView
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:overScrollMode="never"
         android:layout_marginTop="@dimen/header_size">
 
-        <ScrollView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/shop_param_header_text"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_large"
+                android:layout_marginLeft="@dimen/dimen_xlarge"
+                android:layout_marginRight="@dimen/dimen_xlarge"
+                android:textColor="@android:color/white"
+                android:textSize="15sp"
+                android:gravity="center"/>
 
             <LinearLayout
-                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/dimen_large"
+                android:id="@+id/shop_param_fields"
+                android:orientation="vertical"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <LinearLayout
+                android:id="@+id/shop_param_container1"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/dimen_large"
+                android:layout_marginLeft="@dimen/dimen_xlarge"
+                android:layout_marginRight="@dimen/dimen_xlarge">
 
-                <TextView
-                    android:id="@+id/shop_param_header_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/dimen_large"
-                    android:layout_marginLeft="@dimen/dimen_xlarge"
-                    android:layout_marginRight="@dimen/dimen_xlarge"
+                <Button
+                    android:id="@+id/shop_param_btn1"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="@dimen/signup_button_height"
+                    android:background="@drawable/background_action_button"
                     android:textColor="@android:color/white"
-                    android:textSize="15sp"
-                    android:gravity="center"/>
+                    android:text="@string/GLOBAL_OK"
+                    android:textStyle="bold"/>
 
-                <LinearLayout
-                    android:layout_marginTop="@dimen/dimen_large"
-                    android:id="@+id/shop_param_fields"
-                    android:orientation="vertical"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
+                <View
+                    android:id="@+id/shop_param_spacer1"
+                    android:layout_width="@dimen/dimen_large"
+                    android:layout_height="@dimen/signup_button_height"/>
 
-                <LinearLayout
-                    android:id="@+id/shop_param_container1"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/dimen_large"
-                    android:layout_marginLeft="@dimen/dimen_xlarge"
-                    android:layout_marginRight="@dimen/dimen_xlarge">
-
-                    <Button
-                        android:id="@+id/shop_param_btn1"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="@dimen/signup_button_height"
-                        android:background="@drawable/background_action_button"
-                        android:textColor="@android:color/white"
-                        android:text="@string/GLOBAL_OK"
-                        android:textStyle="bold"/>
-
-                    <View
-                        android:id="@+id/shop_param_spacer1"
-                        android:layout_width="@dimen/dimen_large"
-                        android:layout_height="@dimen/signup_button_height"/>
-
-                    <Button
-                        android:id="@+id/shop_param_btn2"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="@dimen/signup_button_height"
-                        android:background="@drawable/background_action_button"
-                        android:textColor="@android:color/white"
-                        android:text="@string/GLOBAL_OK"
-                        android:textStyle="bold"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:id="@+id/shop_param_container2"
-                    android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="@dimen/dimen_large"
-                    android:layout_marginLeft="@dimen/dimen_xlarge"
-                    android:layout_marginRight="@dimen/dimen_xlarge">
-
-                    <Button
-                        android:id="@+id/shop_param_btn3"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="@dimen/signup_button_height"
-                        android:background="@drawable/background_action_button"
-                        android:textColor="@android:color/white"
-                        android:text="@string/GLOBAL_OK"
-                        android:textStyle="bold"/>
-
-                    <View
-                        android:id="@+id/shop_param_spacer2"
-                        android:layout_width="@dimen/dimen_large"
-                        android:layout_height="@dimen/signup_button_height"/>
-
-                    <Button
-                        android:id="@+id/shop_param_btn4"
-                        android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:layout_height="@dimen/signup_button_height"
-                        android:background="@drawable/background_action_button"
-                        android:textColor="@android:color/white"
-                        android:text="@string/GLOBAL_OK"
-                        android:textStyle="bold"/>
-
-                </LinearLayout>
-
+                <Button
+                    android:id="@+id/shop_param_btn2"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="@dimen/signup_button_height"
+                    android:background="@drawable/background_action_button"
+                    android:textColor="@android:color/white"
+                    android:text="@string/GLOBAL_OK"
+                    android:textStyle="bold"/>
 
             </LinearLayout>
 
-        </ScrollView>
+            <LinearLayout
+                android:id="@+id/shop_param_container2"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="@dimen/dimen_large"
+                android:layout_marginLeft="@dimen/dimen_xlarge"
+                android:layout_marginRight="@dimen/dimen_xlarge"
+                android:layout_marginBottom="@dimen/dimen_large"
+                >
 
-    </RelativeLayout>
+                <Button
+                    android:id="@+id/shop_param_btn3"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="@dimen/signup_button_height"
+                    android:background="@drawable/background_action_button"
+                    android:textColor="@android:color/white"
+                    android:text="@string/GLOBAL_OK"
+                    android:textStyle="bold"/>
+
+                <View
+                    android:id="@+id/shop_param_spacer2"
+                    android:layout_width="@dimen/dimen_large"
+                    android:layout_height="@dimen/signup_button_height"/>
+
+                <Button
+                    android:id="@+id/shop_param_btn4"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:layout_height="@dimen/signup_button_height"
+                    android:background="@drawable/background_action_button"
+                    android:textColor="@android:color/white"
+                    android:text="@string/GLOBAL_OK"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
+
+
+        </LinearLayout>
+
+    </ScrollView>
 
     <RelativeLayout
         android:layout_width="fill_parent"
