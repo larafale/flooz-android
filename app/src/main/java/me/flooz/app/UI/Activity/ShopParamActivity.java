@@ -6,6 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.json.JSONArray;
@@ -37,6 +38,8 @@ public class ShopParamActivity extends BaseActivity implements FLShopField.FLSho
 
     private List<String> buttonsString = new ArrayList<>();
     private List<JSONArray> buttonsAction = new ArrayList<>();
+
+    private ScrollView scrollView;
 
     private ImageView headerBackButton;
     private TextView titleTextview;
@@ -117,6 +120,7 @@ public class ShopParamActivity extends BaseActivity implements FLShopField.FLSho
         this.titleTextview = (TextView) this.findViewById(R.id.header_title);
         this.headerTextview = (TextView) this.findViewById(R.id.shop_param_header_text);
         this.fieldsContainer = (LinearLayout) this.findViewById(R.id.shop_param_fields);
+        this.scrollView = (ScrollView) this.findViewById(R.id.shop_param_scroll);
 
         this.btnContainer1 = (LinearLayout) this.findViewById(R.id.shop_param_container1);
         this.btnContainer2 = (LinearLayout) this.findViewById(R.id.shop_param_container2);
@@ -226,13 +230,11 @@ public class ShopParamActivity extends BaseActivity implements FLShopField.FLSho
                         }
                     }
 
-                    headerBackButton.performClick();
+                    FLTriggerManager.getInstance().executeTriggerList(successTriggers);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-
-                FLTriggerManager.getInstance().executeTriggerList(successTriggers);
             }
         };
 

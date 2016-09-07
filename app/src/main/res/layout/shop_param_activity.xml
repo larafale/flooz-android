@@ -9,6 +9,7 @@
     android:focusableInTouchMode="true">
 
     <ScrollView
+        android:id="@+id/shop_param_scroll"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:overScrollMode="never"

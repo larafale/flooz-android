@@ -248,7 +248,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("pot:participation", CollectParticipationActivity.class);
             put("user:picker", UserPickerActivity.class);
             put("scope:picker", ScopePickerActivity.class);
-            put("popup:advance", AdvancedPopupActivity.class);
+            put("popup:advanced", AdvancedPopupActivity.class);
             put("shop:list", ShopListActivity.class);
             put("shop:item", ShopItemActivity.class);
             put("shop:param", ShopParamActivity.class);

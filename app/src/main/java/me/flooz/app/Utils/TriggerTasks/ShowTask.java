@@ -299,6 +299,10 @@ public class ShowTask extends ActionTask {
                         intent.setClass(currentActivity, HomeActivity.class);
                         intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         currentActivity.startActivity(intent);
+
+                        if (this.trigger.data != null && this.trigger.data.has("noAnim") && this.trigger.data.optBoolean("noAnim"))
+                            return;
+
                         currentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
                     } else {
                         FLTriggerManager.getInstance().pendingShowTrigger = this.trigger;
@@ -316,6 +320,10 @@ public class ShowTask extends ActionTask {
                         intent.putExtra("triggerData", this.trigger.data.toString());
 
                     currentActivity.startActivity(intent);
+
+                    if (this.trigger.data != null && this.trigger.data.has("noAnim") && this.trigger.data.optBoolean("noAnim"))
+                        return;
+
                     currentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
                 } else {
                     FLTriggerManager.getInstance().pendingShowTrigger = this.trigger;
@@ -356,6 +364,10 @@ public class ShowTask extends ActionTask {
                             intent.putExtra("triggerData", this.trigger.data.toString());
 
                         currentActivity.startActivity(intent);
+
+                        if (this.trigger.data != null && this.trigger.data.has("noAnim") && this.trigger.data.optBoolean("noAnim"))
+                            return;
+
                         currentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
                     } else {
                         FLTriggerManager.getInstance().pendingShowTrigger = this.trigger;
@@ -378,6 +390,10 @@ public class ShowTask extends ActionTask {
                         intent.putExtra("triggerData", this.trigger.data.toString());
 
                     currentActivity.startActivity(intent);
+
+                    if (this.trigger.data != null && this.trigger.data.has("noAnim") && this.trigger.data.optBoolean("noAnim"))
+                        return;
+
                     currentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
                 } else {
                     FLTriggerManager.getInstance().pendingShowTrigger = this.trigger;

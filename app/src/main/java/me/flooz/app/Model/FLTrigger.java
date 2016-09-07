@@ -39,6 +39,7 @@ public class FLTrigger {
     public Number delay;
     public ArrayList<FLTrigger> triggers;
     public Boolean valid;
+    public JSONObject jsonData;
 
     public FLTrigger(JSONObject json) {
         super();
@@ -49,6 +50,8 @@ public class FLTrigger {
     private boolean setJson(JSONObject json) {
         if (json == null)
             return false;
+
+        this.jsonData = json;
 
         this.key = json.optString("key");
 
