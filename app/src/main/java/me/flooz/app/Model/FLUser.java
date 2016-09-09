@@ -96,6 +96,8 @@ public class FLUser
     public FLUserSelectedCanal selectedCanal;
     public PublicMetrics publicMetrics = new PublicMetrics();
 
+    public JSONObject metrics;
+
     public class PublicMetrics {
         public int nbFlooz;
         public int nbFriends;
@@ -234,6 +236,8 @@ public class FLUser
 
             if (this.json.has("friends"))
                 this.friendsCount = this.json.getJSONArray("friends").length();
+
+            this.metrics = this.json.optJSONObject("metrics");
 
             this.haveStatsPending = false;
 

@@ -19,6 +19,7 @@ import me.flooz.app.UI.Activity.AdvancedPopupActivity;
 import me.flooz.app.UI.Activity.AuthenticationActivity;
 import me.flooz.app.UI.Activity.BaseActivity;
 import me.flooz.app.UI.Activity.CashoutActivity;
+import me.flooz.app.UI.Activity.CashoutHistoryActivity;
 import me.flooz.app.UI.Activity.CollectActivity;
 import me.flooz.app.UI.Activity.CollectParticipantActivity;
 import me.flooz.app.UI.Activity.CollectParticipationActivity;
@@ -42,6 +43,7 @@ import me.flooz.app.UI.Activity.Settings.PrivacySettingsActivity;
 import me.flooz.app.UI.Activity.Settings.SetSecureCodeActivity;
 import me.flooz.app.UI.Activity.ShareAppActivity;
 import me.flooz.app.UI.Activity.ShareCollectAcivity;
+import me.flooz.app.UI.Activity.ShopHistoryActivity;
 import me.flooz.app.UI.Activity.ShopItemActivity;
 import me.flooz.app.UI.Activity.ShopListActivity;
 import me.flooz.app.UI.Activity.ShopParamActivity;
@@ -53,6 +55,7 @@ import me.flooz.app.UI.Activity.ValidateSMSActivity;
 import me.flooz.app.UI.Activity.WebContentActivity;
 import me.flooz.app.UI.Fragment.Home.TabFragments.BankFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.CashoutFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.CashoutHistoryFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.CollectFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.CollectParticipantFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.CollectParticipationFragment;
@@ -66,6 +69,7 @@ import me.flooz.app.UI.Fragment.Home.TabFragments.PrivacyFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.ProfileCardFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.SearchFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.ShareFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.ShopHistoryFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.SponsorFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.TabBarFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.TimelineFragment;
@@ -227,6 +231,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("card:card", CreditCardSettingsActivity.class);
 //            put("cashin:card", CashinCreditCardActivity.class);
 //            put("cashin:audiotel", CashinAudiotelActivity.class);
+            put("cashout:history", CashoutHistoryActivity.class);
             put("code:set", SetSecureCodeActivity.class);
             put("friend:pending", FriendRequestActivity.class);
             put("pay:source", PaymentSourceActivity.class);
@@ -252,6 +257,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("shop:list", ShopListActivity.class);
             put("shop:item", ShopItemActivity.class);
             put("shop:param", ShopParamActivity.class);
+            put("shop:history", ShopHistoryActivity.class);
         }};
     }
 
@@ -265,6 +271,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("app:profile", ProfileCardFragment.class);
             put("app:timeline", TimelineFragment.class);
             put("card:card", CreditCardFragment.class);
+            put("cashout:history", CashoutHistoryFragment.class);
             put("friend:pending", FriendRequestFragment.class);
             put("profile:user", ProfileCardFragment.class);
             put("settings:iban", BankFragment.class);
@@ -277,6 +284,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("web:web", WebFragment.class);
             put("pot:participant", CollectParticipantFragment.class);
             put("pot:participation", CollectParticipationFragment.class);
+            put("shop:history", ShopHistoryFragment.class);
         }};
     }
 
@@ -294,6 +302,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("auth:code", "modal");
             put("card:3ds", "modal");
             put("card:card", "modal");
+            put("cashout:history", "push");
             put("code:set", "modal");
             put("friend:pending", "modal");
             put("pay:source", "modal");
@@ -319,6 +328,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("shop:list", "modal");
             put("shop:item", "modal");
             put("shop:param", "modal");
+            put("shop:history", "push");
         }};
     }
 

@@ -29,6 +29,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import me.flooz.app.App.FloozApplication;
+import me.flooz.app.Model.FLButton;
 import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
@@ -141,114 +142,148 @@ public class ProfileListAdapter extends BaseAdapter implements StickyListHeaders
         menuHeader.clear();
 
         menuHeader.add(this.context.getResources().getString(R.string.ACCOUNT_MENU_ACCOUNT));
+        menuHeader.add(this.context.getResources().getString(R.string.ACCOUNT_MENU_BANK));
         menuHeader.add(this.context.getResources().getString(R.string.ACCOUNT_MENU_SETTINGS));
         menuHeader.add(this.context.getResources().getString(R.string.MENU_OTHER));
 
-        Map<String, Object> item0 = new HashMap<>();
-        item0.put("title", this.context.getResources().getString(R.string.MENU_EDIT_PROFILE));
-        item0.put("action", "profile");
-        item0.put("headerID", 1);
-        menuData.add(item0);
+        {
+            Map<String, Object> item0 = new HashMap<>();
+            item0.put("title", this.context.getResources().getString(R.string.MENU_EDIT_PROFILE));
+            item0.put("action", "profile");
+            item0.put("headerID", 1);
+            menuData.add(item0);
 
-        if (friendsNotifs > 0) {
             Map<String, Object> item1 = new HashMap<>();
-            item1.put("title", this.context.getResources().getString(R.string.NAV_FRIEND_REQUEST));
-            item1.put("action", "friends");
-            item1.put("notif", friendsNotifs);
+            item1.put("title", this.context.getResources().getString(R.string.SETTINGS_COORD));
+            item1.put("action", "coords");
+            item1.put("notif", coordsNotifs);
             item1.put("headerID", 1);
             menuData.add(item1);
+
+            Map<String, Object> item2 = new HashMap<>();
+            item2.put("title", this.context.getResources().getString(R.string.SETTINGS_DOCUMENTS));
+            item2.put("action", "documents");
+            item2.put("notif", docNotifs);
+            item2.put("headerID", 1);
+            menuData.add(item2);
+
+            if (friendsNotifs > 0) {
+                Map<String, Object> item = new HashMap<>();
+                item.put("title", this.context.getResources().getString(R.string.NAV_FRIEND_REQUEST));
+                item.put("action", "friends");
+                item.put("notif", friendsNotifs);
+                item.put("headerID", 1);
+                menuData.add(item);
+            }
+
+            Boolean isShopActive = false;
+
+            for (FLButton homeButton : FloozRestClient.getInstance().currentTexts.homeButtons) {
+                if (homeButton.name.contentEquals("hop")) {
+                    isShopActive = true;
+                    break;
+                }
+            }
+
+            if (isShopActive || (FloozRestClient.getInstance().currentUser.metrics.has("gcard")
+                    && FloozRestClient.getInstance().currentUser.metrics.optJSONObject("gcard").optInt("count") > 0)) {
+                Map<String, Object> item = new HashMap<>();
+                item.put("title", this.context.getResources().getString(R.string.ACCOUNT_MENU_SHOP_HISTORY));
+                item.put("action", "shopHistory");
+                item.put("headerID", 1);
+                menuData.add(item);
+            }
+
+            if (FloozRestClient.getInstance().currentTexts.json.optJSONObject("menu").has("promo")
+                    && FloozRestClient.getInstance().currentTexts.json.optJSONObject("menu").optJSONObject("promo").has("title")
+                    && !FloozRestClient.getInstance().currentTexts.json.optJSONObject("menu").optJSONObject("promo").optString("title").isEmpty()) {
+                Map<String, Object> item = new HashMap<>();
+                item.put("title", FloozRestClient.getInstance().currentTexts.json.optJSONObject("menu").optJSONObject("promo").optString("title"));
+                item.put("action", "sponsor");
+                item.put("headerID", 1);
+                menuData.add(item);
+            }
         }
 
-        Map<String, Object> item2 = new HashMap<>();
-        item2.put("title", this.context.getResources().getString(R.string.ACCOUNT_MENU_CASHOUT));
-        item2.put("action", "cashout");
-        item2.put("headerID", 1);
-        menuData.add(item2);
+        {
+            Map<String, Object> item0 = new HashMap<>();
+            item0.put("title", this.context.getResources().getString(R.string.SETTINGS_CARD));
+            item0.put("action", "card");
+            item0.put("headerID", 2);
+            menuData.add(item0);
 
-        Map<String, Object> item3 = new HashMap<>();
-        item3.put("title", this.context.getResources().getString(R.string.SETTINGS_CARD));
-        item3.put("action", "card");
-        item3.put("headerID", 1);
-        menuData.add(item3);
+            Map<String, Object> item1 = new HashMap<>();
+            item1.put("title", this.context.getResources().getString(R.string.SETTINGS_RIB));
+            item1.put("action", "bank");
+            item1.put("notif", bankNotifs);
+            item1.put("headerID", 2);
+            menuData.add(item1);
 
-        Map<String, Object> item5 = new HashMap<>();
-        item5.put("title", this.context.getResources().getString(R.string.SETTINGS_COORD));
-        item5.put("action", "coords");
-        item5.put("notif", coordsNotifs);
-        item5.put("headerID", 1);
-        menuData.add(item5);
-
-        Map<String, Object> item6 = new HashMap<>();
-        item6.put("title", this.context.getResources().getString(R.string.SETTINGS_DOCUMENTS));
-        item6.put("action", "documents");
-        item6.put("notif", docNotifs);
-        item6.put("headerID", 1);
-        menuData.add(item6);
-
-        if (FloozRestClient.getInstance().currentTexts.json.optJSONObject("menu").has("promo")
-                && FloozRestClient.getInstance().currentTexts.json.optJSONObject("menu").optJSONObject("promo").has("title")
-                && !FloozRestClient.getInstance().currentTexts.json.optJSONObject("menu").optJSONObject("promo").optString("title").isEmpty()) {
-            Map<String, Object> item7 = new HashMap<>();
-            item7.put("title", FloozRestClient.getInstance().currentTexts.json.optJSONObject("menu").optJSONObject("promo").optString("title"));
-            item7.put("action", "sponsor");
-            item7.put("headerID", 1);
-            menuData.add(item7);
+            Map<String, Object> item2 = new HashMap<>();
+            item2.put("title", this.context.getResources().getString(R.string.ACCOUNT_MENU_CASHOUT));
+            item2.put("action", "cashout");
+            item2.put("headerID", 2);
+            menuData.add(item2);
         }
 
-        Map<String, Object> item4 = new HashMap<>();
-        item4.put("title", this.context.getResources().getString(R.string.SETTINGS_RIB));
-        item4.put("action", "bank");
-        item4.put("notif", bankNotifs);
-        item4.put("headerID", 2);
-        menuData.add(item4);
+        {
+            Map<String, Object> item0 = new HashMap<>();
+            item0.put("title", this.context.getResources().getString(R.string.SETTINGS_NOTIFICATIONS));
+            item0.put("action", "notifSetting");
+            item0.put("headerID", 3);
+            menuData.add(item0);
 
-        Map<String, Object> item8 = new HashMap<>();
-        item8.put("title", this.context.getResources().getString(R.string.SETTINGS_PREFERENCES));
-        item8.put("action", "preferences");
-        item8.put("headerID", 2);
-        menuData.add(item8);
+            Map<String, Object> item1 = new HashMap<>();
+            item1.put("title", this.context.getResources().getString(R.string.SETTINGS_PRIVACY));
+            item1.put("action", "privacy");
+            item1.put("headerID", 3);
+            menuData.add(item1);
 
-        Map<String, Object> item9 = new HashMap<>();
-        item9.put("title", this.context.getResources().getString(R.string.SETTINGS_SECURITY));
-        item9.put("action", "security");
-        item9.put("headerID", 2);
-        menuData.add(item9);
+            Map<String, Object> item2 = new HashMap<>();
+            item2.put("title", this.context.getResources().getString(R.string.SETTINGS_SECURITY));
+            item2.put("action", "security");
+            item2.put("headerID", 3);
+            menuData.add(item2);
 
-        Map<String, Object> item10 = new HashMap<>();
-        item10.put("title", this.context.getResources().getString(R.string.INFORMATIONS_RATE_APP));
-        item10.put("action", "rate");
-        item10.put("headerID", 3);
-        menuData.add(item10);
+        }
 
-        Map<String, Object> item11 = new HashMap<>();
-        item11.put("title", this.context.getResources().getString(R.string.INFORMATIONS_FAQ));
-        item11.put("action", "faq");
-        item11.put("headerID", 3);
-        menuData.add(item11);
+        {
+            Map<String, Object> item0 = new HashMap<>();
+            item0.put("title", this.context.getResources().getString(R.string.INFORMATIONS_RATE_APP));
+            item0.put("action", "rate");
+            item0.put("headerID", 4);
+            menuData.add(item0);
 
-        Map<String, Object> item12 = new HashMap<>();
-        item12.put("title", this.context.getResources().getString(R.string.INFORMATIONS_TERMS));
-        item12.put("action", "cgu");
-        item12.put("headerID", 3);
-        menuData.add(item12);
+            Map<String, Object> item1 = new HashMap<>();
+            item1.put("title", this.context.getResources().getString(R.string.INFORMATIONS_FAQ));
+            item1.put("action", "faq");
+            item1.put("headerID", 4);
+            menuData.add(item1);
 
-        Map<String, Object> item13 = new HashMap<>();
-        item13.put("title", this.context.getResources().getString(R.string.INFORMATIONS_CONTACT));
-        item13.put("action", "contact");
-        item13.put("headerID", 3);
-        menuData.add(item13);
+            Map<String, Object> item2 = new HashMap<>();
+            item2.put("title", this.context.getResources().getString(R.string.INFORMATIONS_TERMS));
+            item2.put("action", "cgu");
+            item2.put("headerID", 4);
+            menuData.add(item2);
 
-        Map<String, Object> item14 = new HashMap<>();
-        item14.put("title", this.context.getResources().getString(R.string.ACCOUNT_MENU_IDEAS));
-        item14.put("action", "critics");
-        item14.put("headerID", 3);
-        menuData.add(item14);
+            Map<String, Object> item3 = new HashMap<>();
+            item3.put("title", this.context.getResources().getString(R.string.INFORMATIONS_CONTACT));
+            item3.put("action", "contact");
+            item3.put("headerID", 4);
+            menuData.add(item3);
 
-        Map<String, Object> item15 = new HashMap<>();
-        item15.put("title", this.context.getResources().getString(R.string.SETTINGS_LOGOUT));
-        item15.put("action", "logout");
-        item15.put("headerID", 3);
-        menuData.add(item15);
+            Map<String, Object> item4 = new HashMap<>();
+            item4.put("title", this.context.getResources().getString(R.string.ACCOUNT_MENU_IDEAS));
+            item4.put("action", "critics");
+            item4.put("headerID", 4);
+            menuData.add(item4);
+
+            Map<String, Object> item5 = new HashMap<>();
+            item5.put("title", this.context.getResources().getString(R.string.SETTINGS_LOGOUT));
+            item5.put("action", "logout");
+            item5.put("headerID", 4);
+            menuData.add(item5);
+        }
 
         this.notifyDataSetChanged();
     }
@@ -272,7 +307,7 @@ public class ProfileListAdapter extends BaseAdapter implements StickyListHeaders
             holder = (HeaderViewHolder) convertView.getTag();
         }
 
-        int headerId = (int) this.getItem(position).get("headerID");
+        int headerId = (int) this.getHeaderId(position);
 
         holder.text.setText(this.menuHeader.get(headerId - 1));;
 
@@ -284,7 +319,7 @@ public class ProfileListAdapter extends BaseAdapter implements StickyListHeaders
         if (i == 0)
             return 0;
         if (i == this.getCount() - 1)
-            return 3;
+            return 4;
 
         return (int) this.getItem(i).get("headerID");
     }

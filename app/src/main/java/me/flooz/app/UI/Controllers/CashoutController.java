@@ -20,7 +20,11 @@ import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.AuthenticationActivity;
+import me.flooz.app.UI.Activity.CashoutHistoryActivity;
+import me.flooz.app.UI.Activity.FriendRequestActivity;
 import me.flooz.app.UI.Activity.HomeActivity;
+import me.flooz.app.UI.Fragment.Home.TabFragments.CashoutHistoryFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.FriendRequestFragment;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.ViewServer;
@@ -50,6 +54,7 @@ public class CashoutController extends BaseController {
     protected void init() {
         super.init();
 
+        ImageView headerHistory = (ImageView) this.currentView.findViewById(R.id.header_item_right);
         TextView headerTitle = (TextView) this.currentView.findViewById(R.id.header_title);
         TextView balanceInfos = (TextView) this.currentView.findViewById(R.id.cashout_balance_infos);
         TextView globalInfos = (TextView) this.currentView.findViewById(R.id.cashout_infos);
@@ -67,6 +72,21 @@ public class CashoutController extends BaseController {
         this.cashoutButton.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
 
         this.cashoutButton.setText(String.format(this.parentActivity.getResources().getString(R.string.CASHOUT_BUTTON), ""));
+
+        headerHistory.setColorFilter(parentActivity.getResources().getColor(R.color.blue));
+
+        headerHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
+                    ((HomeActivity)parentActivity).pushFragmentInCurrentTab(new CashoutHistoryFragment());
+                else {
+                    Intent friendsIntent = new Intent(parentActivity, CashoutHistoryActivity.class);
+                    parentActivity.startActivity(friendsIntent);
+                    parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                }
+            }
+        });
 
         String amountValue = FLHelper.trimTrailingZeros(FloozRestClient.getInstance().currentUser.amount.toString());
 

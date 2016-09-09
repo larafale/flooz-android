@@ -22,6 +22,7 @@ import me.flooz.app.Adapter.SelectUserListAdapter;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLTrigger;
 import me.flooz.app.Model.FLUser;
+import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.FLTriggerManager;
@@ -69,6 +70,9 @@ public class UserPickerActivity extends BaseActivity {
         this.searchTextField = (EditText) this.findViewById(R.id.user_picker_search);
         this.searchSeparator = this.findViewById(R.id.user_picker_separator);
         this.resultList = (StickyListHeadersListView) this.findViewById(R.id.user_picker_list);
+
+        if (FloozRestClient.getInstance().currentTexts.friendSearch != null && !FloozRestClient.getInstance().currentTexts.friendSearch.isEmpty())
+            this.searchTextField.setHint(FloozRestClient.getInstance().currentTexts.friendSearch);
 
         this.listAdapter = new SelectUserListAdapter(this);
 

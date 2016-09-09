@@ -11,6 +11,7 @@ import java.util.List;
  */
 public class FLTexts {
 
+    public String friendSearch;
     public String cardInfos;
     public JSONObject notificationsText;
     public JSONObject json;
@@ -58,6 +59,7 @@ public class FLTexts {
         this.slider = new FLSlider(json.optJSONObject("slider"));
         this.couponButton = json.optJSONObject("couponButton");
         this.cardInfos = json.optString("card");
+        this.friendSearch = json.optString("friendSearch");
         this.menu = json.optJSONObject("menu");
 
         JSONArray countries = json.optJSONArray("countries");

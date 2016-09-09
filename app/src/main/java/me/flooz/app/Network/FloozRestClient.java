@@ -1151,6 +1151,48 @@ public class FloozRestClient
         this.request("/cashouts", HttpRequestType.POST, param, responseHandler);
     }
 
+    public void cashoutHistory(final FloozHttpResponseHandler responseHandler) {
+        this.request("/cashouts", HttpRequestType.GET, null, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                JSONObject jsonResponse = (JSONObject) response;
+
+                if (responseHandler != null) {
+                    Map<String, Object> ret = new HashMap<>();
+                    ret.put("items", jsonResponse.optJSONArray("items"));
+                    ret.put("nextUrl", jsonResponse.optString("next"));
+                    responseHandler.success(ret);
+                }
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+
+            }
+        });
+    }
+
+    public void cashoutHistoryNextPage(String url, final FloozHttpResponseHandler responseHandler) {
+        this.request(url, HttpRequestType.GET, null, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                JSONObject jsonResponse = (JSONObject) response;
+
+                if (responseHandler != null) {
+                    Map<String, Object> ret = new HashMap<>();
+                    ret.put("items", jsonResponse.optJSONArray("items"));
+                    ret.put("nextUrl", jsonResponse.optString("next"));
+                    responseHandler.success(ret);
+                }
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+
+            }
+        });
+    }
+
     /***************************/
     /*********  IMAGES  ********/
     /***************************/
@@ -1195,6 +1237,48 @@ public class FloozRestClient
                 if (responseHandler != null) {
                     Map<String, Object> ret = new HashMap<>();
                     ret.put("shopItems", transactions);
+                    ret.put("nextUrl", jsonResponse.optString("next"));
+                    responseHandler.success(ret);
+                }
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+
+            }
+        });
+    }
+
+    public void shopHistory(final FloozHttpResponseHandler responseHandler) {
+        this.request("/gcards", HttpRequestType.GET, null, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                JSONObject jsonResponse = (JSONObject) response;
+
+                if (responseHandler != null) {
+                    Map<String, Object> ret = new HashMap<>();
+                    ret.put("items", jsonResponse.optJSONArray("items"));
+                    ret.put("nextUrl", jsonResponse.optString("next"));
+                    responseHandler.success(ret);
+                }
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+
+            }
+        });
+    }
+
+    public void shopHistoryNextPage(String url, final FloozHttpResponseHandler responseHandler) {
+        this.request(url, HttpRequestType.GET, null, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                JSONObject jsonResponse = (JSONObject) response;
+
+                if (responseHandler != null) {
+                    Map<String, Object> ret = new HashMap<>();
+                    ret.put("items", jsonResponse.optJSONArray("items"));
                     ret.put("nextUrl", jsonResponse.optString("next"));
                     responseHandler.success(ret);
                 }

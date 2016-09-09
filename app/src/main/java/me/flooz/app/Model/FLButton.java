@@ -19,6 +19,7 @@ public class FLButton {
     public String imgUrl;
     public String title;
     public String subtitle;
+    public String name;
     public Boolean avalaible;
     public JSONArray triggers;
 
@@ -28,6 +29,7 @@ public class FLButton {
     }
 
     private void setJson(JSONObject json) {
+        this.name = json.optString("name");
         this.title = json.optString("title");
         this.subtitle = json.optString("subtitle");
         this.defaultImg = json.optString("defaultPic");

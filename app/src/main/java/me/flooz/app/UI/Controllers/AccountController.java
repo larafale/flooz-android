@@ -44,8 +44,11 @@ import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.Settings.BankSettingsActivity;
 import me.flooz.app.UI.Activity.Settings.DocumentsSettingsActivity;
 import me.flooz.app.UI.Activity.Settings.IdentitySettingsActivity;
+import me.flooz.app.UI.Activity.Settings.NotificationsSettingsActivity;
 import me.flooz.app.UI.Activity.Settings.PreferencesSettingsActivity;
+import me.flooz.app.UI.Activity.Settings.PrivacySettingsActivity;
 import me.flooz.app.UI.Activity.Settings.SecuritySettingsActivity;
+import me.flooz.app.UI.Activity.ShopHistoryActivity;
 import me.flooz.app.UI.Activity.SponsorActivity;
 import me.flooz.app.UI.Activity.WebContentActivity;
 import me.flooz.app.UI.Fragment.Home.TabFragments.BankFragment;
@@ -54,9 +57,12 @@ import me.flooz.app.UI.Fragment.Home.TabFragments.CreditCardFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.DocumentsFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.FriendRequestFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.IdentityFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.NotifsSettingsFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.PreferencesFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.PrivacyFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.ProfileCardFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.SecurityFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.ShopHistoryFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.SponsorFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.WebFragment;
 import me.flooz.app.Utils.CustomFonts;
@@ -138,6 +144,15 @@ public class AccountController extends BaseController implements ProfileListAdap
                             }
 
                             break;
+                        case "shopHistory":
+                            if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
+                                ((HomeActivity)parentActivity).pushFragmentInCurrentTab(new ShopHistoryFragment());
+                            else {
+                                Intent bankIntent = new Intent(parentActivity, ShopHistoryActivity.class);
+                                parentActivity.startActivity(bankIntent);
+                                parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                            }
+                            break;
                         case "cashout":
                             if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
                                 ((HomeActivity)parentActivity).pushFragmentInCurrentTab(new CashoutFragment());
@@ -197,11 +212,20 @@ public class AccountController extends BaseController implements ProfileListAdap
                                 parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
                             }
                             break;
-                        case "preferences":
+                        case "privacy":
                             if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
-                                ((HomeActivity)parentActivity).pushFragmentInCurrentTab(new PreferencesFragment());
+                                ((HomeActivity)parentActivity).pushFragmentInCurrentTab(new PrivacyFragment());
                             else {
-                                Intent prefIntent = new Intent(parentActivity, PreferencesSettingsActivity.class);
+                                Intent prefIntent = new Intent(parentActivity, PrivacySettingsActivity.class);
+                                parentActivity.startActivity(prefIntent);
+                                parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                            }
+                            break;
+                        case "notifSetting":
+                            if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
+                                ((HomeActivity)parentActivity).pushFragmentInCurrentTab(new NotifsSettingsFragment());
+                            else {
+                                Intent prefIntent = new Intent(parentActivity, NotificationsSettingsActivity.class);
                                 parentActivity.startActivity(prefIntent);
                                 parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
                             }

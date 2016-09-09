@@ -81,9 +81,11 @@
     <string name="NAV_INVITATION">Inviter mes amis</string>
     <string name="NAV_FRIEND_PICKER">Choisir un destinataire</string>
     <string name="NAV_SCANNER">Scanner un code</string>
-    <string name="NAV_FRIEND_REQUEST">Demandes d\'ami</string>
+    <string name="NAV_FRIEND_REQUEST">Mes demandes d\'ami</string>
     <string name="NAV_SOCIAL_LIKES">J\'AIME</string>
     <string name="NAV_COLLECT_INVITED">Invités</string>
+    <string name="NAV_SHOP_HISTORY">Historique d\'achats</string>
+    <string name="NAV_CASHOUT_HISTORY">Historique des virements</string>
 
     <string name="MENU_HOME">Accueil</string>
     <string name="MENU_NOTIF">Notifs</string>
@@ -190,7 +192,7 @@
     <string name="MENU_NEW_TRANSACTION_PAYMENT">Payer</string>
     <string name="MENU_NEW_TRANSACTION_COLLECT">Réclamer</string>
 
-    <string name="MENU_EDIT_PROFILE">Éditer mon profil</string>
+    <string name="MENU_EDIT_PROFILE">Mon profil public</string>
     <string name="MENU_PAYMENT">Payer</string>
     <string name="MENU_CHARGE">Réclamer</string>
     <string name="MENU_COLLECT">Créer</string>
@@ -201,7 +203,7 @@
     <string name="MENU_DECLINE_FRIENDS">Refuser la requête</string>
     <string name="MENU_STOP_PENDING_FRIENDS">Annuler la requête</string>
     <string name="MENU_AVATAR">Voir la photo</string>
-    <string name="MENU_OTHER">Autre…</string>
+    <string name="MENU_OTHER">Plus…</string>
     <string name="MENU_BLOCK_USER">Bloquer</string>
     <string name="MENU_REPORT_USER">Signaler</string>
     <string name="MENU_REPORT_LINE">Signaler ce contenu</string>
@@ -222,8 +224,10 @@
     <string name="ACCOUNT_MENU_NOTIFICATION">Notifications</string>
     <string name="ACCOUNT_MENU_SHARE">Inviter vos amis</string>
     <string name="ACCOUNT_MENU_CASHOUT">Virer à ma banque</string>
-    <string name="ACCOUNT_MENU_ACCOUNT">Compte</string>
+    <string name="ACCOUNT_MENU_SHOP_HISTORY">Mon historique d\'achats</string>
+    <string name="ACCOUNT_MENU_ACCOUNT">Profil</string>
     <string name="ACCOUNT_MENU_SETTINGS">Réglages</string>
+    <string name="ACCOUNT_MENU_BANK">Banque</string>
     <string name="ACCOUNT_MENU_IDEAS">Idées / Critiques</string>
     <string name="ACCOUNT_MENU_PROFILE">Mon profil</string>
     <string name="ACCOUNT_MENU_OTHER">À propos</string>
@@ -233,10 +237,10 @@
     <string name="SETTINGS_CODE">Changer mon code secret</string>
     <string name="SETTINGS_CARD">Carte bancaire</string>
     <string name="SETTINGS_RIB">Compte bancaire</string>
-    <string name="SETTINGS_DOCUMENTS">Mes documents</string>
+    <string name="SETTINGS_DOCUMENTS">Mes justificatifs</string>
     <string name="SETTINGS_PASSWORD">Changer mon mot de passe</string>
     <string name="SETTINGS_IDENTITY">Identité</string>
-    <string name="SETTINGS_COORD">Mes informations</string>
+    <string name="SETTINGS_COORD">Mes coordonées</string>
     <string name="SETTINGS_SECURITY">Sécurité</string>
     <string name="SETTINGS_PREFERENCES">Préférences</string>
     <string name="SETTINGS_LOGOUT">Déconnexion</string>

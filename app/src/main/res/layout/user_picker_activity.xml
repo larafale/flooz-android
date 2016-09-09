@@ -23,12 +23,12 @@
             android:gravity="center_vertical"
             android:hint="Rechercher un destinataire"
             android:textColorHint="@color/placeholder"
-            android:background="@color/background"
+            android:background="@color/background_header"
             android:textSize="16sp"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:textColor="@android:color/white"
-            android:visibility="gone"/>
+            android:visibility="visible"/>
 
         <View
             android:layout_below="@+id/user_picker_search"
@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="0.5dp"
             android:background="@color/placeholder"
-            android:visibility="gone"/>
+            android:visibility="visible"/>
 
         <se.emilsjolander.stickylistheaders.StickyListHeadersListView
             android:id="@+id/user_picker_list"
@@ -87,6 +87,7 @@
                 android:layout_alignParentRight="true"
                 android:src="@drawable/search"
                 android:layout_marginRight="@dimen/header_item_margin"
+                android:visibility="gone"
                 />
 
         </RelativeLayout>
