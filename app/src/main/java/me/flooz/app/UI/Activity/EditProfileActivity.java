@@ -282,7 +282,7 @@ public class EditProfileActivity extends BaseActivity {
     private void updateSaveButton() {
         FLUser currentUser = FloozRestClient.getInstance().currentUser;
 
-        if (!bioField.getText().toString().contentEquals(currentUser.birthdate)
+        if (!bioField.getText().toString().contentEquals(currentUser.userBio)
                 || !locationField.getText().toString().contentEquals(currentUser.location)
                 || !websiteField.getText().toString().contentEquals(currentUser.website)) {
             saveProfile.setColorFilter(getResources().getColor(R.color.blue));
