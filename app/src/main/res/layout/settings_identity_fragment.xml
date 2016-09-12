@@ -135,6 +135,18 @@
             android:textColor="@android:color/white"
             android:textColorHint="@color/placeholder"/>
 
+        <EditText
+            android:id="@+id/settings_coord_birthdate"
+            android:layout_width="fill_parent"
+            android:inputType="date"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            android:hint="@string/FIELD_BIRTHDATE"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:textColor="@android:color/white"
+            android:textColorHint="@color/placeholder"/>
+
         <Button
             android:id="@+id/settings_coord_save"
             android:layout_marginTop="@dimen/dimen_xlarge"

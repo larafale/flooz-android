@@ -3,6 +3,7 @@ package me.flooz.app.UI.Activity;
 import android.Manifest;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -14,14 +15,17 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.gc.materialdesign.views.Switch;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONException;
@@ -42,6 +46,7 @@ import me.flooz.app.R;
 import me.flooz.app.UI.Tools.ActionSheet;
 import me.flooz.app.UI.Tools.ActionSheetItem;
 import me.flooz.app.Utils.CustomFonts;
+import me.flooz.app.Utils.CustomNotificationIntents;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.ImageHelper;
 import me.flooz.app.Utils.ViewServer;
@@ -66,6 +71,8 @@ public class EditProfileActivity extends BaseActivity {
     private EditText locationField;
     private EditText websiteField;
     private TextView headerName;
+    private TextView fbName;
+    private Switch fbSwitch;
 
     private Uri tmpUriImage;
 
@@ -75,6 +82,13 @@ public class EditProfileActivity extends BaseActivity {
     public static final int TAKE_PICTURE_COVER = 4;
     private static final int PERMISSION_CAMERA_AVATAR = 5;
     private static final int PERMISSION_CAMERA_COVER = 6;
+
+    private BroadcastReceiver reloadCurrentUserDataReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            reloadView();
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -103,6 +117,8 @@ public class EditProfileActivity extends BaseActivity {
         this.locationField = (EditText) this.findViewById(R.id.edit_profile_location);
         this.websiteField = (EditText) this.findViewById(R.id.edit_profile_website);
         this.headerName = (TextView) this.findViewById(R.id.edit_profile_headername);
+        this.fbName = (TextView) this.findViewById(R.id.edit_profile_fb_title);
+        this.fbSwitch = (Switch) this.findViewById(R.id.edit_profile_fb_switch);
         this.saveProfile = (ImageView) this.findViewById(R.id.edit_profile_save);
         this.cameraPictureAvatar = (ImageView) this.findViewById(R.id.edit_profile_camera2);
         this.cameraPictureCover = (ImageView) this.findViewById(R.id.edit_profile_camera1);
@@ -111,6 +127,7 @@ public class EditProfileActivity extends BaseActivity {
         this.bioField.setTypeface(CustomFonts.customContentRegular(this));
         this.locationField.setTypeface(CustomFonts.customContentRegular(this));
         this.websiteField.setTypeface(CustomFonts.customContentRegular(this));
+        this.fbName.setTypeface(CustomFonts.customContentRegular(this));
         this.headerName.setTypeface(CustomFonts.customContentLight(this));
         this.headerName.setTextColor(getResources().getColor(R.color.blue));
         this.saveProfile.setColorFilter(getResources().getColor(R.color.grey_pseudo));
@@ -236,6 +253,30 @@ public class EditProfileActivity extends BaseActivity {
                 });
             }
         });
+
+        this.fbSwitch.setOncheckListener(new Switch.OnCheckListener() {
+            @Override
+            public void onCheck(Switch view, boolean check) {
+                if (check) {
+                    if (!FloozRestClient.getInstance().isConnectedToFacebook()) {
+                        FloozRestClient.getInstance().connectFacebook();
+                        fbSwitch.setChecked(false);
+                    }
+                } else {
+                    if (FloozRestClient.getInstance().isConnectedToFacebook()) {
+                        FloozRestClient.getInstance().disconnectFacebook();
+                        fbSwitch.setChecked(true);
+                    }
+                }
+            }
+        });
+    }
+
+    private void reloadView() {
+            if (FloozRestClient.getInstance().isConnectedToFacebook())
+                this.fbSwitch.setChecked(true);
+            else
+                this.fbSwitch.setChecked(false);
     }
 
     private void updateSaveButton() {
@@ -348,11 +389,15 @@ public class EditProfileActivity extends BaseActivity {
         if (FLHelper.isDebuggable())
             ViewServer.get(this).setFocusedWindow(this);
         floozApp.setCurrentActivity(this);
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadCurrentUserDataReceiver,
+                CustomNotificationIntents.filterReloadCurrentUser());
     }
 
     @Override
     public void onPause() {
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadCurrentUserDataReceiver);
         clearReferences();
+
         super.onPause();
     }
 

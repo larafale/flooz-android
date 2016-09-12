@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
 import android.view.View;
@@ -47,6 +48,7 @@ public class IdentityController extends BaseController implements FLPhoneField.F
     private EditText addressTextfield;
     private EditText zipCodeTextfield;
     private EditText cityTextfield;
+    private EditText birthdateTextfield;
 
     private TextView sendVerifyPhone;
     private TextView sendVerifyMail;
@@ -85,6 +87,7 @@ public class IdentityController extends BaseController implements FLPhoneField.F
         this.addressTextfield = (EditText) this.currentView.findViewById(R.id.settings_coord_address);
         this.zipCodeTextfield = (EditText) this.currentView.findViewById(R.id.settings_coord_zip);
         this.cityTextfield = (EditText) this.currentView.findViewById(R.id.settings_coord_city);
+        this.birthdateTextfield = (EditText) this.currentView.findViewById(R.id.settings_coord_birthdate);
         this.sendVerifyPhone = (TextView) this.currentView.findViewById(R.id.settings_coord_verify_phone);
         this.sendVerifyMail = (TextView) this.currentView.findViewById(R.id.settings_coord_verify_email);
         this.saveButton = (Button) this.currentView.findViewById(R.id.settings_coord_save);
@@ -95,6 +98,7 @@ public class IdentityController extends BaseController implements FLPhoneField.F
         this.addressTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.zipCodeTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.cityTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
+        this.birthdateTextfield.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.sendVerifyPhone.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.sendVerifyMail.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
 
@@ -146,6 +150,49 @@ public class IdentityController extends BaseController implements FLPhoneField.F
             }
         });
 
+        this.birthdateTextfield.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() == 3 && editable.charAt(2) != '/')
+                    editable.insert(2, "/");
+                if (editable.length() == 6 && editable.charAt(5) != '/')
+                    editable.insert(5, "/");
+
+                if (editable.length() == 1 && editable.charAt(0) > '3')
+                    editable.insert(0, "0");
+
+                if (editable.length() == 4 && editable.charAt(3) > '1')
+                    editable.insert(3, "0");
+
+                if (editable.length() == 2 && editable.charAt(0) == '3' && editable.charAt(1) > '1')
+                    editable.delete(1, 2);
+
+                if (editable.length() == 5 && editable.charAt(3) == '1' && editable.charAt(4) > '2')
+                    editable.delete(4, 5);
+
+                if (editable.length() == 7 && editable.charAt(6) > '2') {
+                    InputFilter[] filterArray = new InputFilter[1];
+                    filterArray[0] = new InputFilter.LengthFilter(8);
+                    birthdateTextfield.setFilters(filterArray);
+                }
+                else if (editable.length() == 7) {
+                    InputFilter[] filterArray = new InputFilter[1];
+                    filterArray[0] = new InputFilter.LengthFilter(10);
+                    birthdateTextfield.setFilters(filterArray);
+                }
+            }
+        });
+
         this.saveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -166,6 +213,9 @@ public class IdentityController extends BaseController implements FLPhoneField.F
 
                 if (!emailTextfield.getText().toString().contentEquals(currentUser.email))
                     param.put("email", emailTextfield.getText().toString());
+
+                if (!(FLUser.formattedBirthdate(birthdateTextfield.getText().toString()).contentEquals(currentUser.email)))
+                    param.put("birthdate", FLUser.formattedBirthdate(birthdateTextfield.getText().toString()));
 
                 if (((currentUser.address.get("address") == null || (currentUser.address.get("address") != null && currentUser.address.get("address").isEmpty())) && addressTextfield.getText().length() > 0)
                         || (currentUser.address.get("address") != null && !currentUser.address.get("address").isEmpty() && !addressTextfield.getText().toString().contentEquals(currentUser.address.get("address"))))
@@ -212,6 +262,7 @@ public class IdentityController extends BaseController implements FLPhoneField.F
         this.zipCodeTextfield.setText(currentUser.address.get("zipCode"));
         this.cityTextfield.setText(currentUser.address.get("city"));
         this.phoneTextfield.setCountry(currentUser.country);
+        this.birthdateTextfield.setText(currentUser.birthdate);
 
         String phone = currentUser.phone.replace(currentUser.country.indicatif, "0");
 
