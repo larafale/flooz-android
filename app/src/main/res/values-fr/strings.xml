@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="TypographyDashes">
 
-    <string name="facebook_app_id" translatable="false">152779318256915</string>
-
     <string name="GLOBAL_OR">ou</string>
     <string name="GLOBAL_OK">OK</string>
     <string name="GLOBAL_BY">par</string>
@@ -84,6 +82,8 @@
     <string name="NAV_FRIEND_REQUEST">Mes demandes d\'ami</string>
     <string name="NAV_SOCIAL_LIKES">J\'AIME</string>
     <string name="NAV_COLLECT_INVITED">Invités</string>
+    <string name="NAV_SHOP_HISTORY">Historique d\'achats</string>
+    <string name="NAV_CASHOUT_HISTORY">Historique des virements</string>
 
     <string name="MENU_HOME">Accueil</string>
     <string name="MENU_NOTIF">Notifs</string>
