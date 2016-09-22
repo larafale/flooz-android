@@ -12,14 +12,8 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.controller.ControllerListener;
@@ -34,13 +28,8 @@ import com.facebook.imagepipeline.image.ImageInfo;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.github.silvestrpredko.dotprogressbar.DotProgressBar;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 
 import me.flooz.app.R;
-import uk.co.senab.photoview.PhotoViewAttacher;
 
 /**
  * Created by Wapazz on 21/09/15.
@@ -88,7 +77,6 @@ public class CustomImageViewer extends Activity {
         progressBar.setColor(this.getResources().getColor(R.color.blue));
 
         GenericDraweeHierarchy hierarchy = builder
-//                .setProgressBarImage(progressBar)
                 .setActualImageScaleType(ScalingUtils.ScaleType.FIT_CENTER)
                 .setRoundingParams(roundingParams)
                 .build();

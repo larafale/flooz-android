@@ -133,6 +133,7 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
 }
 
+def android_support_version = "24.2.1"
 def genius_version = "2.0.0-beta4"
 
 dependencies {
@@ -140,13 +141,13 @@ dependencies {
 
     // Android
 
-    compile 'com.android.support:appcompat-v7:24.2.0'
-    compile 'com.android.support:support-v4:24.2.0'
-    compile 'com.android.support:support-v13:24.2.0'
-    compile 'com.android.support:percent:24.2.0'
-    compile 'com.google.android.gms:play-services:9.4.0'
-    compile 'com.android.support:multidex:1.+'
-    compile 'com.android.support:recyclerview-v7:24.2.0'
+    compile "com.android.support:appcompat-v7:${android_support_version}"
+    compile "com.android.support:support-v4:${android_support_version}"
+    compile "com.android.support:support-v13:${android_support_version}"
+    compile "com.android.support:percent:${android_support_version}"
+    compile 'com.google.android.gms:play-services:9.6.0'
+    compile "com.android.support:multidex:1.+"
+    compile "com.android.support:recyclerview-v7:${android_support_version}"
 
     // UI
 
@@ -199,13 +200,13 @@ dependencies {
     // Tools
 
     compile 'com.googlecode.libphonenumber:libphonenumber:7.+'
-    compile 'com.mixpanel.android:mixpanel-android:4.+@aar'
     compile 'com.github.inaka:tinytask:v1'
     compile 'com.github.tslamic.adn:library:1.+'
     compile 'com.jakewharton:butterknife:8.4.0'
 
     // Other
 
+    compile 'com.mixpanel.android:mixpanel-android:4.+@aar'
     compile 'com.github.quentin7b:android-location-tracker:3.+'
     compile 'com.facebook.android:facebook-android-sdk:4.10.0'
     compile 'io.branch.sdk.android:library:1.+'

@@ -1,22 +1,13 @@
 package me.flooz.app.UI.View;
 
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.drawable.Animatable;
 import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
-import com.bumptech.glide.load.resource.drawable.GlideDrawable;
-import com.bumptech.glide.request.RequestListener;
-import com.bumptech.glide.request.target.Target;
-import com.facebook.common.logging.FLog;
 import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.controller.ControllerListener;
@@ -27,18 +18,11 @@ import com.facebook.drawee.generic.RoundingParams;
 import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.image.ImageInfo;
-import com.facebook.imagepipeline.image.QualityInfo;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.github.silvestrpredko.dotprogressbar.DotProgressBar;
-import com.makeramen.roundedimageview.RoundedImageView;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
 
 import me.flooz.app.R;
-import me.flooz.app.Utils.CircleTransform;
 
 /**
  * Created by Flooz on 12/8/14.
