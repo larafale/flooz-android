@@ -1,5 +1,6 @@
 package me.flooz.app.UI.View;
 
+import me.flooz.app.Model.FLScope;
 import me.flooz.app.Model.FLTransaction;
 
 /**
@@ -7,5 +8,5 @@ import me.flooz.app.Model.FLTransaction;
  */
 
 public interface ToolTipScopeViewDelegate {
-    void scopeChanged(FLTransaction.TransactionScope scope);
+    void scopeChanged(FLScope scope);
 }

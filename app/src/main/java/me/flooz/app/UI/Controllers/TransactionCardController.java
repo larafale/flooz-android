@@ -463,7 +463,7 @@ public class TransactionCardController extends BaseController {
 
     private void reloadView() {
 
-        this.cardHeaderScope.setImageDrawable(FLTransaction.transactionScopeToImage(this.transaction.scope));
+        this.cardHeaderScope.setImageDrawable(this.transaction.scope.image);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM à HH:mm", Locale.FRANCE);
 

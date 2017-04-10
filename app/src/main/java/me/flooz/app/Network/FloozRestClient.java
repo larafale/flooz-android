@@ -63,6 +63,7 @@ import me.flooz.app.Model.FLCreditCard;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLNotification;
 import me.flooz.app.Model.FLReport;
+import me.flooz.app.Model.FLScope;
 import me.flooz.app.Model.FLShareText;
 import me.flooz.app.Model.FLShopItem;
 import me.flooz.app.Model.FLTexts;
@@ -518,20 +519,21 @@ public class FloozRestClient
         return null;
     }
 
-    public List<FLTransaction> loadTimelineData(FLTransaction.TransactionScope scope) {
+    public List<FLTransaction> loadTimelineData(FLScope scope) {
         String dataKey = "";
 
-        switch (scope) {
-            case TransactionScopePublic:
-                dataKey = kPublicTimelineData;
-                break;
-            case TransactionScopePrivate:
-                dataKey = kPrivateTimelineData;
-                break;
-            case TransactionScopeFriend:
-                dataKey = kFriendTimelineData;
-                break;
-        }
+        //TODO: cache timeline
+//        switch (scope) {
+//            case TransactionScopePublic:
+//                dataKey = kPublicTimelineData;
+//                break;
+//            case TransactionScopePrivate:
+//                dataKey = kPrivateTimelineData;
+//                break;
+//            case TransactionScopeFriend:
+//                dataKey = kFriendTimelineData;
+//                break;
+//        }
 
         String timelineData = this.appSettings.getString(dataKey, null);
         if (timelineData != null) {
@@ -584,21 +586,22 @@ public class FloozRestClient
             this.appSettings.edit().putString(kLlData, ll).apply();
     }
 
-    public void saveTimelineData(FLTransaction.TransactionScope scope, JSONArray timeline) {
+    public void saveTimelineData(FLScope scope, JSONArray timeline) {
         if (timeline != null) {
             String dataKey = "";
 
-            switch (scope) {
-                case TransactionScopePublic:
-                    dataKey = kPublicTimelineData;
-                    break;
-                case TransactionScopePrivate:
-                    dataKey = kPrivateTimelineData;
-                    break;
-                case TransactionScopeFriend:
-                    dataKey = kFriendTimelineData;
-                    break;
-            }
+            //TODO: cache timeline
+//            switch (scope) {
+//                case TransactionScopePublic:
+//                    dataKey = kPublicTimelineData;
+//                    break;
+//                case TransactionScopePrivate:
+//                    dataKey = kPrivateTimelineData;
+//                    break;
+//                case TransactionScopeFriend:
+//                    dataKey = kFriendTimelineData;
+//                    break;
+//            }
 
             this.appSettings.edit().putString(dataKey, timeline.toString()).apply();
         }
@@ -1455,9 +1458,9 @@ public class FloozRestClient
         });
     }
 
-    public void timeline(final FLTransaction.TransactionScope scope, final FloozHttpResponseHandler responseHandler) {
+    public void timeline(final FLScope scope, final FloozHttpResponseHandler responseHandler) {
         Map<String, Object> params = new HashMap<>();
-        params.put("scope", FLTransaction.transactionScopeToParams(scope));
+        params.put("scope", scope.keyString);
 
         if (responseHandler != null) {
             List<FLTransaction> transactions = loadTimelineData(scope);
@@ -1465,7 +1468,7 @@ public class FloozRestClient
                 Map<String, Object> ret = new HashMap<>();
                 ret.put("transactions", transactions);
                 ret.put("nextUrl", null);
-                ret.put("scope", FLTransaction.transactionScopeToParams(scope));
+                ret.put("scope", scope.keyString);
                 responseHandler.success(ret);
             }
         }
@@ -1498,7 +1501,7 @@ public class FloozRestClient
                             Map<String, Object> ret = new HashMap<>();
                             ret.put("transactions", transactions);
                             ret.put("nextUrl", null);
-                            ret.put("scope", FLTransaction.transactionScopeToParams(scope));
+                            ret.put("scope", scope.keyString);
                             responseHandler.success(ret);
                         }
                     } else {

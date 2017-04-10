@@ -37,7 +37,7 @@ public class FLPreset {
     public JSONArray steps;
     public JSONObject popup;
     public JSONArray scopes;
-    public FLTransaction.TransactionScope scope = null;
+    public FLScope scope = null;
 
     public FLPreset(JSONObject json) {
         super();
@@ -94,7 +94,7 @@ public class FLPreset {
             this.steps = null;
 
         if (json.has("scope"))
-            this.scope = FLTransaction.transactionScopeIDToScope(json.optInt("scope"));
+            this.scope = FLScope.scopeFromObject(json.opt("scope"));
 
         if (json.has("scopes"))
             this.scopes = json.optJSONArray("scopes");

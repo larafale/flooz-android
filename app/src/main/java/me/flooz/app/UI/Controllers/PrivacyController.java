@@ -49,19 +49,20 @@ public class PrivacyController extends BaseController {
         segmentedGroup.setTintColor(this.parentActivity.getResources().getColor(R.color.blue));
 
         String scopeString = (String)((Map<String, Object>) FloozRestClient.getInstance().currentUser.settings.get("def")).get("scope");
-        FLTransaction.TransactionScope scope = FLTransaction.transactionScopeParamToEnum(scopeString);
-
-        switch (scope) {
-            case TransactionScopePublic:
-                segmentedGroup.check(R.id.settings_privacy_segment_public);
-                break;
-            case TransactionScopeFriend:
-                segmentedGroup.check(R.id.settings_privacy_segment_friend);
-                break;
-            case TransactionScopePrivate:
-                segmentedGroup.check(R.id.settings_privacy_segment_private);
-                break;
-        }
+        // TODO: 10/04/2017  
+//        FLTransaction.TransactionScope scope = FLTransaction.transactionScopeParamToEnum(scopeString);
+//
+//        switch (scope) {
+//            case TransactionScopePublic:
+//                segmentedGroup.check(R.id.settings_privacy_segment_public);
+//                break;
+//            case TransactionScopeFriend:
+//                segmentedGroup.check(R.id.settings_privacy_segment_friend);
+//                break;
+//            case TransactionScopePrivate:
+//                segmentedGroup.check(R.id.settings_privacy_segment_private);
+//                break;
+//        }
 
         segmentedGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
             @Override
@@ -69,19 +70,20 @@ public class PrivacyController extends BaseController {
                 Map<String, Object> settings = new HashMap<>(FloozRestClient.getInstance().currentUser.settings);
                 Map<String, Object> def = (Map<String, Object>) settings.get("def");
 
-                switch (checkedId) {
-                    case R.id.settings_privacy_segment_public:
-                        def.put("scope", FLTransaction.transactionScopeToParams(FLTransaction.TransactionScope.TransactionScopePublic));
-                        break;
-                    case R.id.settings_privacy_segment_friend:
-                        def.put("scope", FLTransaction.transactionScopeToParams(FLTransaction.TransactionScope.TransactionScopeFriend));
-                        break;
-                    case R.id.settings_privacy_segment_private:
-                        def.put("scope", FLTransaction.transactionScopeToParams(FLTransaction.TransactionScope.TransactionScopePrivate));
-                        break;
-                    default:
-                        break;
-                }
+                // TODO: 10/04/2017
+//                switch (checkedId) {
+//                    case R.id.settings_privacy_segment_public:
+//                        def.put("scope", FLTransaction.transactionScopeToParams(FLTransaction.TransactionScope.TransactionScopePublic));
+//                        break;
+//                    case R.id.settings_privacy_segment_friend:
+//                        def.put("scope", FLTransaction.transactionScopeToParams(FLTransaction.TransactionScope.TransactionScopeFriend));
+//                        break;
+//                    case R.id.settings_privacy_segment_private:
+//                        def.put("scope", FLTransaction.transactionScopeToParams(FLTransaction.TransactionScope.TransactionScopePrivate));
+//                        break;
+//                    default:
+//                        break;
+//                }
 
                 Map<String, Object> params = new HashMap<>();
                 params.put("settings", settings);

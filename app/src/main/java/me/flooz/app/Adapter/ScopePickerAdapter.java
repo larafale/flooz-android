@@ -15,6 +15,7 @@ import org.json.JSONArray;
 
 import java.util.List;
 
+import me.flooz.app.Model.FLScope;
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
@@ -26,12 +27,12 @@ public class ScopePickerAdapter extends BaseAdapter {
     private LayoutInflater inflater;
     private Context context;
 
-    public FLTransaction.TransactionScope currentScope = null;
+    public FLScope currentScope = null;
 
     private Boolean isPot = false;
     private JSONArray limitedScopes;
 
-    public ScopePickerAdapter(Context ctx, Boolean isPot, FLTransaction.TransactionScope currentScope, JSONArray limitedScopes) {
+    public ScopePickerAdapter(Context ctx, Boolean isPot, FLScope currentScope, JSONArray limitedScopes) {
         this.inflater = LayoutInflater.from(ctx);
         this.context = ctx;
 
@@ -49,20 +50,11 @@ public class ScopePickerAdapter extends BaseAdapter {
     }
 
     @Override
-    public FLTransaction.TransactionScope getItem(int i) {
+    public FLScope getItem(int i) {
         if (limitedScopes != null && limitedScopes.length() > 0)
-            return FLTransaction.transactionScopeIDToScope(limitedScopes.optInt(i));
+            return FLScope.scopeFromObject(limitedScopes.opt(i));
 
-        switch (i) {
-            case 0:
-                return FLTransaction.TransactionScope.TransactionScopePublic;
-            case 1:
-                return FLTransaction.TransactionScope.TransactionScopeFriend;
-            case 2:
-                return FLTransaction.TransactionScope.TransactionScopePrivate;
-        }
-
-        return null;
+        return FLScope.scopeFromID(i);
     }
 
     @Override
@@ -94,43 +86,12 @@ public class ScopePickerAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        FLTransaction.TransactionScope scope = this.getItem(i);
+        FLScope scope = this.getItem(i);
 
         if (scope != null) {
-            String title = null;
-            String subtitle = null;
-
-            holder.image.setImageDrawable(FLTransaction.transactionScopeToImage(scope));
-
-            switch (scope) {
-                case TransactionScopePublic:
-                    title = context.getResources().getString(R.string.TRANSACTION_SCOPE_PUBLIC);
-                    if (this.isPot)
-                        subtitle = context.getResources().getString(R.string.TRANSACTION_SCOPE_SUB_POT_PUBLIC);
-                    else
-                        subtitle = context.getResources().getString(R.string.TRANSACTION_SCOPE_SUB_PUBLIC);
-
-                    break;
-                case TransactionScopeFriend:
-                    title = context.getResources().getString(R.string.TRANSACTION_SCOPE_FRIEND);
-                    if (this.isPot)
-                        subtitle = context.getResources().getString(R.string.TRANSACTION_SCOPE_SUB_POT_FRIEND);
-                    else
-                        subtitle = context.getResources().getString(R.string.TRANSACTION_SCOPE_SUB_FRIEND);
-
-                    break;
-                case TransactionScopePrivate:
-                    title = context.getResources().getString(R.string.TRANSACTION_SCOPE_PRIVATE);
-                    if (this.isPot)
-                        subtitle = context.getResources().getString(R.string.TRANSACTION_SCOPE_SUB_POT_PRIVATE);
-                    else
-                        subtitle = context.getResources().getString(R.string.TRANSACTION_SCOPE_SUB_PRIVATE);
-
-                    break;
-            }
-
-            holder.title.setText(title);
-            holder.subtitle.setText(subtitle);
+            holder.image.setImageDrawable(scope.image);
+            holder.title.setText(scope.name);
+            holder.subtitle.setText(scope.desc);
 
             if (this.currentScope != null && this.currentScope == scope)
                 holder.checkmark.setVisibility(View.VISIBLE);

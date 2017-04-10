@@ -38,6 +38,7 @@ import java.util.Map;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLPreset;
+import me.flooz.app.Model.FLScope;
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
@@ -90,7 +91,7 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
     public String currentPictureURL;
 
     FLTransaction.TransactionType currentType;
-    private FLTransaction.TransactionScope currentScope = FLTransaction.TransactionScope.TransactionScopePublic;
+    private FLScope currentScope = FLScope.defaultScope(FLScope.FLScopeKey.FLScopePublic);
 
     private SlidableRelativeLayout baseLayout;
     private ImageView headerScope;
@@ -172,8 +173,9 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
         else
             this.init();
 
-        if (FloozRestClient.getInstance().currentUser != null && FloozRestClient.getInstance().currentUser.settings != null)
-            this.currentScope = FLTransaction.transactionScopeParamToEnum((String)((Map)FloozRestClient.getInstance().currentUser.settings.get("def")).get("scope"));
+        // TODO: 10/04/2017  
+//        if (FloozRestClient.getInstance().currentUser != null && FloozRestClient.getInstance().currentUser.settings != null)
+//            this.currentScope = FLTransaction.transactionScopeParamToEnum((String)((Map)FloozRestClient.getInstance().currentUser.settings.get("def")).get("scope"));
 
         this.setContentView(R.layout.transaction_fragment);
 
@@ -247,7 +249,8 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
             public void onClick(View v) {
                 Intent scopeIntent = new Intent(NewTransactionActivity.this, ScopePickerActivity.class);
 
-                scopeIntent.putExtra("scope", FLTransaction.transactionScopeToParams(currentScope));
+                // TODO: 10/04/2017  
+//                scopeIntent.putExtra("scope", FLTransaction.transactionScopeToParams(currentScope));
 
                 if (preset != null && preset.scopes != null)
                     scopeIntent.putExtra("scopes", preset.scopes.toString());
@@ -383,10 +386,11 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
         if (preset != null && preset.scope != null)
             this.currentScope = this.preset.scope;
         else {
-            if (FloozRestClient.getInstance().currentUser != null)
-                this.currentScope = FLTransaction.transactionScopeParamToEnum((String) ((Map) FloozRestClient.getInstance().currentUser.settings.get("def")).get("scope"));
-            else
-                this.currentScope = FLTransaction.TransactionScope.TransactionScopePublic;
+            // TODO: 10/04/2017  
+//            if (FloozRestClient.getInstance().currentUser != null)
+//                this.currentScope = FLTransaction.transactionScopeParamToEnum((String) ((Map) FloozRestClient.getInstance().currentUser.settings.get("def")).get("scope"));
+//            else
+//                this.currentScope = FLTransaction.TransactionScope.TransactionScopePublic;
         }
 
         this.updateScopeField();
@@ -475,7 +479,8 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
                 }
             } else if (requestCode == PICK_SCOPE) {
                 if (data.hasExtra("scope")) {
-                    currentScope = FLTransaction.transactionParamsToScope(data.getStringExtra("scope"));
+                    // TODO: 10/04/2017
+//                    currentScope = FLTransaction.transactionParamsToScope(data.getStringExtra("scope"));
 
                     Handler mainHandler = new Handler(this.getMainLooper());
                     Runnable myRunnable = new Runnable() {
@@ -540,7 +545,7 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
     }
 
     private void updateScopeField() {
-        this.headerScope.setImageDrawable(FLTransaction.transactionScopeToImage(this.currentScope));
+        this.headerScope.setImageDrawable(this.currentScope.image);
     }
 
     private void performTransaction(FLTransaction.TransactionType type) {
@@ -655,7 +660,7 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
 
         params.put("random", random);
         params.put("method", FLTransaction.transactionTypeToParams(this.currentType));
-        params.put("scope", FLTransaction.transactionScopeToParams(this.currentScope));
+        params.put("scope", this.currentScope.keyString);
         params.put("why", this.contentTextfield.getText().toString());
         params.put("validate", validate);
 

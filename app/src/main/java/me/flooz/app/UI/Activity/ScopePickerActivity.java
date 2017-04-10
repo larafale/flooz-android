@@ -18,6 +18,7 @@ import java.util.List;
 
 import me.flooz.app.Adapter.ScopePickerAdapter;
 import me.flooz.app.App.FloozApplication;
+import me.flooz.app.Model.FLScope;
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Model.FLTrigger;
 import me.flooz.app.R;
@@ -42,7 +43,7 @@ public class ScopePickerActivity extends BaseActivity {
 
     private List<FLTrigger> successTriggers;
 
-    private FLTransaction.TransactionScope currentScope = null;
+    private FLScope currentScope = null;
 
     private Boolean isPot = false;
     private JSONArray limitedScopes;
@@ -61,7 +62,7 @@ public class ScopePickerActivity extends BaseActivity {
                 this.triggerData = new JSONObject(getIntent().getStringExtra("triggerData"));
 
                 if (this.triggerData.has("scope"))
-                    this.currentScope = FLTransaction.transactionScopeIDToScope(this.triggerData.optInt("scope"));
+                    this.currentScope = FLScope.scopeFromObject(this.triggerData.opt("scope"));
 
                 if (this.triggerData.has("isPot"))
                     this.isPot = this.triggerData.optBoolean("isPot");
@@ -73,8 +74,9 @@ public class ScopePickerActivity extends BaseActivity {
                 e.printStackTrace();
             }
         if (getIntent()!= null) {
+            // TODO: check da thing below
             if (getIntent().hasExtra("scope"))
-                this.currentScope = FLTransaction.transactionParamsToScope(getIntent().getStringExtra("scope"));
+                this.currentScope = FLScope.scopeFromObject(getIntent().getStringExtra("scope"));
 
             if (getIntent().hasExtra("isPot"))
                 this.isPot = getIntent().getBooleanExtra("isPot", false);
@@ -128,7 +130,7 @@ public class ScopePickerActivity extends BaseActivity {
                         JSONObject data = new JSONObject();
 
                         try {
-                            data.put("scope", FLTransaction.transactionScopeToParams(currentScope));
+                            data.put("scope", currentScope.keyString);
 
                             if (triggerData.has("in") && !triggerData.optString("in").isEmpty()) {
                                 JSONObject base = successTrigger.data.optJSONObject(triggerData.optString("in"));
@@ -160,7 +162,7 @@ public class ScopePickerActivity extends BaseActivity {
 
                         currentIntent.removeExtra("scope");
 
-                        currentIntent.putExtra("scope", FLTransaction.transactionScopeToParams(currentScope));
+                        currentIntent.putExtra("scope", currentScope.keyString);
 
                         headerBackButton.performClick();
                     }

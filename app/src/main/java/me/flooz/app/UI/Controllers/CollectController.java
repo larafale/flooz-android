@@ -395,7 +395,7 @@ public class CollectController extends BaseController implements CollectAdapter.
         headerTitle.setText(this.collect.name);
         headerAmount.setText(FLHelper.trimTrailingZeros(String.format(Locale.US, "%.2f", this.collect.amount.floatValue())));
 
-        this.navbarScope.setImageDrawable(FLTransaction.transactionScopeToImage(this.collect.scope));
+        this.navbarScope.setImageDrawable(this.collect.scope.image);
 
         if (this.collect.attachmentURL != null &&!this.collect.attachmentURL.isEmpty()) {
             this.contentAttachmentView.setImageFromUrl(this.collect.attachmentURL);

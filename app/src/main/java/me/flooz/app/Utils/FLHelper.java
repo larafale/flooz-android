@@ -22,7 +22,6 @@ import me.flooz.app.Network.FloozRestClient;
  */
 public class FLHelper {
 
-
     public static int getResourceId(String pVariableName, String pResourcename, String pPackageName)
     {
         try {

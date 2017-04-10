@@ -36,13 +36,13 @@ public class FLTransaction {
         TransactionStatusNone
     }
 
-    public enum TransactionScope {
-        TransactionScopePublic,
-        TransactionScopeFriend,
-        TransactionScopePrivate,
-        TransactionScopeAll,
-        TransactionScopeNone
-    }
+//    public enum TransactionScope {
+//        TransactionScopePublic,
+//        TransactionScopeFriend,
+//        TransactionScopePrivate,
+//        TransactionScopeAll,
+//        TransactionScopeNone
+//    }
 
     public enum TransactionPaymentMethod {
         TransactionPaymentMethodWallet,
@@ -58,7 +58,7 @@ public class FLTransaction {
 
     public String avatarURL;
 
-    public TransactionScope scope;
+    public FLScope scope;
     public String title;
     public String name;
     public String content;
@@ -158,7 +158,7 @@ public class FLTransaction {
                 this.social = new FLSocial(json);
 
                 if (json.has("scope"))
-                    this.scope = transactionScopeIDToScope(json.optInt("scope"));
+                    this.scope = FLScope.scopeFromObject(json.opt("scope"));
                 else
                     this.scope = null;
 
@@ -317,63 +317,6 @@ public class FLTransaction {
         return TransactionStatus.TransactionStatusNone;
     }
 
-    public static TransactionScope transactionScopeParamToEnum(String param)
-    {
-        if (param.contentEquals("private"))
-            return TransactionScope.TransactionScopePrivate;
-        else if (param.contentEquals("friend"))
-            return TransactionScope.TransactionScopeFriend;
-        else if (param.contentEquals("public"))
-            return TransactionScope.TransactionScopeFriend;
-
-        return null;
-    }
-
-    public static String transactionScopeToText(TransactionScope scope)
-    {
-        int stringId = 0;
-
-        switch (scope) {
-            case TransactionScopePublic:
-                stringId = R.string.TRANSACTION_SCOPE_PUBLIC;
-                break;
-            case TransactionScopeFriend:
-                stringId = R.string.TRANSACTION_SCOPE_FRIEND;
-                break;
-            case TransactionScopePrivate:
-                stringId = R.string.TRANSACTION_SCOPE_PRIVATE;
-                break;
-            default:
-                break;
-        }
-
-        return (FloozApplication.getAppContext().getString(stringId));
-    }
-
-    public static Drawable transactionScopeToImage(TransactionScope scope)
-    {
-        if (scope == null)
-            return null;
-
-        int imgId = 0;
-
-        switch (scope) {
-            case TransactionScopePublic:
-                imgId = R.drawable.scope_public;
-                break;
-            case TransactionScopeFriend:
-                imgId = R.drawable.scope_friend;
-                break;
-            case TransactionScopePrivate:
-                imgId = R.drawable.scope_private;
-                break;
-            default:
-                return null;
-        }
-
-        return (FloozApplication.getAppContext().getResources().getDrawable(imgId));
-    }
-
     public static String transactionStatusToParams(TransactionStatus status)
     {
         switch (status) {
@@ -387,76 +330,6 @@ public class FLTransaction {
                 break;
         }
         return "";
-    }
-
-    public static String transactionScopeToParams(TransactionScope scope)
-    {
-        if (scope != null) {
-            switch (scope) {
-                case TransactionScopePublic:
-                    return "public";
-                case TransactionScopeFriend:
-                    return "friend";
-                case TransactionScopePrivate:
-                    return "private";
-                case TransactionScopeAll:
-                    return "all";
-                default:
-                    break;
-            }
-        }
-
-        return "public";
-    }
-
-    public static TransactionScope transactionParamsToScope(String scope)
-    {
-        if (scope != null) {
-            switch (scope) {
-                case"public":
-                    return TransactionScope.TransactionScopePublic;
-                case "friend":
-                    return TransactionScope.TransactionScopeFriend;
-                case "private":
-                    return TransactionScope.TransactionScopePrivate;
-                case "all":
-                    return TransactionScope.TransactionScopeAll;
-                default:
-                    break;
-            }
-        }
-
-        return null;
-    }
-
-    public static int transactionScopeToFloozParams(TransactionScope scope)
-    {
-        switch (scope) {
-            case TransactionScopePublic:
-                return 0;
-            case TransactionScopeFriend:
-                return 1;
-            case TransactionScopePrivate:
-                return 2;
-            default:
-                break;
-        }
-
-        return 0;
-    }
-
-    public static TransactionScope transactionScopeIDToScope(int id) {
-        switch (id) {
-            case 0:
-                return TransactionScope.TransactionScopePublic;
-            case 1:
-                return TransactionScope.TransactionScopeFriend;
-            case 2:
-                return TransactionScope.TransactionScopePrivate;
-            case 3:
-                return TransactionScope.TransactionScopeAll;
-        }
-        return null;
     }
 
     public static String transactionTypeToParams(TransactionType type)

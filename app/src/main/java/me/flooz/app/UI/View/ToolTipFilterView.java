@@ -7,6 +7,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import me.flooz.app.Model.FLScope;
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
@@ -49,52 +50,52 @@ public class ToolTipFilterView {
         friendText.setTypeface(CustomFonts.customContentRegular(context));
         privateText.setTypeface(CustomFonts.customContentRegular(context));
 
-        allLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (delegate != null)
-                    delegate.filterChanged(FLTransaction.TransactionScope.TransactionScopePublic);
-                changeFilter(FLTransaction.TransactionScope.TransactionScopeAll);
-            }
-        });
-
-        friendLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (delegate != null)
-                    delegate.filterChanged(FLTransaction.TransactionScope.TransactionScopeFriend);
-                changeFilter(FLTransaction.TransactionScope.TransactionScopeFriend);
-            }
-        });
-
-        privateLayout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (delegate != null)
-                    delegate.filterChanged(FLTransaction.TransactionScope.TransactionScopePrivate);
-                changeFilter(FLTransaction.TransactionScope.TransactionScopePrivate);
-            }
-        });
+//        allLayout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (delegate != null)
+//                    delegate.filterChanged(FLTransaction.TransactionScope.TransactionScopePublic);
+//                changeFilter(FLTransaction.TransactionScope.TransactionScopeAll);
+//            }
+//        });
+//
+//        friendLayout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (delegate != null)
+//                    delegate.filterChanged(FLTransaction.TransactionScope.TransactionScopeFriend);
+//                changeFilter(FLTransaction.TransactionScope.TransactionScopeFriend);
+//            }
+//        });
+//
+//        privateLayout.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                if (delegate != null)
+//                    delegate.filterChanged(FLTransaction.TransactionScope.TransactionScopePrivate);
+//                changeFilter(FLTransaction.TransactionScope.TransactionScopePrivate);
+//            }
+//        });
     }
 
-    public void changeFilter(FLTransaction.TransactionScope scope) {
+    public void changeFilter(FLScope scope) {
 
-        switch (scope) {
-            case TransactionScopeAll:
-                this.allCheck.setVisibility(View.VISIBLE);
-                this.friendCheck.setVisibility(View.GONE);
-                this.privateCheck.setVisibility(View.GONE);
-                break;
-            case TransactionScopeFriend:
-                this.allCheck.setVisibility(View.GONE);
-                this.friendCheck.setVisibility(View.VISIBLE);
-                this.privateCheck.setVisibility(View.GONE);
-                break;
-            case TransactionScopePrivate:
-                this.allCheck.setVisibility(View.GONE);
-                this.friendCheck.setVisibility(View.GONE);
-                this.privateCheck.setVisibility(View.VISIBLE);
-                break;
-        }
+//        switch (scope) {
+//            case TransactionScopeAll:
+//                this.allCheck.setVisibility(View.VISIBLE);
+//                this.friendCheck.setVisibility(View.GONE);
+//                this.privateCheck.setVisibility(View.GONE);
+//                break;
+//            case TransactionScopeFriend:
+//                this.allCheck.setVisibility(View.GONE);
+//                this.friendCheck.setVisibility(View.VISIBLE);
+//                this.privateCheck.setVisibility(View.GONE);
+//                break;
+//            case TransactionScopePrivate:
+//                this.allCheck.setVisibility(View.GONE);
+//                this.friendCheck.setVisibility(View.GONE);
+//                this.privateCheck.setVisibility(View.VISIBLE);
+//                break;
+//        }
     }
 }

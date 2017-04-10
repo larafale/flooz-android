@@ -30,6 +30,7 @@ public class FLTexts {
     public String balancePopupText = null;
     public JSONArray suggestWeb = new JSONArray();
     public JSONArray suggestGifs = new JSONArray();
+    public List<FLScope> homeScopes;
 
 
     public FLTexts(JSONObject json) {
