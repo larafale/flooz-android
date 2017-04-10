@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Flooz on 3/19/15.
  */
-public class FLTexts {
+public class  FLTexts {
 
     public String friendSearch;
     public String cardInfos;

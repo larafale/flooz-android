@@ -134,7 +134,7 @@ repositories {
 }
 
 def android_support_version = "25.3.1"
-def genius_version = "2.0.0"
+def genius_version = "2.0.0-beta4"
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
