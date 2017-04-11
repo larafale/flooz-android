@@ -84,9 +84,8 @@ import me.flooz.app.Utils.NotificationsManager;
 public class FloozRestClient
 {
     public static String kUserData = "userData";
-    public static String kPublicTimelineData = "publicTimelineData";
-    public static String kFriendTimelineData = "friendTimelineData";
-    public static String kPrivateTimelineData = "privateTimelineData";
+    public static String kBaseTimelineData = "TimelineData";
+
     public static String kTextData = "textData";
     public static String kShareData = "shareData";
     public static String kNotificationsData = "notifData";
@@ -520,20 +519,7 @@ public class FloozRestClient
     }
 
     public List<FLTransaction> loadTimelineData(FLScope scope) {
-        String dataKey = "";
-
-        //TODO: cache timeline
-//        switch (scope) {
-//            case TransactionScopePublic:
-//                dataKey = kPublicTimelineData;
-//                break;
-//            case TransactionScopePrivate:
-//                dataKey = kPrivateTimelineData;
-//                break;
-//            case TransactionScopeFriend:
-//                dataKey = kFriendTimelineData;
-//                break;
-//        }
+        String dataKey = scope.keyString + kBaseTimelineData;
 
         String timelineData = this.appSettings.getString(dataKey, null);
         if (timelineData != null) {
@@ -588,21 +574,7 @@ public class FloozRestClient
 
     public void saveTimelineData(FLScope scope, JSONArray timeline) {
         if (timeline != null) {
-            String dataKey = "";
-
-            //TODO: cache timeline
-//            switch (scope) {
-//                case TransactionScopePublic:
-//                    dataKey = kPublicTimelineData;
-//                    break;
-//                case TransactionScopePrivate:
-//                    dataKey = kPrivateTimelineData;
-//                    break;
-//                case TransactionScopeFriend:
-//                    dataKey = kFriendTimelineData;
-//                    break;
-//            }
-
+            String dataKey = scope.keyString + kBaseTimelineData;
             this.appSettings.edit().putString(dataKey, timeline.toString()).apply();
         }
     }
@@ -611,9 +583,9 @@ public class FloozRestClient
         SharedPreferences.Editor tmpEditor = this.appSettings.edit();
 
         tmpEditor.remove(kUserData);
-        tmpEditor.remove(kPublicTimelineData);
-        tmpEditor.remove(kPrivateTimelineData);
-        tmpEditor.remove(kFriendTimelineData);
+        for (FLScope scope: this.currentTexts.homeScopes) {
+            tmpEditor.remove(scope.keyString + kBaseTimelineData);
+        }
         tmpEditor.remove(kTextData);
         tmpEditor.remove(kNotificationsData);
         tmpEditor.remove(kLocationData);
