@@ -575,10 +575,10 @@ public class TransactionController extends BaseController {
         }
 
         if (transaction.social != null) {
-            if (transaction.social.likesCount.intValue() > 0 || transaction.social.commentsCount.intValue() > 0) {
+            if ((transaction.social.likesCount.intValue() > 0 && transaction.options.likeEnabled) || (transaction.social.commentsCount.intValue() > 0 && transaction.options.commentEnabled)) {
                 this.socialLabelsContainer.setVisibility(View.VISIBLE);
 
-                if (transaction.social.likesCount.intValue() > 0) {
+                if (transaction.social.likesCount.intValue() > 0 && transaction.options.likeEnabled) {
                     this.socialLikesLabel.setVisibility(View.VISIBLE);
 
                     String number = FLHelper.formatUserNumber(this.transaction.social.likesCount.longValue());
@@ -604,7 +604,7 @@ public class TransactionController extends BaseController {
                     this.socialLikesLabel.setVisibility(View.GONE);
                 }
 
-                if (transaction.social.commentsCount.intValue() > 0) {
+                if (transaction.social.commentsCount.intValue() > 0 && transaction.options.commentEnabled) {
                     this.socialCommentsLabel.setVisibility(View.VISIBLE);
 
                     final ForegroundColorSpan commentNumberColor = new ForegroundColorSpan(this.parentActivity.getResources().getColor(android.R.color.white));
@@ -637,22 +637,47 @@ public class TransactionController extends BaseController {
                 this.socialLabelsContainer.setVisibility(View.GONE);
             }
 
-            if (transaction.social.isLiked) {
+            if (transaction.social.isLiked && transaction.options.likeEnabled) {
+                socialLikesButton.setVisibility(View.VISIBLE);
                 socialLikesButtonImg.setColorFilter(this.parentActivity.getResources().getColor(R.color.pink));
-            } else {
+            } else if (transaction.options.likeEnabled) {
+                socialLikesButton.setVisibility(View.VISIBLE);
                 socialLikesButtonImg.setColorFilter(this.parentActivity.getResources().getColor(R.color.background_social_button));
-            }
-
-            if (transaction.social.isCommented) {
-                socialCommentButtonImg.setColorFilter(this.parentActivity.getResources().getColor(R.color.blue));
             } else {
-                socialCommentButtonImg.setColorFilter(this.parentActivity.getResources().getColor(R.color.background_social_button));
+                socialLikesButton.setVisibility(View.GONE);
             }
 
+            if (transaction.social.isCommented && transaction.options.commentEnabled) {
+                socialCommentButton.setVisibility(View.VISIBLE);
+                socialCommentButtonImg.setColorFilter(this.parentActivity.getResources().getColor(R.color.blue));
+            } else if (transaction.options.commentEnabled) {
+                socialCommentButton.setVisibility(View.VISIBLE);
+                socialCommentButtonImg.setColorFilter(this.parentActivity.getResources().getColor(R.color.background_social_button));
+            } else {
+                socialCommentButton.setVisibility(View.GONE);
+            }
         } else {
             this.socialLabelsContainer.setVisibility(View.GONE);
-            socialLikesButtonImg.setColorFilter(this.parentActivity.getResources().getColor(R.color.background_social_button));
-            socialCommentButtonImg.setColorFilter(this.parentActivity.getResources().getColor(R.color.background_social_button));
+
+            if (transaction.options.likeEnabled) {
+                socialLikesButton.setVisibility(View.VISIBLE);
+                socialLikesButtonImg.setColorFilter(this.parentActivity.getResources().getColor(R.color.background_social_button));
+            } else {
+                socialLikesButton.setVisibility(View.GONE);
+            }
+
+            if (transaction.options.commentEnabled) {
+                socialCommentButton.setVisibility(View.VISIBLE);
+                socialCommentButtonImg.setColorFilter(this.parentActivity.getResources().getColor(R.color.background_social_button));
+            } else {
+                socialCommentButton.setVisibility(View.GONE);
+            }
+        }
+
+        if (transaction.options.shareEnabled) {
+            socialShareButton.setVisibility(View.VISIBLE);
+        } else {
+            socialShareButton.setVisibility(View.GONE);
         }
 
         if (isCommenting) {
