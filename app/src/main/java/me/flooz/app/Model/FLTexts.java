@@ -31,6 +31,8 @@ public class  FLTexts {
     public JSONArray suggestWeb = new JSONArray();
     public JSONArray suggestGifs = new JSONArray();
     public List<FLScope> homeScopes;
+    public FLTransactionOptions floozOptions;
+    public FLNewFloozOptions newFloozOptions;
 
 
     public FLTexts(JSONObject json) {
