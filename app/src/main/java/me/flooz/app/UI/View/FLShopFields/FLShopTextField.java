@@ -31,7 +31,7 @@ public class FLShopTextField extends FLShopField {
         FLTextFieldTypeURL
     }
 
-    private EditText editText;
+    public EditText editText;
 
     private int maxLenght = -1;
     private FLTextFieldType type = FLTextFieldType.FLTextFieldTypeText;

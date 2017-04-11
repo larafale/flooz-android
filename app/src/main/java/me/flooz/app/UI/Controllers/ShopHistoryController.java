@@ -18,6 +18,7 @@ import java.util.List;
 import me.flooz.app.Adapter.SettingsListAdapter;
 import me.flooz.app.Adapter.SettingsListItem;
 import me.flooz.app.Adapter.ShopHistoryAdapter;
+import me.flooz.app.Model.FLTrigger;
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.AdvancedPopupActivity;
 import me.flooz.app.UI.Activity.AuthenticationActivity;
@@ -25,6 +26,7 @@ import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.Settings.PasswordSettingsActivity;
 import me.flooz.app.UI.Fragment.Home.TabFragments.PasswordFragment;
 import me.flooz.app.UI.View.TimelineListView;
+import me.flooz.app.Utils.FLTriggerManager;
 
 /**
  * Created by Flooz on 09/09/16.
@@ -68,67 +70,73 @@ public class ShopHistoryController extends BaseController {
                 JSONObject currentItem = listAdapter.getItem(position);
 
                 if (currentItem != null) {
-                    JSONObject triggerData = new JSONObject();
+                    if (currentItem.has("triggers")) {
+                        FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(currentItem.optJSONArray("triggers")));
+                    } else if (currentItem.has("trigger")) {
+                        FLTriggerManager.getInstance().executeTrigger(new FLTrigger(currentItem.optJSONObject("trigger")));
+                    } else {
+                        JSONObject triggerData = new JSONObject();
 
-                    String contentString = "";
+                        String contentString = "";
 
-                    if (currentItem.has("code")) {
-                        if (currentItem.opt("code") instanceof String) {
-                            contentString = "Votre code:\n\n\"" + currentItem.optString("code") + "\"";
-                        } else if (currentItem.opt("code") instanceof JSONArray) {
-                            if (currentItem.optJSONArray("code").length() > 1) {
-                                JSONArray codes = currentItem.optJSONArray("code");
+                        if (currentItem.has("code")) {
+                            if (currentItem.opt("code") instanceof String) {
+                                contentString = "Votre code:\n\n\"" + currentItem.optString("code") + "\"";
+                            } else if (currentItem.opt("code") instanceof JSONArray) {
+                                if (currentItem.optJSONArray("code").length() > 1) {
+                                    JSONArray codes = currentItem.optJSONArray("code");
 
-                                contentString = "Votre code:";
+                                    contentString = "Votre code:";
 
 
-                                for (int i = 0; i < codes.length(); i++) {
-                                    contentString += "\n\n\"" + codes.optString(i) + "\"";
+                                    for (int i = 0; i < codes.length(); i++) {
+                                        contentString += "\n\n\"" + codes.optString(i) + "\"";
+                                    }
+                                } else {
+                                    contentString = "Votre code:\n\n\"" + currentItem.optJSONArray("code").optString(0) + "\"";
                                 }
-                            } else {
-                                contentString = "Votre code:\n\n\"" + currentItem.optJSONArray("code").optString(0) + "\"";
                             }
                         }
-                    }
 
-                    try {
-                        triggerData.put("title", currentItem.optJSONObject("type").optString("name"));
-                        triggerData.put("subtitle", "");
-                        triggerData.put("amount", currentItem.opt("amount"));
-                        triggerData.put("content", contentString);
-                        triggerData.put("close", false);
+                        try {
+                            triggerData.put("title", currentItem.optJSONObject("type").optString("name"));
+                            triggerData.put("subtitle", "");
+                            triggerData.put("amount", currentItem.opt("amount"));
+                            triggerData.put("content", contentString);
+                            triggerData.put("close", false);
 
-                        JSONArray buttons = new JSONArray();
+                            JSONArray buttons = new JSONArray();
 
-                        JSONArray buttonTriggers = new JSONArray();
+                            JSONArray buttonTriggers = new JSONArray();
 
-                        JSONObject buttonTrigger = new JSONObject();
-                        JSONObject buttonTriggerData = new JSONObject();
+                            JSONObject buttonTrigger = new JSONObject();
+                            JSONObject buttonTriggerData = new JSONObject();
 
-                        JSONObject button = new JSONObject();
+                            JSONObject button = new JSONObject();
 
-                        button.put("title", "Fermer");
+                            button.put("title", "Fermer");
 
-                        buttonTriggerData.put("noAnim", true);
+                            buttonTriggerData.put("noAnim", true);
 
-                        buttonTrigger.put("key", "popup:advanced:hide");
-                        buttonTrigger.put("data", buttonTriggerData);
+                            buttonTrigger.put("key", "popup:advanced:hide");
+                            buttonTrigger.put("data", buttonTriggerData);
 
-                        buttonTriggers.put(buttonTrigger);
+                            buttonTriggers.put(buttonTrigger);
 
-                        button.put("triggers", buttonTriggers);
+                            button.put("triggers", buttonTriggers);
 
-                        buttons.put(button);
+                            buttons.put(button);
 
-                        triggerData.put("buttons", buttons);
+                            triggerData.put("buttons", buttons);
 
-                        Intent popupIntent = new Intent(parentActivity, AdvancedPopupActivity.class);
-                        popupIntent.putExtra("triggerData", triggerData.toString());
+                            Intent popupIntent = new Intent(parentActivity, AdvancedPopupActivity.class);
+                            popupIntent.putExtra("triggerData", triggerData.toString());
 
-                        parentActivity.startActivity(popupIntent);
+                            parentActivity.startActivity(popupIntent);
 
-                    } catch (JSONException e) {
-                        e.printStackTrace();
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
