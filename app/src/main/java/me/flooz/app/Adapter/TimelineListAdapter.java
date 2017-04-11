@@ -306,28 +306,8 @@ public class TimelineListAdapter extends BaseAdapter {
             holder.transactionLocationLayout.setVisibility(View.GONE);
         }
 
-//        if ((currentTransaction.social != null && currentTransaction.social.likeText != null && currentTransaction.social.commentsCount != null)
-//                && (!currentTransaction.social.likeText.isEmpty() || currentTransaction.social.commentsCount.intValue() > 0)) {
-//            holder.transactionSocialContainer.setVisibility(View.VISIBLE);
-//
-//            if (!currentTransaction.social.commentText.isEmpty()) {
-//                holder.transactionCommentsText.setText(currentTransaction.social.commentText.toCharArray(), 0, currentTransaction.social.commentText.length());
-//                holder.transactionCommentsText.setVisibility(View.VISIBLE);
-//            } else {
-//                holder.transactionCommentsText.setVisibility(View.GONE);
-//            }
-//
-//            if (!currentTransaction.social.likeText.isEmpty()) {
-//                holder.transactionLikesText.setText(currentTransaction.social.likeText.toCharArray(), 0, currentTransaction.social.likeText.length());
-//                holder.transactionLikesText.setVisibility(View.VISIBLE);
-//            } else {
-//                holder.transactionLikesText.setVisibility(View.GONE);
-//            }
-//        }
-//        else
-//            holder.transactionSocialContainer.setVisibility(View.GONE);
-
-        if (currentTransaction.social != null && currentTransaction.social.likesCount.intValue() > 0) {
+        if (currentTransaction.social != null && currentTransaction.social.likesCount.intValue() > 0 && currentTransaction.options.likeEnabled) {
+            holder.transactionLikesButtonImg.setVisibility(View.VISIBLE);
             holder.transactionLikesButtonText.setVisibility(View.VISIBLE);
             holder.transactionLikesButtonText.setText(FLHelper.formatUserNumber(currentTransaction.social.likesCount.longValue()));
 
@@ -338,12 +318,17 @@ public class TimelineListAdapter extends BaseAdapter {
                 holder.transactionLikesButtonText.setTextColor(this.context.getResources().getColor(R.color.background_social_button));
                 holder.transactionLikesButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
             }
-        } else {
+        } else if (currentTransaction.options.likeEnabled) {
             holder.transactionLikesButtonText.setVisibility(View.INVISIBLE);
+            holder.transactionLikesButtonImg.setVisibility(View.VISIBLE);
             holder.transactionLikesButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
+        } else {
+            holder.transactionLikesButtonText.setVisibility(View.GONE);
+            holder.transactionLikesButtonImg.setVisibility(View.GONE);
         }
 
-        if (currentTransaction.social != null && currentTransaction.social.commentsCount.intValue() > 0) {
+        if (currentTransaction.social != null && currentTransaction.social.commentsCount.intValue() > 0 && currentTransaction.options.commentEnabled) {
+            holder.transactionCommentsButtonImg.setVisibility(View.VISIBLE);
             holder.transactionCommentsButtonText.setVisibility(View.VISIBLE);
             holder.transactionCommentsButtonText.setText(FLHelper.formatUserNumber(currentTransaction.social.commentsCount.longValue()));
 
@@ -354,11 +339,14 @@ public class TimelineListAdapter extends BaseAdapter {
                 holder.transactionCommentsButtonText.setTextColor(this.context.getResources().getColor(R.color.background_social_button));
                 holder.transactionCommentsButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
             }
-        } else {
+        } else if (currentTransaction.options.commentEnabled) {
+            holder.transactionCommentsButtonImg.setVisibility(View.VISIBLE);
             holder.transactionCommentsButtonText.setVisibility(View.INVISIBLE);
             holder.transactionCommentsButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
+        } else {
+            holder.transactionCommentsButtonImg.setVisibility(View.GONE);
+            holder.transactionCommentsButtonText.setVisibility(View.GONE);
         }
-
 
         holder.transactionLikesButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -102,6 +102,8 @@ public class FLTransaction {
     public JSONObject json;
     public JSONArray triggerImage;
 
+    public FLTransactionOptions options;
+
     public FLTransaction(JSONObject json) {
         super();
 
@@ -119,6 +121,8 @@ public class FLTransaction {
     public void setJson(JSONObject json) {
         if (json != null) {
             this.json = json;
+
+            this.options = FLTransactionOptions.defaultWithJSON(json.optJSONObject("options"));
 
             try {
                 this.transactionId = json.getString("_id");
