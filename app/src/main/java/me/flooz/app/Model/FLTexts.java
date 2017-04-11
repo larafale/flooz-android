@@ -112,5 +112,8 @@ public class  FLTexts {
             this.suggestGifs = this.json.optJSONObject("suggest").optJSONArray("gifs");
             this.suggestWeb = this.json.optJSONObject("suggest").optJSONArray("webs");
         }
+
+        this.floozOptions = FLTransactionOptions.defaultWithJSON(this.json.optJSONObject("floozOptions"));
+        this.newFloozOptions = FLNewFloozOptions.defaultWithJSON(this.json.optJSONObject("newFloozOptions"));
     }
 }
