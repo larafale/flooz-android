@@ -442,10 +442,18 @@ public class CollectController extends BaseController implements CollectAdapter.
                 commentTextField.setVisibility(View.GONE);
                 closeCommentButton.setVisibility(View.INVISIBLE);
                 sendCommentButton.setVisibility(View.INVISIBLE);
-                commentButton.setVisibility(View.VISIBLE);
-                shareButton.setVisibility(View.VISIBLE);
                 closeLabel.setVisibility(View.GONE);
                 publishButton.setVisibility(View.VISIBLE);
+
+                if (this.collect.options.commentEnabled)
+                    commentButton.setVisibility(View.VISIBLE);
+                else
+                    commentButton.setVisibility(View.INVISIBLE);
+
+                if (this.collect.options.shareEnabled)
+                    shareButton.setVisibility(View.VISIBLE);
+                else
+                    shareButton.setVisibility(View.INVISIBLE);
 
                 publishButton.setTextSize(20);
             } else if (this.collect.isAvailable && this.collect.isClosable) {
@@ -456,10 +464,18 @@ public class CollectController extends BaseController implements CollectAdapter.
                 commentTextField.setVisibility(View.GONE);
                 closeCommentButton.setVisibility(View.INVISIBLE);
                 sendCommentButton.setVisibility(View.INVISIBLE);
-                commentButton.setVisibility(View.VISIBLE);
-                shareButton.setVisibility(View.VISIBLE);
                 closeLabel.setVisibility(View.GONE);
                 publishButton.setVisibility(View.GONE);
+
+                if (this.collect.options.commentEnabled)
+                    commentButton.setVisibility(View.VISIBLE);
+                else
+                    commentButton.setVisibility(View.INVISIBLE);
+
+                if (this.collect.options.shareEnabled)
+                    shareButton.setVisibility(View.VISIBLE);
+                else
+                    shareButton.setVisibility(View.INVISIBLE);
 
                 participateButton.setTextSize(16);
                 closeCollectButton.setTextSize(16);
@@ -471,10 +487,18 @@ public class CollectController extends BaseController implements CollectAdapter.
                 commentTextField.setVisibility(View.GONE);
                 closeCommentButton.setVisibility(View.INVISIBLE);
                 sendCommentButton.setVisibility(View.INVISIBLE);
-                commentButton.setVisibility(View.VISIBLE);
-                shareButton.setVisibility(View.VISIBLE);
                 closeLabel.setVisibility(View.GONE);
                 publishButton.setVisibility(View.GONE);
+
+                if (this.collect.options.commentEnabled)
+                    commentButton.setVisibility(View.VISIBLE);
+                else
+                    commentButton.setVisibility(View.INVISIBLE);
+
+                if (this.collect.options.shareEnabled)
+                    shareButton.setVisibility(View.VISIBLE);
+                else
+                    shareButton.setVisibility(View.INVISIBLE);
 
                 participateButton.setTextSize(20);
                 closeCollectButton.setTextSize(20);
@@ -486,10 +510,18 @@ public class CollectController extends BaseController implements CollectAdapter.
                 commentTextField.setVisibility(View.GONE);
                 closeCommentButton.setVisibility(View.INVISIBLE);
                 sendCommentButton.setVisibility(View.INVISIBLE);
-                commentButton.setVisibility(View.VISIBLE);
-                shareButton.setVisibility(View.VISIBLE);
                 closeLabel.setVisibility(View.GONE);
                 publishButton.setVisibility(View.GONE);
+
+                if (this.collect.options.commentEnabled)
+                    commentButton.setVisibility(View.VISIBLE);
+                else
+                    commentButton.setVisibility(View.INVISIBLE);
+
+                if (this.collect.options.shareEnabled)
+                    shareButton.setVisibility(View.VISIBLE);
+                else
+                    shareButton.setVisibility(View.INVISIBLE);
 
                 participateButton.setTextSize(20);
                 closeCollectButton.setTextSize(20);
@@ -500,8 +532,16 @@ public class CollectController extends BaseController implements CollectAdapter.
                 commentTextField.setVisibility(View.GONE);
                 closeCommentButton.setVisibility(View.INVISIBLE);
                 sendCommentButton.setVisibility(View.INVISIBLE);
-                commentButton.setVisibility(View.VISIBLE);
-                shareButton.setVisibility(View.VISIBLE);
+
+                if (this.collect.options.commentEnabled)
+                    commentButton.setVisibility(View.VISIBLE);
+                else
+                    commentButton.setVisibility(View.INVISIBLE);
+
+                if (this.collect.options.shareEnabled)
+                    shareButton.setVisibility(View.VISIBLE);
+                else
+                    shareButton.setVisibility(View.INVISIBLE);
             } else {
                 actionLayout.setVisibility(View.GONE);
 
@@ -510,13 +550,21 @@ public class CollectController extends BaseController implements CollectAdapter.
                     shareButton.setVisibility(View.INVISIBLE);
                 } else {
                     closeCommentButton.setVisibility(View.INVISIBLE);
-                    shareButton.setVisibility(View.VISIBLE);
+                    if (this.collect.options.shareEnabled)
+                        shareButton.setVisibility(View.VISIBLE);
+                    else
+                        shareButton.setVisibility(View.INVISIBLE);
                 }
 
-                closeLabel.setVisibility(View.GONE);
-                commentTextField.setVisibility(View.VISIBLE);
-                sendCommentButton.setVisibility(View.VISIBLE);
-                commentButton.setVisibility(View.INVISIBLE);
+                if (!this.collect.options.commentEnabled) {
+                    this.toolbar.setVisibility(View.GONE);
+                } else {
+                    this.toolbar.setVisibility(View.VISIBLE);
+                    this.commentTextField.setVisibility(View.VISIBLE);
+                    this.sendCommentButton.setVisibility(View.VISIBLE);
+                    this.commentButton.setVisibility(View.INVISIBLE);
+                    this.closeLabel.setVisibility(View.GONE);
+                }
             }
         }
 

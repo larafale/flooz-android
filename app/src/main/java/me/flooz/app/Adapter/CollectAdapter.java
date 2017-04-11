@@ -236,10 +236,10 @@ public class CollectAdapter extends BaseAdapter {
                 FLSocial social = this.collect.social;
 
                 if (social != null) {
-                    if (social.likesCount.intValue() > 0 || social.commentsCount.intValue() > 0) {
+                    if ((social.likesCount.intValue() > 0 && this.collect.options.likeEnabled) || (social.commentsCount.intValue() > 0 && this.collect.options.commentEnabled)) {
                         this.likeCellHolder.labelsContainer.setVisibility(View.VISIBLE);
 
-                        if (social.likesCount.intValue() > 0) {
+                        if (social.likesCount.intValue() > 0 && this.collect.options.likeEnabled) {
                             this.likeCellHolder.likesLabel.setVisibility(View.VISIBLE);
 
                             String number = FLHelper.formatUserNumber(social.likesCount.longValue());
@@ -265,7 +265,7 @@ public class CollectAdapter extends BaseAdapter {
                             this.likeCellHolder.likesLabel.setVisibility(View.GONE);
                         }
 
-                        if (social.commentsCount.intValue() > 0) {
+                        if (social.commentsCount.intValue() > 0 && this.collect.options.commentEnabled) {
                             this.likeCellHolder.commentsLabel.setVisibility(View.VISIBLE);
 
                             final ForegroundColorSpan commentNumberColor = new ForegroundColorSpan(this.context.getResources().getColor(android.R.color.white));
@@ -298,21 +298,47 @@ public class CollectAdapter extends BaseAdapter {
                         this.likeCellHolder.labelsContainer.setVisibility(View.GONE);
                     }
 
-                    if (social.isLiked) {
+                    if (social.isLiked && this.collect.options.likeEnabled) {
+                        likeCellHolder.likesButton.setVisibility(View.VISIBLE);
                         likeCellHolder.likesButtonImg.setColorFilter(this.context.getResources().getColor(R.color.pink));
-                    } else {
+                    } else if (this.collect.options.likeEnabled) {
+                        likeCellHolder.likesButton.setVisibility(View.VISIBLE);
                         likeCellHolder.likesButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
+                    } else {
+                        likeCellHolder.likesButton.setVisibility(View.GONE);
                     }
 
-                    if (social.isCommented) {
+                    if (social.isCommented && this.collect.options.commentEnabled) {
+                        likeCellHolder.commentButton.setVisibility(View.VISIBLE);
                         likeCellHolder.commentButtonImg.setColorFilter(this.context.getResources().getColor(R.color.blue));
-                    } else {
+                    } else if (this.collect.options.commentEnabled) {
+                        likeCellHolder.commentButton.setVisibility(View.VISIBLE);
                         likeCellHolder.commentButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
+                    } else {
+                        likeCellHolder.commentButton.setVisibility(View.GONE);
                     }
                 } else {
                     this.likeCellHolder.labelsContainer.setVisibility(View.GONE);
-                    likeCellHolder.likesButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
-                    likeCellHolder.commentButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
+
+                    if (this.collect.options.likeEnabled) {
+                        likeCellHolder.likesButton.setVisibility(View.VISIBLE);
+                        likeCellHolder.likesButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
+                    } else {
+                        likeCellHolder.likesButton.setVisibility(View.GONE);
+                    }
+
+                    if (this.collect.options.commentEnabled) {
+                        likeCellHolder.commentButton.setVisibility(View.VISIBLE);
+                        likeCellHolder.commentButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
+                    } else {
+                        likeCellHolder.commentButton.setVisibility(View.GONE);
+                    }
+                }
+
+                if (this.collect.options.shareEnabled) {
+                    likeCellHolder.shareButton.setVisibility(View.VISIBLE);
+                } else {
+                    likeCellHolder.shareButton.setVisibility(View.GONE);
                 }
             }
 

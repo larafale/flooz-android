@@ -696,8 +696,16 @@ public class TransactionController extends BaseController {
                 commentTextField.setVisibility(View.GONE);
                 closeCommentButton.setVisibility(View.INVISIBLE);
                 sendCommentButton.setVisibility(View.INVISIBLE);
-                commentButton.setVisibility(View.VISIBLE);
-                shareButton.setVisibility(View.VISIBLE);
+
+                if (this.transaction.options.commentEnabled)
+                    commentButton.setVisibility(View.VISIBLE);
+                else
+                    commentButton.setVisibility(View.INVISIBLE);
+
+                if (this.transaction.options.shareEnabled)
+                    shareButton.setVisibility(View.VISIBLE);
+                else
+                    shareButton.setVisibility(View.INVISIBLE);
 
                 acceptButton.setTextSize(16);
                 declineButton.setTextSize(16);
@@ -709,8 +717,16 @@ public class TransactionController extends BaseController {
                 commentTextField.setVisibility(View.GONE);
                 closeCommentButton.setVisibility(View.INVISIBLE);
                 sendCommentButton.setVisibility(View.INVISIBLE);
-                commentButton.setVisibility(View.VISIBLE);
-                shareButton.setVisibility(View.VISIBLE);
+
+                if (this.transaction.options.commentEnabled)
+                    commentButton.setVisibility(View.VISIBLE);
+                else
+                    commentButton.setVisibility(View.INVISIBLE);
+
+                if (this.transaction.options.shareEnabled)
+                    shareButton.setVisibility(View.VISIBLE);
+                else
+                    shareButton.setVisibility(View.INVISIBLE);
 
                 acceptButton.setTextSize(20);
                 declineButton.setTextSize(20);
@@ -720,10 +736,16 @@ public class TransactionController extends BaseController {
                 declineButton.setVisibility(View.VISIBLE);
                 actionSeparator.setVisibility(View.GONE);
                 commentTextField.setVisibility(View.GONE);
-                closeCommentButton.setVisibility(View.INVISIBLE);
-                sendCommentButton.setVisibility(View.INVISIBLE);
-                commentButton.setVisibility(View.VISIBLE);
-                shareButton.setVisibility(View.VISIBLE);
+
+                if (this.transaction.options.commentEnabled)
+                    commentButton.setVisibility(View.VISIBLE);
+                else
+                    commentButton.setVisibility(View.INVISIBLE);
+
+                if (this.transaction.options.shareEnabled)
+                    shareButton.setVisibility(View.VISIBLE);
+                else
+                    shareButton.setVisibility(View.INVISIBLE);
 
                 acceptButton.setTextSize(20);
                 declineButton.setTextSize(20);
@@ -735,12 +757,21 @@ public class TransactionController extends BaseController {
                     shareButton.setVisibility(View.INVISIBLE);
                 } else {
                     closeCommentButton.setVisibility(View.INVISIBLE);
-                    shareButton.setVisibility(View.VISIBLE);
+
+                    if (this.transaction.options.shareEnabled)
+                        shareButton.setVisibility(View.VISIBLE);
+                    else
+                        shareButton.setVisibility(View.INVISIBLE);
                 }
 
-                commentTextField.setVisibility(View.VISIBLE);
-                sendCommentButton.setVisibility(View.VISIBLE);
-                commentButton.setVisibility(View.INVISIBLE);
+                if (!this.transaction.options.commentEnabled) {
+                    this.toolbar.setVisibility(View.GONE);
+                } else {
+                    this.toolbar.setVisibility(View.VISIBLE);
+                    this.commentTextField.setVisibility(View.VISIBLE);
+                    this.sendCommentButton.setVisibility(View.VISIBLE);
+                    this.commentButton.setVisibility(View.INVISIBLE);
+                }
             }
         }
 
