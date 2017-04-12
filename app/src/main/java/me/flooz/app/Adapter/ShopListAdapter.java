@@ -8,19 +8,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import net.qiujuer.genius.blur.StackBlur;
+
+import org.droidparts.net.image.ImageFetchListener;
 
 import java.util.List;
 import java.util.Map;
 
+import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLShopItem;
 import me.flooz.app.Network.FloozHttpResponseHandler;
@@ -184,25 +185,29 @@ public class ShopListAdapter extends BaseAdapter {
         if (currentItem != null) {
             viewHolder.pic.setImageBitmap(null);
 
-            ImageLoader.getInstance().loadImage(currentItem.pic, new ImageLoadingListener() {
+            FloozApplication.getInstance().imageFetcher.attachImage(currentItem.pic, viewHolder.pic, null, 0, new ImageFetchListener() {
                 @Override
-                public void onLoadingStarted(String imageUri, View view) {
+                public void onFetchAdded(ImageView imageView, String imgUrl) {
 
                 }
 
                 @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+                public void onFetchProgressChanged(ImageView imageView, String imgUrl, int kBTotal, int kBReceived) {
 
                 }
 
                 @Override
-                public void onLoadingComplete(String imageUri, View view, final Bitmap loadedImage) {
+                public void onFetchFailed(ImageView imageView, String imgUrl, Exception e) {
 
+                }
+
+                @Override
+                public void onFetchCompleted(ImageView imageView, String imgUrl, final Bitmap bm) {
                     Thread thread = new Thread(new Runnable() {
                         @Override
                         public void run() {
                             try {
-                                final Bitmap image = StackBlur.blur(loadedImage, 10, true);
+                                final Bitmap image = StackBlur.blur(bm, 10, true);
 
                                 ShopListAdapter.this.activity.runOnUiThread(new Runnable() {
                                     @Override
@@ -219,11 +224,6 @@ public class ShopListAdapter extends BaseAdapter {
 
                     thread.setDaemon(true);
                     thread.start();
-                }
-
-                @Override
-                public void onLoadingCancelled(String imageUri, View view) {
-
                 }
             });
 
@@ -257,7 +257,7 @@ public class ShopListAdapter extends BaseAdapter {
         }
 
         if (currentItem != null) {
-            ImageLoader.getInstance().displayImage(currentItem.pic, viewHolder.pic);
+            FloozApplication.getInstance().imageFetcher.attachImage(currentItem.pic, viewHolder.pic);
 
             viewHolder.name.setText(currentItem.name);
 

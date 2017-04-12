@@ -22,8 +22,6 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -112,7 +110,7 @@ public class DocumentsController extends BaseController {
             picString = this.triggersData.optString("pic");
 
         if (picString != null && !picString.isEmpty())
-            ImageLoader.getInstance().displayImage(picString, this.pic);
+            FloozApplication.getInstance().imageFetcher.attachImage(picString, this.pic);
         else
             this.pic.setVisibility(View.GONE);
 

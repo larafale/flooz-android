@@ -2,8 +2,6 @@ package me.flooz.app.Model;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 

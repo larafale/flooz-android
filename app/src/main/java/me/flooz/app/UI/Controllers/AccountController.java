@@ -21,8 +21,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 import org.json.JSONObject;
 
 import java.io.File;
@@ -455,7 +453,7 @@ public class AccountController extends BaseController implements ProfileListAdap
                                             FLUser user = FloozRestClient.getInstance().currentUser;
 
                                             if (user.avatarURL != null)
-                                                ImageLoader.getInstance().displayImage(user.avatarURL, listAdapter.userViewHolder.imageView);
+                                                FloozApplication.getInstance().imageFetcher.attachImage(user.avatarURL, listAdapter.userViewHolder.imageView);
                                             else
                                                 listAdapter.userViewHolder.imageView.setImageDrawable(parentActivity.getResources().getDrawable(R.drawable.avatar_default));
                                         }

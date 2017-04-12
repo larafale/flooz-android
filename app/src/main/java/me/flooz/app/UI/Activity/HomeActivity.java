@@ -67,11 +67,6 @@ import me.flooz.app.Utils.SoftKeyboardHandledRelativeLayout;
 import me.flooz.app.Utils.ViewServer;
 import uk.co.senab.photoview.PhotoViewAttacher;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 

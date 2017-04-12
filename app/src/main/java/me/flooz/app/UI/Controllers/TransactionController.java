@@ -24,7 +24,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -479,7 +478,7 @@ public class TransactionController extends BaseController {
 
         this.fromPic.setImageDrawable(null);
         if (this.transaction.from.avatarURL != null && !this.transaction.from.avatarURL.isEmpty())
-            ImageLoader.getInstance().displayImage(this.transaction.from.avatarURL, this.fromPic);
+            FloozApplication.getInstance().imageFetcher.attachImage(this.transaction.from.avatarURL, this.fromPic);
         else
             this.fromPic.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.avatar_default));
 
@@ -513,7 +512,7 @@ public class TransactionController extends BaseController {
 
             this.toPic.setImageDrawable(null);
             if (this.transaction.to.avatarURL != null && !this.transaction.to.avatarURL.isEmpty())
-                ImageLoader.getInstance().displayImage(this.transaction.to.avatarURL, this.toPic);
+                FloozApplication.getInstance().imageFetcher.attachImage(this.transaction.to.avatarURL, this.toPic);
             else
                 this.toPic.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.avatar_default));
         }
