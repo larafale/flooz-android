@@ -1,6 +1,7 @@
 package me.flooz.app.Model;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class  FLTexts {
     public String balancePopupText = null;
     public JSONArray suggestWeb = new JSONArray();
     public JSONArray suggestGifs = new JSONArray();
+    public FLScope defaultScope;
     public List<FLScope> homeScopes;
     public FLTransactionOptions floozOptions;
     public FLNewFloozOptions newFloozOptions;
@@ -103,6 +105,28 @@ public class  FLTexts {
             for (int i = 0; i < sources.length(); i++) {
                 this.paymentSources.add(new FLButton(sources.optJSONObject(i)));
             }
+        }
+
+        this.defaultScope = null;
+        if (json.has("defaultScope")) {
+            this.defaultScope = FLScope.scopeFromObject(json.opt("defaultScope"));
+        }
+
+        if (json.has("homeScopes")) {
+            JSONArray homeScopes = json.optJSONArray("homeScopes");
+            List<FLScope> fixScopes = new ArrayList<FLScope>();
+            for (int i = 0; i < homeScopes.length(); ++i) {
+                Object scopeData = null;
+                try {
+                    scopeData = homeScopes.get(i);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                fixScopes.add(FLScope.scopeFromObject(scopeData));
+            }
+            this.homeScopes = fixScopes;
+        } else {
+            this.homeScopes = FLScope.defaultScopeList();
         }
 
         if (this.avalaibleCountries.size() == 0)

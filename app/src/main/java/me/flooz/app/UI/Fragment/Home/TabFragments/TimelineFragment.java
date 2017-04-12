@@ -43,6 +43,7 @@ import me.flooz.app.Adapter.TimelineListAdapter;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLScope;
+import me.flooz.app.Model.FLTexts;
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
@@ -76,6 +77,7 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
     private TextView scopeHint;
 
     public List<FLTransaction> transactions = null;
+    public List<FLScope> availableScopes;
     public FLScope currentFilter;
 
     private String nextPageUrl;
@@ -90,15 +92,23 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
     };
 
     public TimelineFragment() {
-        this.currentFilter = FLScope.defaultScope(FLScope.FLScopeKey.FLScopeAll);
-        // FIXME: 10/04/2017
-//        if (FloozRestClient.getInstance().appSettings.contains("defaultScope")
-//                && FLTransaction.transactionParamsToScope(FloozRestClient.getInstance().appSettings.getString("defaultScope", "")) != FLTransaction.TransactionScope.TransactionScopePrivate) {
-//            this.currentFilter = FLTransaction.transactionParamsToScope(FloozRestClient.getInstance().appSettings.getString("defaultScope", ""));
-//        } else {
-//            this.currentFilter = FLTransaction.TransactionScope.TransactionScopeAll;
-//            FloozRestClient.getInstance().appSettings.edit().putString("defaultScope", FLTransaction.transactionScopeToParams(this.currentFilter)).apply();
-//        }
+        String filterData = FloozRestClient.getInstance().appSettings.getString(FloozRestClient.kFilterData, "");
+
+        if (FloozRestClient.getInstance().currentTexts != null &&
+                FloozRestClient.getInstance().currentTexts.defaultScope != null) {
+            this.currentFilter = FloozRestClient.getInstance().currentTexts.defaultScope;
+            FloozRestClient.getInstance().appSettings.edit().putString(FloozRestClient.kFilterData, this.currentFilter.keyString).apply();
+        } else if (filterData != null && !filterData.isEmpty()) {
+            this.currentFilter = FLScope.scopeFromObject(filterData);
+        } else if (FloozRestClient.getInstance().currentTexts != null &&
+                FloozRestClient.getInstance().currentTexts.homeScopes != null &&
+                FloozRestClient.getInstance().currentTexts.homeScopes.size() > 0) {
+            this.currentFilter = FloozRestClient.getInstance().currentTexts.homeScopes.get(0);
+        } else {
+            this.currentFilter = FLScope.defaultScopeList().get(0);
+            FloozRestClient.getInstance().appSettings.edit().putString(FloozRestClient.kFilterData, this.currentFilter.keyString).apply();
+        }
+        this.checkScopeAvailability();
     }
 
     @SuppressLint("ValidFragment")
@@ -211,47 +221,37 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
         this.scopeButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: boucler sur le tableau de scope (filterChanged())
-//                if (currentFilter == FLTransaction.TransactionScope.TransactionScopeAll) {
-//                    scopeButton.setImageDrawable(tabBarActivity.getResources().getDrawable(R.drawable.scope_friend));
-//
-//                    scopeHint.setText(tabBarActivity.getResources().getText(R.string.TIMELINE_SCOPE_HELPER_FRIENDS));
-//
-//                    filterChanged(FLTransaction.TransactionScope.TransactionScopeFriend);
-//
-//                    Animation fadeIn = new AlphaAnimation(0, 1);
-//                    fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
-//                    fadeIn.setDuration(500);
-//
-//                    Animation fadeOut = new AlphaAnimation(1, 0);
-//                    fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
-//                    fadeOut.setStartOffset(2000);
-//                    fadeOut.setDuration(500);
-//
-//                    AnimationSet animation = new AnimationSet(false); //change to false
-//                    animation.addAnimation(fadeIn);
-//                    animation.addAnimation(fadeOut);
-//                    scopeHint.setAnimation(animation);
-//                } else {
-//                    scopeButton.setImageDrawable(tabBarActivity.getResources().getDrawable(R.drawable.scope_public));
-//                    scopeHint.setText(tabBarActivity.getResources().getText(R.string.TIMELINE_SCOPE_HELPER_ALL));
-//
-//                    filterChanged(FLTransaction.TransactionScope.TransactionScopeAll);
-//
-//                    Animation fadeIn = new AlphaAnimation(0, 1);
-//                    fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
-//                    fadeIn.setDuration(1000);
-//
-//                    Animation fadeOut = new AlphaAnimation(1, 0);
-//                    fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
-//                    fadeOut.setStartOffset(2000);
-//                    fadeOut.setDuration(1000);
-//
-//                    AnimationSet animation = new AnimationSet(false); //change to false
-//                    animation.addAnimation(fadeIn);
-//                    animation.addAnimation(fadeOut);
-//                    scopeHint.setAnimation(animation);
-//                }
+                for (int i = 0; i < availableScopes.size(); ++i) {
+                    FLScope scope = availableScopes.get(i);
+
+                    if (currentFilter.keyString.equals(scope.keyString)) {
+                        int nextIndex = i + 1;
+
+                        if (nextIndex == availableScopes.size())
+                            nextIndex = 0;
+
+                        currentFilter = availableScopes.get(nextIndex);
+                        break;
+                    }
+                }
+                filterChanged(currentFilter);
+                checkScopeAvailability();
+                scopeButton.setImageDrawable(currentFilter.image);
+                scopeHint.setText(currentFilter.desc);
+
+                Animation fadeIn = new AlphaAnimation(0, 1);
+                fadeIn.setInterpolator(new DecelerateInterpolator()); //add this
+                fadeIn.setDuration(500);
+
+                Animation fadeOut = new AlphaAnimation(1, 0);
+                fadeOut.setInterpolator(new AccelerateInterpolator()); //and this
+                fadeOut.setStartOffset(2000);
+                fadeOut.setDuration(500);
+
+                AnimationSet animation = new AnimationSet(false); //change to false
+                animation.addAnimation(fadeIn);
+                animation.addAnimation(fadeOut);
+                scopeHint.setAnimation(animation);
             }
         });
 
@@ -288,7 +288,6 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
 
         this.timelineListView.setAdapter(this.timelineAdapter);
 
-        // FIXME: 10/04/2017
 //        if (currentFilter == FLTransaction.TransactionScope.TransactionScopeFriend) {
 //            backgroundImage.setImageResource(R.drawable.empty_tl_friend);
 //            backgroundImage.setVisibility(View.VISIBLE);
@@ -337,7 +336,7 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
     public void filterChanged(FLScope filter) {
         if (!filter.keyString.equals(this.currentFilter.keyString)) {
             this.currentFilter = filter;
-            FloozRestClient.getInstance().appSettings.edit().putString("defaultScope", this.currentFilter.keyString).apply();
+            FloozRestClient.getInstance().appSettings.edit().putString(FloozRestClient.kFilterData, this.currentFilter.keyString).apply();
             this.transactions.clear();
             this.timelineAdapter.hasNextURL = false;
             this.timelineAdapter.notifyDataSetChanged();
@@ -407,6 +406,36 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
         });
     }
 
+    public void checkScopeAvailability() {
+        FLTexts currentTexts = FloozRestClient.getInstance().currentTexts;
+        if (currentTexts.homeScopes != null && currentTexts.homeScopes.size() > 0) {
+            this.availableScopes = currentTexts.homeScopes;
+        } else {
+            this.availableScopes = FLScope.defaultScopeList();
+        }
+
+        Boolean currentScopeAvailable = false;
+        for (FLScope scope: this.availableScopes) {
+            if (this.currentFilter.key == scope.key) {
+                currentScopeAvailable = true;
+                break;
+            }
+        }
+
+        if (!currentScopeAvailable) {
+            this.currentFilter = availableScopes.get(0);
+            this.timelineAdapter.notifyDataSetChanged();
+        }
+
+        if (availableScopes.size() < 2)
+            this.scopeButton.setVisibility(View.INVISIBLE);
+        else
+            this.scopeButton.setVisibility(View.VISIBLE);
+
+        scopeButton.setImageDrawable(this.currentFilter.image);
+        FloozRestClient.getInstance().appSettings.edit().putString(FloozRestClient.kFilterData, this.currentFilter.keyString).apply();
+    }
+
     public void refreshTransactions() {
         FloozRestClient.getInstance().timeline(this.currentFilter, new FloozHttpResponseHandler() {
             @Override
@@ -445,18 +474,17 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
                         _timer.postDelayed(new Runnable() {
                             @Override
                             public void run() {
-                                if (transactions.size() == 0) {
-                                    // FIXME: 10/04/2017
-//                                    if (currentFilter == FLTransaction.TransactionScope.TransactionScopeFriend) {
-//                                        backgroundImage.setImageResource(R.drawable.empty_tl_friend);
-//                                        backgroundImage.setVisibility(View.VISIBLE);
-//                                    } else if (currentFilter == FLTransaction.TransactionScope.TransactionScopePrivate) {
-//                                        backgroundImage.setImageResource(R.drawable.empty_tl_private);
-//                                        backgroundImage.setVisibility(View.VISIBLE);
-//                                    }
-                                } else {
-                                    backgroundImage.setVisibility(View.GONE);
-                                }
+//                                if (transactions.size() == 0) {
+////                                    if (currentFilter == FLTransaction.TransactionScope.TransactionScopeFriend) {
+////                                        backgroundImage.setImageResource(R.drawable.empty_tl_friend);
+////                                        backgroundImage.setVisibility(View.VISIBLE);
+////                                    } else if (currentFilter == FLTransaction.TransactionScope.TransactionScopePrivate) {
+////                                        backgroundImage.setImageResource(R.drawable.empty_tl_private);
+////                                        backgroundImage.setVisibility(View.VISIBLE);
+////                                    }
+//                                } else {
+//                                    backgroundImage.setVisibility(View.GONE);
+//                                }
                             }
                         }, 500);
                     } else {

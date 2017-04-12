@@ -83,6 +83,7 @@ import me.flooz.app.Utils.NotificationsManager;
  */
 public class FloozRestClient
 {
+    public static String kFilterData = "defaultScope";
     public static String kUserData = "userData";
     public static String kBaseTimelineData = "TimelineData";
 
