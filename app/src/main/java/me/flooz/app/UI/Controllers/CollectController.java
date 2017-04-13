@@ -20,7 +20,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -388,7 +387,7 @@ public class CollectController extends BaseController implements CollectAdapter.
 
         navbarCreatorAvatar.setImageDrawable(parentActivity.getResources().getDrawable(R.drawable.avatar_default));
         if (this.collect.creator.avatarURL != null && !this.collect.creator.avatarURL.isEmpty())
-            ImageLoader.getInstance().displayImage(this.collect.creator.avatarURL, navbarCreatorAvatar);
+            FloozApplication.getInstance().imageFetcher.attachImage(this.collect.creator.avatarURL, navbarCreatorAvatar);
 
         navbarCreatorUsername.setText("@" + this.collect.creator.username);
 

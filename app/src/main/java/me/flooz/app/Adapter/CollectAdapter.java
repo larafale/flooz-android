@@ -16,7 +16,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.w3c.dom.Text;
 
@@ -227,7 +226,7 @@ public class CollectAdapter extends BaseAdapter {
                         this.participantMasterCellHolder.participantViews.get(i).setImageDrawable(context.getResources().getDrawable(R.drawable.avatar_default));
 
                         if (participant.avatarURL != null && !participant.avatarURL.isEmpty())
-                            ImageLoader.getInstance().displayImage(participant.avatarURL, this.participantMasterCellHolder.participantViews.get(i));
+                            FloozApplication.getInstance().imageFetcher.attachImage(participant.avatarURL, this.participantMasterCellHolder.participantViews.get(i));
                     }
                 }
             }
@@ -454,7 +453,7 @@ public class CollectAdapter extends BaseAdapter {
         }
 
         if (comment.user.avatarURL != null && !comment.user.avatarURL.isEmpty())
-            ImageLoader.getInstance().displayImage(comment.user.avatarURL, holder.commentPic);
+            FloozApplication.getInstance().imageFetcher.attachImage(comment.user.avatarURL, holder.commentPic);
         else
             holder.commentPic.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
 

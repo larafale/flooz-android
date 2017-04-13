@@ -18,7 +18,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONObject;
 
@@ -243,7 +242,7 @@ public class TimelineListAdapter extends BaseAdapter {
 
         holder.userPic.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
         if (currentTransaction.avatarURL != null && !currentTransaction.avatarURL.isEmpty())
-            ImageLoader.getInstance().displayImage(currentTransaction.avatarURL, holder.userPic);
+            FloozApplication.getInstance().imageFetcher.attachImage(currentTransaction.avatarURL, holder.userPic);
 
         holder.transactionWhen.setText(currentTransaction.when);
 
