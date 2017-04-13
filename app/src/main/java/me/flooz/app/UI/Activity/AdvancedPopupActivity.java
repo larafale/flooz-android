@@ -9,6 +9,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -154,13 +155,13 @@ public class AdvancedPopupActivity extends BaseActivity {
         }
 
         if (this.triggerData.has("cover") && !this.triggerData.optString("cover").isEmpty()) {
-            FloozApplication.getInstance().imageFetcher.attachImage(this.triggerData.optString("cover"), this.cover);
+            ImageLoader.getInstance().displayImage(this.triggerData.optString("cover"), this.cover);
         } else {
             this.cover.setImageDrawable(this.getResources().getDrawable(R.drawable.cover));
         }
 
         if (this.triggerData.has("pic") && !this.triggerData.optString("pic").isEmpty()) {
-            FloozApplication.getInstance().imageFetcher.attachImage(this.triggerData.optString("pic"), this.pic);
+            ImageLoader.getInstance().displayImage(this.triggerData.optString("pic"), this.pic);
             this.pic.setVisibility(View.VISIBLE);
         } else {
             this.pic.setVisibility(View.INVISIBLE);

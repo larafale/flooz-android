@@ -85,7 +85,9 @@ public class FLScope {
                     default:
                         break;
                 }
-                this.image = FloozApplication.getAppContext().getResources().getDrawable(resID);
+
+                if (resID > 0)
+                    this.image = FloozApplication.getAppContext().getResources().getDrawable(resID);
             }
         }
     }

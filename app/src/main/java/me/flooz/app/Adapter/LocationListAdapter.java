@@ -17,6 +17,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -350,7 +352,7 @@ public class LocationListAdapter  extends BaseAdapter implements StickyListHeade
                 if (category.has("primary") && category.optBoolean("primary")) {
                     holder.icon.setVisibility(View.VISIBLE);
                     String imgURL = category.optJSONObject("icon").optString("prefix") + "64" + category.optJSONObject("icon").optString("suffix");
-                    FloozApplication.getInstance().imageFetcher.attachImage(imgURL, holder.icon);
+                    ImageLoader.getInstance().displayImage(imgURL, holder.icon);
                     foundPrimary = true;
                     break;
                 }
@@ -360,7 +362,7 @@ public class LocationListAdapter  extends BaseAdapter implements StickyListHeade
                 JSONObject category = categories.optJSONObject(0);
                 holder.icon.setVisibility(View.VISIBLE);
                 String imgURL = category.optJSONObject("icon").optString("prefix") + "64" + category.optJSONObject("icon").optString("suffix");
-                FloozApplication.getInstance().imageFetcher.attachImage(imgURL, holder.icon);
+                ImageLoader.getInstance().displayImage(imgURL, holder.icon);
             }
         } else {
             holder.icon.setVisibility(View.INVISIBLE);

@@ -26,6 +26,8 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -609,9 +611,9 @@ public class ProfileController extends BaseController implements TimelineListAda
         this.coverURLFull = flUser.coverURL;
 
         if (flUser.coverURL != null && !flUser.coverURL.isEmpty()) {
-            FloozApplication.getInstance().imageFetcher.attachImage(flUser.coverURL, this.stickyHeaderBlur);
-            FloozApplication.getInstance().imageFetcher.attachImage(flUser.coverURL, this.stickyHeader);
-            FloozApplication.getInstance().imageFetcher.attachImage(flUser.coverURL, this.profileCover);
+            ImageLoader.getInstance().displayImage(flUser.coverURL, this.stickyHeaderBlur);
+            ImageLoader.getInstance().displayImage(flUser.coverURL, this.stickyHeader);
+            ImageLoader.getInstance().displayImage(flUser.coverURL, this.profileCover);
         }  else {
             this.stickyHeaderBlur.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.cover));
 
@@ -620,7 +622,7 @@ public class ProfileController extends BaseController implements TimelineListAda
         }
 
         if (flUser.avatarURL != null && !flUser.avatarURL.isEmpty()) {
-            FloozApplication.getInstance().imageFetcher.attachImage(flUser.avatarURL, this.profileImage);
+            ImageLoader.getInstance().displayImage(flUser.avatarURL, this.profileImage);
         } else {
             this.profileImage.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.avatar_default));
         }

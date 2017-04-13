@@ -12,6 +12,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.List;
 
@@ -98,7 +99,7 @@ public class NotificationListAdapter extends BaseAdapter {
 
         holder.img.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
         if (notif.user.avatarURL != null && !notif.user.avatarURL.isEmpty())
-            FloozApplication.getInstance().imageFetcher.attachImage(notif.user.avatarURL, holder.img);
+            ImageLoader.getInstance().displayImage(notif.user.avatarURL, holder.img);
 
         holder.date.setText(notif.dateText);
 

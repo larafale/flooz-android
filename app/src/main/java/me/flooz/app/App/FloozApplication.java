@@ -21,7 +21,6 @@ import com.github.ajalt.reprint.core.Reprint;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
 
-import org.droidparts.net.image.ImageFetcher;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -65,7 +64,6 @@ public class FloozApplication extends BranchApp
     public JSONArray pendingTriggers;
     public JSONObject pendingPopup;
     public JSONObject branchParams;
-    public ImageFetcher imageFetcher;
 
     public static MixpanelAPI mixpanelAPI;
     private static FloozApplication instance;
@@ -105,8 +103,6 @@ public class FloozApplication extends BranchApp
 
         FloozApplication.instance = this;
         FloozApplication.context = getApplicationContext();
-
-        this.imageFetcher = new ImageFetcher(context);
 
         gcm = GoogleCloudMessaging.getInstance(this);
         regid = getRegistrationId(context);

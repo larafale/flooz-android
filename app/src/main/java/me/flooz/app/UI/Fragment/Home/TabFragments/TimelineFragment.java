@@ -108,7 +108,6 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
             this.currentFilter = FLScope.defaultScopeList().get(0);
             FloozRestClient.getInstance().appSettings.edit().putString(FloozRestClient.kFilterData, this.currentFilter.keyString).apply();
         }
-        this.checkScopeAvailability();
     }
 
     @SuppressLint("ValidFragment")
@@ -134,7 +133,7 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
         this.timelineListView = (TimelineListView) view.findViewById(R.id.timeline_list);
         this.backgroundImage  = (ImageView) view.findViewById(R.id.timeline_background);
 
-        this.scopeButton.setImageDrawable(this.currentFilter.image);
+        this.checkScopeAvailability();
 
         this.logoButton.setOnClickListener(new View.OnClickListener() {
             @Override
