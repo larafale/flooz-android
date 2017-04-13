@@ -15,7 +15,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -275,7 +274,7 @@ public class FriendsListAdapter extends BaseAdapter implements StickyListHeaders
 
         holder.pic.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
         if (user.avatarURL != null && !user.avatarURL.isEmpty())
-            ImageLoader.getInstance().displayImage(user.avatarURL, holder.pic);
+            FloozApplication.getInstance().imageFetcher.attachImage(user.avatarURL, holder.pic);
 
         if (!this.isSearchActive && position < this.suggestionList.size()) {
             holder.button.setImageResource(R.drawable.friends_add);

@@ -16,7 +16,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -213,7 +212,7 @@ public class SearchListAdapter extends BaseAdapter implements StickyListHeadersA
 
         holder.pic.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
         if (user.avatarURL != null && !user.avatarURL.isEmpty())
-            ImageLoader.getInstance().displayImage(user.avatarURL, holder.pic);
+            FloozApplication.getInstance().imageFetcher.attachImage(user.avatarURL, holder.pic);
 
         if (!user.isFriendable)
             holder.button.setVisibility(View.GONE);

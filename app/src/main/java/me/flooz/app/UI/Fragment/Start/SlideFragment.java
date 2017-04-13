@@ -11,8 +11,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 import me.flooz.app.Model.FLSliderPage;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;

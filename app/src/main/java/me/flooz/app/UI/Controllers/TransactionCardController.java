@@ -30,7 +30,6 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -421,9 +420,9 @@ public class TransactionCardController extends BaseController {
 
         FLUser self = FloozRestClient.getInstance().currentUser;
         if (this.cardToUsername.getText().toString().contentEquals("@" + self.username) && self.avatarURL != null && !self.avatarURL.isEmpty())
-            ImageLoader.getInstance().displayImage(self.avatarURL, this.cardToPic);
+            FloozApplication.getInstance().imageFetcher.attachImage(self.avatarURL, this.cardToPic);
         if (this.cardFromUsername.getText().toString().contentEquals("@" + self.username) && self.avatarURL != null && !self.avatarURL.isEmpty())
-            ImageLoader.getInstance().displayImage(self.avatarURL, this.cardFromPic);
+            FloozApplication.getInstance().imageFetcher.attachImage(self.avatarURL, this.cardFromPic);
 
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadTransactionReceiver,
                 CustomNotificationIntents.filterReloadCurrentUser());
@@ -471,7 +470,7 @@ public class TransactionCardController extends BaseController {
 
         this.cardFromPic.setImageDrawable(null);
         if (this.transaction.from.avatarURL != null && !this.transaction.from.avatarURL.isEmpty())
-            ImageLoader.getInstance().displayImage(this.transaction.from.avatarURL, this.cardFromPic);
+            FloozApplication.getInstance().imageFetcher.attachImage(this.transaction.from.avatarURL, this.cardFromPic);
         else
             this.cardFromPic.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.avatar_default));
 
@@ -499,7 +498,7 @@ public class TransactionCardController extends BaseController {
 
             this.cardToPic.setImageDrawable(null);
             if (this.transaction.to.avatarURL != null && !this.transaction.to.avatarURL.isEmpty())
-                ImageLoader.getInstance().displayImage(this.transaction.to.avatarURL, this.cardToPic);
+                FloozApplication.getInstance().imageFetcher.attachImage(this.transaction.to.avatarURL, this.cardToPic);
             else
                 this.cardToPic.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.avatar_default));
         }
@@ -651,7 +650,7 @@ public class TransactionCardController extends BaseController {
 
 
         if (comment.user.avatarURL != null && !comment.user.avatarURL.isEmpty())
-            ImageLoader.getInstance().displayImage(comment.user.avatarURL, commentPic);
+            FloozApplication.getInstance().imageFetcher.attachImage(comment.user.avatarURL, commentPic);
         else
             commentPic.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.avatar_default));
 

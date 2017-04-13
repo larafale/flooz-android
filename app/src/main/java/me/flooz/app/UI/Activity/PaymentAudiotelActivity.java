@@ -15,8 +15,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -139,7 +137,7 @@ public class PaymentAudiotelActivity extends BaseActivity {
         });
 
         if (FloozRestClient.getInstance().currentTexts.audiotelImage != null)
-            ImageLoader.getInstance().displayImage(FloozRestClient.getInstance().currentTexts.audiotelImage, this.numberImage);
+            FloozApplication.getInstance().imageFetcher.attachImage(FloozRestClient.getInstance().currentTexts.audiotelImage, this.numberImage);
 
         if (FloozRestClient.getInstance().currentTexts.audiotelInfos != null)
             this.infosTextview.setText(FloozRestClient.getInstance().currentTexts.audiotelInfos);

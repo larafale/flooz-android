@@ -25,8 +25,6 @@ import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.io.File;
 import java.util.Map;
 
@@ -324,7 +322,7 @@ public class ProfileFragment extends TabBarFragment implements ProfileListAdapte
                                             FLUser user = FloozRestClient.getInstance().currentUser;
 
                                             if (user.avatarURL != null)
-                                                ImageLoader.getInstance().displayImage(user.avatarURL, listAdapter.userViewHolder.imageView);
+                                                FloozApplication.getInstance().imageFetcher.attachImage(user.avatarURL, listAdapter.userViewHolder.imageView);
                                             else
                                                 listAdapter.userViewHolder.imageView.setImageDrawable(getResources().getDrawable(R.drawable.avatar_default));
                                         }

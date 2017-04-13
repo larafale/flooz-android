@@ -26,10 +26,6 @@ import android.widget.RadioButton;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.assist.FailReason;
-import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
-
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -613,53 +609,18 @@ public class ProfileController extends BaseController implements TimelineListAda
         this.coverURLFull = flUser.coverURL;
 
         if (flUser.coverURL != null && !flUser.coverURL.isEmpty()) {
-            ImageLoader.getInstance().displayImage(flUser.coverURL, this.stickyHeaderBlur, new ImageLoadingListener() {
-                @Override
-                public void onLoadingStarted(String imageUri, View view) {
-
-                }
-
-                @Override
-                public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-                }
-
-                @Override
-                public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-//                    Blurry.with(parentActivity)
-//                            .radius(20)
-//                            .sampling(1)
-//                            .async()
-//                            .animate(2000)
-//                            .capture(stickyHeaderBlur)
-//                            .into(stickyHeaderBlur);
-                }
-
-                @Override
-                public void onLoadingCancelled(String imageUri, View view) {
-
-                }
-            });
-
-            ImageLoader.getInstance().displayImage(flUser.coverURL, this.stickyHeader);
-            ImageLoader.getInstance().displayImage(flUser.coverURL, this.profileCover);
+            FloozApplication.getInstance().imageFetcher.attachImage(flUser.coverURL, this.stickyHeaderBlur);
+            FloozApplication.getInstance().imageFetcher.attachImage(flUser.coverURL, this.stickyHeader);
+            FloozApplication.getInstance().imageFetcher.attachImage(flUser.coverURL, this.profileCover);
         }  else {
             this.stickyHeaderBlur.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.cover));
-
-//            Blurry.with(parentActivity)
-//                    .radius(20)
-//                    .sampling(1)
-//                    .async()
-//                    .animate(2000)
-//                    .capture(stickyHeaderBlur)
-//                    .into(stickyHeaderBlur);
 
             this.stickyHeader.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.cover));
             this.profileCover.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.cover));
         }
 
         if (flUser.avatarURL != null && !flUser.avatarURL.isEmpty()) {
-            ImageLoader.getInstance().displayImage(flUser.avatarURL, this.profileImage);
+            FloozApplication.getInstance().imageFetcher.attachImage(flUser.avatarURL, this.profileImage);
         } else {
             this.profileImage.setImageDrawable(this.parentActivity.getResources().getDrawable(R.drawable.avatar_default));
         }

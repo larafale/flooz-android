@@ -13,7 +13,6 @@ import android.os.Handler;
 import android.os.Looper;
 import android.support.multidex.MultiDex;
 import android.support.v4.content.LocalBroadcastManager;
-import android.util.Log;
 import android.view.inputmethod.InputMethodManager;
 
 import com.facebook.FacebookSdk;
@@ -21,13 +20,9 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.github.ajalt.reprint.core.Reprint;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
+import org.droidparts.net.image.ImageFetcher;
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -70,6 +65,7 @@ public class FloozApplication extends BranchApp
     public JSONArray pendingTriggers;
     public JSONObject pendingPopup;
     public JSONObject branchParams;
+    public ImageFetcher imageFetcher;
 
     public static MixpanelAPI mixpanelAPI;
     private static FloozApplication instance;
@@ -110,20 +106,7 @@ public class FloozApplication extends BranchApp
         FloozApplication.instance = this;
         FloozApplication.context = getApplicationContext();
 
-        DisplayImageOptions options = new DisplayImageOptions.Builder()
-                .cacheInMemory(true)
-                .cacheOnDisk(true)
-                .considerExifParams(true)
-                .build();
-
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
-                .denyCacheImageMultipleSizesInMemory()
-                .diskCacheFileNameGenerator(new Md5FileNameGenerator())
-                .diskCacheSize(150 * 1024 * 1024)
-                .defaultDisplayImageOptions(options)
-                .build();
-
-        ImageLoader.getInstance().init(config);
+        this.imageFetcher = new ImageFetcher(context);
 
         gcm = GoogleCloudMessaging.getInstance(this);
         regid = getRegistrationId(context);
