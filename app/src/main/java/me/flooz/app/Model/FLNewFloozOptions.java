@@ -1,5 +1,6 @@
 package me.flooz.app.Model;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class FLNewFloozOptions {
 
     public FLTransaction.TransactionType type = FLTransaction.TransactionType.TransactionTypeNone;
     public FLScope scope;
-    public List<FLScope> scopes;
+    public JSONArray scopes;
 
     public FLNewFloozOptions(JSONObject jsonData) {
         super();
@@ -57,10 +58,7 @@ public class FLNewFloozOptions {
         }
 
         if (jsonData != null && jsonData.has("scopes")) {
-            this.scopes = new ArrayList<>(jsonData.optJSONArray("scopes").length());
-            for (int i = 0; i < jsonData.optJSONArray("scopes").length(); i++) {
-                this.scopes.add(FLScope.scopeFromObject(jsonData.optJSONArray("scopes").opt(i)));
-            }
+            this.scopes = jsonData.optJSONArray("scopes");
         }
 
         if (jsonData != null && jsonData.has("amount")) {

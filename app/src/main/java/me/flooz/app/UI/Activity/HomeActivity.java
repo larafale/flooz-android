@@ -363,7 +363,17 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
         this.floozTabImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                homeButtonView.setVisibility(View.VISIBLE);
+                if (FloozRestClient.getInstance().currentTexts != null) {
+                    if (FloozRestClient.getInstance().currentTexts.homeTriggers != null && FloozRestClient.getInstance().currentTexts.homeTriggers.size() > 0) {
+                        FLTriggerManager.getInstance().executeTriggerList(FloozRestClient.getInstance().currentTexts.homeTriggers);
+                    } else if (FloozRestClient.getInstance().currentTexts.homeButtons != null && FloozRestClient.getInstance().currentTexts.homeButtons.size() > 0) {
+                        if (FloozRestClient.getInstance().currentTexts.homeButtons.size() == 1) {
+                            FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(FloozRestClient.getInstance().currentTexts.homeButtons.get(0).triggers));
+                        } else {
+                            homeButtonView.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
             }
         });
 

@@ -42,6 +42,7 @@
         android:paddingBottom="@dimen/dimen_small">
 
         <RelativeLayout
+            android:id="@+id/action_bar_media_text_container"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1">
@@ -56,6 +57,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/action_bar_media_camera_container"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1">
@@ -69,6 +71,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/action_bar_media_album_container"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1">
@@ -83,6 +86,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/action_bar_media_gif_container"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1">
@@ -97,6 +101,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/action_bar_media_location_container"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight="1">

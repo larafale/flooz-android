@@ -13,6 +13,7 @@ import me.flooz.app.Utils.JSONHelper;
  */
 public class FLPreset {
 
+    public JSONObject jsonData;
     public String to;
     public String toFullname;
     public JSONObject toInfos;
@@ -26,18 +27,12 @@ public class FLPreset {
     public String image;
     public String collectName;
     public boolean isParticipation = false;
-    public boolean blockAmount = false;
-    public boolean blockTo = false;
     public boolean close = true;
-    public boolean blockWhy = false;
     public boolean focusAmount = false;
     public boolean focusWhy = false;
-    public boolean blockBalance = false;
-    public FLTransaction.TransactionType type = FLTransaction.TransactionType.TransactionTypeNone;
     public JSONArray steps;
     public JSONObject popup;
-    public JSONArray scopes;
-    public FLScope scope = null;
+    public FLNewFloozOptions options = FLNewFloozOptions.defaultInstance();
 
     public FLPreset(JSONObject json) {
         super();
@@ -46,6 +41,7 @@ public class FLPreset {
     }
 
     private void setJson(JSONObject json) {
+        this.jsonData = json;
 
         if (json.has("isParticipation"))
             this.isParticipation = json.optBoolean("isParticipation");
@@ -64,6 +60,9 @@ public class FLPreset {
         }
 
         this.presetId = json.optString("_id");
+
+        if (json.has("options"))
+            this.options.setJSON(json.optJSONObject("options"));
 
         if (json.has("amount"))
             this.amount = json.optDouble("amount");
@@ -93,12 +92,6 @@ public class FLPreset {
         else
             this.steps = null;
 
-        if (json.has("scope"))
-            this.scope = FLScope.scopeFromObject(json.opt("scope"));
-
-        if (json.has("scopes"))
-            this.scopes = json.optJSONArray("scopes");
-
         if (json.has("payload"))
             try {
                 this.payload = JSONHelper.toMap(json.optJSONObject("payload"));
@@ -108,28 +101,6 @@ public class FLPreset {
 
         if (json.has("close"))
             this.close = json.optBoolean("close");
-
-        if (json.has("block")) {
-            JSONObject block = json.optJSONObject("block");
-
-            if (block.has("amount"))
-                this.blockAmount = block.optBoolean("amount");
-
-            if (block.has("balance"))
-                this.blockBalance = block.optBoolean("balance");
-
-            if (block.has("to"))
-                this.blockTo = block.optBoolean("to");
-
-            if (block.has("pay") && block.optBoolean("pay"))
-                this.type = FLTransaction.TransactionType.TransactionTypeCharge;
-
-            if (block.has("charge") && block.optBoolean("charge"))
-                this.type = FLTransaction.TransactionType.TransactionTypePayment;
-
-            if (block.has("why"))
-                this.blockWhy = block.optBoolean("why");
-        }
 
         if (json.has("focus")) {
             String focus = json.optString("focus");

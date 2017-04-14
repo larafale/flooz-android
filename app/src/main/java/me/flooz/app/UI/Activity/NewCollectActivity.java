@@ -293,7 +293,7 @@ public class NewCollectActivity extends BaseActivity implements FLTransactionAct
             if (this.preset.whyPlaceholder != null && !this.preset.whyPlaceholder.isEmpty())
                 this.contentTextfield.setHint(this.preset.whyPlaceholder);
 
-            if (this.preset.blockWhy) {
+            if (!this.preset.options.allowWhy) {
                 this.contentTextfield.setFocusable(false);
                 this.contentTextfield.setFocusableInTouchMode(false);
             }
@@ -408,7 +408,7 @@ public class NewCollectActivity extends BaseActivity implements FLTransactionAct
         if (this.nameTextfield.getText().length() == 0) {
             this.nameTextfield.requestFocus();
             imm.showSoftInput(nameTextfield, InputMethodManager.SHOW_FORCED);
-        } else if (this.contentTextfield.getText().length() == 0 && ((this.preset != null && !this.preset.blockWhy) || this.preset == null)) {
+        } else if (this.contentTextfield.getText().length() == 0 && ((this.preset != null && this.preset.options.allowWhy) || this.preset == null)) {
             this.contentTextfield.requestFocus();
             imm.showSoftInput(contentTextfield, InputMethodManager.SHOW_FORCED);
         } else {

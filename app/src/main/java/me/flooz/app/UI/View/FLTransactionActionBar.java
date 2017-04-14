@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.json.JSONObject;
@@ -47,10 +48,21 @@ public class FLTransactionActionBar extends LinearLayout {
     private ImageView locationPic;
     private TextView locationText;
 
+    public LinearLayout mediaActionBar;
+
+    public RelativeLayout cameraButtonContainer;
     public ImageView cameraButton;
+
+    public RelativeLayout imageButtonContainer;
     public ImageView imageButton;
+
+    public RelativeLayout gifButtonContainer;
     public ImageView gifButton;
+
+    public RelativeLayout textButtonContainer;
     public ImageView textButton;
+
+    public RelativeLayout locationButtonContainer;
     public ImageView locationButton;
 
     public TextView payButton;
@@ -62,7 +74,6 @@ public class FLTransactionActionBar extends LinearLayout {
 
     private FLPreset currentPreset;
     private JSONObject currentGeo;
-    private JSONObject userBlockObject;
 
     public FLTransactionActionBar(Context context) {
         super(context);
@@ -84,11 +95,19 @@ public class FLTransactionActionBar extends LinearLayout {
         this.locationPic = (ImageView) view.findViewById(R.id.action_bar_geo_pic);
         this.locationText = (TextView) view.findViewById(R.id.action_bar_geo_text);
 
+        this.mediaActionBar = (LinearLayout) view.findViewById(R.id.new_transac_media_bar);
+
         this.cameraButton = (ImageView) view.findViewById(R.id.action_bar_media_camera);
         this.imageButton = (ImageView) view.findViewById(R.id.action_bar_media_album);
         this.gifButton = (ImageView) view.findViewById(R.id.action_bar_media_gif);
         this.textButton = (ImageView) view.findViewById(R.id.action_bar_media_text);
         this.locationButton = (ImageView) view.findViewById(R.id.action_bar_media_location);
+
+        this.cameraButtonContainer = (RelativeLayout) view.findViewById(R.id.action_bar_media_camera_container);
+        this.imageButtonContainer = (RelativeLayout) view.findViewById(R.id.action_bar_media_album_container);
+        this.gifButtonContainer = (RelativeLayout) view.findViewById(R.id.action_bar_media_gif_container);
+        this.textButtonContainer = (RelativeLayout) view.findViewById(R.id.action_bar_media_text_container);
+        this.locationButtonContainer = (RelativeLayout) view.findViewById(R.id.action_bar_media_location_container);
 
         this.payButton = (TextView) view.findViewById(R.id.action_bar_pay);
         this.chargeButton = (TextView) view.findViewById(R.id.action_bar_charge);
@@ -214,17 +233,21 @@ public class FLTransactionActionBar extends LinearLayout {
     }
 
     void upateBaseTypeButtons() {
-        if (this.userBlockObject != null) {
-            if (this.userBlockObject.has("charge") && this.userBlockObject.optBoolean("charge")) {
+        if (this.currentPreset != null) {
+            if (this.currentPreset.options.type == FLTransaction.TransactionType.TransactionTypePayment) {
                 this.hideChargeButton(true);
                 this.hidePayButton(false);
-            } else if (this.userBlockObject.has("pay") && this.userBlockObject.optBoolean("pay")) {
+            } else if (this.currentPreset.options.type == FLTransaction.TransactionType.TransactionTypeCharge) {
                 this.hideChargeButton(false);
                 this.hidePayButton(true);
-            } else
-                this.resetPaymentButton();
-        } else
-            this.resetPaymentButton();
+            } else {
+                this.hideChargeButton(false);
+                this.hidePayButton(false);
+            }
+        } else {
+            this.hideChargeButton(false);
+            this.hidePayButton(false);
+        }
     }
 
     void hideChargeButton(Boolean hidden) {
@@ -239,30 +262,51 @@ public class FLTransactionActionBar extends LinearLayout {
         this.participateButton.setVisibility((hidden ? View.GONE : View.VISIBLE));
     }
 
-    void resetPaymentButton() {
-        if (this.currentPreset != null) {
-            if (this.currentPreset.type != null && this.currentPreset.type == FLTransaction.TransactionType.TransactionTypePayment) {
-                this.hideChargeButton(true);
-                this.hidePayButton(false);
-            } else if (this.currentPreset.type != null && this.currentPreset.type == FLTransaction.TransactionType.TransactionTypeCharge) {
-                this.hideChargeButton(false);
-                this.hidePayButton(true);
-            } else {
-                this.hideChargeButton(false);
-                this.hidePayButton(false);
-            }
-        } else {
-            this.hideChargeButton(false);
-            this.hidePayButton(false);
-        }
-    }
-
-
     public void setCurrentPreset(FLPreset preset) {
         this.currentPreset = preset;
 
         if (this.type != null && this.type == ActionBarType.ActionBarTypeBase)
             this.upateBaseTypeButtons();
+
+        int buttonCount = 0;
+
+        if (this.currentPreset.options.allowWhy) {
+            this.textButtonContainer.setVisibility(VISIBLE);
+            ++buttonCount;
+        } else {
+            this.textButtonContainer.setVisibility(GONE);
+        }
+
+        if (this.currentPreset.options.allowPic) {
+            this.cameraButtonContainer.setVisibility(VISIBLE);
+            ++buttonCount;
+
+            this.imageButtonContainer.setVisibility(VISIBLE);
+            ++buttonCount;
+        } else {
+            this.cameraButtonContainer.setVisibility(GONE);
+            this.imageButtonContainer.setVisibility(GONE);
+        }
+
+        if (this.currentPreset.options.allowGif) {
+            this.gifButtonContainer.setVisibility(VISIBLE);
+            ++buttonCount;
+        } else {
+            this.gifButtonContainer.setVisibility(GONE);
+        }
+
+        if (this.currentPreset.options.allowGeo) {
+            this.locationButtonContainer.setVisibility(VISIBLE);
+            ++buttonCount;
+        } else {
+            this.locationButtonContainer.setVisibility(GONE);
+        }
+
+        if (buttonCount == 0 || (buttonCount == 1 && currentPreset.options.allowWhy)) {
+            this.mediaActionBar.setVisibility(GONE);
+        } else {
+            this.mediaActionBar.setVisibility(VISIBLE);
+        }
     }
 
 

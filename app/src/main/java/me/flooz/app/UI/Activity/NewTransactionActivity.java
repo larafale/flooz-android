@@ -120,6 +120,7 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
 
         this.savedAmount = "";
         this.savedWhy = "";
+        this.preset = new FLPreset(new JSONObject());
     }
 
     public void initWithPreset(FLPreset data) {
@@ -173,9 +174,8 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
         else
             this.init();
 
-        // TODO: 10/04/2017  
-//        if (FloozRestClient.getInstance().currentUser != null && FloozRestClient.getInstance().currentUser.settings != null)
-//            this.currentScope = FLTransaction.transactionScopeParamToEnum((String)((Map)FloozRestClient.getInstance().currentUser.settings.get("def")).get("scope"));
+        if (FloozRestClient.getInstance().currentUser != null && FloozRestClient.getInstance().currentUser.settings != null)
+            this.currentScope = FLScope.scopeFromObject(((Map)FloozRestClient.getInstance().currentUser.settings.get("def")).get("scope"));
 
         this.setContentView(R.layout.transaction_fragment);
 
@@ -249,11 +249,10 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
             public void onClick(View v) {
                 Intent scopeIntent = new Intent(NewTransactionActivity.this, ScopePickerActivity.class);
 
-                // TODO: 10/04/2017  
-//                scopeIntent.putExtra("scope", FLTransaction.transactionScopeToParams(currentScope));
+                scopeIntent.putExtra("scope", currentScope.keyString);
 
-                if (preset != null && preset.scopes != null)
-                    scopeIntent.putExtra("scopes", preset.scopes.toString());
+                if (preset != null && preset.options.scopes != null)
+                    scopeIntent.putExtra("scopes", preset.jsonData.optJSONObject("options").optJSONArray("scopes").toString());
 
                 instance.startActivityForResult(scopeIntent, PICK_SCOPE);
                 instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
@@ -276,11 +275,11 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
                 this.toTextview.setText(this.preset.toFullname);
         }
 
-        if (this.preset != null && (this.preset.blockTo || this.preset.isParticipation)) {
+        if (this.preset != null && (!this.preset.options.allowTo || this.preset.isParticipation)) {
             this.toTextview.setClickable(false);
         }
 
-        if (this.preset == null || !this.preset.blockAmount) {
+        if (this.preset == null || this.preset.options.allowAmount) {
             this.amountTextfield.setFocusable(true);
             this.amountTextfield.setFocusableInTouchMode(true);
             amountContainer.setOnClickListener(new View.OnClickListener() {
@@ -377,20 +376,19 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
             if (this.preset.whyPlaceholder != null && !this.preset.whyPlaceholder.isEmpty())
                 this.contentTextfield.setHint(this.preset.whyPlaceholder);
 
-            if (this.preset.blockWhy) {
+            if (!this.preset.options.allowWhy) {
                 this.contentTextfield.setFocusable(false);
                 this.contentTextfield.setFocusableInTouchMode(false);
             }
         }
 
-        if (preset != null && preset.scope != null)
-            this.currentScope = this.preset.scope;
+        if (preset != null && preset.options.scope != null)
+            this.currentScope = this.preset.options.scope;
         else {
-            // TODO: 10/04/2017  
-//            if (FloozRestClient.getInstance().currentUser != null)
-//                this.currentScope = FLTransaction.transactionScopeParamToEnum((String) ((Map) FloozRestClient.getInstance().currentUser.settings.get("def")).get("scope"));
-//            else
-//                this.currentScope = FLTransaction.TransactionScope.TransactionScopePublic;
+            if (FloozRestClient.getInstance().currentUser != null)
+                this.currentScope = FLScope.scopeFromObject(((Map)FloozRestClient.getInstance().currentUser.settings.get("def")).get("scope"));
+            else
+                this.currentScope = FLScope.defaultScope(FLScope.FLScopeKey.FLScopePublic);
         }
 
         this.updateScopeField();
@@ -479,8 +477,7 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
                 }
             } else if (requestCode == PICK_SCOPE) {
                 if (data.hasExtra("scope")) {
-                    // TODO: 10/04/2017
-//                    currentScope = FLTransaction.transactionParamsToScope(data.getStringExtra("scope"));
+                    currentScope = FLScope.scopeFromObject(data.getStringExtra("scope"));
 
                     Handler mainHandler = new Handler(this.getMainLooper());
                     Runnable myRunnable = new Runnable() {
@@ -521,10 +518,10 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
         this.contentTextfield.setText(this.savedWhy);
 
         final InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
-        if (this.amountTextfield.getText().length() == 0 && ((this.preset != null && !this.preset.blockAmount) || this.preset == null)) {
+        if (this.amountTextfield.getText().length() == 0 && ((this.preset != null && this.preset.options.allowAmount) || this.preset == null)) {
             this.amountTextfield.requestFocus();
             imm.showSoftInput(amountTextfield, InputMethodManager.SHOW_FORCED);
-        } else if (this.contentTextfield.getText().length() == 0 && ((this.preset != null && !this.preset.blockWhy) || this.preset == null)) {
+        } else if (this.contentTextfield.getText().length() == 0 && ((this.preset != null && this.preset.options.allowWhy) || this.preset == null)) {
             this.contentTextfield.requestFocus();
             imm.showSoftInput(contentTextfield, InputMethodManager.SHOW_FORCED);
         } else {

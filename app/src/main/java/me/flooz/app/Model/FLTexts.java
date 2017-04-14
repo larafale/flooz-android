@@ -7,6 +7,8 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import me.flooz.app.Utils.FLTriggerManager;
+
 /**
  * Created by Flooz on 3/19/15.
  */
@@ -21,6 +23,7 @@ public class  FLTexts {
     public JSONObject menu;
     public List<FLCountry> avalaibleCountries;
     public List<FLButton> homeButtons;
+    public List<FLTrigger> homeTriggers;
     public List<FLButton> cashinButtons;
     public List<FLButton> paymentSources;
     public String audiotelNumber;
@@ -97,6 +100,7 @@ public class  FLTexts {
             }
         }
 
+        this.homeTriggers = FLTriggerManager.convertTriggersJSONArrayToList(json.optJSONArray("homeTriggers"));
         this.paymentSources = new ArrayList<>();
 
         JSONArray sources = json.optJSONArray("sources");
