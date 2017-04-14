@@ -11,6 +11,8 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+
 import java.util.List;
 
 import me.flooz.app.App.FloozApplication;
@@ -83,7 +85,7 @@ public class PaymentAdapter extends BaseAdapter {
             holder.imageView.setImageDrawable(context.getResources().getDrawable(id));
 
         if (button.imgUrl != null && !button.imgUrl.isEmpty())
-            FloozApplication.getInstance().imageFetcher.attachImage(button.imgUrl, holder.imageView);
+            ImageLoader.getInstance().displayImage(button.imgUrl, holder.imageView);
 
         holder.title.setText(button.title);
         holder.subtitle.setText(button.subtitle);

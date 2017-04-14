@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -98,7 +99,7 @@ public class ShopItemActivity extends BaseActivity {
 
         this.titleTextview.setText(this.currentItem.name);
 
-        FloozApplication.getInstance().imageFetcher.attachImage(this.currentItem.pic, this.pic);
+        ImageLoader.getInstance().displayImage(this.currentItem.pic, this.pic);
 
         if (this.currentItem.value == null || this.currentItem.value.isEmpty())
             this.amountTextview.setVisibility(View.GONE);

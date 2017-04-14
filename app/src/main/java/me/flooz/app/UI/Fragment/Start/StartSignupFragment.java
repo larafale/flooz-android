@@ -18,6 +18,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONObject;
 
@@ -224,7 +225,7 @@ public class StartSignupFragment extends StartBaseFragment implements FLPhoneFie
             nicknameTextfield.setText((String)parentActivity.signupData.get("nick"));
 
         if (parentActivity.signupData.containsKey("avatarURL")) {
-            FloozApplication.getInstance().imageFetcher.attachImage((String)parentActivity.signupData.get("avatarURL"), this.fbPic);
+            ImageLoader.getInstance().displayImage((String)parentActivity.signupData.get("avatarURL"), this.fbPic);
             fbPicView.setVisibility(View.VISIBLE);
             fbButtonView.setVisibility(View.GONE);
         } else {

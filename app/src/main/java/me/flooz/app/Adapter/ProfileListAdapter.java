@@ -18,6 +18,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONException;
 
@@ -110,7 +111,7 @@ public class ProfileListAdapter extends BaseAdapter implements StickyListHeaders
         this.userViewHolder.balance.setText("Solde " + FLHelper.trimTrailingZeros( String.format(Locale.US, "%.2f", currentUser.amount.floatValue())) + " €");
 
         if (currentUser.avatarURL != null && !currentUser.avatarURL.isEmpty())
-            FloozApplication.getInstance().imageFetcher.attachImage(currentUser.avatarURL, this.userViewHolder.imageView);
+            ImageLoader.getInstance().displayImage(currentUser.avatarURL, this.userViewHolder.imageView);
         else
             this.userViewHolder.imageView.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
 

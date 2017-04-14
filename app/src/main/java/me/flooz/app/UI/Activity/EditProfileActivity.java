@@ -27,7 +27,7 @@ import android.widget.TextView;
 
 import com.gc.materialdesign.views.Switch;
 
-import org.droidparts.net.image.ImageFetcher;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -141,10 +141,10 @@ public class EditProfileActivity extends BaseActivity {
         this.websiteField.setText(currentUser.website);
 
         if (this.currentUser.avatarURL != null && !this.currentUser.avatarURL.isEmpty()) {
-            FloozApplication.getInstance().imageFetcher.attachImage(this.currentUser.avatarURL, this.profileAvatar);
+            ImageLoader.getInstance().displayImage(this.currentUser.avatarURL, this.profileAvatar);
         }
         if (this.currentUser.coverURL != null && !this.currentUser.coverURL.isEmpty()) {
-            FloozApplication.getInstance().imageFetcher.attachImage(this.currentUser.coverURL, this.profileCover);
+            ImageLoader.getInstance().displayImage(this.currentUser.coverURL, this.profileCover);
         }
 
         this.profileAvatar.setOnClickListener(new View.OnClickListener() {
@@ -513,7 +513,7 @@ public class EditProfileActivity extends BaseActivity {
                                                 FLUser user = FloozRestClient.getInstance().currentUser;
 
                                                 if (user.avatarURL != null)
-                                                    FloozApplication.getInstance().imageFetcher.attachImage(user.avatarURL, profileAvatar);
+                                                    ImageLoader.getInstance().displayImage(user.avatarURL, profileAvatar);
                                                 else
                                                     profileAvatar.setImageDrawable(getResources().getDrawable(R.drawable.avatar_default));
                                             }
@@ -532,7 +532,7 @@ public class EditProfileActivity extends BaseActivity {
                                                 FLUser user = FloozRestClient.getInstance().currentUser;
 
                                                 if (user.coverURL != null)
-                                                    FloozApplication.getInstance().imageFetcher.attachImage(user.coverURL, profileCover);
+                                                    ImageLoader.getInstance().displayImage(user.coverURL, profileCover);
                                                 else
                                                     profileCover.setImageDrawable(getResources().getDrawable(R.drawable.launch_background));
                                             }

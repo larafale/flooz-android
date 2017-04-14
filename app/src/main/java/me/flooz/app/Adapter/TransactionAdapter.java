@@ -8,6 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.makeramen.roundedimageview.RoundedImageView;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLComment;
@@ -78,7 +79,7 @@ public class TransactionAdapter extends BaseAdapter {
         }
 
         if (comment.user.avatarURL != null && !comment.user.avatarURL.isEmpty())
-            FloozApplication.getInstance().imageFetcher.attachImage(comment.user.avatarURL, holder.commentPic);
+            ImageLoader.getInstance().displayImage(comment.user.avatarURL, holder.commentPic);
         else
             holder.commentPic.setImageDrawable(this.context.getResources().getDrawable(R.drawable.avatar_default));
 

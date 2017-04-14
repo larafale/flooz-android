@@ -20,6 +20,10 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.github.ajalt.reprint.core.Reprint;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 import com.mixpanel.android.mpmetrics.MixpanelAPI;
+import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -103,6 +107,21 @@ public class FloozApplication extends BranchApp
 
         FloozApplication.instance = this;
         FloozApplication.context = getApplicationContext();
+
+        DisplayImageOptions options = new DisplayImageOptions.Builder()
+                .cacheInMemory(true)
+                .cacheOnDisk(true)
+                .considerExifParams(true)
+                .build();
+
+        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(context)
+                .denyCacheImageMultipleSizesInMemory()
+                .diskCacheFileNameGenerator(new Md5FileNameGenerator())
+                .diskCacheSize(150 * 1024 * 1024)
+                .defaultDisplayImageOptions(options)
+                .build();
+
+        ImageLoader.getInstance().init(config);
 
         gcm = GoogleCloudMessaging.getInstance(this);
         regid = getRegistrationId(context);
