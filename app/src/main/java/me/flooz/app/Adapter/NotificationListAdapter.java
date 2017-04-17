@@ -14,7 +14,9 @@ import android.widget.TextView;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLNotification;
@@ -101,7 +103,9 @@ public class NotificationListAdapter extends BaseAdapter {
         if (notif.user.avatarURL != null && !notif.user.avatarURL.isEmpty())
             ImageLoader.getInstance().displayImage(notif.user.avatarURL, holder.img);
 
-        holder.date.setText(notif.dateText);
+        SimpleDateFormat sdf = new SimpleDateFormat("dd MMM à HH:mm", Locale.FRANCE);
+
+        holder.date.setText(sdf.format(notif.date));
 
         return convertView;
     }
