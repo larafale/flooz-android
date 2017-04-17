@@ -122,6 +122,11 @@ public class CollectParticipationController extends BaseController implements Ti
     }
 
     @Override
+    public void ListItemVideoClick(String videoUrl) {
+
+    }
+
+    @Override
     public void ListItemUserClick(FLUser user) {
         FloozApplication.getInstance().showUserProfile(user);
     }

@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import org.json.JSONArray;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import me.flooz.app.Model.FLScope;
@@ -30,7 +31,7 @@ public class ScopePickerAdapter extends BaseAdapter {
     public FLScope currentScope = null;
 
     private Boolean isPot = false;
-    private JSONArray limitedScopes;
+    private List<FLScope> limitedScopes;
 
     public ScopePickerAdapter(Context ctx, Boolean isPot, FLScope currentScope, JSONArray limitedScopes) {
         this.inflater = LayoutInflater.from(ctx);
@@ -38,21 +39,27 @@ public class ScopePickerAdapter extends BaseAdapter {
 
         this.isPot = isPot;
         this.currentScope = currentScope;
-        this.limitedScopes = limitedScopes;
+
+        if (limitedScopes != null && limitedScopes.length() > 0) {
+            this.limitedScopes = new ArrayList<>();
+            for (int i = 0; i < limitedScopes.length(); i++) {
+                this.limitedScopes.add(FLScope.scopeFromObject(limitedScopes.opt(i)));
+            }
+        }
     }
 
     @Override
     public int getCount() {
-        if (limitedScopes != null && limitedScopes.length() > 0)
-            return limitedScopes.length();
+        if (limitedScopes != null && limitedScopes.size() > 0)
+            return limitedScopes.size();
 
         return 3;
     }
 
     @Override
     public FLScope getItem(int i) {
-        if (limitedScopes != null && limitedScopes.length() > 0)
-            return FLScope.scopeFromObject(limitedScopes.opt(i));
+        if (limitedScopes != null && limitedScopes.size() > 0)
+            return limitedScopes.get(i);
 
         return FLScope.scopeFromID(i);
     }
@@ -93,7 +100,7 @@ public class ScopePickerAdapter extends BaseAdapter {
             holder.title.setText(scope.name);
             holder.subtitle.setText(scope.desc);
 
-            if (this.currentScope != null && this.currentScope == scope)
+            if (this.currentScope != null && this.currentScope.keyString.equals(scope.keyString))
                 holder.checkmark.setVisibility(View.VISIBLE);
             else
                 holder.checkmark.setVisibility(View.INVISIBLE);

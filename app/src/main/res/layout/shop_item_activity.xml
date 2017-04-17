@@ -53,8 +53,7 @@
                         app:layout_widthPercent="100%"
                         app:layout_aspectRatio="@fraction/card_aspectRatio"
                         app:riv_corner_radius="@dimen/avatar_corner"
-                        app:riv_mutate_background="true"
-                        android:src="@drawable/credit_card_background"/>
+                        app:riv_mutate_background="true"/>
 
                 </android.support.percent.PercentRelativeLayout>
 

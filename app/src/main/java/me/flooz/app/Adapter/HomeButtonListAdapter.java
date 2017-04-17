@@ -71,23 +71,19 @@ public class HomeButtonListAdapter extends BaseAdapter {
     public View getView(int i, View convertView, ViewGroup parent) {
         final ViewHolder holder;
 
-        if (convertView == null) {
-            holder = new ViewHolder();
-            convertView = LayoutInflater.from(this.context).inflate(R.layout.home_button, parent, false);
-            holder.imageView = (ImageView) convertView.findViewById(R.id.home_button_img);
-            holder.title = (TextView) convertView.findViewById(R.id.home_button_title);
-            holder.subtitle = (TextView) convertView.findViewById(R.id.home_button_subtitle);
-            holder.arrow = (ImageView) convertView.findViewById(R.id.home_button_arrow);
-            holder.avalaible = (TextView) convertView.findViewById(R.id.home_button_available);
+        holder = new ViewHolder();
+        convertView = LayoutInflater.from(this.context).inflate(R.layout.home_button, parent, false);
+        holder.imageView = (ImageView) convertView.findViewById(R.id.home_button_img);
+        holder.title = (TextView) convertView.findViewById(R.id.home_button_title);
+        holder.subtitle = (TextView) convertView.findViewById(R.id.home_button_subtitle);
+        holder.arrow = (ImageView) convertView.findViewById(R.id.home_button_arrow);
+        holder.avalaible = (TextView) convertView.findViewById(R.id.home_button_available);
 
-            holder.title.setTypeface(CustomFonts.customContentRegular(this.context));
-            holder.subtitle.setTypeface(CustomFonts.customContentRegular(this.context));
-            holder.avalaible.setTypeface(CustomFonts.customContentBold(this.context));
+        holder.title.setTypeface(CustomFonts.customContentRegular(this.context));
+        holder.subtitle.setTypeface(CustomFonts.customContentRegular(this.context));
+        holder.avalaible.setTypeface(CustomFonts.customContentBold(this.context));
 
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
+        convertView.setTag(holder);
 
         FLButton button = FloozRestClient.getInstance().currentTexts.homeButtons.get(i);
 

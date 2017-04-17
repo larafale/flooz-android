@@ -32,29 +32,29 @@
             android:layout_margin="@dimen/dimen_xlarge"
             android:orientation="horizontal">
 
-            <RadioButton
-                android:id="@+id/settings_privacy_segment_public"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/TRANSACTION_SCOPE_PUBLIC"
-                style="@style/RadioButton" />
+            <!--<RadioButton-->
+                <!--android:id="@+id/settings_privacy_segment_public"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="@string/TRANSACTION_SCOPE_PUBLIC"-->
+                <!--style="@style/RadioButton" />-->
 
-            <RadioButton
-                android:id="@+id/settings_privacy_segment_friend"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/TRANSACTION_SCOPE_FRIEND"
-                style="@style/RadioButton" />
+            <!--<RadioButton-->
+                <!--android:id="@+id/settings_privacy_segment_friend"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="@string/TRANSACTION_SCOPE_FRIEND"-->
+                <!--style="@style/RadioButton" />-->
 
-            <RadioButton
-                android:id="@+id/settings_privacy_segment_private"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="@string/TRANSACTION_SCOPE_PRIVATE"
-                style="@style/RadioButton" />
+            <!--<RadioButton-->
+                <!--android:id="@+id/settings_privacy_segment_private"-->
+                <!--android:layout_width="0dp"-->
+                <!--android:layout_height="wrap_content"-->
+                <!--android:layout_weight="1"-->
+                <!--android:text="@string/TRANSACTION_SCOPE_PRIVATE"-->
+                <!--style="@style/RadioButton" />-->
 
         </info.hoang8f.android.segmented.SegmentedGroup>
     </LinearLayout>

@@ -1,6 +1,13 @@
 package me.flooz.app.Model;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
+import android.view.View;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.assist.FailReason;
+import com.nostra13.universalimageloader.core.listener.ImageLoadingListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,6 +19,8 @@ import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.FLHelper;
+
+import static android.R.attr.bitmap;
 
 /**
  * Created by gawenberger on 07/04/2017.
@@ -55,14 +64,35 @@ public class FLScope {
                 this.desc = this.jsonData.optString("desc");
             if (this.jsonData.has("shortDesc"))
                 this.shortDesc = this.jsonData.optString("shortDesc");
+
+            this.image = null;
+
             String imageURL = this.jsonData.optString("imageURL");
             String imageName = this.jsonData.optString("imageName");
             if (imageURL != null && imageURL.length() > 0) {
-//            [[SDWebImageDownloader sharedDownloader] downloadImageWithURL:[NSURL URLWithString:jsonData[@"imageURL"]] options:SDWebImageDownloaderHighPriority progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, BOOL finished) {
-//                    if (image)
-//                        self.image = image;
-//                }];
+                ImageLoader.getInstance().loadImage(imageURL, new ImageLoadingListener() {
+                    @Override
+                    public void onLoadingStarted(String imageUri, View view) {
+
+                    }
+
+                    @Override
+                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
+
+                    }
+
+                    @Override
+                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                        image = new BitmapDrawable(loadedImage);
+                    }
+
+                    @Override
+                    public void onLoadingCancelled(String imageUri, View view) {
+
+                    }
+                });
             }
+
             if (imageName != null && imageName.length() > 0) {
                 this.image = FloozApplication.getInstance().getResources()
                         .getDrawable(FLHelper.getResourceId("drawable", imageName, FloozApplication.getInstance().getPackageName()));
@@ -86,7 +116,7 @@ public class FLScope {
                         break;
                 }
 
-                if (resID > 0)
+                if (resID > 0 && this.image == null)
                     this.image = FloozApplication.getAppContext().getResources().getDrawable(resID);
             }
         }
@@ -123,9 +153,17 @@ public class FLScope {
 
     public static List<FLScope> defaultScopeList() {
         List<FLScope> defaultScopeList = new ArrayList<FLScope>();
+        if (FloozRestClient.getInstance().currentTexts != null && FloozRestClient.getInstance().currentTexts.newFloozOptions.scopes != null) {
+            for (int i = 0; i < FloozRestClient.getInstance().currentTexts.newFloozOptions.scopes.length(); i++) {
+                defaultScopeList.add(FLScope.scopeFromObject(FloozRestClient.getInstance().currentTexts.newFloozOptions.scopes.opt(i)));
+            }
+            return defaultScopeList;
+        }
+
         defaultScopeList.add(FLScope.defaultScope(FLScopeKey.FLScopePublic));
         defaultScopeList.add(FLScope.defaultScope(FLScopeKey.FLScopeFriend));
         defaultScopeList.add(FLScope.defaultScope(FLScopeKey.FLScopePrivate));
+
         return defaultScopeList;
     }
 
@@ -134,7 +172,7 @@ public class FLScope {
                 FloozRestClient.getInstance().currentTexts.homeScopes != null &&
                 FloozRestClient.getInstance().currentTexts.homeScopes.size() != 0) {
             for (FLScope scope : FloozRestClient.getInstance().currentTexts.homeScopes) {
-                if (scopeKey == scope.keyString)
+                if (scopeKey.equals(scope.keyString))
                     return scope;
             }
         }

@@ -252,12 +252,15 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
                 scopeIntent.putExtra("scope", currentScope.keyString);
 
                 if (preset != null && preset.options.scopes != null)
-                    scopeIntent.putExtra("scopes", preset.jsonData.optJSONObject("options").optJSONArray("scopes").toString());
+                    scopeIntent.putExtra("preset", preset.jsonData.toString());
 
                 instance.startActivityForResult(scopeIntent, PICK_SCOPE);
                 instance.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
             }
         });
+
+        if (preset != null && preset.options.scopes != null && preset.options.scopes.length() < 2)
+            this.headerScope.setVisibility(View.INVISIBLE);
 
         this.amountTextfield.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override

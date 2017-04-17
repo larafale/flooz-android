@@ -141,7 +141,7 @@ public class LoadingActivity extends BaseActivity {
             alert.setCancelable(false);
 
             final EditText input = new EditText(this);
-            input.setText("192.168.1.44:3002");
+            input.setText("192.168.0.11:3002");
             alert.setView(input);
 
             alert.setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {

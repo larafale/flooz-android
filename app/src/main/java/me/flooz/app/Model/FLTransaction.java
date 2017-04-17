@@ -36,13 +36,11 @@ public class FLTransaction {
         TransactionStatusNone
     }
 
-//    public enum TransactionScope {
-//        TransactionScopePublic,
-//        TransactionScopeFriend,
-//        TransactionScopePrivate,
-//        TransactionScopeAll,
-//        TransactionScopeNone
-//    }
+    public enum TransactionAttachmentType {
+        TransactionAttachmentImage,
+        TransactionAttachmentVideo,
+        TransactionAttachmentNone
+    }
 
     public enum TransactionPaymentMethod {
         TransactionPaymentMethodWallet,
@@ -62,6 +60,9 @@ public class FLTransaction {
     public String title;
     public String name;
     public String content;
+
+    public TransactionAttachmentType attachmentType = TransactionAttachmentType.TransactionAttachmentNone;
+
     public String attachmentURL;
     public String attachmentThumbURL;
     public String when;
@@ -156,8 +157,19 @@ public class FLTransaction {
                 this.title = json.optString("text");
                 this.content = json.optString("why");
 
-                this.attachmentURL = json.optString("pic");
-                this.attachmentThumbURL = json.optString("picMini");
+                if (json.has("pic")) {
+                    this.attachmentURL = json.optString("pic");
+                    this.attachmentThumbURL = json.optString("picThumb");
+                    this.attachmentType = TransactionAttachmentType.TransactionAttachmentImage;
+                } else if (json.has("video")) {
+                    this.attachmentURL = json.optString("video");
+                    this.attachmentThumbURL = json.optString("videoThumb");
+                    this.attachmentType = TransactionAttachmentType.TransactionAttachmentVideo;
+                } else {
+                    this.attachmentType = TransactionAttachmentType.TransactionAttachmentNone;
+                    this.attachmentURL = null;
+                    this.attachmentThumbURL = null;
+                }
 
                 this.social = new FLSocial(json);
 

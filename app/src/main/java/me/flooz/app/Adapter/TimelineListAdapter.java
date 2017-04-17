@@ -58,6 +58,7 @@ public class TimelineListAdapter extends BaseAdapter {
         void ListItemClick(FLTransaction transac);
         void ListItemCommentClick(FLTransaction transac);
         void ListItemImageClick(String imgUrl);
+        void ListItemVideoClick(String videoUrl);
         void ListItemUserClick(FLUser user);
         void ListItemShareClick(FLTransaction transac);
     }
@@ -284,15 +285,19 @@ public class TimelineListAdapter extends BaseAdapter {
             holder.transactionText.setVisibility(View.GONE);
         }
 
-        if (currentTransaction.attachmentURL != null &&!currentTransaction.attachmentURL.isEmpty()) {
-            holder.transactionPic.setImageFromUrl(currentTransaction.attachmentURL);
+        if (currentTransaction.attachmentType != FLTransaction.TransactionAttachmentType.TransactionAttachmentNone) {
+            holder.transactionPic.setImageFromUrl(currentTransaction.attachmentThumbURL);
             holder.transactionPic.setVisibility(View.VISIBLE);
 
             holder.transactionPic.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if (delegate != null)
-                        delegate.ListItemImageClick(currentTransaction.attachmentURL);
+                    if (delegate != null) {
+                        if (currentTransaction.attachmentType == FLTransaction.TransactionAttachmentType.TransactionAttachmentVideo)
+                            delegate.ListItemVideoClick(currentTransaction.attachmentURL);
+                        else if (currentTransaction.attachmentType == FLTransaction.TransactionAttachmentType.TransactionAttachmentImage)
+                            delegate.ListItemImageClick(currentTransaction.attachmentURL);
+                    }
                 }
             });
         }
@@ -324,6 +329,7 @@ public class TimelineListAdapter extends BaseAdapter {
             holder.transactionLikesButtonImg.setVisibility(View.VISIBLE);
             holder.transactionLikesButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
         } else {
+            holder.transactionLikesButton.setVisibility(View.GONE);
             holder.transactionLikesButtonText.setVisibility(View.GONE);
             holder.transactionLikesButtonImg.setVisibility(View.GONE);
         }
@@ -345,6 +351,7 @@ public class TimelineListAdapter extends BaseAdapter {
             holder.transactionCommentsButtonText.setVisibility(View.INVISIBLE);
             holder.transactionCommentsButtonImg.setColorFilter(this.context.getResources().getColor(R.color.background_social_button));
         } else {
+            holder.transactionCommentsButton.setVisibility(View.GONE);
             holder.transactionCommentsButtonImg.setVisibility(View.GONE);
             holder.transactionCommentsButtonText.setVisibility(View.GONE);
         }

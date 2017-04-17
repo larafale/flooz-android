@@ -6,6 +6,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -337,6 +338,15 @@ public class CollectAdapter extends BaseAdapter {
 
                 if (this.collect.options.shareEnabled) {
                     likeCellHolder.shareButton.setVisibility(View.VISIBLE);
+
+                    if (!collect.options.likeEnabled && !collect.options.commentEnabled) {
+                        likeCellHolder.shareButton.setGravity(Gravity.LEFT);
+                    } else if (!collect.options.likeEnabled || !collect.options.commentEnabled) {
+                        likeCellHolder.shareButton.setGravity(Gravity.CENTER_HORIZONTAL);
+                    } else {
+                        likeCellHolder.shareButton.setGravity(Gravity.RIGHT);
+                    }
+
                 } else {
                     likeCellHolder.shareButton.setVisibility(View.GONE);
                 }

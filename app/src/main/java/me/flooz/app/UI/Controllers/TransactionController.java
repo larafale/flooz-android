@@ -13,6 +13,7 @@ import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.StyleSpan;
+import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -676,6 +677,14 @@ public class TransactionController extends BaseController {
 
         if (transaction.options.shareEnabled) {
             socialShareButton.setVisibility(View.VISIBLE);
+
+            if (!transaction.options.likeEnabled && !transaction.options.commentEnabled) {
+                socialShareButton.setGravity(Gravity.LEFT);
+            } else if (!transaction.options.likeEnabled || !transaction.options.commentEnabled) {
+                socialShareButton.setGravity(Gravity.CENTER_HORIZONTAL);
+            } else {
+                socialShareButton.setGravity(Gravity.RIGHT);
+            }
         } else {
             socialShareButton.setVisibility(View.GONE);
         }

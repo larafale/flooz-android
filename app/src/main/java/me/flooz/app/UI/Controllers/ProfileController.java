@@ -659,8 +659,9 @@ public class ProfileController extends BaseController implements TimelineListAda
             if (badgeValue > 0) {
                 this.editProfileBadge.setVisibility(View.VISIBLE);
                 this.editProfileBadge.setText("" + badgeValue);
-            } else
+            } else {
                 this.editProfileBadge.setVisibility(View.GONE);
+            }
         }
 
         if (!flUser.userBio.isEmpty()) {
@@ -796,6 +797,11 @@ public class ProfileController extends BaseController implements TimelineListAda
     @Override
     public void ListItemImageClick(String imgUrl) {
         CustomImageViewer.start(this.parentActivity, imgUrl);
+
+    }
+
+    @Override
+    public void ListItemVideoClick(String videoUrl) {
 
     }
 

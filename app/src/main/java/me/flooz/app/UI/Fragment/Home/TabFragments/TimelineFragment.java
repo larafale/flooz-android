@@ -94,12 +94,11 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
     public TimelineFragment() {
         String filterData = FloozRestClient.getInstance().appSettings.getString(FloozRestClient.kFilterData, "");
 
-        if (FloozRestClient.getInstance().currentTexts != null &&
-                FloozRestClient.getInstance().currentTexts.defaultScope != null) {
+        if (filterData != null && !filterData.isEmpty()) {
+            this.currentFilter = FLScope.scopeFromObject(filterData);
+        } else if (FloozRestClient.getInstance().currentTexts != null && FloozRestClient.getInstance().currentTexts.defaultScope != null) {
             this.currentFilter = FloozRestClient.getInstance().currentTexts.defaultScope;
             FloozRestClient.getInstance().appSettings.edit().putString(FloozRestClient.kFilterData, this.currentFilter.keyString).apply();
-        } else if (filterData != null && !filterData.isEmpty()) {
-            this.currentFilter = FLScope.scopeFromObject(filterData);
         } else if (FloozRestClient.getInstance().currentTexts != null &&
                 FloozRestClient.getInstance().currentTexts.homeScopes != null &&
                 FloozRestClient.getInstance().currentTexts.homeScopes.size() > 0) {
@@ -132,8 +131,6 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
         this.refreshContainer = (PullRefreshLayout) view.findViewById(R.id.timeline_refresh_container);
         this.timelineListView = (TimelineListView) view.findViewById(R.id.timeline_list);
         this.backgroundImage  = (ImageView) view.findViewById(R.id.timeline_background);
-
-        this.checkScopeAvailability();
 
         this.logoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -233,6 +230,7 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
                         break;
                     }
                 }
+
                 filterChanged(currentFilter);
                 checkScopeAvailability();
                 scopeButton.setImageDrawable(currentFilter.image);
@@ -297,6 +295,8 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
 
         this.delegate = this.tabBarActivity;
 
+        this.checkScopeAvailability();
+
         if (starter) {
             starter = !starter;
             this.refreshContainer.setRefreshing(true);
@@ -333,15 +333,13 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
 
     @Override
     public void filterChanged(FLScope filter) {
-        if (!filter.keyString.equals(this.currentFilter.keyString)) {
-            this.currentFilter = filter;
-            FloozRestClient.getInstance().appSettings.edit().putString(FloozRestClient.kFilterData, this.currentFilter.keyString).apply();
-            this.transactions.clear();
-            this.timelineAdapter.hasNextURL = false;
-            this.timelineAdapter.notifyDataSetChanged();
-            this.refreshContainer.setRefreshing(true);
-            refreshTransactions();
-        }
+        this.currentFilter = filter;
+        FloozRestClient.getInstance().appSettings.edit().putString(FloozRestClient.kFilterData, this.currentFilter.keyString).apply();
+        this.transactions.clear();
+        this.timelineAdapter.hasNextURL = false;
+        this.timelineAdapter.notifyDataSetChanged();
+        this.refreshContainer.setRefreshing(true);
+        refreshTransactions();
     }
 
     @Override
@@ -360,6 +358,11 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
     public void ListItemImageClick(String imgUrl) {
         if (delegate != null)
             delegate.onItemImageSelected(imgUrl);
+    }
+
+    @Override
+    public void ListItemVideoClick(String videoUrl) {
+
     }
 
     @Override
@@ -415,7 +418,7 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
 
         Boolean currentScopeAvailable = false;
         for (FLScope scope: this.availableScopes) {
-            if (this.currentFilter.key == scope.key) {
+            if (this.currentFilter != null && this.currentFilter.keyString.equals(scope.keyString)) {
                 currentScopeAvailable = true;
                 break;
             }
@@ -423,7 +426,7 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
 
         if (!currentScopeAvailable) {
             this.currentFilter = availableScopes.get(0);
-            this.timelineAdapter.notifyDataSetChanged();
+            filterChanged(this.currentFilter);
         }
 
         if (availableScopes.size() < 2)

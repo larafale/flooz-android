@@ -204,6 +204,7 @@ dependencies {
     compile 'com.github.inaka:tinytask:v1'
     compile 'com.github.tslamic.adn:library:1.+'
     compile 'com.jakewharton:butterknife:8.4.0'
+//    compile 'com.github.halilozercan:BetterVideoPlayer:1.0.0'
 
     // Other
 

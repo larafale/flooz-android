@@ -18,6 +18,7 @@ import java.util.List;
 
 import me.flooz.app.Adapter.ScopePickerAdapter;
 import me.flooz.app.App.FloozApplication;
+import me.flooz.app.Model.FLPreset;
 import me.flooz.app.Model.FLScope;
 import me.flooz.app.Model.FLTransaction;
 import me.flooz.app.Model.FLTrigger;
@@ -74,16 +75,16 @@ public class ScopePickerActivity extends BaseActivity {
                 e.printStackTrace();
             }
         if (getIntent()!= null) {
-            // TODO: check da thing below
             if (getIntent().hasExtra("scope"))
                 this.currentScope = FLScope.scopeFromObject(getIntent().getStringExtra("scope"));
 
             if (getIntent().hasExtra("isPot"))
                 this.isPot = getIntent().getBooleanExtra("isPot", false);
 
-            if (getIntent().hasExtra("scopes"))
+            if (getIntent().hasExtra("preset"))
                 try {
-                    this.limitedScopes = new JSONArray(getIntent().getStringExtra("scopes"));
+                    FLPreset preset = new FLPreset(new JSONObject(getIntent().getStringExtra("preset")));
+                    this.limitedScopes = preset.options.scopes;
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
