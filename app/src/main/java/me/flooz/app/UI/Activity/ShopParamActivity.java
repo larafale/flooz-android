@@ -1,8 +1,10 @@
 package me.flooz.app.UI.Activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -43,6 +45,8 @@ public class ShopParamActivity extends BaseActivity implements FLShopField.FLSho
 
     private ImageView headerBackButton;
     private TextView titleTextview;
+
+    private FLShopTextField focusedTextField;
 
     private TextView headerTextview;
     private LinearLayout fieldsContainer;
@@ -161,6 +165,9 @@ public class ShopParamActivity extends BaseActivity implements FLShopField.FLSho
                     JSONObject field = triggerData.optJSONArray("fields").optJSONObject(i);
 
                     String fieldType = field.optString("type");
+                    Boolean focusField = false;
+                    if (this.focusedTextField == null)
+                         focusField = field.optBoolean("focus", false);
 
                     FLShopField shopField = null;
 
@@ -172,6 +179,9 @@ public class ShopParamActivity extends BaseActivity implements FLShopField.FLSho
                     }
                     else if (fieldType.indexOf("textfield") == 0) {
                         shopField = new FLShopTextField(this, field, this);
+                        if (focusField) {
+                            this.focusedTextField = (FLShopTextField)shopField;
+                        }
                     }
 
                     if (shopField != null)
@@ -279,6 +289,16 @@ public class ShopParamActivity extends BaseActivity implements FLShopField.FLSho
             paramsData.put(key, value);
         } catch (JSONException e) {
             e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (this.focusedTextField != null) {
+            this.focusedTextField.editText.requestFocus();
+            final InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showSoftInput(this.focusedTextField.editText, InputMethodManager.SHOW_FORCED);
         }
     }
 
