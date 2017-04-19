@@ -57,7 +57,7 @@ public class PrivacyController extends BaseController {
 
         int i = 0;
         for (FLScope scope: scopes) {
-            RadioButton rB = new RadioButton(this.parentActivity, null, R.style.RadioButton);
+            RadioButton rB = (RadioButton) this.parentActivity.getLayoutInflater().inflate(R.layout.custom_segmented_control_tab, null);
             rB.setId(i);
             LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
             p.weight = 1;

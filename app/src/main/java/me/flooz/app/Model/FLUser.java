@@ -65,7 +65,7 @@ public class FLUser
     public JSONArray participations;
 
 
-    public JSONObject blockObject;
+    public JSONObject floozOptions;
     public Map<String, String> address;
     public Map<String, Object> sepa;
     public Map<String, Object> notifications;
@@ -213,8 +213,8 @@ public class FLUser
                     this.publicMetrics.nbCollects = (int)pubMetrics.get("pots");
             }
 
-            if (this.json.has("block"))
-                this.blockObject = this.json.optJSONObject("block");
+            if (this.json.has("floozOptions"))
+                this.floozOptions = this.json.optJSONObject("floozOptions");
 
             if (this.json.has("birthdate")) {
                 String array[]  = this.json.optString("birthdate").split("-");

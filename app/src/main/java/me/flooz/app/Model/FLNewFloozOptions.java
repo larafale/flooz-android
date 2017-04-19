@@ -27,6 +27,25 @@ public class FLNewFloozOptions {
     public FLScope scope;
     public JSONArray scopes;
 
+    public FLNewFloozOptions duplicate() {
+        FLNewFloozOptions ret = new FLNewFloozOptions(null);
+
+        ret.allowTo = this.allowTo;
+        ret.allowPic = this.allowPic;
+        ret.allowGif = this.allowGif;
+        ret.allowGeo = this.allowGeo;
+        ret.allowWhy = this.allowWhy;
+        ret.allowAmount = this.allowAmount;
+        ret.allowBalance = this.allowBalance;
+        ret.scopeDefined = this.scopeDefined;
+
+        ret.type = this.type;
+        ret.scope = this.scope;
+        ret.scopes = this.scopes;
+
+        return ret;
+    }
+
     public FLNewFloozOptions(JSONObject jsonData) {
         super();
 
@@ -35,7 +54,7 @@ public class FLNewFloozOptions {
 
     public static FLNewFloozOptions defaultInstance() {
         if (FloozRestClient.getInstance().currentTexts != null && FloozRestClient.getInstance().currentTexts.newFloozOptions != null)
-            return FloozRestClient.getInstance().currentTexts.newFloozOptions;
+            return FloozRestClient.getInstance().currentTexts.newFloozOptions.duplicate();
 
         return new FLNewFloozOptions(null);
     }

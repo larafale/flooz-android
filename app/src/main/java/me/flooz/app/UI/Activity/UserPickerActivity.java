@@ -149,8 +149,8 @@ public class UserPickerActivity extends BaseActivity {
                                 } else
                                     data.put("toFullName", object.fullname);
 
-                                if (object.blockObject != null)
-                                    data.put("block", object.blockObject);
+                                if (object.floozOptions != null)
+                                    data.put("options", object.floozOptions);
 
                             } else {
                                 data.put("to", object.phone);
@@ -180,7 +180,22 @@ public class UserPickerActivity extends BaseActivity {
                                     Iterator it = base.keys();
                                     while (it.hasNext()) {
                                         String key = (String) it.next();
-                                        data.put(key, base.opt(key));
+
+                                        if (data.has(key) && data.opt(key) instanceof JSONObject && base.opt(key) instanceof JSONObject) {
+                                            JSONObject merged = new JSONObject();
+                                            JSONObject[] objs = new JSONObject[] { data.optJSONObject(key), base.optJSONObject(key) };
+                                            for (JSONObject obj : objs) {
+                                                Iterator it2 = obj.keys();
+                                                while (it2.hasNext()) {
+                                                    String key2 = (String)it2.next();
+                                                    merged.put(key2, obj.get(key2));
+                                                }
+                                            }
+
+                                            data.put(key, merged);
+                                        } else {
+                                            data.put(key, base.opt(key));
+                                        }
                                     }
                                 }
 
@@ -189,7 +204,22 @@ public class UserPickerActivity extends BaseActivity {
                                 Iterator it = data.keys();
                                 while (it.hasNext()) {
                                     String key = (String) it.next();
-                                    successTrigger.data.put(key, data.opt(key));
+
+                                    if (successTrigger.data.has(key) && successTrigger.data.opt(key) instanceof JSONObject && data.opt(key) instanceof JSONObject) {
+                                        JSONObject merged = new JSONObject();
+                                        JSONObject[] objs = new JSONObject[] { successTrigger.data.optJSONObject(key), data.optJSONObject(key) };
+                                        for (JSONObject obj : objs) {
+                                            Iterator it2 = obj.keys();
+                                            while (it2.hasNext()) {
+                                                String key2 = (String)it2.next();
+                                                merged.put(key2, obj.get(key2));
+                                            }
+                                        }
+
+                                        successTrigger.data.put(key, merged);
+                                    } else {
+                                        successTrigger.data.put(key, data.opt(key));
+                                    }
                                 }
                             }
 
@@ -203,7 +233,7 @@ public class UserPickerActivity extends BaseActivity {
 
                         currentIntent.removeExtra("to");
                         currentIntent.removeExtra("toFullName");
-                        currentIntent.removeExtra("block");
+                        currentIntent.removeExtra("options");
                         currentIntent.removeExtra("contact");
 
                         if (object.userKind == FLUser.UserKind.FloozUser) {
@@ -214,8 +244,8 @@ public class UserPickerActivity extends BaseActivity {
                             } else
                                 currentIntent.putExtra("toFullName", object.fullname);
 
-                            if (object.blockObject != null)
-                                currentIntent.putExtra("block", object.blockObject.toString());
+                            if (object.floozOptions != null)
+                                currentIntent.putExtra("options", object.floozOptions.toString());
 
                         } else {
                             currentIntent.putExtra("to", object.phone);

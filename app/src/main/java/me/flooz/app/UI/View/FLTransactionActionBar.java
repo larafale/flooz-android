@@ -237,12 +237,15 @@ public class FLTransactionActionBar extends LinearLayout {
             if (this.currentPreset.options.type == FLTransaction.TransactionType.TransactionTypePayment) {
                 this.hideChargeButton(true);
                 this.hidePayButton(false);
+                this.actionSeparator.setVisibility(GONE);
             } else if (this.currentPreset.options.type == FLTransaction.TransactionType.TransactionTypeCharge) {
                 this.hideChargeButton(false);
                 this.hidePayButton(true);
+                this.actionSeparator.setVisibility(GONE);
             } else {
                 this.hideChargeButton(false);
                 this.hidePayButton(false);
+                this.actionSeparator.setVisibility(VISIBLE);
             }
         } else {
             this.hideChargeButton(false);

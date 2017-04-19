@@ -252,7 +252,6 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
         this.homeButtonTitle = (TextView) this.findViewById(R.id.home_menu_title);
         this.homeButtonList = (ListView) this.findViewById(R.id.home_menu_list);
 
-
         this.homeButtonListAdapter = new HomeButtonListAdapter(this);
         this.homeButtonList.setAdapter(this.homeButtonListAdapter);
 

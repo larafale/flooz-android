@@ -28,38 +28,25 @@ import me.flooz.app.Utils.CustomNotificationIntents;
  */
 public class HomeButtonListAdapter extends BaseAdapter {
     private Context context;
-    private List<FLButton> buttons;
-
-    private BroadcastReceiver reloadReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            buttons = FloozRestClient.getInstance().currentTexts.homeButtons;
-            notifyDataSetChanged();
-        }
-    };
 
     public HomeButtonListAdapter(Context ctx) {
         this.context = ctx;
-        buttons = FloozRestClient.getInstance().currentTexts.homeButtons;
-    }
-
-    public void loadBroadcastReceivers() {
-        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadReceiver,
-                CustomNotificationIntents.filterReloadText());
-    }
-
-    public void unloadBroadcastReceivers() {
-        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadReceiver);
     }
 
     @Override
     public int getCount() {
-        return FloozRestClient.getInstance().currentTexts.homeButtons.size();
+        if (FloozRestClient.getInstance().currentTexts != null && FloozRestClient.getInstance().currentTexts.homeButtons != null)
+            return FloozRestClient.getInstance().currentTexts.homeButtons.size();
+
+        return 0;
     }
 
     @Override
     public Object getItem(int i) {
-        return FloozRestClient.getInstance().currentTexts.homeButtons.get(i);
+        if (FloozRestClient.getInstance().currentTexts != null && FloozRestClient.getInstance().currentTexts.homeButtons != null)
+            return FloozRestClient.getInstance().currentTexts.homeButtons.get(i);
+
+        return null;
     }
 
     @Override

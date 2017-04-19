@@ -113,7 +113,6 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
     public void init() {
         this.random = FLHelper.generateRandomString();
         this.currentReceiver = null;
-        this.preset = null;
         this.currentPicture = null;
         this.havePicture = false;
         this.blockUser = null;
@@ -609,7 +608,7 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
         if (this.currentReceiver != null) {
             this.to = this.currentReceiver.username;
             this.toFullName = this.currentReceiver.fullname;
-            this.blockUser = this.currentReceiver.blockObject;
+            this.blockUser = this.currentReceiver.floozOptions;
 
             this.toTextview.setText(this.toFullName);
 

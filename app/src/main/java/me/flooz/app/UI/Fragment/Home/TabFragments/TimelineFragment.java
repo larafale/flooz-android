@@ -410,7 +410,7 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
 
     public void checkScopeAvailability() {
         FLTexts currentTexts = FloozRestClient.getInstance().currentTexts;
-        if (currentTexts.homeScopes != null && currentTexts.homeScopes.size() > 0) {
+        if (currentTexts != null && currentTexts.homeScopes != null && currentTexts.homeScopes.size() > 0) {
             this.availableScopes = currentTexts.homeScopes;
         } else {
             this.availableScopes = FLScope.defaultScopeList();
