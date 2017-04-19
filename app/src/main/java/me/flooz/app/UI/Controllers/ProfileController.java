@@ -336,7 +336,7 @@ public class ProfileController extends BaseController implements TimelineListAda
             @Override
             public void onClick(View v) {
                 if (flUser.avatarURL != null && !flUser.avatarURL.isEmpty()) {
-                    CustomImageViewer.start(parentActivity, profileImageFullURL);
+                    CustomImageViewer.start(parentActivity, profileImageFullURL, FLTransaction.TransactionAttachmentType.TransactionAttachmentImage);
                 }
             }
         });
@@ -405,7 +405,7 @@ public class ProfileController extends BaseController implements TimelineListAda
             @Override
             public void onClick(View v) {
                 if (flUser.coverURL != null && !flUser.coverURL.isEmpty()) {
-                    CustomImageViewer.start(parentActivity, coverURLFull);
+                    CustomImageViewer.start(parentActivity, coverURLFull, FLTransaction.TransactionAttachmentType.TransactionAttachmentImage);
                 }
             }
         });
@@ -796,13 +796,12 @@ public class ProfileController extends BaseController implements TimelineListAda
 
     @Override
     public void ListItemImageClick(String imgUrl) {
-        CustomImageViewer.start(this.parentActivity, imgUrl);
-
+        CustomImageViewer.start(this.parentActivity, imgUrl, FLTransaction.TransactionAttachmentType.TransactionAttachmentImage);
     }
 
     @Override
     public void ListItemVideoClick(String videoUrl) {
-
+        CustomImageViewer.start(this.parentActivity, videoUrl, FLTransaction.TransactionAttachmentType.TransactionAttachmentVideo);
     }
 
     @Override

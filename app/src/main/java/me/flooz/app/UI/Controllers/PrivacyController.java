@@ -59,13 +59,11 @@ public class PrivacyController extends BaseController {
         for (FLScope scope: scopes) {
             RadioButton rB = (RadioButton) this.parentActivity.getLayoutInflater().inflate(R.layout.custom_segmented_control_tab, null);
             rB.setId(i);
-            LinearLayout.LayoutParams p = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-            p.weight = 1;
-
-            rB.setLayoutParams(p);
+            rB.setLayoutParams(new RadioGroup.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1));
             rB.setText(scope.shortDesc);
 
             segmentedGroup.addView(rB);
+            segmentedGroup.updateBackground();
 
             if (scopeString != null && scope.keyString.equals(scopeString)) {
                 segmentedGroup.check(i);

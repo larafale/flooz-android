@@ -273,7 +273,7 @@ public class CollectController extends BaseController implements CollectAdapter.
         this.contentAttachmentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CustomImageViewer.start(parentActivity, collect.attachmentURL);
+                CustomImageViewer.start(parentActivity, collect.attachmentURL, collect.attachmentType);
             }
         });
 
@@ -395,7 +395,7 @@ public class CollectController extends BaseController implements CollectAdapter.
         headerTitle.setText(this.collect.name);
         headerAmount.setText(FLHelper.trimTrailingZeros(String.format(Locale.US, "%.2f", this.collect.amount.floatValue())));
 
-        this.navbarScope.setImageDrawable(this.collect.scope.image);
+        this.collect.scope.displayImage(this.navbarScope);
 
         if (this.collect.attachmentURL != null &&!this.collect.attachmentURL.isEmpty()) {
             this.contentAttachmentView.setImageFromUrl(this.collect.attachmentURL);

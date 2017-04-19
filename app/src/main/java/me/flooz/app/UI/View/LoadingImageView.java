@@ -12,6 +12,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import com.facebook.drawee.controller.BaseControllerListener;
 import com.facebook.drawee.controller.ControllerListener;
 import com.facebook.drawee.drawable.ProgressBarDrawable;
+import com.facebook.drawee.drawable.ScalingUtils;
 import com.facebook.drawee.generic.GenericDraweeHierarchy;
 import com.facebook.drawee.generic.GenericDraweeHierarchyBuilder;
 import com.facebook.drawee.generic.RoundingParams;
@@ -69,6 +70,7 @@ public class LoadingImageView extends RelativeLayout {
 
         GenericDraweeHierarchy hierarchy = builder
                 .setRoundingParams(roundingParams)
+                .setFailureImage(context.getResources().getDrawable(R.drawable.fake), ScalingUtils.ScaleType.CENTER_CROP)
                 .build();
 
         this.imageView.setHierarchy(hierarchy);

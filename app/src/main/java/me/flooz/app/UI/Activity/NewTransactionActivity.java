@@ -209,9 +209,9 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
             @Override
             public void onClick(View v) {
                 if (currentPicture != null)
-                    CustomImageViewer.start(NewTransactionActivity.this, "file://" + imagePath);
+                    CustomImageViewer.start(NewTransactionActivity.this, "file://" + imagePath, FLTransaction.TransactionAttachmentType.TransactionAttachmentImage);
                 else if (currentPictureURL != null)
-                    CustomImageViewer.start(NewTransactionActivity.this, currentPictureURL);
+                    CustomImageViewer.start(NewTransactionActivity.this, currentPictureURL, FLTransaction.TransactionAttachmentType.TransactionAttachmentImage);
             }
         });
 
@@ -544,7 +544,7 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
     }
 
     private void updateScopeField() {
-        this.headerScope.setImageDrawable(this.currentScope.image);
+        this.currentScope.displayImage(this.headerScope);
     }
 
     private void performTransaction(FLTransaction.TransactionType type) {

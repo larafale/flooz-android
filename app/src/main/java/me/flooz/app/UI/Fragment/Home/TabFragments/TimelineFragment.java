@@ -64,6 +64,7 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
         void onItemSelected(FLTransaction transac);
         void onItemCommentSelected(FLTransaction transac);
         void onItemImageSelected(String imgUrl);
+        void onItemVideoSelected(String videoUrl);
     }
 
     public PullRefreshLayout refreshContainer;
@@ -233,7 +234,7 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
 
                 filterChanged(currentFilter);
                 checkScopeAvailability();
-                scopeButton.setImageDrawable(currentFilter.image);
+                currentFilter.displayImage(scopeButton);
                 scopeHint.setText(currentFilter.desc);
 
                 Animation fadeIn = new AlphaAnimation(0, 1);
@@ -362,7 +363,8 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
 
     @Override
     public void ListItemVideoClick(String videoUrl) {
-
+        if (delegate != null)
+            delegate.onItemVideoSelected(videoUrl);
     }
 
     @Override
@@ -434,7 +436,7 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
         else
             this.scopeButton.setVisibility(View.VISIBLE);
 
-        scopeButton.setImageDrawable(this.currentFilter.image);
+        this.currentFilter.displayImage(scopeButton);
         FloozRestClient.getInstance().appSettings.edit().putString(FloozRestClient.kFilterData, this.currentFilter.keyString).apply();
     }
 

@@ -96,7 +96,7 @@ public class ScopePickerAdapter extends BaseAdapter {
         FLScope scope = this.getItem(i);
 
         if (scope != null) {
-            holder.image.setImageDrawable(scope.image);
+            scope.displayImage(holder.image);
             holder.title.setText(scope.name);
             holder.subtitle.setText(scope.desc);
 

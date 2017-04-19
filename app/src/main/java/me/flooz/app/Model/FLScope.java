@@ -4,6 +4,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.Image;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.assist.FailReason;
@@ -67,31 +68,8 @@ public class FLScope {
 
             this.image = null;
 
-            String imageURL = this.jsonData.optString("imageURL");
+            this.imageURL = this.jsonData.optString("imageURL");
             String imageName = this.jsonData.optString("imageName");
-            if (imageURL != null && imageURL.length() > 0) {
-                ImageLoader.getInstance().loadImage(imageURL, new ImageLoadingListener() {
-                    @Override
-                    public void onLoadingStarted(String imageUri, View view) {
-
-                    }
-
-                    @Override
-                    public void onLoadingFailed(String imageUri, View view, FailReason failReason) {
-
-                    }
-
-                    @Override
-                    public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
-                        image = new BitmapDrawable(loadedImage);
-                    }
-
-                    @Override
-                    public void onLoadingCancelled(String imageUri, View view) {
-
-                    }
-                });
-            }
 
             if (imageName != null && imageName.length() > 0) {
                 this.image = FloozApplication.getInstance().getResources()
@@ -277,6 +255,13 @@ public class FLScope {
                 return "";
         }
         return FloozApplication.getInstance().getString(resId);
+    }
+
+    public void displayImage(ImageView imageView) {
+        imageView.setImageDrawable(this.image);
+
+        if (this.imageURL != null && !this.imageURL.isEmpty())
+            ImageLoader.getInstance().displayImage(this.imageURL, imageView);
     }
 
 }

@@ -287,7 +287,7 @@ public class TransactionCardController extends BaseController {
         this.cardPic.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CustomImageViewer.start(parentActivity, transaction.attachmentURL);
+                CustomImageViewer.start(parentActivity, transaction.attachmentURL, transaction.attachmentType);
             }
         });
 
@@ -462,8 +462,7 @@ public class TransactionCardController extends BaseController {
     }
 
     private void reloadView() {
-
-        this.cardHeaderScope.setImageDrawable(this.transaction.scope.image);
+        this.transaction.scope.displayImage(this.cardHeaderScope);
 
         SimpleDateFormat sdf = new SimpleDateFormat("dd MMM à HH:mm", Locale.FRANCE);
 

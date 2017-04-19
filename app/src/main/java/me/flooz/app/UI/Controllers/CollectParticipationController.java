@@ -117,13 +117,13 @@ public class CollectParticipationController extends BaseController implements Ti
 
     @Override
     public void ListItemImageClick(String imgUrl) {
-        CustomImageViewer.start(this.parentActivity, imgUrl);
+        CustomImageViewer.start(this.parentActivity, imgUrl, FLTransaction.TransactionAttachmentType.TransactionAttachmentImage);
 
     }
 
     @Override
     public void ListItemVideoClick(String videoUrl) {
-
+        CustomImageViewer.start(this.parentActivity, videoUrl, FLTransaction.TransactionAttachmentType.TransactionAttachmentVideo);
     }
 
     @Override

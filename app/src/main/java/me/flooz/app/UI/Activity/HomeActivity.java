@@ -5,6 +5,7 @@ import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.hardware.input.InputManager;
 import android.media.Image;
+import android.net.Uri;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -827,7 +828,12 @@ public class HomeActivity extends BaseActivity implements TimelineFragment.Timel
 
     @Override
     public void onItemImageSelected(String imgUrl) {
-        CustomImageViewer.start(this, imgUrl);
+        CustomImageViewer.start(this, imgUrl, FLTransaction.TransactionAttachmentType.TransactionAttachmentImage);
+    }
+
+    @Override
+    public void onItemVideoSelected(String videoUrl) {
+        CustomImageViewer.start(this, videoUrl, FLTransaction.TransactionAttachmentType.TransactionAttachmentVideo);
     }
 
     @Override

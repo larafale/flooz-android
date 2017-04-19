@@ -183,9 +183,9 @@ public class NewCollectActivity extends BaseActivity implements FLTransactionAct
             @Override
             public void onClick(View v) {
                 if (currentPicture != null)
-                    CustomImageViewer.start(NewCollectActivity.this, "file://" + imagePath);
+                    CustomImageViewer.start(NewCollectActivity.this, "file://" + imagePath, FLTransaction.TransactionAttachmentType.TransactionAttachmentImage);
                 else if (currentPictureURL != null)
-                    CustomImageViewer.start(NewCollectActivity.this, currentPictureURL);
+                    CustomImageViewer.start(NewCollectActivity.this, currentPictureURL, FLTransaction.TransactionAttachmentType.TransactionAttachmentImage);
             }
         });
 
