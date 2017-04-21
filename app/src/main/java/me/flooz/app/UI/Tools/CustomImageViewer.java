@@ -3,6 +3,7 @@ package me.flooz.app.UI.Tools;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Animatable;
 import android.media.MediaPlayer;
@@ -44,7 +45,7 @@ public class CustomImageViewer extends Activity {
     private ImageView imageViewerClose;
     private DotProgressBar dotProgressBar;
     private SimpleDraweeView imageView;
-    private VideoView videoview;
+    private VideoView videoView;
 
     private static final String VIDEO_URL = "customViewerUrlVideo";
     private static final String IMAGE_URL = "customViewerUrlImage";
@@ -72,11 +73,13 @@ public class CustomImageViewer extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.custom_imageviewer);
 
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+
         this.imageViewer = (RelativeLayout) this.findViewById(R.id.main_image_container);
         this.imageViewerClose = (ImageView) this.findViewById(R.id.main_image_close);
         this.imageView = (SimpleDraweeView) this.findViewById(R.id.main_image_image);
         this.dotProgressBar = (DotProgressBar) this.findViewById(R.id.main_image_progress);
-        this.videoview = (VideoView) this.findViewById(R.id.main_image_video);
+        this.videoView = (VideoView) this.findViewById(R.id.main_image_video);
 
         GenericDraweeHierarchyBuilder builder =
                 new GenericDraweeHierarchyBuilder(getResources());
@@ -123,9 +126,8 @@ public class CustomImageViewer extends Activity {
             @Override
             public void onAnimationStart(Animation animation) {
                 imageViewer.setVisibility(View.VISIBLE);
-                imageView.setVisibility(View.GONE);
                 dotProgressBar.setVisibility(View.GONE);
-                videoview.setVisibility(View.GONE);
+                videoView.setVisibility(View.GONE);
             }
 
             @Override
@@ -152,7 +154,7 @@ public class CustomImageViewer extends Activity {
                     imageViewer.setVisibility(View.VISIBLE);
                     imageView.setVisibility(View.GONE);
                     dotProgressBar.setVisibility(View.GONE);
-                    videoview.setVisibility(View.GONE);
+                    videoView.setVisibility(View.GONE);
                 }
 
                 @Override
@@ -163,32 +165,35 @@ public class CustomImageViewer extends Activity {
                     } else {
                         imageView.setVisibility(View.GONE);
                         dotProgressBar.setVisibility(View.VISIBLE);
+                        videoView.setBackgroundColor(CustomImageViewer.this.getResources().getColor(R.color.black_alpha));
+                        videoView.setVisibility(View.VISIBLE);
 
                         try {
                             MediaController mediacontroller = new MediaController(CustomImageViewer.this);
-                            mediacontroller.setAnchorView(videoview);
-                            videoview.setMediaController(mediacontroller);
-                            videoview.setVideoURI(Uri.parse(url));
+                            mediacontroller.setAnchorView(videoView);
+                            videoView.setMediaController(mediacontroller);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
 
-                        videoview.requestFocus();
-                        videoview.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
-                            // Close the progress bar and play the video
-                            public void onPrepared(MediaPlayer mp) {
-                                videoview.setVisibility(View.VISIBLE);
-                                dotProgressBar.setVisibility(View.GONE);
-                                videoview.start();
-                            }
-                        });
+                        videoView.setVideoURI(Uri.parse(url));
 
-                        videoview.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                        videoView.setOnInfoListener(new MediaPlayer.OnInfoListener()
+                        {
                             @Override
-                            public boolean onError(MediaPlayer mp, int what, int extra) {
+                            public boolean onInfo(MediaPlayer mp, int what, int extra) {
+
+                                if (what == MediaPlayer.MEDIA_INFO_BUFFERING_END) {
+                                    dotProgressBar.setVisibility(View.GONE);
+                                    videoView.setBackgroundColor(CustomImageViewer.this.getResources().getColor(android.R.color.transparent));
+                                    return false;
+                                }
+
                                 return false;
                             }
                         });
+
+                        videoView.start();
                     }
                 }
 
@@ -209,7 +214,6 @@ public class CustomImageViewer extends Activity {
                     imageViewer.setVisibility(View.VISIBLE);
                     imageView.setVisibility(View.GONE);
                     dotProgressBar.setVisibility(View.GONE);
-                    videoview.setVisibility(View.GONE);
                 }
 
                 @Override
