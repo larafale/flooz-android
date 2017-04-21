@@ -62,7 +62,7 @@
     <string name="NAV_TIMELINE">Flooz</string>
     <string name="NAV_EDIT_ACCOUNT">Modifier</string>
     <string name="NAV_INFORMATIONS">Informations</string>
-    <string name="NAV_NOTIFICATIONS">Notifications</string>
+    <string name="NAV_NOTIFICATIONS">Notifs</string>
     <string name="NAV_CASHIN">Ajouter des fonds</string>
     <string name="NAV_CASHOUT">Virer à ma banque</string>
     <string name="NAV_PAYMENTS">Moyens de paiement</string>
@@ -88,7 +88,7 @@
     <string name="NAV_CASHOUT_HISTORY">Historique des virements</string>
 
     <string name="MENU_HOME">Accueil</string>
-    <string name="MENU_NOTIF">Notifications</string>
+    <string name="MENU_NOTIF">Notifs</string>
     <string name="MENU_SHARE">Partager</string>
     <string name="MENU_ACCOUNT">Moi</string>
 
