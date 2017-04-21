@@ -381,6 +381,7 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
             if (!this.preset.options.allowWhy) {
                 this.contentTextfield.setFocusable(false);
                 this.contentTextfield.setFocusableInTouchMode(false);
+                this.contentTextfield.setHint("");
             }
         }
 

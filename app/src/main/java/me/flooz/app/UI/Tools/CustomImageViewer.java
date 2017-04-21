@@ -182,6 +182,13 @@ public class CustomImageViewer extends Activity {
                                 videoview.start();
                             }
                         });
+
+                        videoview.setOnErrorListener(new MediaPlayer.OnErrorListener() {
+                            @Override
+                            public boolean onError(MediaPlayer mp, int what, int extra) {
+                                return false;
+                            }
+                        });
                     }
                 }
 

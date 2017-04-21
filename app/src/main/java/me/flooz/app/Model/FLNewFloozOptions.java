@@ -19,6 +19,8 @@ public class FLNewFloozOptions {
     public Boolean allowGif = true;
     public Boolean allowGeo = true;
     public Boolean allowWhy = true;
+    public Boolean allowPay = true;
+    public Boolean allowCharge = true;
     public Boolean allowAmount = true;
     public Boolean allowBalance = true;
     public Boolean scopeDefined = false;
@@ -38,6 +40,8 @@ public class FLNewFloozOptions {
         ret.allowAmount = this.allowAmount;
         ret.allowBalance = this.allowBalance;
         ret.scopeDefined = this.scopeDefined;
+        ret.allowCharge = this.allowCharge;
+        ret.allowPay = this.allowPay;
 
         ret.type = this.type;
         ret.scope = this.scope;
@@ -108,13 +112,19 @@ public class FLNewFloozOptions {
             this.allowWhy = jsonData.optBoolean("why");
         }
 
-        if (jsonData != null) {
-            if (jsonData.optBoolean("pay") && jsonData.optBoolean("charge"))
-                this.type = FLTransaction.TransactionType.TransactionTypeNone;
-            else if (jsonData.optBoolean("pay") || !jsonData.optBoolean("charge"))
-                this.type = FLTransaction.TransactionType.TransactionTypePayment;
-            else if (jsonData.optBoolean("charge") || !jsonData.optBoolean("pay"))
-                this.type = FLTransaction.TransactionType.TransactionTypeCharge;
+        if (jsonData != null && jsonData.has("pay")) {
+            this.allowPay = jsonData.optBoolean("pay");
         }
+
+        if (jsonData != null && jsonData.has("charge")) {
+            this.allowCharge = jsonData.optBoolean("charge");
+        }
+
+        if (this.allowPay && this.allowCharge)
+            this.type = FLTransaction.TransactionType.TransactionTypeNone;
+        else if (this.allowPay || !this.allowCharge)
+            this.type = FLTransaction.TransactionType.TransactionTypePayment;
+        else if (this.allowCharge || !this.allowPay)
+            this.type = FLTransaction.TransactionType.TransactionTypeCharge;
     }
 }
