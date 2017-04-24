@@ -183,7 +183,7 @@ public class CustomImageViewer extends Activity {
                             @Override
                             public boolean onInfo(MediaPlayer mp, int what, int extra) {
 
-                                if (what == MediaPlayer.MEDIA_INFO_BUFFERING_END) {
+                                if (what == MediaPlayer.MEDIA_INFO_BUFFERING_END || what == MediaPlayer.MEDIA_INFO_VIDEO_RENDERING_START) {
                                     dotProgressBar.setVisibility(View.GONE);
                                     videoView.setBackgroundColor(CustomImageViewer.this.getResources().getColor(android.R.color.transparent));
                                     return false;
@@ -214,6 +214,7 @@ public class CustomImageViewer extends Activity {
                     imageViewer.setVisibility(View.VISIBLE);
                     imageView.setVisibility(View.GONE);
                     dotProgressBar.setVisibility(View.GONE);
+                    videoView.setVisibility(View.GONE);
                 }
 
                 @Override

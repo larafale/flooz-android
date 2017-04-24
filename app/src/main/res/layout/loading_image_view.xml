@@ -24,4 +24,9 @@
         fresco:roundedCornerRadius="@dimen/dimen_small"
         fresco:roundWithOverlayColor="@color/background_header"/>
 
+    <ImageView
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src=""/>
+
 </RelativeLayout>

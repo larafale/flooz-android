@@ -562,8 +562,8 @@ public class TransactionController extends BaseController {
 
         this.desc.setText(this.transaction.content);
 
-        if (this.transaction.attachmentURL != null && !this.transaction.attachmentURL.isEmpty()) {
-            this.pic.setImageFromUrl(this.transaction.attachmentURL);
+        if (this.transaction.attachmentType != FLTransaction.TransactionAttachmentType.TransactionAttachmentNone) {
+            this.pic.setImageFromUrl(this.transaction.attachmentThumbURL);
             this.pic.setVisibility(View.VISIBLE);
         } else
             this.pic.setVisibility(View.GONE);

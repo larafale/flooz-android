@@ -397,8 +397,8 @@ public class CollectController extends BaseController implements CollectAdapter.
 
         this.collect.scope.displayImage(this.navbarScope);
 
-        if (this.collect.attachmentURL != null &&!this.collect.attachmentURL.isEmpty()) {
-            this.contentAttachmentView.setImageFromUrl(this.collect.attachmentURL);
+        if (this.collect.attachmentType != FLTransaction.TransactionAttachmentType.TransactionAttachmentNone) {
+            this.contentAttachmentView.setImageFromUrl(this.collect.attachmentThumbURL);
             this.contentAttachmentView.setVisibility(View.VISIBLE);
             this.contentAttachmentContainer.setVisibility(View.VISIBLE);
             this.contentAttachmentAddText.setVisibility(View.GONE);

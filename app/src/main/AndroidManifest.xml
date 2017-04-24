@@ -465,7 +465,9 @@
             android:screenOrientation="sensor"
             android:name=".UI.Tools.CustomImageViewer"
             android:windowSoftInputMode="stateAlwaysHidden"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar">
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="orientation|screenSize|keyboardHidden" >
+
         </activity>
 
         <activity
