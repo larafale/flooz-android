@@ -25,8 +25,12 @@
         fresco:roundWithOverlayColor="@color/background_header"/>
 
     <ImageView
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src=""/>
+        android:id="@+id/loading_image_view_play_button"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:src="@drawable/play_button"
+        android:layout_centerInParent="true"
+        android:clickable="false"
+        android:visibility="gone"/>
 
 </RelativeLayout>

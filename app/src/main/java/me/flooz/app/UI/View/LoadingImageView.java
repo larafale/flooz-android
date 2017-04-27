@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import com.facebook.drawee.backends.pipeline.Fresco;
@@ -32,6 +33,7 @@ public class LoadingImageView extends RelativeLayout {
 
     private DotProgressBar dotProgressBar;
     private SimpleDraweeView imageView;
+    private ImageView playButton;
     private Context context;
 
     public LoadingImageView(Context context)
@@ -57,6 +59,7 @@ public class LoadingImageView extends RelativeLayout {
         this.context = context;
         this.imageView = (SimpleDraweeView) view.findViewById(R.id.loading_image_view_img);
         this.dotProgressBar = (DotProgressBar) view.findViewById(R.id.loading_image_view_progress);
+        this.playButton = (ImageView) view.findViewById(R.id.loading_image_view_play_button);
 
         GenericDraweeHierarchyBuilder builder =
                 new GenericDraweeHierarchyBuilder(getResources());
@@ -77,6 +80,10 @@ public class LoadingImageView extends RelativeLayout {
     }
 
     public void setImageFromUrl(String imgUrl) {
+        this.setImageFromUrl(imgUrl, false);
+    }
+
+    public void setImageFromUrl(String imgUrl, final boolean isVideoThumb) {
         if (imgUrl.contentEquals("/img/fake.png")) {
             imageView.setVisibility(VISIBLE);
             imageView.setImageDrawable(this.context.getResources().getDrawable(R.drawable.fake));
@@ -85,6 +92,7 @@ public class LoadingImageView extends RelativeLayout {
             imageView.setImageDrawable(null);
 
             dotProgressBar.setVisibility(VISIBLE);
+            playButton.setVisibility(GONE);
 
             ImageRequest request = ImageRequestBuilder.newBuilderWithSource(Uri.parse(imgUrl))
                     .setProgressiveRenderingEnabled(false)
@@ -97,6 +105,9 @@ public class LoadingImageView extends RelativeLayout {
                         return;
                     }
                     dotProgressBar.setVisibility(GONE);
+                    if (isVideoThumb) {
+                        playButton.setVisibility(VISIBLE);
+                    }
                 }
 
                 @Override

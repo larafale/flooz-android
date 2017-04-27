@@ -286,7 +286,7 @@ public class TimelineListAdapter extends BaseAdapter {
         }
 
         if (currentTransaction.attachmentType != FLTransaction.TransactionAttachmentType.TransactionAttachmentNone) {
-            holder.transactionPic.setImageFromUrl(currentTransaction.attachmentThumbURL);
+            holder.transactionPic.setImageFromUrl(currentTransaction.attachmentThumbURL, currentTransaction.attachmentType == FLTransaction.TransactionAttachmentType.TransactionAttachmentVideo);
             holder.transactionPic.setVisibility(View.VISIBLE);
 
             holder.transactionPic.setOnClickListener(new View.OnClickListener() {

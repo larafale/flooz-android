@@ -548,7 +548,7 @@ public class TransactionCardController extends BaseController {
         this.cardDesc.setText(this.transaction.content);
 
         if (this.transaction.attachmentURL != null && !this.transaction.attachmentURL.isEmpty()) {
-            this.cardPic.setImageFromUrl(this.transaction.attachmentURL);
+            this.cardPic.setImageFromUrl(this.transaction.attachmentThumbURL, this.transaction.attachmentType == FLTransaction.TransactionAttachmentType.TransactionAttachmentVideo);
             this.cardPic.setVisibility(View.VISIBLE);
         } else
             this.cardPic.setVisibility(View.GONE);
