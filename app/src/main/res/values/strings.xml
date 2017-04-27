@@ -283,6 +283,7 @@
     <string name="TRANSACTION_CONTACT_LIST_EMPTY_1">Sélectionnez un contact</string>
     <string name="TRANSACTION_CONTACT_LIST_EMPTY_2">ou entrez un n° de mobile</string>
 
+    <string name="TRANSACTION_ACTION_ANSWER">Répondre</string>
     <string name="TRANSACTION_ACTION_ACCEPT">Accepter</string>
     <string name="TRANSACTION_ACTION_REFUSE">Refuser</string>
     <string name="TRANSACTION_ACTION_CANCEL">Annuler</string>

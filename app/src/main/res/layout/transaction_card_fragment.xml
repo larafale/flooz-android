@@ -89,6 +89,18 @@
                 android:layout_height="wrap_content">
 
                 <Button
+                    android:id="@+id/transaction_view_answer_button"
+                    android:layout_width="0dp"
+                    android:layout_height="30dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:background="@drawable/background_action_button"
+                    android:text="@string/TRANSACTION_ACTION_ANSWER"
+                    android:textSize="20sp"
+                    android:textAllCaps="false"
+                    android:textColor="@drawable/text_color_action_button"/>
+
+                <Button
                     android:id="@+id/transaction_view_accept_button"
                     android:layout_width="0dp"
                     android:layout_height="30dp"

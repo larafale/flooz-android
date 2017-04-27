@@ -6,6 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.content.LocalBroadcastManager;
@@ -54,6 +56,8 @@ import me.flooz.app.Utils.FLTriggerManager;
  * Created by Flooz on 23/06/16.
  */
 public class TransactionController extends BaseController {
+
+    public static int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 55;
 
     private Boolean viewCreated = false;
 
@@ -112,6 +116,7 @@ public class TransactionController extends BaseController {
     private LinearLayout actionLayout;
     private Button acceptButton;
     private Button declineButton;
+    private Button answerButton;
     private View actionSeparator;
 
     private TransactionAdapter listAdapter;
@@ -254,6 +259,7 @@ public class TransactionController extends BaseController {
         this.actionLayout = (LinearLayout) this.currentView.findViewById(R.id.transaction_view_action);
         this.acceptButton = (Button) this.currentView.findViewById(R.id.transaction_view_accept_button);
         this.declineButton = (Button) this.currentView.findViewById(R.id.transaction_view_decline_button);
+        this.answerButton = (Button) this.currentView.findViewById(R.id.transaction_view_answer_button);
         this.actionSeparator = this.currentView.findViewById(R.id.transaction_view_action_separator);
 
         this.cardHeaderDate.setTypeface(CustomFonts.customTitleExtraLight(this.parentActivity));
@@ -271,6 +277,7 @@ public class TransactionController extends BaseController {
         this.sendCommentButton.setTypeface(CustomFonts.customContentLight(this.parentActivity));
         this.acceptButton.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
         this.declineButton.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
+        this.answerButton.setTypeface(CustomFonts.customContentRegular(this.parentActivity));
 
         this.arrowPic.setColorFilter(this.parentActivity.getResources().getColor(R.color.background));
         this.cardHeaderScope.setColorFilter(Color.WHITE);
@@ -423,6 +430,21 @@ public class TransactionController extends BaseController {
             @Override
             public void onClick(View v) {
                 FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(transaction.actions.optJSONArray("decline")));
+            }
+        });
+
+        answerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+
+//                Uri videofileuri = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);  // create a file to save the video
+//                intent.putExtra(MediaStore.EXTRA_OUTPUT,videofileuri);  // set the image file name
+                intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+                intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT,10);
+
+                // start the Video Capture Intent
+                parentActivity.startActivityForResult(intent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
             }
         });
 
@@ -705,6 +727,7 @@ public class TransactionController extends BaseController {
                 commentTextField.setVisibility(View.GONE);
                 closeCommentButton.setVisibility(View.INVISIBLE);
                 sendCommentButton.setVisibility(View.INVISIBLE);
+                answerButton.setVisibility(View.GONE);
 
                 if (this.transaction.options.commentEnabled)
                     commentButton.setVisibility(View.VISIBLE);
@@ -726,6 +749,7 @@ public class TransactionController extends BaseController {
                 commentTextField.setVisibility(View.GONE);
                 closeCommentButton.setVisibility(View.INVISIBLE);
                 sendCommentButton.setVisibility(View.INVISIBLE);
+                answerButton.setVisibility(View.GONE);
 
                 if (this.transaction.options.commentEnabled)
                     commentButton.setVisibility(View.VISIBLE);
@@ -745,6 +769,7 @@ public class TransactionController extends BaseController {
                 declineButton.setVisibility(View.VISIBLE);
                 actionSeparator.setVisibility(View.GONE);
                 commentTextField.setVisibility(View.GONE);
+                answerButton.setVisibility(View.GONE);
 
                 if (this.transaction.options.commentEnabled)
                     commentButton.setVisibility(View.VISIBLE);
@@ -758,6 +783,27 @@ public class TransactionController extends BaseController {
 
                 acceptButton.setTextSize(20);
                 declineButton.setTextSize(20);
+            } else if (this.transaction.isAnswerable) {
+                actionLayout.setVisibility(View.VISIBLE);
+                acceptButton.setVisibility(View.GONE);
+                declineButton.setVisibility(View.GONE);
+                actionSeparator.setVisibility(View.GONE);
+                commentTextField.setVisibility(View.GONE);
+                answerButton.setVisibility(View.VISIBLE);
+
+                if (this.transaction.options.commentEnabled)
+                    commentButton.setVisibility(View.VISIBLE);
+                else
+                    commentButton.setVisibility(View.INVISIBLE);
+
+                if (this.transaction.options.shareEnabled)
+                    shareButton.setVisibility(View.VISIBLE);
+                else
+                    shareButton.setVisibility(View.INVISIBLE);
+
+                acceptButton.setTextSize(20);
+                declineButton.setTextSize(20);
+                answerButton.setTextSize(20);
             } else {
                 actionLayout.setVisibility(View.GONE);
 

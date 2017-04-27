@@ -72,6 +72,7 @@ public class FLTransaction {
 
     public Boolean isCancelable;
     public Boolean isAcceptable;
+    public Boolean isAnswerable;
 
     public Boolean isAvailable;
     public Boolean isClosable;
@@ -182,6 +183,7 @@ public class FLTransaction {
                 this.isAcceptable = false;
                 this.isPublishable = false;
                 this.isShareable = false;
+                this.isAnswerable = false;
 
                 if (json.has("isShareable")) {
                     this.isShareable = json.optBoolean("isShareable");
@@ -212,6 +214,9 @@ public class FLTransaction {
 
                     if (this.actions.has("decline"))
                         isCancelable = true;
+
+                    if (this.actions.has("answer"))
+                        isAnswerable = true;
                  }
 
                 if (json.has("from"))
