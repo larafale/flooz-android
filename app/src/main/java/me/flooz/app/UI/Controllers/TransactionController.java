@@ -1,15 +1,21 @@
 package me.flooz.app.UI.Controllers;
 
+import android.Manifest;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Handler;
+import android.os.Looper;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
@@ -26,19 +32,31 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.loopj.android.http.AsyncHttpClient;
+import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.RequestParams;
+import com.loopj.android.http.SyncHttpClient;
 import com.makeramen.roundedimageview.RoundedImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
+import cz.msebera.android.httpclient.Header;
 import me.flooz.app.Adapter.TransactionAdapter;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLTransaction;
+import me.flooz.app.Model.FLTrigger;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
@@ -51,15 +69,23 @@ import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
 import me.flooz.app.Utils.FLHelper;
 import me.flooz.app.Utils.FLTriggerManager;
+import me.flooz.app.Utils.ImageHelper;
+import me.flooz.app.Utils.JSONHelper;
+
+import static android.app.Activity.RESULT_OK;
 
 /**
  * Created by Flooz on 23/06/16.
  */
 public class TransactionController extends BaseController {
 
-    public static int CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE = 55;
+    private static final int TAKE_VIDEO = 1;
+    private static final int PERMISSION_CAMERA = 2;
+    private static final int PERMISSION_STORAGE = 3;
 
     private Boolean viewCreated = false;
+    private Uri tmpUriVideo;
+    private String videoPath;
 
     public Boolean insertComment = false;
 
@@ -192,6 +218,74 @@ public class TransactionController extends BaseController {
             });
         }
     };
+
+    private BroadcastReceiver sendQuestionVideo = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (videoPath != null) {
+                File video = new File(videoPath);
+
+                AsyncHttpClient httpClient;
+
+                if (Looper.myLooper() == null) {
+                    httpClient = new SyncHttpClient();
+                } else {
+                    httpClient = new AsyncHttpClient();
+                }
+
+                httpClient.addHeader("Accept", "*/*");
+
+                RequestParams requestParams = new RequestParams();
+
+                List<String> tags = new ArrayList<>();
+                tags.add("videoAnswer");
+                tags.add(transaction.transactionId);
+
+                requestParams.put("upload_preset", "videoAnswer");
+                requestParams.put("tags", tags);
+
+                try {
+                    requestParams.put("video", video, "video/mp4");
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                httpClient.setURLEncodingEnabled(true);
+
+                AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
+                    @Override
+                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
+                        FloozRestClient.getInstance().hideLoadView();
+
+//                                        FLTriggerManager.getInstance().executeTriggerList(trigger.triggers);
+//
+//                                        if (trigger.data.has("success")) {
+//                                            FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(trigger.data.optJSONArray("success")));
+//                                        }
+                    }
+
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
+                        FloozRestClient.getInstance().hideLoadView();
+
+//                                        FLTriggerManager.getInstance().executeTriggerList(trigger.triggers);
+//
+//                                        if (trigger.data.has("failure")) {
+//                                            FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(trigger.data.optJSONArray("failure")));
+//                                        }
+                    }
+                };
+
+//                                if (trigger.data.has("lock") && trigger.data.optBoolean("lock"))
+                FloozRestClient.getInstance().showLoadView();
+
+
+                httpClient.post(FloozApplication.getInstance().getCurrentActivity(), "https://api.cloudinary.com/v1_1/dc1emihjc/upload", requestParams, responseHandler);
+
+            }
+        }
+    };
+
 
     public TransactionController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
@@ -436,15 +530,27 @@ public class TransactionController extends BaseController {
         answerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                if (ActivityCompat.checkSelfPermission(parentActivity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+                        || ActivityCompat.checkSelfPermission(parentActivity, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+//                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
+//                    // Display UI and wait for user interaction
+//                } else {
+                    ActivityCompat.requestPermissions(parentActivity, new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_CAMERA);
+//                }
+                } else {
+                    Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
 
-//                Uri videofileuri = getOutputMediaFileUri(MEDIA_TYPE_VIDEO);  // create a file to save the video
-//                intent.putExtra(MediaStore.EXTRA_OUTPUT,videofileuri);  // set the image file name
-                intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-                intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT,10);
+                    tmpUriVideo = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_VIDEO);
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUriVideo);
+                    intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+                    intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT,10);
 
-                // start the Video Capture Intent
-                parentActivity.startActivityForResult(intent, CAPTURE_VIDEO_ACTIVITY_REQUEST_CODE);
+                    try {
+                        parentActivity.startActivityForResult(intent, TAKE_VIDEO);
+                    } catch (ActivityNotFoundException e) {
+
+                    }
+                }
             }
         });
 
@@ -770,6 +876,8 @@ public class TransactionController extends BaseController {
                 actionSeparator.setVisibility(View.GONE);
                 commentTextField.setVisibility(View.GONE);
                 answerButton.setVisibility(View.GONE);
+                closeCommentButton.setVisibility(View.INVISIBLE);
+                sendCommentButton.setVisibility(View.INVISIBLE);
 
                 if (this.transaction.options.commentEnabled)
                     commentButton.setVisibility(View.VISIBLE);
@@ -790,6 +898,8 @@ public class TransactionController extends BaseController {
                 actionSeparator.setVisibility(View.GONE);
                 commentTextField.setVisibility(View.GONE);
                 answerButton.setVisibility(View.VISIBLE);
+                closeCommentButton.setVisibility(View.INVISIBLE);
+                sendCommentButton.setVisibility(View.INVISIBLE);
 
                 if (this.transaction.options.commentEnabled)
                     commentButton.setVisibility(View.VISIBLE);
@@ -845,6 +955,18 @@ public class TransactionController extends BaseController {
 
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadTransaction,
                 CustomNotificationIntents.filterReloadCollect());
+
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(sendQuestionVideo,
+                CustomNotificationIntents.filterSendQuestionVideo());
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadTransactionReceiver);
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadTransaction);
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(sendQuestionVideo);
     }
 
     @Override
@@ -937,4 +1059,49 @@ public class TransactionController extends BaseController {
 
         this.reloadView();
     }
+
+    @Override
+    public void onActivityResult(final int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (resultCode == RESULT_OK) {
+            if (requestCode == TAKE_VIDEO) {
+
+                Uri videoURI;
+                if (data == null || data.getData() == null) {
+                    videoURI = this.tmpUriVideo;
+                } else
+                    videoURI = data.getData();
+
+                final Uri selectedVideoUri = videoURI;
+                if (selectedVideoUri != null) {
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            String path = ImageHelper.getPath(parentActivity, selectedVideoUri);
+
+                            if (path != null) {
+                                videoPath = path;
+
+                                List<FLTrigger> triggers = FLTriggerManager.convertTriggersJSONArrayToList(transaction.actions.optJSONArray("answer"));
+
+                                FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(triggers.get(0).data.optJSONArray("success")));
+                            }
+                        }
+                    });
+                }
+            }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == PERMISSION_CAMERA) {
+            if (grantResults.length == 2 && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED ) {
+                answerButton.performClick();
+            }
+        }
+    }
+
 }

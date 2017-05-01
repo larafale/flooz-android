@@ -2151,7 +2151,12 @@ public class FloozRestClient
                             requestParams.put(entry.getKey(), (File)entry.getValue(), "image/jpeg");
                             fileUpload = true;
                         } catch(FileNotFoundException ignored) {
+                            try {
+                                requestParams.put(entry.getKey(), (File)entry.getValue(), "video/mp4");
+                                fileUpload = true;
+                            } catch(FileNotFoundException ignored2) {
 
+                            }
                         }
                     else
                         requestParams.put(entry.getKey(), entry.getValue());

@@ -11,6 +11,7 @@ import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.UI.Activity.NewCollectActivity;
 import me.flooz.app.UI.Activity.NewTransactionActivity;
+import me.flooz.app.Utils.CustomNotificationIntents;
 import me.flooz.app.Utils.FLTriggerManager;
 import me.flooz.app.Utils.ImageHelper;
 import me.flooz.app.Utils.TriggerTasks.ActionTask;
@@ -78,6 +79,8 @@ public class SendTask extends ActionTask {
                     mainHandler.post(myRunnable);
                 }
             }
+        } else if (this.trigger.categoryView.contentEquals("video:question")) {
+            FloozApplication.performLocalNotification(CustomNotificationIntents.sendQuestionVideo());
         }
     }
 }

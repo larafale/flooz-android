@@ -34,4 +34,7 @@ public class CustomNotificationIntents
 
     public static Intent reloadTransaction() {return new Intent("NotificationReloadTransaction");}
     public static IntentFilter filterReloadTransaction() {return new IntentFilter("NotificationReloadTransaction");}
+
+    public static Intent sendQuestionVideo() {return new Intent("NotificationSendQuestionVideo");}
+    public static IntentFilter filterSendQuestionVideo() {return new IntentFilter("NotificationSendQuestionVideo");}
 }
