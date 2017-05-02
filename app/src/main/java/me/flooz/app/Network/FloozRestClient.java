@@ -679,6 +679,14 @@ public class FloozRestClient
         });
     }
 
+    public void finaliseAnswerUpload(final String videoID, String transactionID, final FloozHttpResponseHandler responseHandler) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("videoId", videoID);
+        params.put("state", "answer");
+
+        this.request("/flooz/" + transactionID + "/answer", HttpRequestType.PUT, params, responseHandler);
+    }
+
     public void checkSecureCodeForUser(final String code, final FloozHttpResponseHandler responseHandler) {
         Map<String, Object> params = new HashMap<>();
         params.put("field", "secureCode");

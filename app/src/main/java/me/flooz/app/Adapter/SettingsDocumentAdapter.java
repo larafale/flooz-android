@@ -79,7 +79,7 @@ public class SettingsDocumentAdapter extends BaseAdapter {
 
         if (currentUser.checkDocuments.get(key).equals(0))
             holder.pic.setImageResource(R.drawable.document_refused);
-        else if (currentUser.checkDocuments.get(key).equals(3))
+        else if (currentUser.checkDocuments.get(key).equals(3) || currentUser.checkDocuments.get(key).equals(4))
             holder.pic.setImageResource(R.drawable.friends_add);
         else
             holder.pic.setImageResource(R.drawable.friends_accepted);

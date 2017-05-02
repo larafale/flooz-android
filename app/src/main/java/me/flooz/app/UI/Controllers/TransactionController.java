@@ -10,6 +10,7 @@ import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
+import android.os.Environment;
 import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
@@ -31,9 +32,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.afollestad.materialcamera.MaterialCamera;
 import com.loopj.android.http.AsyncHttpClient;
 import com.loopj.android.http.AsyncHttpResponseHandler;
+import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 import com.loopj.android.http.SyncHttpClient;
 import com.makeramen.roundedimageview.RoundedImageView;
@@ -64,6 +68,7 @@ import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.SocialLikesActivity;
 import me.flooz.app.UI.Fragment.Home.TabFragments.SocialLikesFragment;
 import me.flooz.app.UI.Tools.CustomImageViewer;
+import me.flooz.app.UI.Tools.CustomToast;
 import me.flooz.app.UI.View.LoadingImageView;
 import me.flooz.app.Utils.CustomFonts;
 import me.flooz.app.Utils.CustomNotificationIntents;
@@ -239,49 +244,62 @@ public class TransactionController extends BaseController {
 
                 List<String> tags = new ArrayList<>();
                 tags.add("videoAnswer");
-                tags.add(transaction.transactionId);
+                tags.add(FloozRestClient.getInstance().currentUser.userId);
 
                 requestParams.put("upload_preset", "videoAnswer");
                 requestParams.put("tags", tags);
 
                 try {
-                    requestParams.put("video", video, "video/mp4");
+                    requestParams.put("file", video, "video/mp4");
                 } catch (FileNotFoundException e) {
                     e.printStackTrace();
                 }
 
                 httpClient.setURLEncodingEnabled(true);
 
-                AsyncHttpResponseHandler responseHandler = new AsyncHttpResponseHandler() {
+                final JsonHttpResponseHandler jsonHttpResponseHandler = new JsonHttpResponseHandler() {
                     @Override
-                    public void onSuccess(int statusCode, Header[] headers, byte[] responseBody) {
-                        FloozRestClient.getInstance().hideLoadView();
+                    public void onSuccess(int statusCode, Header[] headers, final JSONObject response) {
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                FloozRestClient.getInstance().finaliseAnswerUpload(response.optString("public_id"), transaction.transactionId, new FloozHttpResponseHandler() {
+                                    @Override
+                                    public void success(Object response) {
+                                        refreshData();
+                                    }
 
-//                                        FLTriggerManager.getInstance().executeTriggerList(trigger.triggers);
-//
-//                                        if (trigger.data.has("success")) {
-//                                            FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(trigger.data.optJSONArray("success")));
-//                                        }
+                                    @Override
+                                    public void failure(int statusCode, FLError error) {
+
+                                    }
+                                });
+                            }
+                        });
                     }
 
                     @Override
-                    public void onFailure(int statusCode, Header[] headers, byte[] responseBody, Throwable error) {
-                        FloozRestClient.getInstance().hideLoadView();
+                    public void onFailure(final int statusCode, Header[] headers, Throwable throwable, final JSONObject errorResponse) {
+                        Handler handler = new Handler(Looper.getMainLooper());
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                FloozRestClient.getInstance().hideLoadView();
+                            }
+                        });
+                    }
 
-//                                        FLTriggerManager.getInstance().executeTriggerList(trigger.triggers);
-//
-//                                        if (trigger.data.has("failure")) {
-//                                            FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(trigger.data.optJSONArray("failure")));
-//                                        }
+                    @Override
+                    public void onFailure(int statusCode, Header[] headers, String errorMsg, Throwable throwable) {
+                        FloozRestClient.getInstance().hideLoadView();
                     }
                 };
 
-//                                if (trigger.data.has("lock") && trigger.data.optBoolean("lock"))
+
                 FloozRestClient.getInstance().showLoadView();
 
-
-                httpClient.post(FloozApplication.getInstance().getCurrentActivity(), "https://api.cloudinary.com/v1_1/dc1emihjc/upload", requestParams, responseHandler);
-
+                httpClient.post(FloozApplication.getInstance().getCurrentActivity(), "https://api.cloudinary.com/v1_1/dc1emihjc/upload", requestParams, jsonHttpResponseHandler);
             }
         }
     };
@@ -530,27 +548,71 @@ public class TransactionController extends BaseController {
         answerButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (ActivityCompat.checkSelfPermission(parentActivity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
-                        || ActivityCompat.checkSelfPermission(parentActivity, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
-//                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
-//                    // Display UI and wait for user interaction
-//                } else {
-                    ActivityCompat.requestPermissions(parentActivity, new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_CAMERA);
-//                }
+
+                File mediaStorageDir;
+                if (Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
+                    mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+                            Environment.DIRECTORY_PICTURES), "FloozPictures");
                 } else {
-                    Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+                    mediaStorageDir = new File(FloozApplication.getAppContext().getFilesDir(), "FloozPictures");
+                }
 
-                    tmpUriVideo = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_VIDEO);
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUriVideo);
-                    intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-                    intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT,10);
-
-                    try {
-                        parentActivity.startActivityForResult(intent, TAKE_VIDEO);
-                    } catch (ActivityNotFoundException e) {
-
+                if (!mediaStorageDir.exists()){
+                    if (! mediaStorageDir.mkdirs()){
+                        return;
                     }
                 }
+
+                new MaterialCamera(parentActivity)                               // Constructor takes an Activity
+                        .allowRetry(true)                                  // Whether or not 'Retry' is visible during playback
+                        .autoSubmit(false)                                 // Whether or not user is allowed to playback videos after recording. This can affect other things, discussed in the next section.
+                        .saveDir(mediaStorageDir)                               // The folder recorded videos are saved to
+                        .primaryColorAttr(R.attr.colorPrimary)             // The theme color used for the camera, defaults to colorPrimary of Activity in the constructor
+                        .showPortraitWarning(false)                         // Whether or not a warning is displayed if the user presses record in portrait orientation
+                        .defaultToFrontFacing(true)                       // Whether or not the camera will initially show the front facing camera
+                        .retryExits(false)                                 // If true, the 'Retry' button in the playback screen will exit the camera instead of going back to the recorder
+                        .restartTimerOnRetry(false)                        // If true, the countdown timer is reset to 0 when the user taps 'Retry' in playback
+                        .continueTimerInPlayback(false)                    // If true, the countdown timer will continue to go down during playback, rather than pausing.
+//                        .videoEncodingBitRate(1024000)                     // Sets a custom bit rate for video recording.
+//                        .audioEncodingBitRate(50000)                       // Sets a custom bit rate for audio recording.
+//                        .videoFrameRate(24)                                // Sets a custom frame rate (FPS) for video recording.
+                        .qualityProfile(FloozRestClient.getInstance().currentTexts.json.optInt("videoCaptureQuality", MaterialCamera.QUALITY_480P))       // Sets a quality profile, manually setting bit rates or frame rates with other settings will overwrite individual quality profile settings
+//                        .videoPreferredHeight(720)                         // Sets a preferred height for the recorded video output.
+//                        .videoPreferredAspect(4f / 3f)                     // Sets a preferred aspect ratio for the recorded video output.
+                        .maxAllowedFileSize(1024 * 1024 * FloozRestClient.getInstance().currentTexts.json.optInt("videoCaptureSize", 80))               // Sets a max file size of 5MB, recording will stop if file reaches this limit. Keep in mind, the FAT file system has a file size limit of 4GB.
+                        .countdownSeconds(FloozRestClient.getInstance().currentTexts.json.optInt("videoCaptureDuration", 60))
+                        .iconRecord(R.drawable.mcam_action_capture)        // Sets a custom icon for the button used to start recording
+                        .iconStop(R.drawable.mcam_action_stop)             // Sets a custom icon for the button used to stop recording
+                        .iconFrontCamera(R.drawable.mcam_camera_front)     // Sets a custom icon for the button used to switch to the front camera
+                        .iconRearCamera(R.drawable.mcam_camera_rear)       // Sets a custom icon for the button used to switch to the rear camera
+                        .iconPlay(R.drawable.evp_action_play)              // Sets a custom icon used to start playback
+                        .iconPause(R.drawable.evp_action_pause)            // Sets a custom icon used to pause playback
+                        .iconRestart(R.drawable.evp_action_restart)        // Sets a custom icon used to restart playback
+                        .labelRetry(R.string.mcam_retry)                   // Sets a custom button label for the button used to retry recording, when available
+                        .labelConfirm(R.string.mcam_use_video)             // Sets a custom button label for the button used to confirm/submit a recording
+                        .audioDisabled(false)                              // Set to true to record video without any audio.
+                        .start(TAKE_VIDEO);                                 // Starts the camera activity, the result will be sent back to the current Activity
+//                if (ActivityCompat.checkSelfPermission(parentActivity, Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED
+//                        || ActivityCompat.checkSelfPermission(parentActivity, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+////                if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.CAMERA)) {
+////                    // Display UI and wait for user interaction
+////                } else {
+//                    ActivityCompat.requestPermissions(parentActivity, new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE}, PERMISSION_CAMERA);
+////                }
+//                } else {
+//                    Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+//
+//                    tmpUriVideo = ImageHelper.getOutputMediaFileUri(ImageHelper.MEDIA_TYPE_VIDEO);
+//                    intent.putExtra(MediaStore.EXTRA_OUTPUT, tmpUriVideo);
+//                    intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 0);
+//                    intent.putExtra(MediaStore.EXTRA_DURATION_LIMIT, 120);
+//
+//                    try {
+//                        parentActivity.startActivityForResult(intent, TAKE_VIDEO);
+//                    } catch (ActivityNotFoundException e) {
+//
+//                    }
+//                }
             }
         });
 
@@ -960,6 +1022,21 @@ public class TransactionController extends BaseController {
                 CustomNotificationIntents.filterSendQuestionVideo());
     }
 
+    private void refreshData() {
+        FloozRestClient.getInstance().transactionWithId(transaction.transactionId, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                FLTransaction transac = new FLTransaction(((JSONObject) response).optJSONObject("item"));
+                setTransaction(transac);
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+
+            }
+        });
+    }
+
     @Override
     public void onStop() {
         super.onStop();
@@ -1061,17 +1138,18 @@ public class TransactionController extends BaseController {
     }
 
     @Override
-    public void onActivityResult(final int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(final int requestCode, int resultCode, final Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (resultCode == RESULT_OK) {
             if (requestCode == TAKE_VIDEO) {
 
+
                 Uri videoURI;
-                if (data == null || data.getData() == null) {
+                if (data == null || data.getDataString() == null) {
                     videoURI = this.tmpUriVideo;
                 } else
-                    videoURI = data.getData();
+                    videoURI = Uri.parse(data.getDataString());
 
                 final Uri selectedVideoUri = videoURI;
                 if (selectedVideoUri != null) {
@@ -1084,6 +1162,7 @@ public class TransactionController extends BaseController {
                             if (path != null) {
                                 videoPath = path;
 
+//                                sendQuestionVideo.onReceive(parentActivity, null);
                                 List<FLTrigger> triggers = FLTriggerManager.convertTriggersJSONArrayToList(transaction.actions.optJSONArray("answer"));
 
                                 FLTriggerManager.getInstance().executeTriggerList(FLTriggerManager.convertTriggersJSONArrayToList(triggers.get(0).data.optJSONArray("success")));
@@ -1092,6 +1171,10 @@ public class TransactionController extends BaseController {
                     });
                 }
             }
+        } else if (requestCode == TAKE_VIDEO && data != null) {
+            Exception e = (Exception) data.getSerializableExtra(MaterialCamera.ERROR_EXTRA);
+            e.printStackTrace();
+            Toast.makeText(parentActivity, e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 

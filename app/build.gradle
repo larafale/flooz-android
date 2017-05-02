@@ -121,6 +121,7 @@ android {
 repositories {
     maven { url "https://repo.commonsware.com.s3.amazonaws.com" }
     maven { url "http://dl.bintray.com/populov/maven" }
+    maven { url "https://dl.bintray.com/drummer-aidan/maven" }
 
     jcenter()
     mavenCentral()
@@ -205,6 +206,7 @@ dependencies {
     compile 'com.github.tslamic.adn:library:1.+'
     compile 'com.jakewharton:butterknife:8.4.0'
 //    compile 'com.github.halilozercan:BetterVideoPlayer:1.0.0'
+    compile 'com.afollestad:material-camera:0.4.4'
 
     // Other
 
