@@ -304,16 +304,15 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
             this.refreshTransactions();
         }
 
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadTimelineReceiver,
+                CustomNotificationIntents.filterReloadTimeline());
+
         return view;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-
-        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).registerReceiver(reloadTimelineReceiver,
-                CustomNotificationIntents.filterReloadTimeline());
-
         if (transactions.size() != 0) {
             backgroundImage.setVisibility(View.GONE);
         }
@@ -326,10 +325,14 @@ public class TimelineFragment extends TabBarFragment implements TimelineListAdap
     }
 
     @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadTimelineReceiver);
+    }
+
+    @Override
     public void onDestroy() {
         super.onDestroy();
-
-        LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadTimelineReceiver);
     }
 
     @Override
