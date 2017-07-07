@@ -240,7 +240,7 @@
     <string name="SETTINGS_DOCUMENTS">Mes justificatifs</string>
     <string name="SETTINGS_PASSWORD">Changer mon mot de passe</string>
     <string name="SETTINGS_IDENTITY">Identité</string>
-    <string name="SETTINGS_COORD">Mes coordonées</string>
+    <string name="SETTINGS_COORD">Mes coordonnées</string>
     <string name="SETTINGS_SECURITY">Sécurité</string>
     <string name="SETTINGS_PREFERENCES">Préférences</string>
     <string name="SETTINGS_LOGOUT">Déconnexion</string>
