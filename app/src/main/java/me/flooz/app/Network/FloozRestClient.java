@@ -445,6 +445,19 @@ public class FloozRestClient
         this.clearSaveData();
     }
 
+    public void cards() {
+        if (this.currentUser == null) {
+            return;
+        }
+        this.request("/cards/hash", HttpRequestType.GET, null, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {}
+
+            @Override
+            public void failure(int statusCode, FLError error) {}
+        });
+    }
+
     public void checkDeviceToken() {
         if (this.currentUser == null || floozApp.regid == null || floozApp.regid.isEmpty())
             return;

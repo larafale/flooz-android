@@ -31,6 +31,7 @@ import me.flooz.app.UI.Activity.NewTransactionActivity;
 import me.flooz.app.UI.Activity.NotificationActivity;
 import me.flooz.app.UI.Activity.PaymentAudiotelActivity;
 import me.flooz.app.UI.Activity.PaymentSourceActivity;
+import me.flooz.app.UI.Activity.RegisterCardActivity;
 import me.flooz.app.UI.Activity.ScopePickerActivity;
 import me.flooz.app.UI.Activity.SearchActivity;
 import me.flooz.app.UI.Activity.Secure3DActivity;
@@ -67,6 +68,7 @@ import me.flooz.app.UI.Fragment.Home.TabFragments.NotificationsFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.NotifsSettingsFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.PrivacyFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.ProfileCardFragment;
+import me.flooz.app.UI.Fragment.Home.TabFragments.RegisterCardFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.SearchFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.ShareFragment;
 import me.flooz.app.UI.Fragment.Home.TabFragments.ShopHistoryFragment;
@@ -258,6 +260,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("shop:item", ShopItemActivity.class);
             put("shop:param", ShopParamActivity.class);
             put("shop:history", ShopHistoryActivity.class);
+            put("web:psp", RegisterCardActivity.class);
         }};
     }
 
@@ -285,6 +288,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("pot:participant", CollectParticipantFragment.class);
             put("pot:participation", CollectParticipationFragment.class);
             put("shop:history", ShopHistoryFragment.class);
+            put("web:psp", RegisterCardFragment.class);
         }};
     }
 
@@ -329,6 +333,7 @@ public class FLTriggerManager implements Application.ActivityLifecycleCallbacks 
             put("shop:item", "modal");
             put("shop:param", "modal");
             put("shop:history", "push");
+            put("web:psp", "modal");
         }};
     }
 

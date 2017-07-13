@@ -163,13 +163,7 @@ public class AccountController extends BaseController implements ProfileListAdap
                             }
                             break;
                         case "card":
-                            if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)
-                                ((HomeActivity)parentActivity).pushFragmentInCurrentTab(new CreditCardFragment());
-                            else {
-                                Intent cardIntent = new Intent(parentActivity, CreditCardController.class);
-                                parentActivity.startActivity(cardIntent);
-                                parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
-                            }
+                            FloozRestClient.getInstance().cards();
                             break;
                         case "cashin":
                                 Intent cardIntent = new Intent(parentActivity, CashinActivity.class);

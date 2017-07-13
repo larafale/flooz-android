@@ -325,7 +325,7 @@ public class CreditCardController extends BaseController {
         if (this.creditCard != null && this.creditCard.cardId != null) {
             this.createCardContainer.setVisibility(View.GONE);
             this.removeCardContainer.setVisibility(View.VISIBLE);
-            this.creditCardNumber.setText(this.creditCard.number.substring(0, 4) + " **** **** " + this.creditCard.number.substring(12, 16));
+            this.creditCardNumber.setText("**** **** **** " + this.creditCard.number.substring(12, 16));
             this.creditCardOwner.setText(this.creditCard.owner);
             this.creditCardExpires.setText(this.creditCard.expires);
         } else {

@@ -246,6 +246,7 @@
     <string name="SETTINGS_LOGOUT">Déconnexion</string>
     <string name="SETTINGS_PRIVACY">Partage &amp; vie privée</string>
     <string name="SETTINGS_SECRET">Question Secrète</string>
+    <string name="CARD">Carte Bancaire</string>
 
     <string name="SETTINGS_PRIVACY_INFOS">Pratique ! Choisissez la visibilité par défaut de vos flooz. Vous avez toutefois la possibilité de la changer lors de chacun de vos paiements</string>
 

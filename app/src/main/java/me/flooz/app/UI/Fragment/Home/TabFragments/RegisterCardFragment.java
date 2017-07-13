@@ -8,30 +8,33 @@ import android.view.ViewGroup;
 
 import me.flooz.app.R;
 import me.flooz.app.UI.Controllers.NotificationsController;
+import me.flooz.app.UI.Controllers.RegisterCardController;
 import me.flooz.app.UI.Controllers.WebController;
 
 /**
- * Created by Flooz on 9/1/15.
+ * Created by gawenberger on 10/07/2017.
  */
-public class WebFragment extends TabBarFragment {
 
-    WebController controller;
+public class RegisterCardFragment extends TabBarFragment {
+
+    RegisterCardController controller;
 
     public String title;
     public String url;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.custom_webview_fragment, null);
+        View view = inflater.inflate(R.layout.custom_register_card, null);
 
         if (this.controller == null) {
-            this.controller = new WebController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER, this.triggerData);
+            this.controller = new RegisterCardController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER, this.triggerData);
 
             if (triggerData.has("title") && !triggerData.optString("title").isEmpty())
                 this.title = triggerData.optString("title");
 
             if (triggerData.has("url") && !triggerData.optString("url").isEmpty())
                 this.url = triggerData.optString("url");
+
 
             if (this.title != null && !this.title.isEmpty())
                 this.controller.title = this.title;
