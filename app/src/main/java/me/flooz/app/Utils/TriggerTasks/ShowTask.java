@@ -25,6 +25,8 @@ import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.UI.Activity.HomeActivity;
+import me.flooz.app.UI.Activity.NewTransactionActivity;
+import me.flooz.app.UI.Activity.ShopParamActivity;
 import me.flooz.app.UI.Activity.StartActivity;
 import me.flooz.app.UI.Fragment.Home.TabFragments.TabBarFragment;
 import me.flooz.app.UI.Tools.ActionSheet;
@@ -56,6 +58,22 @@ public class ShowTask extends ActionTask {
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
+            }
+        } else if (this.trigger.categoryView.contentEquals("flooz:")) {
+            if (NewTransactionActivity.isRunning == true) {
+                Intent intent = new Intent(FloozApplication.getInstance().getCurrentActivity(), NewTransactionActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK |
+                                Intent.FLAG_FROM_BACKGROUND | Intent.FLAG_ACTIVITY_SINGLE_TOP |
+                                Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+                FloozApplication.getInstance().getCurrentActivity().startActivity(intent);
+            }
+        } else if (this.trigger.categoryView.contentEquals("shop:")) {
+            if (ShopParamActivity.isRunning == true) {
+                Intent intent = new Intent(FloozApplication.getInstance().getCurrentActivity(), ShopParamActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK |
+                        Intent.FLAG_FROM_BACKGROUND | Intent.FLAG_ACTIVITY_SINGLE_TOP |
+                        Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+                FloozApplication.getInstance().getCurrentActivity().startActivity(intent);
             }
         } else if (this.trigger.categoryView.contentEquals("popup:basic")) {
             CustomDialog.show(FloozApplication.getInstance().getCurrentActivity(), this.trigger.data, new DialogInterface.OnShowListener() {

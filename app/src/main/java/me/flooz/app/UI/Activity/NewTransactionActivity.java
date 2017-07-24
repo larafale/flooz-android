@@ -71,6 +71,8 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
     private static final int PERMISSION_LOCATION = 6;
     private static final int PERMISSION_STORAGE = 7;
 
+    public static boolean isRunning = false;
+
     private NewTransactionActivity instance;
     private FloozApplication floozApp;
 
@@ -157,6 +159,11 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
+            finish();
+            return;
+        }
 
         if (FLHelper.isDebuggable())
             ViewServer.get(this).addWindow(this);
@@ -499,6 +506,7 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
     @Override
     public void onStart() {
         super.onStart();
+        NewTransactionActivity.isRunning = true;
 
         if (ActivityCompat.checkSelfPermission(NewTransactionActivity.this, Manifest.permission.READ_CONTACTS) != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(NewTransactionActivity.this,  Manifest.permission.READ_CONTACTS)) {
@@ -695,6 +703,7 @@ public class NewTransactionActivity extends BaseActivity implements FLTransactio
             ViewServer.get(this).removeWindow(this);
 
         FloozRestClient.getInstance().clearLocationData();
+        NewTransactionActivity.isRunning = false;
 
         super.onDestroy();
     }

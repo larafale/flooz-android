@@ -245,7 +245,7 @@
     <string name="SETTINGS_PRIVACY">Partage &amp; vie privée</string>
     <string name="SETTINGS_SECRET">Question Secrète</string>
 
-    <string name="CARD">Carte Bancaire</string>
+    <string name="CARD">Carte bancaire</string>
     <string name="SETTINGS_PRIVACY_INFOS">Pratique ! Choisissez la visibilité par défaut de vos flooz. Vous avez toutefois la possibilité de la changer lors de chacun de vos paiements</string>
 
     <string name="SETTINGS_SECRET_INFOS">Votre question actuelle est :</string>
@@ -443,7 +443,7 @@
     <string name="CASHIN_CARD_PAYMENT_INPUT_HINT">Saisissez vos données de carte bancaire :</string>
     <string name="CASHIN_CARD_CHECKBOX_TEXT">Enregistrer ma carte en toute sécurité</string>
     <string name="CASHIN_CARD_AMOUNT_INPUT_HINT">Saisissez le montant :</string>
-    <string name="CASHIN_CARD_INFOS">Vos coordonnées bancaire sont stockées et sécurisées à distance chez notre partenaire Rentabiliweb qui accompagne les plus grandes marques comme la Fnac, Spartoo, Winamax et bien d’autres</string>
+    <string name="CASHIN_CARD_INFOS">Vos données bancaires ne sont pas stockées dans l’application. Elles sont cryptées et conservées chez Rentabiliweb, établissement de paiement certifié PCI-DSS niveau 1, soit le plus haut niveau d’exigence en matière de sécurité des données bancaires sur Internet. Vous pouvez supprimer votre carte bancaire à tout moment.</string>
 
     <string name="CASHIN_AUDIOTEL_TITLE">Appel téléphonique</string>
     <string name="CASHIN_AUDIOTEL_SUBTITLE">1,60€ / appel reversés sur votre compte Flooz</string>

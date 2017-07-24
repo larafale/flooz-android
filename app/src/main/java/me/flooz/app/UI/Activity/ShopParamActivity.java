@@ -2,6 +2,7 @@ package me.flooz.app.UI.Activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -66,9 +67,16 @@ public class ShopParamActivity extends BaseActivity implements FLShopField.FLSho
 
     private JSONObject paramsData;
 
+    public static boolean isRunning = false;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if ((getIntent().getFlags() & Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT) != 0) {
+            finish();
+            return;
+        }
 
         if (FLHelper.isDebuggable())
             ViewServer.get(this).addWindow(this);
@@ -295,6 +303,7 @@ public class ShopParamActivity extends BaseActivity implements FLShopField.FLSho
     @Override
     protected void onStart() {
         super.onStart();
+        ShopParamActivity.isRunning = true;
         if (this.focusedTextField != null) {
             this.focusedTextField.editText.requestFocus();
             final InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -323,6 +332,8 @@ public class ShopParamActivity extends BaseActivity implements FLShopField.FLSho
 
         if (FLHelper.isDebuggable())
             ViewServer.get(this).removeWindow(this);
+
+        ShopParamActivity.isRunning = false;
 
         super.onDestroy();
     }

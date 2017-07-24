@@ -76,6 +76,9 @@ public class RegisterCardController extends BaseController {
             @Override
             public void onPageFinished(WebView view, String url) {
                 progressBar.setVisibility(View.GONE);
+                webView.setBackgroundColor(0x00000000);
+                webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
+                while (webView.zoomOut());
             }
 
             @Override
@@ -110,6 +113,8 @@ public class RegisterCardController extends BaseController {
         webSettings.setSupportZoom(true);
         webSettings.setDefaultTextEncodingName("utf-8");
 
+        webView.setBackgroundColor(0x00000000);
+        webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
     }
 
     @Override

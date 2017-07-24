@@ -26,7 +26,9 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.util.Date;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import me.flooz.app.Adapter.ProfileListAdapter;
 import me.flooz.app.Adapter.ProfileListAdapterDelegate;
@@ -163,7 +165,12 @@ public class AccountController extends BaseController implements ProfileListAdap
                             }
                             break;
                         case "card":
-                            FloozRestClient.getInstance().cards();
+                            Date nowDate = new Date();
+
+                            if (FloozRestClient.getInstance().lastCardsRequestDate == null ||
+                                    Math.abs(TimeUnit.MILLISECONDS.toSeconds(nowDate.getTime() - FloozRestClient.getInstance().lastCardsRequestDate.getTime())) > 1) {
+                                FloozRestClient.getInstance().cards();
+                            }
                             break;
                         case "cashin":
                                 Intent cardIntent = new Intent(parentActivity, CashinActivity.class);

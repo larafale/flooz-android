@@ -41,6 +41,7 @@ import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -445,13 +446,19 @@ public class FloozRestClient
         this.clearSaveData();
     }
 
+    public Date lastCardsRequestDate = null;
+
     public void cards() {
         if (this.currentUser == null) {
             return;
         }
+        this.showLoadView();
+        lastCardsRequestDate = new Date();
         this.request("/cards/hash", HttpRequestType.GET, null, new FloozHttpResponseHandler() {
             @Override
-            public void success(Object response) {}
+            public void success(Object response) {
+
+            }
 
             @Override
             public void failure(int statusCode, FLError error) {}
