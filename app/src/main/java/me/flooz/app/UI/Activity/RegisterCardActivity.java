@@ -25,6 +25,7 @@ public class RegisterCardActivity extends BaseActivity {
 
     public String title;
     public String url;
+    public String backgroundColor;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -37,7 +38,7 @@ public class RegisterCardActivity extends BaseActivity {
 
         this.title = getIntent().getStringExtra("title");
         this.url = getIntent().getStringExtra("url");
-
+        this.backgroundColor = getIntent().getStringExtra("backgroundColor");
         this.title = this.getResources().getString(R.string.CARD);
 
         JSONObject triggerData = null;
@@ -51,6 +52,9 @@ public class RegisterCardActivity extends BaseActivity {
                 if (triggerData.has("url") && !triggerData.optString("url").isEmpty())
                     this.url = triggerData.optString("url");
 
+                if (triggerData.has("backgroundColor") && !triggerData.optString("backgroundColor").isEmpty())
+                    this.backgroundColor = triggerData.optString("backgroundColor");
+
             } catch (JSONException e) {
                 e.printStackTrace();
             }
@@ -59,6 +63,7 @@ public class RegisterCardActivity extends BaseActivity {
         this.controller = new RegisterCardController(this.findViewById(android.R.id.content), this, NotificationsController.ControllerKind.ACTIVITY_CONTROLLER, triggerData);
         this.controller.title = this.title;
         this.controller.url = this.url;
+        this.controller.backgroundColor = this.backgroundColor;
     }
 
     @Override

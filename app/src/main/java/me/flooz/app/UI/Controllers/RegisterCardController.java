@@ -50,6 +50,7 @@ public class RegisterCardController extends BaseController {
     public String title;
     public String url;
     public String method;
+    public String backgroundColor;
 
     public RegisterCardController(@NonNull View mainView, @NonNull Activity parentActivity, @NonNull ControllerKind kind) {
         super(mainView, parentActivity, kind);
@@ -76,6 +77,7 @@ public class RegisterCardController extends BaseController {
             @Override
             public void onPageFinished(WebView view, String url) {
                 progressBar.setVisibility(View.GONE);
+                updateWebviewBackgroundColor();
                 webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
                 while (webView.zoomOut());
             }
@@ -112,7 +114,17 @@ public class RegisterCardController extends BaseController {
         webSettings.setSupportZoom(true);
         webSettings.setDefaultTextEncodingName("utf-8");
 
+        this.updateWebviewBackgroundColor();
         webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
+
+    }
+
+    private void updateWebviewBackgroundColor() {
+        if (this.backgroundColor != null && !this.backgroundColor.isEmpty()) {
+            webView.setBackgroundColor(Color.parseColor(this.backgroundColor));
+        } else {
+            webView.setBackgroundColor(0x00000000);
+        }
     }
 
     @Override

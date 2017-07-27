@@ -21,6 +21,7 @@ public class RegisterCardFragment extends TabBarFragment {
 
     public String title;
     public String url;
+    public String backgroundColor;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -29,11 +30,16 @@ public class RegisterCardFragment extends TabBarFragment {
         if (this.controller == null) {
             this.controller = new RegisterCardController(view, tabBarActivity, NotificationsController.ControllerKind.FRAGMENT_CONTROLLER, this.triggerData);
 
+            this.backgroundColor = null;
+
             if (triggerData.has("title") && !triggerData.optString("title").isEmpty())
                 this.title = triggerData.optString("title");
 
             if (triggerData.has("url") && !triggerData.optString("url").isEmpty())
                 this.url = triggerData.optString("url");
+
+            if (triggerData.has("backgroundColor") && !triggerData.optString("backgroundColor").isEmpty())
+                this.backgroundColor = triggerData.optString("backgroundColor");
 
 
             if (this.title != null && !this.title.isEmpty())
@@ -41,6 +47,9 @@ public class RegisterCardFragment extends TabBarFragment {
 
             if (this.url != null && !this.url.isEmpty())
                 this.controller.url = this.url;
+
+            this.controller.backgroundColor = this.backgroundColor;
+
         }
 
         return this.controller.currentView;
