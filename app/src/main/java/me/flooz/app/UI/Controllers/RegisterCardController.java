@@ -46,6 +46,7 @@ public class RegisterCardController extends BaseController {
 
     private ProgressBar progressBar;
     private WebView webView;
+    private Boolean webViewAlreadyLoaded;
 
     public String title;
     public String url;
@@ -68,6 +69,7 @@ public class RegisterCardController extends BaseController {
     protected void init() {
         super.init();
 
+        webViewAlreadyLoaded = false;
         this.progressBar = (ProgressBar) this.currentView.findViewById(R.id.custom_webview_progress_bar);
 
         this.webView = (WebView) this.currentView.findViewById(R.id.custom_webview_webview);
@@ -79,6 +81,7 @@ public class RegisterCardController extends BaseController {
                 progressBar.setVisibility(View.GONE);
                 updateWebviewBackgroundColor();
                 webView.setLayerType(WebView.LAYER_TYPE_SOFTWARE, null);
+                webViewAlreadyLoaded = true;
                 while (webView.zoomOut());
             }
 
@@ -132,22 +135,24 @@ public class RegisterCardController extends BaseController {
         if (this.title != null && !this.title.isEmpty())
             this.titleLabel.setText(this.title);
 
-        Map<String, Object> params = null;
-        try {
-            params = JSONHelper.toMap(this.triggersData.optJSONObject("params"));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        RequestParams requestParams = new RequestParams();
-
-        if (params != null && !params.isEmpty()) {
-            for (Map.Entry<String, Object> entry : params.entrySet()) {
-                requestParams.put(entry.getKey(), entry.getValue());
+        if (webViewAlreadyLoaded == false) {
+            Map<String, Object> params = null;
+            try {
+                params = JSONHelper.toMap(this.triggersData.optJSONObject("params"));
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        }
 
-        webView.loadUrl(AsyncHttpClient.getUrlWithQueryString(true, url, requestParams));
+            RequestParams requestParams = new RequestParams();
+
+            if (params != null && !params.isEmpty()) {
+                for (Map.Entry<String, Object> entry : params.entrySet()) {
+                    requestParams.put(entry.getKey(), entry.getValue());
+                }
+            }
+
+            webView.loadUrl(AsyncHttpClient.getUrlWithQueryString(true, url, requestParams));
+        }
     }
 
     public static Intent newEmailIntent(String address, String subject, String body, String cc) {
