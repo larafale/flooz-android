@@ -2,19 +2,14 @@ package me.flooz.app.Adapter;
 
 import android.content.Context;
 import android.support.v4.view.PagerAdapter;
-import android.support.v7.app.ActionBarActivity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLSliderPage;
-import me.flooz.app.Network.FloozHttpResponseHandler;
-import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
 import me.flooz.app.Utils.CustomFonts;
 

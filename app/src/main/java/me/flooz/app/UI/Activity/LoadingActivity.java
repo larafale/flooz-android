@@ -8,8 +8,6 @@ import android.os.Bundle;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -19,7 +17,6 @@ import java.net.URLDecoder;
 
 import io.branch.referral.Branch;
 import io.branch.referral.BranchError;
-import io.fabric.sdk.android.Fabric;
 import me.flooz.app.App.FloozApplication;
 import me.flooz.app.BuildConfig;
 import me.flooz.app.Network.FloozRestClient;
@@ -38,7 +35,6 @@ public class LoadingActivity extends BaseActivity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
 
         if (FLHelper.isDebuggable())
             ViewServer.get(this).addWindow(this);

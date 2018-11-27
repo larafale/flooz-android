@@ -1,2 +1,2 @@
-include ':app', ':tooltips'
+include ':tooltips', ':app'
 project(':tooltips').projectDir = new File('libraries/android-tooltips/library')
