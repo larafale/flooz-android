@@ -3,6 +3,7 @@ package me.flooz.app.UI.Fragment.Start;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.InputFilter;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
@@ -28,6 +29,7 @@ import me.flooz.app.App.FloozApplication;
 import me.flooz.app.Model.FLCountry;
 import me.flooz.app.Model.FLError;
 import me.flooz.app.Model.FLTexts;
+import me.flooz.app.Model.FLUser;
 import me.flooz.app.Network.FloozHttpResponseHandler;
 import me.flooz.app.Network.FloozRestClient;
 import me.flooz.app.R;
@@ -47,6 +49,7 @@ public class StartSignupFragment extends StartBaseFragment implements FLPhoneFie
     private EditText nicknameTextfield;
     private FLPhoneField phoneTextfield;
     private EditText passwordTextfield;
+    private EditText birthdateTextfield;
     private EditText sponsorTextfield;
     private RelativeLayout fbButtonView;
     private RelativeLayout fbPicView;
@@ -74,6 +77,7 @@ public class StartSignupFragment extends StartBaseFragment implements FLPhoneFie
         nicknameTextfield = (EditText) view.findViewById(R.id.start_signup_nick);
         phoneTextfield = (FLPhoneField) view.findViewById(R.id.start_signup_phone);
         passwordTextfield = (EditText) view.findViewById(R.id.start_signup_password);
+        birthdateTextfield = (EditText) view.findViewById(R.id.start_signup_birthdate);
         sponsorTextfield = (EditText) view.findViewById(R.id.start_signup_sponsor);
         Button signupButton = (Button) view.findViewById(R.id.start_signup_next);
         Button cguButton = (Button) view.findViewById(R.id.start_signup_cgu);
@@ -87,6 +91,7 @@ public class StartSignupFragment extends StartBaseFragment implements FLPhoneFie
         emailTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
         nicknameTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
         passwordTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
+        birthdateTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
         sponsorTextfield.setTypeface(CustomFonts.customContentRegular(inflater.getContext()));
 
         currentCountry = phoneTextfield.currentCountry;
@@ -111,6 +116,50 @@ public class StartSignupFragment extends StartBaseFragment implements FLPhoneFie
                 return false;
             }
         });
+
+        this.birthdateTextfield.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (editable.length() == 3 && editable.charAt(2) != '/')
+                    editable.insert(2, "/");
+                if (editable.length() == 6 && editable.charAt(5) != '/')
+                    editable.insert(5, "/");
+
+                if (editable.length() == 1 && editable.charAt(0) > '3')
+                    editable.insert(0, "0");
+
+                if (editable.length() == 4 && editable.charAt(3) > '1')
+                    editable.insert(3, "0");
+
+                if (editable.length() == 2 && editable.charAt(0) == '3' && editable.charAt(1) > '1')
+                    editable.delete(1, 2);
+
+                if (editable.length() == 5 && editable.charAt(3) == '1' && editable.charAt(4) > '2')
+                    editable.delete(4, 5);
+
+                if (editable.length() == 7 && editable.charAt(6) > '2') {
+                    InputFilter[] filterArray = new InputFilter[1];
+                    filterArray[0] = new InputFilter.LengthFilter(8);
+                    birthdateTextfield.setFilters(filterArray);
+                }
+                else if (editable.length() == 7) {
+                    InputFilter[] filterArray = new InputFilter[1];
+                    filterArray[0] = new InputFilter.LengthFilter(10);
+                    birthdateTextfield.setFilters(filterArray);
+                }
+            }
+        });
+
 
         fbButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -141,6 +190,7 @@ public class StartSignupFragment extends StartBaseFragment implements FLPhoneFie
                 parentActivity.signupData.put("nick", nicknameTextfield.getText().toString());
                 parentActivity.signupData.put("email", emailTextfield.getText().toString());
                 parentActivity.signupData.put("phone", currentPhone);
+                parentActivity.signupData.put("birthdate", FLUser.formattedBirthdate(birthdateTextfield.getText().toString()));
                 parentActivity.signupData.put("country", currentCountry.code);
                 parentActivity.signupData.put("indicatif", currentCountry.indicatif);
                 parentActivity.signupData.put("password", passwordTextfield.getText().toString());

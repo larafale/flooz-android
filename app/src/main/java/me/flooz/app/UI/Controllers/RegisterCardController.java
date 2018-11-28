@@ -126,7 +126,7 @@ public class RegisterCardController extends BaseController {
         if (this.backgroundColor != null && !this.backgroundColor.isEmpty()) {
             webView.setBackgroundColor(Color.parseColor(this.backgroundColor));
         } else {
-            webView.setBackgroundColor(0x00000000);
+            webView.setBackgroundColor(0xFFFFFF);
         }
     }
 
@@ -139,7 +139,8 @@ public class RegisterCardController extends BaseController {
             Map<String, Object> params = null;
             try {
                 params = JSONHelper.toMap(this.triggersData.optJSONObject("params"));
-            } catch (JSONException e) {
+                url = this.triggersData.optString("url");
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 

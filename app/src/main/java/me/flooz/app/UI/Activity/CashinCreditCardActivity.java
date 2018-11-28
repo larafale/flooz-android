@@ -169,7 +169,7 @@ public class CashinCreditCardActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 FloozRestClient.getInstance().showLoadView();
-                FloozRestClient.getInstance().removeCreditCard(FloozRestClient.getInstance().currentUser.creditCard.cardId, null);
+                FloozRestClient.getInstance().removeCreditCard(null);
             }
         });
 

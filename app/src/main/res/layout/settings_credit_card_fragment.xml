@@ -184,7 +184,8 @@
                 android:layout_alignParentRight="true"
                 android:src="@drawable/camera_grey"
                 android:layout_centerVertical="true"
-                android:padding="@dimen/dimen_small"/>
+                android:padding="@dimen/dimen_small"
+                android:visibility="gone"/>
 
             <View
                 android:layout_width="match_parent"

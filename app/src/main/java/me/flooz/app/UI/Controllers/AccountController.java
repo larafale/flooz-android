@@ -44,6 +44,7 @@ import me.flooz.app.UI.Activity.EditProfileActivity;
 import me.flooz.app.UI.Activity.FriendRequestActivity;
 import me.flooz.app.UI.Activity.HomeActivity;
 import me.flooz.app.UI.Activity.Settings.BankSettingsActivity;
+import me.flooz.app.UI.Activity.Settings.CreditCardSettingsActivity;
 import me.flooz.app.UI.Activity.Settings.DocumentsSettingsActivity;
 import me.flooz.app.UI.Activity.Settings.IdentitySettingsActivity;
 import me.flooz.app.UI.Activity.Settings.NotificationsSettingsActivity;
@@ -165,17 +166,14 @@ public class AccountController extends BaseController implements ProfileListAdap
                             }
                             break;
                         case "card":
-                            Date nowDate = new Date();
-
-                            if (FloozRestClient.getInstance().lastCardsRequestDate == null ||
-                                    Math.abs(TimeUnit.MILLISECONDS.toSeconds(nowDate.getTime() - FloozRestClient.getInstance().lastCardsRequestDate.getTime())) > 1) {
-                                FloozRestClient.getInstance().cards();
-                            }
+                            Intent cardIntent = new Intent(parentActivity, CreditCardSettingsActivity.class);
+                            parentActivity.startActivity(cardIntent);
+                            parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
                             break;
                         case "cashin":
-                                Intent cardIntent = new Intent(parentActivity, CashinActivity.class);
-                                parentActivity.startActivity(cardIntent);
-                                parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
+                            Intent cashinIntent = new Intent(parentActivity, CashinActivity.class);
+                            parentActivity.startActivity(cashinIntent);
+                            parentActivity.overridePendingTransition(R.anim.slide_up, android.R.anim.fade_out);
                             break;
                         case "bank":
                             if (currentKind == ControllerKind.FRAGMENT_CONTROLLER)

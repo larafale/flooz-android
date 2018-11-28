@@ -178,7 +178,7 @@ dependencies {
     implementation project(':tooltips')
 
     // Network
-
+    implementation 'com.mangopay.android.sdk:card-registration-library:1.0.1'
     implementation 'com.squareup.okio:okio:2.1.0'
     implementation 'org.apache.commons:commons-lang3:3.4'
     implementation 'com.loopj.android:android-async-http:1.4.9'

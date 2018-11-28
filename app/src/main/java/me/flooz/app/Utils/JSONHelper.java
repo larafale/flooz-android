@@ -62,8 +62,10 @@ public class JSONHelper
 
     public static List toList(JSONArray array) throws JSONException {
         List list = new ArrayList();
-        for (int i = 0; i < array.length(); i++) {
-            list.add(fromJson(array.get(i)));
+        if (array != null) {
+            for (int i = 0; i < array.length(); i++) {
+                list.add(fromJson(array.get(i)));
+            }
         }
         return list;
     }

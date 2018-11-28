@@ -38,6 +38,7 @@ public class  FLTexts {
     public List<FLScope> homeScopes;
     public FLTransactionOptions floozOptions;
     public FLNewFloozOptions newFloozOptions;
+    public FLMangopayOptions mangopayOptions;
 
 
     public FLTexts(JSONObject json) {
@@ -143,5 +144,6 @@ public class  FLTexts {
 
         this.floozOptions = FLTransactionOptions.defaultWithJSON(this.json.optJSONObject("floozOptions"));
         this.newFloozOptions = FLNewFloozOptions.defaultWithJSON(this.json.optJSONObject("newFloozOptions"));
+        this.mangopayOptions = new FLMangopayOptions(this.json.optJSONObject("mangopay"));
     }
 }

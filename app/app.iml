@@ -86,6 +86,7 @@
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/assets" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/blame" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/build-info" />
+      <excludeFolder url="file://$MODULE_DIR$/build/intermediates/builds" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/check-manifest" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/classes" />
       <excludeFolder url="file://$MODULE_DIR$/build/intermediates/incremental" />
@@ -135,6 +136,7 @@
     <orderEntry type="library" name="Gradle: com.viewpagerindicator:library-2.4.1" level="project" />
     <orderEntry type="library" name="Gradle: android.arch.core:runtime-1.1.1" level="project" />
     <orderEntry type="library" name="Gradle: net.qiujuer.genius:kit-handler-2.0.0-beta4" level="project" />
+    <orderEntry type="library" scope="TEST" name="Gradle: com.android.support:multidex-instrumentation-1.0.2" level="project" />
     <orderEntry type="library" name="Gradle: org.jetbrains.kotlin:kotlin-stdlib:1.2.60@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.squareup.okhttp3:okhttp-ws:3.0.1@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.facebook.android:facebook-android-sdk-4.10.0" level="project" />
@@ -212,6 +214,7 @@
     <orderEntry type="library" name="Gradle: com.google.android.gms:play-services-stats-16.0.1" level="project" />
     <orderEntry type="library" name="Gradle: net.qiujuer.genius:kit-2.0.0-beta4" level="project" />
     <orderEntry type="library" name="Gradle: com.github.tslamic.adn:library-1.1" level="project" />
+    <orderEntry type="library" name="Gradle: com.mangopay.android.sdk:card-registration-library-1.0.1" level="project" />
     <orderEntry type="library" name="Gradle: com.nostra13.universalimageloader:universal-image-loader:1.9.5@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:asynclayoutinflater-28.0.0" level="project" />
     <orderEntry type="library" name="Gradle: com.android.support:support-media-compat-28.0.0" level="project" />
@@ -225,8 +228,6 @@
     <orderEntry type="library" name="Gradle: __local_aars__:/Users/olive/Desktop/Work/Flooz/flooz-android/app/libs/httpcore-4.4-beta1.jar:unspecified@jar" level="project" />
     <orderEntry type="library" name="Gradle: com.github.silvestrpredko:dot-progress-bar-1.0" level="project" />
     <orderEntry type="library" name="Gradle: com.embarkmobile:zxing-android-minimal-1.2.1" level="project" />
-    <orderEntry type="module" module-name="tooltips" />
-    <orderEntry type="library" scope="TEST" name="Gradle: com.android.support:multidex-instrumentation-1.0.2" level="project" />
     <orderEntry type="module" module-name="tooltips" />
   </component>
 </module>

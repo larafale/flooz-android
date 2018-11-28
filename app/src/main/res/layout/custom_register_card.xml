@@ -14,7 +14,7 @@
             android:id="@+id/custom_webview_webview"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="@android:color/transparent"/>
+            android:background="@android:color/white"/>
 
         <ProgressBar
             android:layout_centerInParent="true"
@@ -30,7 +30,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:layout_marginBottom="@dimen/dimen_xxlarge">
+        android:layout_marginBottom="@dimen/dimen_xxlarge"
+        android:visibility="gone">
 
         <ImageView
             android:id="@+id/settings_credit_card_create_infos_image"

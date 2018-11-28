@@ -11,9 +11,9 @@
     <TableRow
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:divider="@android:color/darker_gray"
+        android:divider="@android:color/transparent"
         android:gravity="center"
-        android:showDividers="middle" >
+        android:showDividers="none" >
 
         <Button
             android:id="@+id/numeric_keyboard_key_1"

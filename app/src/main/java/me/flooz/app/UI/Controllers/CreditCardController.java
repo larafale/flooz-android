@@ -15,6 +15,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
@@ -27,6 +28,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.devmarvel.creditcardentry.library.CreditCardForm;
+import com.mangopay.android.sdk.Callback;
+import com.mangopay.android.sdk.MangoPay;
+import com.mangopay.android.sdk.model.CardRegistration;
+import com.mangopay.android.sdk.model.MangoCard;
+import com.mangopay.android.sdk.model.MangoSettings;
+import com.mangopay.android.sdk.model.exception.MangoException;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -84,7 +91,9 @@ public class CreditCardController extends BaseController {
     public JSONObject floozData;
     private Boolean saveCard = true;
     private Boolean hideSaveCard = true;
-
+    public JSONObject mangopayData;
+    private MangoSettings mangopaySettings;
+    private MangoPay mangopay;
 
     private BroadcastReceiver reloadCurrentUserDataReceiver = new BroadcastReceiver() {
         @Override
@@ -105,7 +114,7 @@ public class CreditCardController extends BaseController {
         super(mainView, parentActivity, kind, data);
 
         if (data != null)
-            hideSaveCard = false;
+            hideSaveCard = true;
 
         if (this.triggersData != null) {
             if (this.triggersData.has("hideSave")) {
@@ -196,10 +205,11 @@ public class CreditCardController extends BaseController {
             @Override
             public void onClick(View v) {
                 FloozRestClient.getInstance().showLoadView();
-                FloozRestClient.getInstance().removeCreditCard(creditCard.cardId, new FloozHttpResponseHandler() {
+                FloozRestClient.getInstance().removeCreditCard(new FloozHttpResponseHandler() {
                     @Override
                     public void success(Object response) {
-
+                        cardFormInput.clearForm();
+                        loadCreditCardMangoPayData();
                     }
 
                     @Override
@@ -215,34 +225,33 @@ public class CreditCardController extends BaseController {
             public void onClick(View v) {
                 FloozRestClient.getInstance().showLoadView();
 
-                Map<String, Object> params = new HashMap<>(4);
+                MangoCard mCard = new MangoCard(cardFormInput.getCreditCard().getCardNumber().replace(" ", ""), cardFormInput.getCreditCard().getExpDate().replace("/", ""), cardFormInput.getCreditCard().getSecurityCode());
 
-                if (FloozRestClient.getInstance().currentTexts.cardHolder != null)
-                    params.put("holder", cardFormOwnerTextfield.getText().toString());
+                // register card method with callback
+                mangopay.registerCard(mCard, new Callback() {
+                    @Override public void success(CardRegistration cardRegistration) {
 
-                params.put("number", cardFormInput.getCreditCard().getCardNumber());
-                params.put("expires", cardFormInput.getCreditCard().getExpDate());
-                params.put("cvv", cardFormInput.getCreditCard().getSecurityCode());
+                        HashMap<String, Object> map = new HashMap<>();
 
-                if (!hideSaveCard)
-                    params.put("hidden", !saveCard);
+                        map.put("pspCardId", cardRegistration.getCardId());
 
-                if (floozData != null)
-                    try {
-                        params.put("flooz", JSONHelper.toMap(floozData));
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                        FloozRestClient.getInstance().updateUser(map, new FloozHttpResponseHandler() {
+                            @Override
+                            public void success(Object response) {
+                                reloadCreditCard();
+                            }
 
-                FloozRestClient.getInstance().createCreditCard(params, false, new FloozHttpResponseHandler() {
-                    @Override
-                    public void success(Object response) {
+                            @Override
+                            public void failure(int statusCode, FLError error) {
 
+                            }
+                        });
                     }
 
                     @Override
-                    public void failure(int statusCode, FLError error) {
-
+                    public void failure(MangoException error) {
+                        Log.e("Mangopay", error.toString());
+                        FloozRestClient.getInstance().hideLoadView();
                     }
                 });
             }
@@ -292,6 +301,8 @@ public class CreditCardController extends BaseController {
     public void onStart() {
         if (!TextUtils.isEmpty(cardInfosText))
             infosText.setText(cardInfosText);
+
+        loadCreditCardMangoPayData();
     }
 
     @Override
@@ -319,7 +330,34 @@ public class CreditCardController extends BaseController {
         LocalBroadcastManager.getInstance(FloozApplication.getAppContext()).unregisterReceiver(reloadCurrentUserDataReceiver);
     }
 
+    public void loadCreditCardMangoPayData() {
+        FloozRestClient.getInstance().showLoadView();
+        FloozRestClient.getInstance().getCreditCardAPIInformations(new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                JSONObject json = (JSONObject)response;
+                JSONObject item = json.optJSONObject("item");
+
+                mangopaySettings = new MangoSettings(FloozRestClient.getInstance().currentTexts.mangopayOptions.baseURL,
+                        FloozRestClient.getInstance().currentTexts.mangopayOptions.clientId,
+                        item.optString("Id"),
+                        item.optString("CardRegistrationURL"),
+                        item.optString("PreregistrationData"),
+                        item.optString("AccessKey"));
+
+                mangopay = new MangoPay(parentActivity, mangopaySettings);
+
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+
+            }
+        });
+    }
+
     public void reloadCreditCard() {
+
         this.creditCard = FloozRestClient.getInstance().currentUser.creditCard;
 
         if (this.creditCard != null && this.creditCard.cardId != null) {

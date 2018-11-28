@@ -1060,6 +1060,22 @@ public class FloozRestClient
     /******  CREDIT CARD  ******/
     /***************************/
 
+    public void getCreditCardAPIInformations(final FloozHttpResponseHandler responseHandler) {
+        this.request("/cards", HttpRequestType.POST, null, new FloozHttpResponseHandler() {
+            @Override
+            public void success(Object response) {
+                if (responseHandler != null)
+                    responseHandler.success(response);
+            }
+
+            @Override
+            public void failure(int statusCode, FLError error) {
+                if (responseHandler != null)
+                    responseHandler.failure(statusCode, error);
+            }
+        });
+    }
+
     public void createCreditCard(Map<String, Object> params, Boolean signup, final FloozHttpResponseHandler responseHandler) {
 
         String path = "/cards";
@@ -1090,8 +1106,8 @@ public class FloozRestClient
 
     }
 
-    public void removeCreditCard(String creditCardId, FloozHttpResponseHandler responseHandler) {
-        this.request("/cards/" + creditCardId + "?validate=true", HttpRequestType.DELETE, null, responseHandler);
+    public void removeCreditCard(FloozHttpResponseHandler responseHandler) {
+        this.request("/cards?validate=true", HttpRequestType.DELETE, null, responseHandler);
     }
 
     public void abort3DSecure() {
